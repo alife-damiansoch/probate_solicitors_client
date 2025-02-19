@@ -1,0 +1,404 @@
+import  { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from 'react-router-dom';
+import { loginSuccess } from './store/authSlice';
+import './App.css';
+import './bootstrap.min.css';
+import NavBar from './components/NavBar/NavBar';
+import LoginComponent from './components/Login/LoginComponent';
+import Applications from './components/SolicitorComponents/Applications/Applications';
+import ApplicationDetails from './components/SolicitorComponents/Applications/ApplicationDetails';
+import FooterComponent from './components/GenericComponents/FooterComponent';
+import AddApplication from './components/SolicitorComponents/Applications/AddApplication';
+import UploadNewDocument from './components/SolicitorComponents/Applications/UploadingFileComponents/UploadNewDocument';
+import RegisterComponent from './components/Login/RegisterComponent';
+import UserProfile from './components/SolicitorComponents/UserProfileComponent';
+import UpdatePasswordComponent from './components/SolicitorComponents/UpdatePasswordComponent';
+import { fetchUser } from './store/userSlice';
+import Home from './components/StaticPagesComponents/Home/Home';
+import UnderstandingProbate from './components/StaticPagesComponents/UnderstandingProbate/UnderstandingProbate';
+import HowItWorks from './components/StaticPagesComponents/HowItWorks/HowItWorks';
+import Benefits from './components/StaticPagesComponents/Benefits/Benefits';
+import Solicitors from './components/SolicitorComponents/SolicitorsComponent.jsx/Solicitors';
+import FileManager from './components/SolicitorComponents/Applications/DocumentsForDownloadComponent/FileManager';
+import AdvancementDetailsConfirm from './components/SolicitorComponents/Applications/ApplicationDocumentsComponents/Advancement/AdvancementDetailsConfirm';
+import UploadNewDocumentSigned from './components/SolicitorComponents/Applications/UploadingFileComponents/Signed/UploadNewDocumentSigned';
+import AutoLogoutComponent from './components/Login/AutoLogoutComponent';
+import ActivationPage from './components/Login/ActivationPage';
+import CookieConsent from './components/SolicitorComponents/CookieConsent/CookieConsent';
+import ForgotPassword from './components/Login/ForgotPassword';
+import ResetPassword from './components/Login/ResetPassword';
+import OtpVerification from './components/Login/OtpVerification';
+import { COUNTRY } from './baseUrls';
+import apiEventEmitter from './utils/eventEmitter';
+import { logout } from './store/authSlice';
+import { clearUser } from './store/userSlice';
+import renderErrors from './components/GenericFunctions/HelperGenericFunctions';
+
+function App() {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const [autoLoggedOutMessage, setAutoLoggedOutMessage] = useState(null);
+
+  useEffect(() => {
+    // Listen for logoutRequired event
+    const handleLogout = () => {
+      console.log('🚨 Auto logging out user due to API key issue');
+      dispatch(logout());
+      dispatch(clearUser());
+      setAutoLoggedOutMessage([
+        '🚨 Session Expired',
+        `Your session has expired or is no longer valid.`,
+        ` For security reasons, you have been automatically logged out.`,
+        ` Please log in again to continue.`,
+      ]);
+    };
+
+    apiEventEmitter.on('logoutRequired', handleLogout);
+
+    return () => {
+      // Cleanup event listener
+      apiEventEmitter.off('logoutRequired', handleLogout);
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setAutoLoggedOutMessage(null);
+    }
+  }, [isLoggedIn]);
+
+  // Get the country from the .env file
+
+  // Handle missing or undefined country
+  if (!COUNTRY) {
+    console.error(
+      'Error: REACT_APP_COUNTRY is not defined in the environment variables.'
+    );
+    alert(
+      'Application cannot run: Country is not defined. Please set the REACT_APP_COUNTRY environment variable.'
+    );
+  } else {
+    const defaultTitle = 'Probate Solicitors';
+    document.title = `${defaultTitle} (${COUNTRY})`;
+
+    // Configure cookies based on the country
+    if (COUNTRY === 'UK') {
+      Cookies.set('country_solicitors', 'UK');
+      Cookies.set('currency_sign', '£');
+      Cookies.set('id_number', JSON.stringify(['NI', 'XX123456Y']));
+      Cookies.set('phone_nr_placeholder', '+447911123456');
+      Cookies.set(
+        'postcode_placeholders',
+        JSON.stringify(['Postcode', 'XX9 9YY', 'SW1A 1AA'])
+      );
+    } else if (COUNTRY === 'IE') {
+      Cookies.set('country_solicitors', 'IE');
+      Cookies.set('currency_sign', '€');
+      Cookies.set('id_number', JSON.stringify(['PPS', '1234567X(Y)']));
+      Cookies.set('phone_nr_placeholder', '+353871234567');
+      Cookies.set(
+        'postcode_placeholders',
+        JSON.stringify(['Eircode', 'XXXYYYY', 'D02X285'])
+      );
+    } else {
+      console.warn(`Unsupported country: ${COUNTRY}`);
+    }
+  }
+
+  let tokenObj = Cookies.get('auth_token');
+  if (tokenObj) {
+    try {
+      tokenObj = JSON.parse(tokenObj);
+    } catch (error) {
+      console.error('Error parsing tokenObj:', error);
+      tokenObj = null; // ensure tokenObj is null if parsing fails
+    }
+  } else {
+    console.log('No token in cookies:', tokenObj);
+  }
+
+  useEffect(() => {
+    if (tokenObj) {
+      dispatch(loginSuccess({ tokenObj }));
+      dispatch(fetchUser());
+    } else {
+      console.log('No token detected');
+    }
+  }, [dispatch, tokenObj]);
+
+  return (
+    <Router>
+      <>
+        <div className='container'>
+          <NavBar />
+        </div>
+        {isLoggedIn && (
+          <div className='container'>
+            <CookieConsent />
+          </div>
+        )}
+        {isLoggedIn && <AutoLogoutComponent />}{' '}
+        <Routes>
+          {/* Static Pages */}
+          <Route
+            path='/'
+            element={
+              <div className='container'>
+                <Home />
+              </div>
+            }
+          />
+          <Route
+            path='/understanding'
+            element={
+              <div className='container'>
+                <UnderstandingProbate />
+              </div>
+            }
+          />
+          <Route
+            path='/howItWorks'
+            element={
+              <div className='container'>
+                <HowItWorks />
+              </div>
+            }
+          />
+          <Route
+            path='/benefits'
+            element={
+              <div className='container'>
+                <Benefits />
+              </div>
+            }
+          />
+
+          {/* Application Paths */}
+          <Route
+            path='/addApplication'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <AddApplication />
+                  </div>
+                }
+              />
+            }
+          />
+          <Route
+            path='/applications'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <Applications />
+                  </div>
+                }
+              />
+            }
+          />
+          <Route
+            path='/applications/:id'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container-fluid px-md-5'>
+                    <ApplicationDetails />
+                  </div>
+                }
+              />
+            }
+          />
+          <Route
+            path='/createApplicationPdfsForSign/:id'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <AdvancementDetailsConfirm />
+                  </div>
+                }
+              />
+            }
+          />
+
+          {/* Solicitor Paths */}
+          <Route
+            path='/solicitors'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <Solicitors />
+                  </div>
+                }
+              />
+            }
+          />
+
+          {/* Login Paths */}
+          <Route
+            path='/login'
+            element={
+              !isLoggedIn ? (
+                <div className='container'>
+                  {autoLoggedOutMessage && (
+                    <div className=' alert alert-danger text-center'>
+                      {renderErrors(autoLoggedOutMessage)}
+                    </div>
+                  )}
+                  <LoginComponent />
+                </div>
+              ) : (
+                <CustomRedirect />
+              )
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <div className='container'>
+                <RegisterComponent />
+              </div>
+            }
+          />
+          <Route
+            path='/forgotPassword'
+            element={
+              <div className='container'>
+                <ForgotPassword />
+              </div>
+            }
+          />
+          <Route
+            path='/reset-password/:uidb64/:token'
+            element={
+              <div className='container'>
+                <ResetPassword />
+              </div>
+            }
+          />
+          <Route
+            path='/activate/:activation_token'
+            element={
+              <div className='container'>
+                <ActivationPage />
+              </div>
+            }
+          />
+          <Route
+            path='/verify-otp'
+            element={
+              <div className='container'>
+                <OtpVerification />
+              </div>
+            }
+          />
+
+          {/* Document Uploading Paths */}
+          <Route
+            path='/upload_new_document/:applicationId'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <UploadNewDocument />
+                  </div>
+                }
+              />
+            }
+          />
+          <Route
+            path='/upload_new_document_signed/:applicationId'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <UploadNewDocumentSigned />
+                  </div>
+                }
+              />
+            }
+          />
+
+          {/* User Profile and Management Paths */}
+          <Route
+            path='/user_profile'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <UserProfile />
+                  </div>
+                }
+              />
+            }
+          />
+          <Route
+            path='/update_password'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <UpdatePasswordComponent />
+                  </div>
+                }
+              />
+            }
+          />
+          <Route
+            path='/documentsForDownload'
+            element={
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={
+                  <div className='container'>
+                    <FileManager />
+                  </div>
+                }
+              />
+            }
+          />
+        </Routes>
+        <FooterComponent />
+      </>
+    </Router>
+  );
+}
+
+// Custom ProtectedRoute component to handle authentication and redirects
+const ProtectedRoute = ({ component, isLoggedIn }) => {
+  const location = useLocation();
+  return isLoggedIn ? (
+    component
+  ) : (
+    <Navigate to='/login' state={{ from: location }} replace />
+  );
+};
+
+// Custom Redirect Component to redirect users to their intended route
+const CustomRedirect = () => {
+  const location = useLocation();
+  const redirectTo = location.state?.from?.pathname || '/applications';
+  return <Navigate to={redirectTo} replace />;
+};
+
+export default App;
