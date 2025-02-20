@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
 import { useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import renderErrors from '../../../GenericFunctions/HelperGenericFunctions';
 import { postData } from '../../../GenericFunctions/AxiosGenericFunctions';
 
 import Cookies from 'js-cookie';
+import {useState} from "react";
 
 const TITLE_CHOICES = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
 

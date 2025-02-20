@@ -1,4 +1,4 @@
-import React from 'react';
+
 import AnimatedSection from '../../GenericFunctions/AnimatedSection'; // Adjust the import path as needed
 import CustomAlert from '../Generic/CustomAlert';
 
@@ -37,7 +37,7 @@ const WhatIsProbate = () => {
                     sale
                   </li>
                   <li className='list-group-item bg-info-subtle border-0 border-bottom border-dark-subtle text-dark rounded-top'>
-                    The early settlement of a testator/testatrix's debts to
+                    The early settlement of a testator/testatrix&#39;s debts to
                     allow for the smooth administration of the estate
                   </li>
                   <li className='list-group-item bg-info-subtle border-0 border-bottom border-dark-subtle text-dark rounded-top'>

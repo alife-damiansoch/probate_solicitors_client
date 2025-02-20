@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+
 import { Button } from 'reactstrap';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import {useState} from "react";
 
 const NavButton = ({
   children,

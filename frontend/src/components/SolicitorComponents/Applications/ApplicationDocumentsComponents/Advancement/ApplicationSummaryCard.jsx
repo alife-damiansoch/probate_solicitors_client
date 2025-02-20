@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import AnimatedWrapper from '../../../../GenericFunctions/AnimationFuctions';
 
-const ApplicationSummaryCard = ({ application, issues, setIssues }) => {
+import AnimatedWrapper from '../../../../GenericFunctions/AnimationFuctions';
+import {useEffect} from "react";
+
+const ApplicationSummaryCard = ({ application, setIssues }) => {
   useEffect(() => {
     if (application) {
       if (!application.loan_agreement_ready) {

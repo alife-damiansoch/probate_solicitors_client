@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { clearAuthError } from '../../store/authSlice';
@@ -131,7 +131,7 @@ const LoginComponent = () => {
                   className='link link-info text-decoration-underline'
                   to='/register'
                 >
-                  Don't have an account? Register here
+                  Don&#39;t have an account? Register here
                 </Link>
               </div>
             </div>

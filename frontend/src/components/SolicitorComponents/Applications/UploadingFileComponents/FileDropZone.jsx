@@ -1,13 +1,12 @@
-import axios from 'axios';
-import React, { useCallback, useMemo, useState } from 'react';
+
 import { useDropzone } from 'react-dropzone';
-import { useSelector } from 'react-redux';
 import { API_URL } from '../../../../baseUrls';
 import { useNavigate } from 'react-router-dom';
 import { uploadFile } from '../../../GenericFunctions/AxiosGenericFunctions';
 import { TbClick } from 'react-icons/tb';
 
 import { motion } from 'framer-motion';
+import {useCallback, useMemo, useState} from "react";
 
 const FilesDropZone = ({ applicationId }) => {
   const [acceptedFiles, setAcceptedFiles] = useState([]);

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { MdOutlineRealEstateAgent } from 'react-icons/md';
 import { RiMoneyEuroCircleLine } from 'react-icons/ri';
 import { GiTakeMyMoney } from 'react-icons/gi';
@@ -115,7 +115,7 @@ const HowItWorks = () => {
                 </AnimatedSection>
                 <br />
                 <AnimatedSection as='p' className='text-center'>
-                  This form CA 24 is uploaded by the applicant's solicitor to
+                  This form CA 24 is uploaded by the applicant&#39;s solicitor to
                   our platform to determine the amount that can be advanced
                   against the value of the estate.
                 </AnimatedSection>

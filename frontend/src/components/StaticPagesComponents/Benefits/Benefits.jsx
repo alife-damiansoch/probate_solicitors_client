@@ -1,4 +1,4 @@
-import React from 'react';
+
 import {
   TbPentagonNumber1,
   TbPentagonNumber2,
@@ -40,8 +40,8 @@ const Benefits = () => {
             Most loans are based on your financial history and income, which
             isn’t always favourable for everyone. <br />
             <br />
-            But as you're taking an advance against the estate there is no need
-            to look at your income to gauge if you'd be able to afford
+            But as you&#39;re taking an advance against the estate there is no need
+            to look at your income to gauge if you&#39;d be able to afford
             repayments.
           </AnimatedSection>
         </div>
@@ -68,7 +68,7 @@ const Benefits = () => {
             the borrowed sum and interest, which can be a strain on your
             finances. <br />
             <br /> With probate advancements, there are no monthly repayments.
-            It's all repaid directly from the estate once the probate process
+            It&#39;s all repaid directly from the estate once the probate process
             concludes.
           </AnimatedSection>
         </div>
@@ -101,7 +101,7 @@ const Benefits = () => {
                   height='100%'
                 >
                   It eliminates personal liability for the advance, meaning if
-                  the estate's value falls short you aren't personally
+                  the estate&#39;s value falls short you aren&#39;t personally
                   responsible for repaying the difference.
                 </CustomCard>
               </AnimatedSection>
@@ -116,8 +116,8 @@ const Benefits = () => {
                   width='100%'
                   height='100%'
                 >
-                  It ensures the advance doesn't impact your personal finance or
-                  credit score in any way - it's linked solely to the estate.
+                  It ensures the advance doesn&#39;t impact your personal finance or
+                  credit score in any way - it&#39;s linked solely to the estate.
                 </CustomCard>
               </AnimatedSection>
             </div>

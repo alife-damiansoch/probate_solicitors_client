@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useParams } from 'react-router-dom';
 import FilesDropZone from './FileDropZone';
 import BackToApplicationsIcon from '../../../GenericComponents/BackToApplicationsIcon';

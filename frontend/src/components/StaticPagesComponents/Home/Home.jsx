@@ -1,6 +1,6 @@
 // Home.js
 
-import React from 'react';
+
 import AnimatedSection from '../../GenericFunctions/AnimatedSection';
 import CustomCard from '../Generic/CustomCard';
 import CustomAlert from '../Generic/CustomAlert';
@@ -104,12 +104,12 @@ const Home = () => {
                 <p className='text'>
                   It is important to note that this is an advancement to
                   beneficiaries of a will, which is utilised to give effect to a
-                  testator / testatrix's wishes in the will.
+                  testator / testatrix&#39;s wishes in the will.
                 </p>
                 <p className='text'>
                   In circumstances where the applicant is an executor who is not
                   benefitting from the probate advancement, the fees charged for
-                  the advancement can be set off against a beneficiary's CAT
+                  the advancement can be set off against a beneficiary&#39;s CAT
                   liability.
                 </p>
               </CustomAlert>

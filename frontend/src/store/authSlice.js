@@ -47,7 +47,7 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout: (state, action) => {
+    logout: (state) => {
       state.token = null;
       state.isLoggedIn = false;
       state.loading = false;
@@ -57,7 +57,7 @@ export const authSlice = createSlice({
     loginSuccess: (state, action) => {
       const { access, refresh } = action.payload.tokenObj;
       Cookies.set('auth_token', JSON.stringify({ access, refresh }), {
-        secure: process.env.NODE_ENV === 'production',
+        secure: import.meta.env.PROD,
         sameSite: 'strict',
       }); // Set the token in cookies
       state.token = action.payload.tokenObj;
@@ -76,7 +76,7 @@ export const authSlice = createSlice({
         'auth_token',
         JSON.stringify({ access: newAccess, refresh: oldRefresh }),
         {
-          secure: process.env.NODE_ENV === 'production',
+          secure: import.meta.env.PROD,
           sameSite: 'strict',
         }
       ); // Set the new tokens in cookies
@@ -90,7 +90,7 @@ export const authSlice = createSlice({
       .addCase(signup.fulfilled, (state, action) => {
         const { access, refresh } = action.payload;
         Cookies.set('auth_token', JSON.stringify({ access, refresh }), {
-          secure: process.env.NODE_ENV === 'production',
+          secure: import.meta.env.PROD,
           sameSite: 'strict',
         }); // Set the token in cookies
         state.token = action.payload;
@@ -98,7 +98,7 @@ export const authSlice = createSlice({
         state.loading = false;
         state.error = null;
       })
-      .addCase(signup.pending, (state, action) => {
+      .addCase(signup.pending, (state) => {
         state.token = null;
         state.isLoggedIn = false;
         state.loading = true;

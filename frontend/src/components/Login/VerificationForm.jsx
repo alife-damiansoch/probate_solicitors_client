@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import {useRef} from "react";
+
 
 const VerificationForm = ({ otp, setOtp, isLoading, handleSubmit }) => {
   const inputRefs = useRef([]);

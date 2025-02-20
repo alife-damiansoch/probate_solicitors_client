@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+
 
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -9,6 +9,7 @@ import {
 import BackToApplicationsIcon from '../../../../GenericComponents/BackToApplicationsIcon';
 import ApplicationSummaryCard from './ApplicationSummaryCard';
 import renderErrors from '../../../../GenericFunctions/HelperGenericFunctions';
+import {useEffect, useState} from "react";
 
 const AdvancementDetailsConfirm = () => {
   const token = Cookies.get('auth_token');
@@ -104,7 +105,7 @@ const AdvancementDetailsConfirm = () => {
     setApplicationErrors(errors);
   }, [application, fee, feeCounted]);
 
-  const generateUndertakingHandler = async (e) => {
+  const generateUndertakingHandler = async () => {
     setLoading(true); // Set loading to true when request starts
 
     const requestData = {
@@ -141,7 +142,7 @@ const AdvancementDetailsConfirm = () => {
     }
   };
 
-  const generateAdvanceAggreementHandler = async (e) => {
+  const generateAdvanceAggreementHandler = async () => {
     setLoading(true); // Set loading to true when request starts
 
     const requestData = {

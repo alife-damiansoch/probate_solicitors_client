@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 const TimeoutWarning = ({ remainingTime, stayLoggedIn }) => {
   return (

@@ -1,6 +1,6 @@
 // src/components/AnimatedWrapper.js
 
-import React from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Reusable animation variants

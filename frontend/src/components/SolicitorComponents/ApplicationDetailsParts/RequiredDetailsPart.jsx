@@ -319,7 +319,7 @@ const RequiredDetailsPart = ({
                     {(!application.deceased.first_name ||
                       application.deceased.first_name === '') && (
                       <sup className='text-danger'>
-                        Deceased's first name is required.
+                        Deceased&#39;s first name is required.
                       </sup>
                     )}
                   </div>
@@ -361,7 +361,7 @@ const RequiredDetailsPart = ({
                     {(!application.deceased.last_name ||
                       application.deceased.last_name === '') && (
                       <sup className='text-danger'>
-                        Deceased's last name is required.
+                        Deceased&#39;s last name is required.
                       </sup>
                     )}
                   </div>
@@ -375,7 +375,7 @@ const RequiredDetailsPart = ({
                     </label>
                     <div className='input-group input-group-sm shadow'>
                       <textarea
-                        type='text'
+                        // type='text'
                         className={`form-control ${
                           editMode.dispute_details && '  border border-danger'
                         }`}

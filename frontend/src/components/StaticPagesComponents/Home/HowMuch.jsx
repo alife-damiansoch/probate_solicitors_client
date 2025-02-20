@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+
 import { formatNumberWithDots } from '../Functions/helpers';
+import {useState} from "react";
 
 const HowMuch = () => {
   const [totalEstateValue, setTotalEstateValue] = useState('');

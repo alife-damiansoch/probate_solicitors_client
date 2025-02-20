@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
+import {useState} from "react";
 
 const Popover = ({ children, content, header = '' }) => {
   const [isVisible, setIsVisible] = useState(false);

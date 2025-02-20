@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+
 import { useParams } from 'react-router-dom';
 
 import BackToApplicationsIcon from '../../../../GenericComponents/BackToApplicationsIcon';
 import FileDropZoneSigned from './FileDropZoneSigned';
+import {useState} from "react";
 
 const UploadNewDocumentSigned = () => {
   const { applicationId } = useParams();

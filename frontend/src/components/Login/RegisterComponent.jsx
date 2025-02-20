@@ -1,10 +1,11 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+
 
 import { API_URL } from '../../baseUrls';
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import Cookies from 'js-cookie';
 import RedirectCountdown from '../GenericComponents/RedirectCountdown';
+import {useState} from "react";
 
 const RegisterComponent = () => {
   const [formData, setFormData] = useState({
@@ -137,7 +138,7 @@ const RegisterComponent = () => {
                       </label>
                       <div className='text-center'>
                         <sub className='text-info '>
-                          This should be the solicitor firm's default email
+                          This should be the solicitor firm&#39;s default email
                           address. <br />
                           It will be used to authenticate the account, login and
                           for multi-factor authentication purposes. <br />
@@ -346,7 +347,7 @@ const RegisterComponent = () => {
             <p style={{ fontSize: '20px' }}>
               Please check your email inbox to activate your account. <br />
               <br />
-              If you don't see the email in your inbox, please check your spam
+              If you don&#39;t see the email in your inbox, please check your spam
               or junk folder. <br />
               <br />
               To ensure you receive future emails, mark our messages as safe or

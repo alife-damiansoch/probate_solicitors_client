@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Alert, Card, CardText } from 'reactstrap';
 
 const CustomWarningCard = ({ text }) => {

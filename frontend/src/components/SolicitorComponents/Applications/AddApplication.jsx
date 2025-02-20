@@ -1,4 +1,4 @@
-import React from 'react';
+
 import NewApplicationForm from './AddApplicationParts/NewApplicationForm';
 import BackToApplicationsIcon from '../../GenericComponents/BackToApplicationsIcon';
 

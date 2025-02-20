@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+
 import HowCanItHelp from './HowCanItHelp';
 import WhoAreProbateLoansFor from './WhoAreProbateLoansFor';
 import WhatIsProbate from './WhatIsProbate';
+import {useState} from "react";
 
 const UnderstandingProbate = () => {
     const [open, setOpen] = useState('collapseOne');

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import AnimatedSection from '../../GenericFunctions/AnimatedSection'; // Adjust the import path as needed
 import CustomAlert from '../Generic/CustomAlert';
 
@@ -32,7 +32,7 @@ const WhoAreProbateLoansFor = () => {
                     <hr />
                     <div className='list-group-item bg-white fancy-list-group-item text-primary border-light'>
                       Or ongoing expenses like property maintenance for the
-                      deceased's home
+                      deceased&#39;s home
                     </div>
                     <hr />
                     <div className='list-group-item bg-white fancy-list-group-item text-primary border-light'>

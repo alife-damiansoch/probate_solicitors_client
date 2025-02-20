@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+
 import { MdDoneAll, MdOutlineRemoveDone } from 'react-icons/md';
 import { SiStagetimer } from 'react-icons/si';
 import { TbFaceIdError } from 'react-icons/tb';
+import {useEffect} from "react";
 
 const Stage = ({
   stage,

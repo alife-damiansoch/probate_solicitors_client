@@ -1,4 +1,4 @@
-import React from 'react';
+
 import AnimatedSection from '../../GenericFunctions/AnimatedSection'; // Adjust the import path as needed
 import CustomCard from '../Generic/CustomCard';
 

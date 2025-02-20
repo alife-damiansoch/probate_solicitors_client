@@ -1,4 +1,4 @@
-import React, {
+import  {
   useCallback,
   useMemo,
   useState,
@@ -21,9 +21,9 @@ import {
 const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
   const [acceptedFiles, setAcceptedFiles] = useState([]);
   const [fileRejections, setFileRejections] = useState([]);
-  const [uploadStatus, setUploadStatus] = useState('');
-  const [isError, setIsError] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  // const [uploadStatus, setUploadStatus] = useState('');
+  // const [isError, setIsError] = useState(false);
+  // const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [solicitorFullName, setSolicitorFullName] = useState(''); // Store solicitor's full name
@@ -57,7 +57,7 @@ const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
 
   const uploadFilesHandler = async () => {
     setIsLoading(true);
-    setUploadStatus('Uploading...');
+    // setUploadStatus('Uploading...');
 
     // Get the public IP of the client
     const publicIp = await getPublicIp();
@@ -99,7 +99,7 @@ const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
         console.log(signatureBase64);
         formData.append('signature_image', signatureBase64); // Add signature image to form data
       } else {
-        setUploadStatus('Please provide a signature.');
+        // setUploadStatus('Please provide a signature.');
         setIsLoading(false);
         return;
       }
@@ -127,11 +127,11 @@ const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
           navigate(`/applications/${applicationId}`);
         } else {
           setIsLoading(false);
-          setIsError(`Error uploading document: ${file.name}`, response.data);
+          // setIsError(`Error uploading document: ${file.name}`, response.data);
         }
       } catch (error) {
         console.error(`Error uploading document: ${file.name}`, error);
-        setIsError(`Error uploading document: ${file.name}`, error);
+        // setIsError(`Error uploading document: ${file.name}`, error);
         setIsLoading(false);
       }
     }

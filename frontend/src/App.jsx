@@ -42,6 +42,8 @@ import { logout } from './store/authSlice';
 import { clearUser } from './store/userSlice';
 import renderErrors from './components/GenericFunctions/HelperGenericFunctions';
 
+
+
 function App() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);

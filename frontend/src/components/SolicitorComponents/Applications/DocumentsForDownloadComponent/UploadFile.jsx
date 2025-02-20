@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { uploadFile } from '../../../GenericFunctions/AxiosGenericFunctions'; // Import your generic axios function
+
+import { uploadFile } from '../../../GenericFunctions/AxiosGenericFunctions';
+import {useState} from "react"; // Import your generic axios function
 
 const UploadFile = ({ refresh, setRefresh }) => {
   const [selectedFile, setSelectedFile] = useState(null);

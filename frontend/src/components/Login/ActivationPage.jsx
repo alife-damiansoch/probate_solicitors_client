@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+
 import { useParams } from 'react-router-dom';
 
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
 import RedirectCountdown from '../GenericComponents/RedirectCountdown';
+import {useEffect, useRef, useState} from "react";
 
 const ActivationPage = () => {
   const { activation_token } = useParams(); // Extract the token from the URL

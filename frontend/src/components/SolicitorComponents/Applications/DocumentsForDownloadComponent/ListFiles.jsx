@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+
 import {
   fetchData,
   // deleteData,
   downloadFileAxios,
 } from '../../../GenericFunctions/AxiosGenericFunctions'; // Import your generic axios functions
 import { LiaFileDownloadSolid } from 'react-icons/lia';
+import {useEffect, useState} from "react";
 
-const ListFiles = ({ refresh, setRefresh }) => {
+const ListFiles = ({ refresh }) => {
   const [files, setFiles] = useState([]);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState(''); // Success or danger

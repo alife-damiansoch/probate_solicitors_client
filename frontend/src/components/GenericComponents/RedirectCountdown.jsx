@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
+import {useEffect, useState} from "react";
 
 function RedirectCountdown({ message, redirectPath = '/', countdownTime = 3 }) {
   const [timeRemaining, setTimeRemaining] = useState(countdownTime);

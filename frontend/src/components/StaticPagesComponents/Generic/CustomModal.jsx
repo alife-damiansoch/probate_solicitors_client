@@ -1,10 +1,11 @@
-import React, { cloneElement, isValidElement, Children } from 'react';
+
 import {
   Modal as ReactstrapModal,
   ModalBody,
   ModalHeader,
   ModalFooter,
 } from 'reactstrap';
+import {Children, cloneElement, isValidElement} from "react";
 
 const CustomModal = ({ isOpen, toggle, children, title }) => {
   // Pass the toggle function as a prop only to elements that need it

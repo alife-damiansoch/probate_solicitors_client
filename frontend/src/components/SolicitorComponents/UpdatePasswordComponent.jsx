@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { API_URL } from '../../baseUrls';
+
+
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import { useSelector } from 'react-redux';
 import { patchData } from '../GenericFunctions/AxiosGenericFunctions';
 import RedirectCountdown from '../GenericComponents/RedirectCountdown';
+import {useState} from "react";
 
 const UpdatePasswordComponent = () => {
   const [oldPassword, setOldPassword] = useState('');

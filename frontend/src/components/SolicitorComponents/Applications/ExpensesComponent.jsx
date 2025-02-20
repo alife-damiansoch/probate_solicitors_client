@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+
 import { FaTrash, FaSave } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 import {
   deleteData,
   postData,
 } from '../../GenericFunctions/AxiosGenericFunctions';
+import {useState} from "react";
 
 const ExpensesComponent = ({
   application,

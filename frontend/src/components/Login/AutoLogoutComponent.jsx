@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+
 import { useDispatch } from 'react-redux';
 import { logout } from '../../store/authSlice';
 import { clearUser } from '../../store/userSlice';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import useApiKeyExpiration from '../GenericFunctions/CustomHooks/useApiKeyExpiration';
 import TimeoutWarning from './TimeoutWarningComponent';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
+import {useEffect, useState} from "react";
 
 const AutoLogoutComponent = () => {
   const WARNING_TIME = 5 * 60 * 1000; // 5 minutes before expiration
@@ -64,7 +65,7 @@ const AutoLogoutComponent = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expirationTime]);
+  }, [expirationTime,WARNING_TIME,logoutUser]);
 
   return (
     <div>

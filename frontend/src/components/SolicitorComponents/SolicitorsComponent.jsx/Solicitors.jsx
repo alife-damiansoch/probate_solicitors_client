@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+
 import { FaTrash, FaEdit, FaSave } from 'react-icons/fa';
 import {
   fetchData,
@@ -10,6 +10,7 @@ import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import Cookies from 'js-cookie';
 import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
 import BackToApplicationsIcon from '../../GenericComponents/BackToApplicationsIcon';
+import {useEffect, useState} from "react";
 
 const Solicitors = () => {
   const token = Cookies.get('auth_token');

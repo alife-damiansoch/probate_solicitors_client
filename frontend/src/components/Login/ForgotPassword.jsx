@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
-import RedirectCountdown from '../GenericComponents/RedirectCountdown'; // Import the reusable component
+import RedirectCountdown from '../GenericComponents/RedirectCountdown';
+import {useState} from "react"; // Import the reusable component
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+
 import Cookies from 'js-cookie';
+import {useEffect, useState} from "react";
 
 const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);

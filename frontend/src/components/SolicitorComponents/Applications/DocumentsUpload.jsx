@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { MdAddChart } from 'react-icons/md';
 import { FaFileSignature } from 'react-icons/fa6';
@@ -7,6 +7,7 @@ import {
   fetchData,
 } from '../../GenericFunctions/AxiosGenericFunctions';
 import Cookies from 'js-cookie';
+import {useEffect, useState} from "react";
 
 const DocumentsUpload = ({ application, highlitedSectionId }) => {
   const [documents, setDocuments] = useState([]);

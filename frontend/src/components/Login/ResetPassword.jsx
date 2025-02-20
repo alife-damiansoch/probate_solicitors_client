@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+
+import { useParams } from 'react-router-dom';
 
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
 import RedirectCountdown from '../GenericComponents/RedirectCountdown';
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
+import {useState} from "react";
 
 function ResetPassword() {
   const { uidb64, token } = useParams();
@@ -41,7 +42,7 @@ function ResetPassword() {
         setError(response.data);
         setIsSending(false);
       }
-    } catch (err) {
+    } catch  {
       setError('An error occurred while resetting the password.');
       setIsSending(false);
     }

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import VerificationForm from './VerificationForm';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
+import {useState} from "react";
 
 const QrCodeDisplay = ({
   qrCode,
@@ -47,7 +48,8 @@ const QrCodeDisplay = ({
 
     try {
       await onVerify(authCode); // Trigger verification callback
-    } catch (err) {
+
+    } catch  {
       setError('Invalid verification code. Please try again.');
     } finally {
       setIsVerifying(false);

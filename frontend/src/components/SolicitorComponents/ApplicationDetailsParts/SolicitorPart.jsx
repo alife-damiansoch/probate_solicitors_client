@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+
 import Cookies from 'js-cookie';
 import {
   fetchData,
@@ -6,6 +6,7 @@ import {
 } from '../../GenericFunctions/AxiosGenericFunctions';
 import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
 import { Link } from 'react-router-dom';
+import {useEffect, useState} from "react";
 
 const SolicitorPart = ({
   solicitor_id,
@@ -111,8 +112,8 @@ const SolicitorPart = ({
             <p>Please select a solicitor from the list.</p>
             <p>
               {' '}
-              If the desired solicitor is not listed, click 'Add or Edit
-              Solicitor' to add a new solicitor.
+              If the desired solicitor is not listed, click &#39;Add or Edit
+              Solicitor&#39; to add a new solicitor.
             </p>
           </div>
         </div>
@@ -133,7 +134,7 @@ const SolicitorPart = ({
                   <div className='alert alert-warning'>
                     <p>
                       No solicitors have been created for this firm. Please
-                      create them by clicking the 'ADD OR EDIT SOLICITORS'
+                      create them by clicking the &#39;ADD OR EDIT SOLICITORS&#39;
                       button.
                     </p>
                   </div>

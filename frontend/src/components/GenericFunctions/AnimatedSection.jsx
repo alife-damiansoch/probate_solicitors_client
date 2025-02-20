@@ -1,6 +1,6 @@
 // components/AnimatedSection.js
 
-import React from 'react';
+
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
 

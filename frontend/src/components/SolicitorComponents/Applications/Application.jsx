@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import Stage from './Stage';
 import RejectedBadge from '../../GenericComponents/StageBadges.jsx/RejectedBadge';
 import ApprovedBadge from '../../GenericComponents/StageBadges.jsx/ApprovedBadge';
@@ -10,8 +10,9 @@ import SettledBadge from '../../GenericComponents/StageBadges.jsx/SettledBadge';
 import ApplicationMaturity from '../../GenericComponents/StageBadges.jsx/ApplicationMaturity';
 
 import Cookies from 'js-cookie';
+import {useState} from "react";
 
-const Application = ({ application, onDelete }) => {
+const Application = ({ application}) => {
   const [rejectedInAnyStage, setRejectedInAnyStage] = useState(false);
   const [approvedInAnyStage, setApprovedInAnyStage] = useState(false);
 

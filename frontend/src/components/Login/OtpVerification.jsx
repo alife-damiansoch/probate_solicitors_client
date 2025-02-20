@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+
 import { signup, clearAuthError } from '../../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { fetchData, postData } from '../GenericFunctions/AxiosGenericFunctions';
 import QrCodeDisplay from './QrCodeDisplay';
 import LoadingComponent from '../GenericComponents/LoadingComponent';
 import VerificationForm from './VerificationForm';
+import {useEffect, useState} from "react";
 
 const VerifyOtp = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -251,7 +252,7 @@ const VerifyOtp = () => {
               <sub className='text-info'>
                 {authMethod === 'otp' ? (
                   <>
-                    A security code has been sent to your firm's default email
+                    A security code has been sent to your firm&#39;s default email
                     address: <br />
                     <strong>{email}</strong>. <br />
                   </>
