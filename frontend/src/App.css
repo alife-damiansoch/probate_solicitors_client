@@ -319,21 +319,29 @@ input[type='number'] {
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   width: 80% !important;
-  height: 50% !important;
+  max-width: 90vw !important; /* Ensures it doesn't exceed the screen */
+  height: auto !important; /* Allows it to grow based on content */
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
   font-family: 'Great Vibes', cursive !important;
   cursor: pointer !important;
+  padding: 1rem !important; /* Adds spacing */
+  overflow: hidden !important; /* Ensures content doesn't overflow */
+  text-align: center !important;
+  white-space: normal !important; /* Allows wrapping */
 }
 
 #hero-text {
-  width: auto !important;
+  max-width: 100% !important;
+  width: 100% !important;
   text-align: center !important;
-  font-size: 5vw !important;
-  white-space: nowrap !important;
+  font-size: clamp(1.5rem, 5vw, 4rem) !important; /* Responsive font size */
+  white-space: wrap !important; /* Allows text to wrap instead of overflow */
+  word-break: break-word !important; /* Breaks long words */
   color: rgba(255, 255, 255, 1) !important;
   transition: color 1s ease !important;
+  line-height: 1.2 !important; /* Ensures better spacing between lines */
 }
 
 #hero-section:hover #hero-text {
