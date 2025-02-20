@@ -330,7 +330,7 @@ input[type='number'] {
 #hero-text {
   width: auto !important;
   text-align: center !important;
-  font-size: 6vw !important;
+  font-size: 5vw !important;
   white-space: nowrap !important;
   color: rgba(255, 255, 255, 1) !important;
   transition: color 1s ease !important;

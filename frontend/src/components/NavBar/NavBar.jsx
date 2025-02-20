@@ -320,9 +320,6 @@ const NavBar = () => {
                 <motion.p
                   id='hero-text'
                   style={{
-                    width: 'auto',
-                    textAlign: 'center',
-                    fontSize: '6vw',
                     whiteSpace: 'nowrap',
                     color: isImageHovered
                       ? 'rgba(77, 3, 4, 1)'
