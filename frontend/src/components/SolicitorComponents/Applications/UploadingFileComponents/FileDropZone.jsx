@@ -1,4 +1,3 @@
-
 import { useDropzone } from 'react-dropzone';
 import { API_URL } from '../../../../baseUrls';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +5,8 @@ import { uploadFile } from '../../../GenericFunctions/AxiosGenericFunctions';
 import { TbClick } from 'react-icons/tb';
 
 import { motion } from 'framer-motion';
-import {useCallback, useMemo, useState} from "react";
+import { useCallback, useMemo, useState } from 'react';
+import LoadingComponent from '../../../GenericComponents/LoadingComponent';
 
 const FilesDropZone = ({ applicationId }) => {
   const [acceptedFiles, setAcceptedFiles] = useState([]);
@@ -15,6 +15,7 @@ const FilesDropZone = ({ applicationId }) => {
   const [isError, setIsError] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingFiles, setIsUploadingFiles] = useState(false);
 
   const navigate = useNavigate();
 
@@ -43,6 +44,7 @@ const FilesDropZone = ({ applicationId }) => {
   );
   const uploadFilesHandler = async () => {
     setIsLoading(true);
+    setIsUploadingFiles(true);
     setUploadStatus('Uploading');
     console.log('Uploading files: ');
     console.log(uploadedFiles);
@@ -76,6 +78,7 @@ const FilesDropZone = ({ applicationId }) => {
         throw error; // Rethrow error to stop further uploads if needed
       }
     }
+    setIsUploadingFiles(false);
   };
 
   const onDrop = useCallback(
@@ -189,10 +192,8 @@ const FilesDropZone = ({ applicationId }) => {
                 className='btn btn-info ms-auto shadow'
                 disabled={acceptedFiles.length < 1}
               >
-                {isLoading ? (
-                  <div className='spinner-border text-warning' role='status'>
-                    <span className='visually-hidden'>Loading...</span>
-                  </div>
+                {isUploadingFiles ? (
+                  <LoadingComponent message='Uploading file...' />
                 ) : (
                   'Upload files'
                 )}

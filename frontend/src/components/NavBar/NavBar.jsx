@@ -9,6 +9,7 @@ import AliBanner from './AliBanner/AliBanner';
 import AnimatedSection from '../GenericFunctions/AnimatedSection';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
 import NavLinkAnimated from '../GenericComponents/NavLinkAnimated';
+import { LuUserRoundCog } from 'react-icons/lu';
 
 const NavBar = () => {
   const dispatch = useDispatch();
@@ -18,8 +19,6 @@ const NavBar = () => {
 
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
-
-  const [hoveredNavLink, setHoveredNavLink] = useState('');
 
   const handleLogout = async () => {
     try {
@@ -185,13 +184,20 @@ const NavBar = () => {
               <AnimatedSection as='div' className=''>
                 <div className=''>
                   <div
-                    className='btn btn-outline-success btn-sm text-center mt-2 shadow w-100'
+                    className='btn btn-outline-success btn-sm text-center mt-2 shadow w-100 d-flex align-items-center justify-content-center '
                     data-bs-toggle='tooltip'
                     data-bs-placement='bottom'
-                    title='View User'
+                    title={user.email} // Tooltip shows full email if cut off
                     onClick={viewUserProfileHandler}
+                    style={{
+                      maxWidth: '100%', // Ensure it doesn't exceed parent width
+                      overflow: 'hidden', // Prevent text overflow
+                      whiteSpace: 'nowrap', // Prevent wrapping
+                      textOverflow: 'ellipsis', // Show "..." if too long
+                    }}
                   >
-                    <small>{user.email}</small>
+                    <LuUserRoundCog size={20} />
+                    <small className=' text-truncate ms-2'>PROFILE</small>
                   </div>
                 </div>
               </AnimatedSection>

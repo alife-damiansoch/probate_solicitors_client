@@ -1,5 +1,3 @@
-
-
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {
@@ -9,7 +7,8 @@ import {
 import BackToApplicationsIcon from '../../../../GenericComponents/BackToApplicationsIcon';
 import ApplicationSummaryCard from './ApplicationSummaryCard';
 import renderErrors from '../../../../GenericFunctions/HelperGenericFunctions';
-import {useEffect, useState} from "react";
+import { useEffect, useState } from 'react';
+import LoadingComponent from '../../../../GenericComponents/LoadingComponent';
 
 const AdvancementDetailsConfirm = () => {
   const token = Cookies.get('auth_token');
@@ -19,6 +18,7 @@ const AdvancementDetailsConfirm = () => {
   const [fee, setFee] = useState(0);
   const [feeCounted, setFeeCounted] = useState(false);
   const [applicationErrors, setApplicationErrors] = useState([]);
+  const [isGeneratingDocuments, setIsGeneratingDocuments] = useState(false);
 
   const { id } = useParams();
 
@@ -114,6 +114,7 @@ const AdvancementDetailsConfirm = () => {
     };
 
     try {
+      setIsGeneratingDocuments(true);
       const response = await postPdfRequest(
         token,
         '/api/generate_undertaking_pdf/',
@@ -138,6 +139,7 @@ const AdvancementDetailsConfirm = () => {
       console.error('Error generating PDF:', error);
       alert('An error occurred while generating the PDF. Please try again.');
     } finally {
+      setIsGeneratingDocuments(false);
       setLoading(false); // Set loading to false when request completes
     }
   };
@@ -151,6 +153,7 @@ const AdvancementDetailsConfirm = () => {
     };
 
     try {
+      setIsGeneratingDocuments(true);
       const response = await postPdfRequest(
         token,
         '/api/generate_advancement_agreement_pdf/',
@@ -196,6 +199,7 @@ const AdvancementDetailsConfirm = () => {
       console.error('Error generating file:', error);
       alert('An error occurred while generating the file. Please try again.');
     } finally {
+      setIsGeneratingDocuments(false);
       setLoading(false); // Set loading to false when request completes
     }
   };
@@ -252,28 +256,34 @@ const AdvancementDetailsConfirm = () => {
                       <p>Fee is calculated: 15% of the advance per annum</p>
                     </div>
                     <div className='row my-4'>
-                      <button
-                        onClick={(e) => {
-                          generateUndertakingHandler(e);
-                        }}
-                        className='btn btn-primary btn-block mx-auto col-md-5'
-                        disabled={loading}
-                      >
-                        {loading
-                          ? 'Please wait...'
-                          : 'Generate Undertaking Document'}
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          generateAdvanceAggreementHandler(e);
-                        }}
-                        className='btn btn-primary btn-block mx-auto col-md-5'
-                        disabled={loading}
-                      >
-                        {loading
-                          ? 'Please wait...'
-                          : 'Generate Advancement Agreement Document(s)'}
-                      </button>
+                      {isGeneratingDocuments ? (
+                        <LoadingComponent message='Generating document' />
+                      ) : (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              generateUndertakingHandler(e);
+                            }}
+                            className='btn btn-primary btn-block mx-auto col-md-5'
+                            disabled={loading}
+                          >
+                            {loading
+                              ? 'Please wait...'
+                              : 'Generate Undertaking Document'}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              generateAdvanceAggreementHandler(e);
+                            }}
+                            className='btn btn-primary btn-block mx-auto col-md-5'
+                            disabled={loading}
+                          >
+                            {loading
+                              ? 'Please wait...'
+                              : 'Generate Advancement Agreement Document(s)'}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </form>
                 </div>

@@ -1,6 +1,6 @@
-
+import LoadingComponent from '../../../../GenericComponents/LoadingComponent';
 import AnimatedWrapper from '../../../../GenericFunctions/AnimationFuctions';
-import {useEffect} from "react";
+import { useEffect } from 'react';
 
 const ApplicationSummaryCard = ({ application, setIssues }) => {
   useEffect(() => {
@@ -37,7 +37,7 @@ const ApplicationSummaryCard = ({ application, setIssues }) => {
   console.log(application);
   return (
     <>
-      {application && (
+      {application ? (
         <AnimatedWrapper>
           <div
             className='card text-white bg-dark mb-3 mx-auto shadow'
@@ -169,6 +169,8 @@ const ApplicationSummaryCard = ({ application, setIssues }) => {
             </div>
           </div>
         </AnimatedWrapper>
+      ) : (
+        <LoadingComponent message='Liading application summary...' />
       )}
     </>
   );

@@ -1,4 +1,3 @@
-
 import { FaTrash, FaEdit, FaSave } from 'react-icons/fa';
 import {
   fetchData,
@@ -10,7 +9,7 @@ import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import Cookies from 'js-cookie';
 import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
 import BackToApplicationsIcon from '../../GenericComponents/BackToApplicationsIcon';
-import {useEffect, useState} from "react";
+import { useEffect, useState } from 'react';
 
 const Solicitors = () => {
   const token = Cookies.get('auth_token');
@@ -21,6 +20,9 @@ const Solicitors = () => {
   const [editMode, setEditMode] = useState(null); // Changed to null to represent no field in edit mode
   const [isError, setIsError] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [isAddingSolicitor, setIsAddingSolicitor] = useState(false);
+  const [solicitorAddedMessage, setSolicitorAddedMessage] = useState('');
+
   const [newSolicitor, setNewSolicitor] = useState({
     title: '',
     first_name: '',
@@ -70,6 +72,7 @@ const Solicitors = () => {
     if (!isSolicitorFormValid) return;
 
     const endpoint = `/api/applications/solicitors/`;
+    setIsAddingSolicitor(true);
     const response = await postData(token, endpoint, newSolicitor);
     if (response.status === 201) {
       setSolicitors([...solicitors, response.data]);
@@ -81,10 +84,20 @@ const Solicitors = () => {
         own_phone_number: '',
       });
       setIsError(false);
+      setIsAddingSolicitor(false);
+      setSolicitorAddedMessage([
+        'Solicitor has been successfully added.',
+        ' To continue with the application, click the back icon above.',
+        'If you need to add more solicitors, you may do so before proceeding.',
+      ]);
+      setTimeout(() => {
+        setSolicitorAddedMessage('');
+      }, 8000);
       window.scrollTo(0, 0);
     } else {
       setErrors(response.data);
       setIsError(true);
+      setIsAddingSolicitor(false);
       window.scrollTo(0, 0);
     }
   };
@@ -101,6 +114,7 @@ const Solicitors = () => {
   };
 
   const submitChangesHandler = async (index) => {
+    setIsAddingSolicitor(true);
     setErrors(null);
     setIsError(false);
     const solicitor = solicitors[index];
@@ -111,14 +125,17 @@ const Solicitors = () => {
       setEditMode(null); // Exit edit mode after submitting changes
       setErrors(null);
       setIsError(false);
+      setIsAddingSolicitor(false);
     } else {
       setRefresh(!refresh);
       setErrors(response.data);
       setIsError(true);
+      setIsAddingSolicitor(false);
     }
   };
 
   const removeItem = async (index) => {
+    setIsAddingSolicitor(true);
     const solicitor = solicitors[index];
     const endpoint = `/api/applications/solicitors/${solicitor.id}/`;
     const response = await deleteData(endpoint);
@@ -126,9 +143,11 @@ const Solicitors = () => {
       setRefresh(!refresh);
       setErrors(null);
       setIsError(false);
+      setIsAddingSolicitor(false);
     } else {
       setErrors(response.data);
       setIsError(true);
+      setIsAddingSolicitor(false);
     }
   };
 
@@ -171,6 +190,11 @@ const Solicitors = () => {
                   {renderErrors(errors)}
                 </div>
               )}
+              {solicitorAddedMessage && (
+                <div className='alert alert-success text-center'>
+                  {renderErrors(solicitorAddedMessage)}
+                </div>
+              )}
               {solicitors.map((solicitor, index) => (
                 <div
                   key={index}
@@ -203,6 +227,7 @@ const Solicitors = () => {
                               submitChangesHandler(index);
                             toggleEditMode(`solicitor_${index}_title`);
                           }}
+                          disabled={isAddingSolicitor}
                         >
                           {editMode === `solicitor_${index}_title` ? (
                             <FaSave size={20} color='red' />
@@ -283,7 +308,7 @@ const Solicitors = () => {
                       </div>
                     </label>
                   </div>
-                  <div className='col-12 col-md-auto px-2'>
+                  {/* <div className='col-12 col-md-auto px-2'>
                     <label className='form-label col-12'>
                       Email:
                       <div className='input-group input-group-sm  shadow'>
@@ -350,12 +375,13 @@ const Solicitors = () => {
                         )}
                       </button>
                     </div>
-                  </div>
+                  </div> */}
                   <div className='col-12 col-md-auto my-auto text-center'>
                     <button
                       type='button'
                       className='btn btn-sm btn-outline-danger mt-2 border-0'
                       onClick={() => removeItem(index)}
+                      disabled={isAddingSolicitor}
                     >
                       <FaTrash size={15} className=' icon-shadow' />
                     </button>
@@ -363,6 +389,7 @@ const Solicitors = () => {
                 </div>
               ))}
             </div>
+            {isAddingSolicitor && <LoadingComponent message='Updating...' />}
           </div>
           <hr />
           {/* Add New Solicitor Form */}
@@ -419,7 +446,7 @@ const Solicitors = () => {
                     />
                   </label>
                 </div>
-                <div className='col-12 '>
+                {/* <div className='col-12 '>
                   <label className='form-label col-12'>
                     Email:
                     <sub> (not required)</sub>
@@ -430,9 +457,9 @@ const Solicitors = () => {
                       onChange={(e) => handleNewSolicitorChange(e, 'own_email')}
                     />
                   </label>
-                </div>
+                </div> */}
 
-                <div className='col-12'>
+                {/* <div className='col-12'>
                   <label className='form-label col-12'>
                     Phone Number:<sub> (not required)</sub>
                     <input
@@ -456,27 +483,31 @@ const Solicitors = () => {
                       </sub>
                     </div>
                   </label>
-                </div>
+                </div> */}
               </div>
               <div className='  m-2'>
                 <div className='row my-auto text-center text-md-end'>
-                  <button
-                    type='button'
-                    className='btn btn-dark mb-2 shadow'
-                    onClick={addSolicitor}
-                    disabled={!isSolicitorFormValid} // Button only enabled if required fields are filled
-                  >
-                    <FaSave
-                      size={20}
-                      color={isSolicitorFormValid ? 'red' : undefined}
-                    />
-                  </button>
+                  {!isAddingSolicitor ? (
+                    <button
+                      type='button'
+                      className='btn btn-dark mb-2 shadow'
+                      onClick={addSolicitor}
+                      disabled={!isSolicitorFormValid} // Button only enabled if required fields are filled
+                    >
+                      <FaSave
+                        size={20}
+                        color={isSolicitorFormValid ? 'red' : undefined}
+                      />
+                    </button>
+                  ) : (
+                    <LoadingComponent message='Updating solicitors...' />
+                  )}
 
-                  <div className=' card-footer text-warning text-center'>
+                  {/* <div className=' card-footer text-warning text-center'>
                     Email and phone number are optional fields. <br />
                     If they are not provided, the default contact details from
                     the firm will be used.
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

@@ -1,10 +1,4 @@
-import  {
-  useCallback,
-  useMemo,
-  useState,
-  useRef,
-  useEffect,
-} from 'react';
+import { useCallback, useMemo, useState, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { API_URL } from '../../../../../baseUrls';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +11,7 @@ import {
   getDeviceInfo,
   getPublicIp,
 } from '../../../../GenericFunctions/HelperGenericFunctions';
+import LoadingComponent from '../../../../GenericComponents/LoadingComponent';
 
 const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
   const [acceptedFiles, setAcceptedFiles] = useState([]);
@@ -29,6 +24,7 @@ const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
   const [solicitorFullName, setSolicitorFullName] = useState(''); // Store solicitor's full name
   const [signatureProvided, setSignatureProvided] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
+  const [isUploadingFiles, setIsUploadingFiles] = useState(false);
   const signaturePadRef = useRef(null); // Reference for signature canvas
   const navigate = useNavigate();
 
@@ -57,7 +53,7 @@ const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
 
   const uploadFilesHandler = async () => {
     setIsLoading(true);
-    // setUploadStatus('Uploading...');
+    setIsUploadingFiles(true);
 
     // Get the public IP of the client
     const publicIp = await getPublicIp();
@@ -135,6 +131,7 @@ const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
         setIsLoading(false);
       }
     }
+    setIsUploadingFiles(false);
   };
 
   const onDrop = useCallback(
@@ -404,10 +401,8 @@ const FileDropZoneSigned = ({ applicationId, selectedDocumentType }) => {
                   !signatureProvided
                 }
               >
-                {isLoading ? (
-                  <div className='spinner-border text-warning' role='status'>
-                    <span className='visually-hidden'>Loading...</span>
-                  </div>
+                {isUploadingFiles ? (
+                  <LoadingComponent message='Uploading documents...' />
                 ) : (
                   'Sign and Upload Document'
                 )}
