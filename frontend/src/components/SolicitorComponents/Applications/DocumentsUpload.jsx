@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { MdAddChart } from 'react-icons/md';
 import { FaFileSignature } from 'react-icons/fa6';
@@ -7,7 +6,7 @@ import {
   fetchData,
 } from '../../GenericFunctions/AxiosGenericFunctions';
 import Cookies from 'js-cookie';
-import {useEffect, useState} from "react";
+import { useEffect, useState } from 'react';
 
 const DocumentsUpload = ({ application, highlitedSectionId }) => {
   const [documents, setDocuments] = useState([]);
@@ -67,11 +66,11 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
       id='Uploaded Documents'
     >
       <div className=' card-header  rounded-top row mx-0'>
-        <div className=' col-9 card-subtitle text-info-emphasis'>
+        <div className='col-12 col-md-9 card-subtitle text-info-emphasis'>
           <h4>Uploaded documents</h4>
         </div>
         {!application.approved && !application.is_rejected && (
-          <div className='col-3 my-auto '>
+          <div className='col-12 col-md-3 my-auto '>
             <button
               className='btn btn-sm w-100  btn-primary  shadow  mx-auto'
               onClick={() => {
@@ -86,7 +85,7 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
       </div>
 
       {documents.length > 0 ? (
-        <div className='card-body'>
+        <div className='card-body '>
           <ul
             className='d-flex flex-wrap  align-items-center justify-content-start'
             style={{ padding: '0', margin: '0' }}
@@ -150,17 +149,17 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
           </ul>
         </div>
       ) : (
-        <div className='row mt-3'>
+        <div className='row mt-3 mx-1'>
           <div className=' alert alert-danger col-12 col-md-6 mx-auto text-center'>
             <p>Documents pending. </p>
             <p>Please upload them at your earliest convenience.</p>
           </div>
         </div>
       )}
-      <div className=' row my-3 ms-auto'>
+      <div className=' row  my-3 ms-auto mx-0'>
         <div className='  ms-auto me-2'>
           <button
-            className=' btn btn-sm btn-info shadow '
+            className=' btn btn-sm btn-info shadow col-12 col-md-auto'
             onClick={() => {
               navigate(`/upload_new_document/${application.id}`);
             }}
@@ -169,7 +168,7 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
             Add document
           </button>
           <button
-            className=' btn btn-sm btn-info shadow ms-2'
+            className=' btn btn-sm btn-info shadow col-12 col-md-auto mt-2 mt-md-0 ms-md-2'
             onClick={() => {
               navigate(`/upload_new_document_signed/${application.id}`);
             }}

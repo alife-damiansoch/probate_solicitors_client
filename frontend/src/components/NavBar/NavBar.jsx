@@ -214,6 +214,7 @@ const NavBar = () => {
         !location.pathname.includes('/documentsForDownload') &&
         !location.pathname.includes('/createApplicationPdfsForSign') &&
         !location.pathname.includes('/upload_new_document_signed') &&
+        !location.pathname.includes('/upload_new_document') &&
         !location.pathname.includes('/activate') &&
         !location.pathname.includes('/forgotPassword') &&
         !location.pathname.includes('/reset-password') &&
