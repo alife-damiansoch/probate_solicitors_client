@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../../store/userSlice';
 
@@ -8,8 +8,11 @@ import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import { useNavigate } from 'react-router-dom';
 import { patchData } from '../GenericFunctions/AxiosGenericFunctions';
 import BackToApplicationsIcon from '../GenericComponents/BackToApplicationsIcon';
+import LoadingComponent from '../GenericComponents/LoadingComponent';
 
 const UserProfile = () => {
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const postcode_placeholders = JSON.parse(
@@ -37,16 +40,16 @@ const UserProfile = () => {
   useEffect(() => {
     if (user) {
       // Format phone number if it starts with +353, otherwise use the phone number as is or an empty string
-      const formattedPhoneNumber =
-        user.phone_number && user.phone_number.startsWith('+353')
-          ? '0' + user.phone_number.slice(4)
-          : user?.phone_number ?? '';
+      // const formattedPhoneNumber =
+      //   user.phone_number && user.phone_number.startsWith('+353')
+      //     ? '0' + user.phone_number.slice(4)
+      //     : user?.phone_number ?? '';
 
       // Set the form data with proper checks for null and undefined values
       setFormData({
         email: user?.email ?? '',
         name: user?.name ?? '',
-        phone_number: formattedPhoneNumber,
+        phone_number: user.phone_number,
         address: {
           line1: user?.address?.line1 ?? '',
           line2: user?.address?.line2 ?? '',
@@ -81,6 +84,7 @@ const UserProfile = () => {
     e.preventDefault();
     setErrors(null); // Clear errors
     try {
+      setIsUpdatingProfile(true);
       const endpoint = `/api/user/me/`;
       const response = await patchData(endpoint, formData);
       if (response.status === 200) {
@@ -94,6 +98,8 @@ const UserProfile = () => {
     } catch (err) {
       console.error('Error updating profile:', err);
       setErrors(err.response.data || { error: 'An error occurred' });
+    } finally {
+      setIsUpdatingProfile(false);
     }
   };
 
@@ -264,19 +270,22 @@ const UserProfile = () => {
                 </label>
               </div>
               <div className='row my-3'>
-                {' '}
-                <button
-                  type='submit'
-                  className='btn btn-outline-danger btn-sm col-lg-7 mx-auto shadow'
-                >
-                  Update Profile
-                </button>
+                {isUpdatingProfile ? (
+                  <LoadingComponent message='Updating profile...' />
+                ) : (
+                  <button
+                    type='submit'
+                    className='btn btn-outline-danger btn-sm col-lg-7 mx-auto shadow'
+                  >
+                    Update Profile
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </form>
       ) : (
-        <p>Loading user data...</p>
+        <LoadingComponent message='Loading user data...' />
       )}
     </>
   );
