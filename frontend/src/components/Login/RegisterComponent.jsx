@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-
 import { API_URL } from '../../baseUrls';
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import Cookies from 'js-cookie';
 import RedirectCountdown from '../GenericComponents/RedirectCountdown';
-import {useState} from "react";
+import { useState } from 'react';
+import LoadingComponent from '../GenericComponents/LoadingComponent';
 
 const RegisterComponent = () => {
   const [formData, setFormData] = useState({
@@ -317,7 +317,11 @@ const RegisterComponent = () => {
                       className='btn btn-outline-primary w-100 shadow mt-2'
                       disabled={isRegistering}
                     >
-                      {isRegistering ? 'Registering...' : 'Register'}
+                      {isRegistering ? (
+                        <LoadingComponent message='Registering...' />
+                      ) : (
+                        'Register'
+                      )}
                     </button>
                     {errors ? (
                       <div
@@ -347,8 +351,8 @@ const RegisterComponent = () => {
             <p style={{ fontSize: '20px' }}>
               Please check your email inbox to activate your account. <br />
               <br />
-              If you don&#39;t see the email in your inbox, please check your spam
-              or junk folder. <br />
+              If you don&#39;t see the email in your inbox, please check your
+              spam or junk folder. <br />
               <br />
               To ensure you receive future emails, mark our messages as safe or
               move them to your primary inbox. <br />

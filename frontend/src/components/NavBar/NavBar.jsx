@@ -8,6 +8,8 @@ import { motion } from 'framer-motion';
 import AliBanner from './AliBanner/AliBanner';
 import AnimatedSection from '../GenericFunctions/AnimatedSection';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
+import NavLinkAnimated from '../GenericComponents/NavLinkAnimated';
+import { LuUserRoundCog } from 'react-icons/lu';
 
 const NavBar = () => {
   const dispatch = useDispatch();
@@ -102,117 +104,57 @@ const NavBar = () => {
         >
           <ul className='navbar-nav mr-auto text-center d-flex align-items-center justify-content-center flex-wrap col-12 col-md-10'>
             <li className='nav-item mx-auto my-auto mb-2'>
-              <Link
-                className={`btn ${
-                  isActive('/') ? 'btn bg-dark-subtle' : 'btn-outline-primary'
-                } ${isActive('/') ? 'disabled' : ''} border-0 btn-full-width`}
+              <NavLinkAnimated
                 to='/'
-                onClick={() => !isActive('/') && closeNavbar()}
-              >
-                <span style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
-                  Home
-                </span>
-              </Link>
+                label='Home'
+                isActive={isActive}
+                closeNavbar={closeNavbar}
+              />
             </li>
             <li className='nav-item mx-auto my-auto mb-2'>
-              <Link
-                className={`btn ${
-                  isActive('/understanding')
-                    ? 'btn bg-dark-subtle'
-                    : 'btn-outline-primary'
-                } ${
-                  isActive('/understanding') ? 'disabled' : ''
-                } border-0 btn-full-width`}
+              <NavLinkAnimated
                 to='/understanding'
-                onClick={() => !isActive('/understanding') && closeNavbar()}
-              >
-                <span style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
-                  Understanding Probate
-                </span>
-              </Link>
+                label='Understanding Probate'
+                isActive={isActive}
+                closeNavbar={closeNavbar}
+              />
             </li>
             <li className='nav-item mx-auto my-auto mb-2'>
-              <Link
-                className={`btn ${
-                  isActive('/howItWorks')
-                    ? 'btn bg-dark-subtle'
-                    : 'btn-outline-primary'
-                } ${
-                  isActive('/howItWorks') ? 'disabled' : ''
-                } border-0 btn-full-width`}
+              <NavLinkAnimated
                 to='/howItWorks'
-                onClick={() => !isActive('/howItWorks') && closeNavbar()}
-              >
-                <span style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
-                  Advancement Process
-                </span>
-              </Link>
+                label='Advancement Process'
+                isActive={isActive}
+                closeNavbar={closeNavbar}
+              />
             </li>
             <li className='nav-item mx-auto my-auto mb-2'>
-              <Link
-                className={`btn ${
-                  isActive('/benefits')
-                    ? 'btn bg-dark-subtle'
-                    : 'btn-outline-primary'
-                } ${
-                  isActive('/benefits') ? 'disabled' : ''
-                } border-0 btn-full-width`}
+              <NavLinkAnimated
                 to='/benefits'
-                onClick={() => !isActive('/benefits') && closeNavbar()}
-              >
-                <span style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
-                  Benefits
-                </span>
-              </Link>
+                label='Benefits'
+                isActive={isActive}
+                closeNavbar={closeNavbar}
+              />
             </li>
             {/* Line Break */}
             <div className='w-100 d-none d-lg-block'></div>
             {isLoggedIn ? (
               <li className='nav-item mx-auto my-auto mb-2'>
-                <Link
-                  className={`btn ${
-                    isActive('/applications')
-                      ? 'btn bg-dark-subtle'
-                      : 'btn-outline-primary'
-                  } ${
-                    isActive('/applications') ? 'disabled' : ''
-                  } border-0 btn-full-width`}
+                <NavLinkAnimated
                   to='/applications'
-                  onClick={() => !isActive('/applications') && closeNavbar()}
-                >
-                  <span className='py-2 px-3 rounded'>
-                    <span
-                      style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}
-                    >
-                      Applications
-                    </span>
-                  </span>
-                </Link>
+                  label='Applications'
+                  isActive={isActive}
+                  closeNavbar={closeNavbar}
+                />
               </li>
             ) : null}
             {isLoggedIn ? (
               <li className='nav-item mx-auto my-auto mb-2'>
-                <Link
-                  className={`btn ${
-                    isActive('/documentsForDownload')
-                      ? 'btn bg-dark-subtle'
-                      : 'btn-outline-primary'
-                  } ${
-                    isActive('/documentsForDownload') ? 'disabled' : ''
-                  } border-0 btn-full-width`}
+                <NavLinkAnimated
                   to='/documentsForDownload'
-                  onClick={() =>
-                    !isActive('/documentsForDownload') && closeNavbar()
-                  }
-                >
-                  <span className='py-2 px-3 rounded'>
-                    <span
-                      style={{ textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}
-                    >
-                      Documents for download
-                    </span>
-                  </span>
-                </Link>
+                  label='Documents for download'
+                  isActive={isActive}
+                  closeNavbar={closeNavbar}
+                />
               </li>
             ) : null}
           </ul>
@@ -242,13 +184,20 @@ const NavBar = () => {
               <AnimatedSection as='div' className=''>
                 <div className=''>
                   <div
-                    className='btn btn-outline-success btn-sm text-center mt-2 shadow w-100'
+                    className='btn btn-outline-success btn-sm text-center mt-2 shadow w-100 d-flex align-items-center justify-content-center '
                     data-bs-toggle='tooltip'
                     data-bs-placement='bottom'
-                    title='View User'
+                    title={user.email} // Tooltip shows full email if cut off
                     onClick={viewUserProfileHandler}
+                    style={{
+                      maxWidth: '100%', // Ensure it doesn't exceed parent width
+                      overflow: 'hidden', // Prevent text overflow
+                      whiteSpace: 'nowrap', // Prevent wrapping
+                      textOverflow: 'ellipsis', // Show "..." if too long
+                    }}
                   >
-                    <small>{user.email}</small>
+                    <LuUserRoundCog size={20} />
+                    <small className=' text-truncate ms-2'>PROFILE</small>
                   </div>
                 </div>
               </AnimatedSection>
@@ -265,6 +214,7 @@ const NavBar = () => {
         !location.pathname.includes('/documentsForDownload') &&
         !location.pathname.includes('/createApplicationPdfsForSign') &&
         !location.pathname.includes('/upload_new_document_signed') &&
+        !location.pathname.includes('/upload_new_document') &&
         !location.pathname.includes('/activate') &&
         !location.pathname.includes('/forgotPassword') &&
         !location.pathname.includes('/reset-password') &&
@@ -299,19 +249,6 @@ const NavBar = () => {
               />
               <motion.div
                 id='hero-text-container'
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '80%',
-                  height: '50%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontFamily: 'Great Vibes, cursive',
-                  cursor: 'pointer',
-                }}
                 initial='hidden'
                 animate='visible'
                 className='row'

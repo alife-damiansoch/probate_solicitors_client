@@ -8,6 +8,7 @@ import SolicitorPart from './SolicitorPart';
 import DocumentsUpload from '../Applications/DocumentsUpload';
 
 import Cookies from 'js-cookie';
+import LoadingComponent from '../../GenericComponents/LoadingComponent';
 
 const RequiredDetailsPart = ({
   application,
@@ -22,6 +23,7 @@ const RequiredDetailsPart = ({
   const [editMode, setEditMode] = useState({});
   const [triggerHandleChange, setTriggerChandleChange] = useState(false);
   const [originalApplication, setOriginalApplication] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const currency_sign = Cookies.get('currency_sign');
 
@@ -130,6 +132,7 @@ const RequiredDetailsPart = ({
       }
 
       try {
+        setIsUpdating(true);
         const endpoint = `/api/applications/solicitor_applications/${id}/`;
         const response = await patchData(endpoint, filteredApplication);
         if (response.status !== 200) {
@@ -139,6 +142,7 @@ const RequiredDetailsPart = ({
           // console.log(response);
           setErrorMessage({ Application: 'updated' });
           setIsError(false);
+
           setTimeout(function () {
             setErrorMessage('');
           }, 3000);
@@ -146,15 +150,18 @@ const RequiredDetailsPart = ({
       } catch (error) {
         console.error('Error updating application:', error);
         setIsError(true);
+
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data);
         } else {
           setErrorMessage(error.message);
         }
+      } finally {
+        setIsUpdating(false);
+        // Scroll to the top of the page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setRefresh(!refresh);
       }
-      // Scroll to the top of the page
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      setRefresh(!refresh);
     }
   };
   useEffect(() => {
@@ -174,6 +181,7 @@ const RequiredDetailsPart = ({
           {renderErrors(errorMessage)}
         </div>
       )}
+      {isUpdating && <LoadingComponent message='Saving changes ...' />}
 
       <div
         className={`card rounded  shadow pb-3 ${

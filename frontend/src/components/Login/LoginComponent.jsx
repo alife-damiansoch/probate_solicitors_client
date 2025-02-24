@@ -1,10 +1,11 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { clearAuthError } from '../../store/authSlice';
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import BackToApplicationsIcon from '../GenericComponents/BackToApplicationsIcon';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
+import LoadingComponent from '../GenericComponents/LoadingComponent';
 
 const LoginComponent = () => {
   const [email, setEmail] = useState('');
@@ -101,9 +102,7 @@ const LoginComponent = () => {
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <div className='spinner-border text-warning' role='status'>
-                      <span className='visually-hidden'>Loading...</span>
-                    </div>
+                    <LoadingComponent message='Logging in...' />
                   ) : (
                     'Login'
                   )}

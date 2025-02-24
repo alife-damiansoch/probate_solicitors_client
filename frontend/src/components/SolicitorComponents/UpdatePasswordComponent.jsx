@@ -1,10 +1,9 @@
-
-
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import { useSelector } from 'react-redux';
 import { patchData } from '../GenericFunctions/AxiosGenericFunctions';
 import RedirectCountdown from '../GenericComponents/RedirectCountdown';
-import {useState} from "react";
+import { useState } from 'react';
+import LoadingComponent from '../GenericComponents/LoadingComponent';
 
 const UpdatePasswordComponent = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -113,13 +112,17 @@ const UpdatePasswordComponent = () => {
                 required
               />
             </div>
-            <button
-              type='submit'
-              className='btn btn-outline-primary btn-sm shadow'
-              disabled={isSending}
-            >
-              Update Password
-            </button>
+            {isSending ? (
+              <LoadingComponent message='Updating password...' />
+            ) : (
+              <button
+                type='submit'
+                className='btn btn-outline-primary btn-sm shadow'
+                disabled={isSending}
+              >
+                Update Password
+              </button>
+            )}
           </form>
           {errors && (
             <div className=' alert text-center alert-danger mt-2'>

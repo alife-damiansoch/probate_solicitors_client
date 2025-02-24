@@ -1,4 +1,3 @@
-
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
 import { useSelector } from 'react-redux';
@@ -7,7 +6,8 @@ import renderErrors from '../../../GenericFunctions/HelperGenericFunctions';
 import { postData } from '../../../GenericFunctions/AxiosGenericFunctions';
 
 import Cookies from 'js-cookie';
-import {useState} from "react";
+import { useState } from 'react';
+import LoadingComponent from '../../../GenericComponents/LoadingComponent';
 
 const TITLE_CHOICES = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
 
@@ -357,9 +357,7 @@ const NewApplicationForm = () => {
               disabled={loading}
             >
               {loading ? (
-                <div className='spinner-border text-primary' role='status'>
-                  <span className='visually-hidden'>Loading...</span>
-                </div>
+                <LoadingComponent message='Adding application...' />
               ) : (
                 'Create Application'
               )}

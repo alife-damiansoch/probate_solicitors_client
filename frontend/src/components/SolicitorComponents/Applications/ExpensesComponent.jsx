@@ -1,11 +1,11 @@
-
 import { FaTrash, FaSave } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 import {
   deleteData,
   postData,
 } from '../../GenericFunctions/AxiosGenericFunctions';
-import {useState} from "react";
+import { useState } from 'react';
+import LoadingComponent from '../../GenericComponents/LoadingComponent';
 
 const ExpensesComponent = ({
   application,
@@ -15,6 +15,7 @@ const ExpensesComponent = ({
   const [expenses, setExpenses] = useState(existingExpenses);
   const [newExpense, setNewExpense] = useState({ description: '', value: '' });
   const [errorMessage, setErrorMessage] = useState('');
+  const [isUpdatingExpense, setIsUpdatingExpense] = useState(false);
 
   let tokenObj = Cookies.get('auth_token');
   const currency_sign = Cookies.get('currency_sign');
@@ -33,6 +34,7 @@ const ExpensesComponent = ({
     e.preventDefault();
     try {
       if (access) {
+        setIsUpdatingExpense(true);
         const endpoint = `/api/applications/expenses/`;
         const response = await postData(access, endpoint, {
           ...newExpense,
@@ -46,11 +48,14 @@ const ExpensesComponent = ({
     } catch (error) {
       console.error('Error adding expense:', error);
       setErrorMessage('Failed to add expense');
+    } finally {
+      setIsUpdatingExpense(false);
     }
   };
 
   const removeExpense = async (expenseId) => {
     try {
+      setIsUpdatingExpense(true);
       const endpoint = `/api/applications/expenses/${expenseId}/`;
       await deleteData(endpoint);
       setExpenses((prevExpenses) =>
@@ -59,6 +64,8 @@ const ExpensesComponent = ({
     } catch (error) {
       console.error('Error removing expense:', error);
       setErrorMessage('Failed to remove expense');
+    } finally {
+      setIsUpdatingExpense(false);
     }
   };
 
@@ -116,7 +123,11 @@ const ExpensesComponent = ({
                   type='button'
                   className='btn btn-outline-danger btn-sm border-0 icon-shadow'
                   onClick={() => removeExpense(expense.id)}
-                  disabled={application.approved || application.is_rejected}
+                  disabled={
+                    application.approved ||
+                    application.is_rejected ||
+                    isUpdatingExpense
+                  }
                 >
                   <FaTrash size={15} />
                 </button>
@@ -184,6 +195,9 @@ const ExpensesComponent = ({
               )}
             </div>
           </form>
+        )}
+        {isUpdatingExpense && (
+          <LoadingComponent message='Updating expencses...' />
         )}
       </div>
     </div>
