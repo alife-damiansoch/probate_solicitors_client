@@ -324,7 +324,7 @@ input[type='number'] {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  font-family: 'Great Vibes', cursive !important;
+  font-family: "Dancing Script", serif !important;
   cursor: pointer !important;
   padding: 1rem !important; /* Adds spacing */
   overflow: hidden !important; /* Ensures content doesn't overflow */

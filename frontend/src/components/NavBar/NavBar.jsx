@@ -242,19 +242,6 @@ const NavBar = () => {
               />
               <motion.div
                 id='hero-text-container'
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '80%',
-                  height: '50%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontFamily: 'Great Vibes, cursive',
-                  cursor: 'pointer',
-                }}
                 initial='hidden'
                 animate='visible'
                 className='row'
