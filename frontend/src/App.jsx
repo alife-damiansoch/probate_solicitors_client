@@ -1,48 +1,44 @@
-import  { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  Navigate,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
   useLocation,
 } from 'react-router-dom';
-import { loginSuccess } from './store/authSlice';
 import './App.css';
-import './bootstrap.min.css';
-import NavBar from './components/NavBar/NavBar';
-import LoginComponent from './components/Login/LoginComponent';
-import Applications from './components/SolicitorComponents/Applications/Applications';
-import ApplicationDetails from './components/SolicitorComponents/Applications/ApplicationDetails';
-import FooterComponent from './components/GenericComponents/FooterComponent';
-import AddApplication from './components/SolicitorComponents/Applications/AddApplication';
-import UploadNewDocument from './components/SolicitorComponents/Applications/UploadingFileComponents/UploadNewDocument';
-import RegisterComponent from './components/Login/RegisterComponent';
-import UserProfile from './components/SolicitorComponents/UserProfileComponent';
-import UpdatePasswordComponent from './components/SolicitorComponents/UpdatePasswordComponent';
-import { fetchUser } from './store/userSlice';
-import Home from './components/StaticPagesComponents/Home/Home';
-import UnderstandingProbate from './components/StaticPagesComponents/UnderstandingProbate/UnderstandingProbate';
-import HowItWorks from './components/StaticPagesComponents/HowItWorks/HowItWorks';
-import Benefits from './components/StaticPagesComponents/Benefits/Benefits';
-import Solicitors from './components/SolicitorComponents/SolicitorsComponent.jsx/Solicitors';
-import FileManager from './components/SolicitorComponents/Applications/DocumentsForDownloadComponent/FileManager';
-import AdvancementDetailsConfirm from './components/SolicitorComponents/Applications/ApplicationDocumentsComponents/Advancement/AdvancementDetailsConfirm';
-import UploadNewDocumentSigned from './components/SolicitorComponents/Applications/UploadingFileComponents/Signed/UploadNewDocumentSigned';
-import AutoLogoutComponent from './components/Login/AutoLogoutComponent';
-import ActivationPage from './components/Login/ActivationPage';
-import CookieConsent from './components/SolicitorComponents/CookieConsent/CookieConsent';
-import ForgotPassword from './components/Login/ForgotPassword';
-import ResetPassword from './components/Login/ResetPassword';
-import OtpVerification from './components/Login/OtpVerification';
 import { COUNTRY } from './baseUrls';
-import apiEventEmitter from './utils/eventEmitter';
-import { logout } from './store/authSlice';
-import { clearUser } from './store/userSlice';
+import './bootstrap.min.css';
+import FooterComponent from './components/GenericComponents/FooterComponent';
 import renderErrors from './components/GenericFunctions/HelperGenericFunctions';
-
-
+import ActivationPage from './components/Login/ActivationPage';
+import AutoLogoutComponent from './components/Login/AutoLogoutComponent';
+import ForgotPassword from './components/Login/ForgotPassword';
+import LoginComponent from './components/Login/LoginComponent';
+import OtpVerification from './components/Login/OtpVerification';
+import RegisterComponent from './components/Login/RegisterComponent';
+import ResetPassword from './components/Login/ResetPassword';
+import NavBar from './components/NavBar/NavBar';
+import AddApplication from './components/SolicitorComponents/Applications/AddApplication';
+import ApplicationDetails from './components/SolicitorComponents/Applications/ApplicationDetails';
+import AdvancementDetailsConfirm from './components/SolicitorComponents/Applications/ApplicationDocumentsComponents/Advancement/AdvancementDetailsConfirm';
+import Applications from './components/SolicitorComponents/Applications/Applications';
+import FileManager from './components/SolicitorComponents/Applications/DocumentsForDownloadComponent/FileManager';
+import UploadNewDocumentSigned from './components/SolicitorComponents/Applications/UploadingFileComponents/Signed/UploadNewDocumentSigned';
+import UploadNewDocument from './components/SolicitorComponents/Applications/UploadingFileComponents/UploadNewDocument';
+import CookieConsent from './components/SolicitorComponents/CookieConsent/CookieConsent';
+import Solicitors from './components/SolicitorComponents/SolicitorsComponent.jsx/Solicitors';
+import UpdatePasswordComponent from './components/SolicitorComponents/UpdatePasswordComponent';
+import UserProfile from './components/SolicitorComponents/UserProfileComponent';
+import Benefits from './components/StaticPagesComponents/Benefits/Benefits';
+import Home from './components/StaticPagesComponents/Home/Home';
+import HowItWorks from './components/StaticPagesComponents/HowItWorks/HowItWorks';
+import UnderstandingProbate from './components/StaticPagesComponents/UnderstandingProbate/UnderstandingProbate';
+import { loginSuccess, logout } from './store/authSlice';
+import { clearUser, fetchUser } from './store/userSlice';
+import apiEventEmitter from './utils/eventEmitter';
 
 function App() {
   const dispatch = useDispatch();
@@ -149,6 +145,19 @@ function App() {
         )}
         {isLoggedIn && <AutoLogoutComponent />}{' '}
         <Routes>
+          {/* ALL THE STATIC ROUTES TURNED OFF NOW, THEY WILL BE AUTO REDIRECTING TO LOGIN */}
+          {/* Redirect all static pages to /login */}
+          <Route path='/' element={<Navigate to='/login' replace />} />
+          <Route
+            path='/understanding'
+            element={<Navigate to='/login' replace />}
+          />
+          <Route
+            path='/howItWorks'
+            element={<Navigate to='/login' replace />}
+          />
+          <Route path='/benefits' element={<Navigate to='/login' replace />} />
+          {/* IF STATIC ROUTES ARE BACK JUST UNCOMENT ABOVE */}
           {/* Static Pages */}
           <Route
             path='/'

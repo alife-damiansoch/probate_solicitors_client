@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { logout } from '../../store/authSlice';
-import { RiLoginCircleLine, RiLogoutCircleRLine } from 'react-icons/ri';
-import { clearUser } from '../../store/userSlice';
 import { motion } from 'framer-motion';
-import AliBanner from './AliBanner/AliBanner';
+import { useState } from 'react';
+import { LuUserRoundCog } from 'react-icons/lu';
+import { RiLoginCircleLine, RiLogoutCircleRLine } from 'react-icons/ri';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { logout } from '../../store/authSlice';
+import { clearUser } from '../../store/userSlice';
+import NavLinkAnimated from '../GenericComponents/NavLinkAnimated';
 import AnimatedSection from '../GenericFunctions/AnimatedSection';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
-import NavLinkAnimated from '../GenericComponents/NavLinkAnimated';
-import { LuUserRoundCog } from 'react-icons/lu';
+import AliBanner from './AliBanner/AliBanner';
 
 const NavBar = () => {
   const dispatch = useDispatch();
@@ -66,19 +66,19 @@ const NavBar = () => {
               id='logo'
               src='/img/ALI logo.png'
               alt='ALI logo'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              whileHover={{
-                filter: 'invert(50%)',
-                cursor: 'pointer',
-                opacity: 0.5,
-              }}
-              transition={{ delay: 1, duration: 1 }}
+              // initial={{ opacity: 0 }}
+              // animate={{ opacity: 1 }}
+              // whileHover={{
+              //   filter: 'invert(50%)',
+              //   cursor: 'pointer',
+              //   opacity: 0.5,
+              // }}
+              // transition={{ delay: 1, duration: 1 }}
               onClick={() => {
                 navigate('');
               }}
               style={{
-                filter: 'invert(100%)',
+                // filter: 'invert(100%)',
                 width: '100%',
               }}
             />
@@ -103,7 +103,8 @@ const NavBar = () => {
           id='navbarNav'
         >
           <ul className='navbar-nav mr-auto text-center d-flex align-items-center justify-content-center flex-wrap col-12 col-md-10'>
-            <li className='nav-item mx-auto my-auto mb-2'>
+            {/* IF STATIC ROUTES ARE BACK JUST UNCOMENT THE CODE UNDER */}
+            {/* <li className='nav-item mx-auto my-auto mb-2'>
               <NavLinkAnimated
                 to='/'
                 label='Home'
@@ -134,7 +135,7 @@ const NavBar = () => {
                 isActive={isActive}
                 closeNavbar={closeNavbar}
               />
-            </li>
+            </li> */}
             {/* Line Break */}
             <div className='w-100 d-none d-lg-block'></div>
             {isLoggedIn ? (
