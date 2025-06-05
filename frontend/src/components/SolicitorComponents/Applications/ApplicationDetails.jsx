@@ -162,16 +162,16 @@ const ApplicationDetails = () => {
                 />
               </div>
             </div>
-            <div className='card mt-3 border-0 rounded shadow'>
-              <div className='card-header  py-3  rounded-top'>
-                <h3 className='card-subtitle text-black'>Optional details</h3>
-              </div>
-              <ExpensesComponent
-                application={application}
-                applicationId={id}
-                existingExpenses={application.expenses}
-              />
-            </div>
+            {/*<div className='card mt-3 border-0 rounded shadow'>*/}
+            {/*  <div className='card-header  py-3  rounded-top'>*/}
+            {/*    <h3 className='card-subtitle text-black'>Optional details</h3>*/}
+            {/*  </div>*/}
+            {/*  <ExpensesComponent*/}
+            {/*    application={application}*/}
+            {/*    applicationId={id}*/}
+            {/*    existingExpenses={application.expenses}*/}
+            {/*  />*/}
+            {/*</div>*/}
           </div>
         </div>
         {/* detailed stages part */}

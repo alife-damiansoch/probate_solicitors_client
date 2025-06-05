@@ -142,12 +142,12 @@ export default function NewApplicationForm() {
   };
 
   return (
-    <div className='card mt-5'>
+    <div className='card mt-5 ' style={{ marginBottom: "200px" }}>
       <div className='card-header text-center'>
         <div className='card-title'><h1>Create New Application</h1></div>
       </div>
       <div className='card-body'>
-        <form onSubmit={submitHandler} style={{ marginBottom: "200px" }}>
+        <form onSubmit={submitHandler} >
           <ApplicationPart formData={formData} setFormData={setFormData} />
           <ApplicantsPart
             applicants={formData.applicants}

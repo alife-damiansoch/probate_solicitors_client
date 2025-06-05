@@ -1,7 +1,42 @@
 import { useEffect, useState } from 'react';
 import { FaTrash, FaEdit, FaSave } from 'react-icons/fa';
-
 import Cookies from 'js-cookie';
+
+// AutoResizingTextarea: Extracted for cleanliness
+function AutoResizingTextarea({ value, onChange, readOnly, className }) {
+  // Local ref for textarea
+  const handleInput = e => {
+    e.target.style.height = '38px'; // reset to base for shrinking
+    e.target.style.height = (e.target.scrollHeight) + 'px';
+  };
+
+  // Set height on mount and value change
+  useEffect(() => {
+    const textarea = document.getElementById(className + value.length); // crude unique ID
+    if (textarea) {
+      textarea.style.height = '38px';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+  }, [value, className]);
+
+  return (
+    <textarea
+      id={className + value.length}
+      className={className}
+      value={value}
+      onChange={onChange}
+      readOnly={readOnly}
+      rows={1}
+      style={{
+        resize: "none",
+        overflow: "hidden",
+        minHeight: "38px",
+        height: "auto",
+      }}
+      onInput={handleInput}
+    />
+  );
+}
 
 const EstatesPart = ({
   addItem,
@@ -49,7 +84,6 @@ const EstatesPart = ({
     }`;
   };
 
-  //   triggers submit change handler when button pressed
   useEffect(() => {
     submitChangesHandler();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,17 +110,16 @@ const EstatesPart = ({
             <div className='col-md-8'>
               <label className='form-label col-12'>Description:</label>
               <div className='input-group input-group-sm shadow'>
-                <input
-                  type='text'
-                  className={`form-control ${
-                    editMode[`estate_${index}_description`] &&
-                    ' bg-warning-subtle'
-                  }`}
+                <AutoResizingTextarea
                   value={estate.description}
-                  onChange={(e) =>
+                  onChange={e =>
                     handleListChange(e, index, 'estates', 'description')
                   }
                   readOnly={!editMode[`estate_${index}_description`]}
+                  className={
+                    `form-control form-control-sm` +
+                    (editMode[`estate_${index}_description`] ? ' bg-warning-subtle' : '')
+                  }
                 />
                 <button
                   type='button'
@@ -162,26 +195,25 @@ const EstatesPart = ({
               <h4 className='card-subtitle text-warning-emphasis'>
                 Add Estate
               </h4>
-
               <div className='row'>
                 <div className='col-md-7'>
                   <label className='form-label col-12'>Description:</label>
-                  <input
-                    type='text'
-                    className={`shadow ${getFieldClassName('description')}`}
+                  <AutoResizingTextarea
                     value={newEstate.description}
-                    onChange={(e) => handleNewEstateChange(e, 'description')}
+                    onChange={e => handleNewEstateChange(e, 'description')}
+                    readOnly={false}
+                    className={`shadow ${getFieldClassName('description')}`}
                   />
                 </div>
                 <div className='col-md-3'>
                   <label className='form-label col-12'>Value:</label>
                   <input
                     type='number'
-                    step='0.01' // Allows two decimal places
+                    step='0.01'
                     min='0'
                     className={`shadow ${getFieldClassName('value')}`}
                     value={newEstate.value}
-                    onChange={(e) => handleNewEstateChange(e, 'value')}
+                    onChange={e => handleNewEstateChange(e, 'value')}
                     placeholder={currency_sign}
                   />
                 </div>

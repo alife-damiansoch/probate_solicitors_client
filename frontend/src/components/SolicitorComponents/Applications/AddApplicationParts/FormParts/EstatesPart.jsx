@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
+// --- Defaults & Constants ---
 export const defaultEstates = {
   real_and_leasehold: [{ address: '', county: '', nature: '', value: '', lendable: true }],
   household_contents: { value: '', lendable: true },
@@ -48,8 +49,9 @@ export const estateSingleFields = [
 export const NATURE_CHOICES = ['Land', 'Building', 'Mixed', 'Other'];
 export const toNumber = val => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
+// --- Main Estates Part Component ---
 export default function EstatesPart({ estates, setFormData, currency_sign }) {
-  // --- Estates: Real and leasehold property helpers
+  // --- Real and leasehold property helpers
   const handleRealAndLeaseholdChange = (idx, subfield, value) => {
     const updated = [...estates.real_and_leasehold];
     updated[idx][subfield] = value;
@@ -142,12 +144,12 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
           <h6 className='mb-3 text-primary'>Real and Leasehold Property #{idx + 1}</h6>
           <div className='row'>
             <div className='col-md-4 mb-2'>
-              <input
-                type='text'
+              <textarea
                 className='form-control form-control-sm'
                 placeholder='Address (townland/street & number)'
                 value={item.address}
                 onChange={e => handleRealAndLeaseholdChange(idx, 'address', e.target.value)}
+                rows={2}
                 required
               />
             </div>
@@ -205,7 +207,7 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
 
       {/* Single value fields */}
       {estateSingleFields.map(f =>
-        <SingleEstateField key={f.key} field={f} estates={estates} setFormData={setFormData} />
+        <SingleEstateField key={f.key} field={f} estates={estates} setFormData={setFormData} currency_sign={currency_sign} />
       )}
 
       {/* Array fields */}
@@ -218,6 +220,7 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
         removeItem={removeEstateArrayItem}
         placeholder='Institution, account, details...'
         lendable={true}
+        currency_sign={currency_sign}
       />
       <EstateArrayField
         label='Proceeds of life insurance policies'
@@ -228,6 +231,7 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
         removeItem={removeEstateArrayItem}
         placeholder='Policy, institution, etc.'
         lendable={true}
+        currency_sign={currency_sign}
       />
       <EstateArrayField
         label='Debts owing to the deceased'
@@ -238,6 +242,7 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
         removeItem={removeEstateArrayItem}
         placeholder='Debtor name, details'
         lendable={false}
+        currency_sign={currency_sign}
       />
       <EstateArrayField
         label='Stocks, shares and securities (Quoted)'
@@ -248,6 +253,7 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
         removeItem={removeEstateArrayItem}
         placeholder='Quoted description (e.g. Company, ISIN, # of shares)'
         lendable={true}
+        currency_sign={currency_sign}
       />
       <EstateArrayField
         label='Stocks, shares and securities (Unquoted)'
@@ -258,6 +264,7 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
         removeItem={removeEstateArrayItem}
         placeholder='Unquoted description (e.g. Private company, share class)'
         lendable={false}
+        currency_sign={currency_sign}
       />
       <EstateArrayField
         label='Any other property not already included'
@@ -268,6 +275,7 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
         removeItem={removeEstateArrayItem}
         placeholder='Description'
         lendable={true}
+        currency_sign={currency_sign}
       />
 
       {/* Irish Debts */}
@@ -276,49 +284,63 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
           <label className='form-label fw-bold'>
             Irish debts* owing by the deceased and funeral expenses payable in the State
           </label>
-          {estates.irish_debts.map((item, idx) => (
-            <div key={idx} className='row mb-1'>
-              <div className='col-md-3 mb-2'>
-                <input
-                  type='text'
-                  className='form-control form-control-sm'
-                  placeholder='Creditor'
-                  value={item.creditor}
-                  onChange={e => handleIrishDebtChange(idx, 'creditor', e.target.value)}
-                />
+          {estates.irish_debts.map((item, idx) => {
+            const descriptionMissing = item.description.trim() === '' && item.value.trim() !== '';
+            const valueMissing = item.value.trim() === '' && item.description.trim() !== '';
+            return (
+              <div key={idx} className='row mb-1'>
+                <div className='col-md-3 mb-2'>
+                  <input
+                    type='text'
+                    className='form-control form-control-sm'
+                    placeholder='Creditor'
+                    value={item.creditor}
+                    onChange={e => handleIrishDebtChange(idx, 'creditor', e.target.value)}
+                  />
+                </div>
+                <div className='col-md-6 mb-2'>
+                  <textarea
+                    className={`form-control form-control-sm${descriptionMissing ? ' is-invalid' : ''}`}
+                    placeholder='Description of debt'
+                    value={item.description}
+                    onChange={e => handleIrishDebtChange(idx, 'description', e.target.value)}
+                    rows={2}
+                  />
+                  {descriptionMissing && (
+                    <div className="invalid-feedback d-block">
+                      Description is required when value is entered.
+                    </div>
+                  )}
+                </div>
+                <div className='col-md-2 mb-2'>
+                  <input
+                    type='number'
+                    min='0'
+                    step='0.01'
+                    className={`form-control form-control-sm${valueMissing ? ' is-invalid' : ''}`}
+                    placeholder={currency_sign}
+                    value={item.value}
+                    onChange={e => handleIrishDebtChange(idx, 'value', e.target.value)}
+                  />
+                  {valueMissing && (
+                    <div className="invalid-feedback d-block">
+                      Value is required when description is entered.
+                    </div>
+                  )}
+                </div>
+                <div className='col-md-1 mb-2 text-end'>
+                  <button
+                    type='button'
+                    className='btn btn-danger btn-sm'
+                    onClick={() => removeIrishDebt(idx)}
+                    disabled={estates.irish_debts.length === 1}
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
               </div>
-              <div className='col-md-6 mb-2'>
-                <input
-                  type='text'
-                  className='form-control form-control-sm'
-                  placeholder='Description of debt'
-                  value={item.description}
-                  onChange={e => handleIrishDebtChange(idx, 'description', e.target.value)}
-                />
-              </div>
-              <div className='col-md-2 mb-2'>
-                <input
-                  type='number'
-                  min='0'
-                  step='0.01'
-                  className='form-control form-control-sm'
-                  placeholder={currency_sign}
-                  value={item.value}
-                  onChange={e => handleIrishDebtChange(idx, 'value', e.target.value)}
-                />
-              </div>
-              <div className='col-md-1 mb-2 text-end'>
-                <button
-                  type='button'
-                  className='btn btn-danger btn-sm'
-                  onClick={() => removeIrishDebt(idx)}
-                  disabled={estates.irish_debts.length === 1}
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
           <button type='button' className='btn btn-primary btn-sm mb-2' onClick={addIrishDebt}>
             <FaPlus /> Add Debt/Funeral Expense
           </button>
@@ -332,8 +354,8 @@ export default function EstatesPart({ estates, setFormData, currency_sign }) {
   );
 }
 
-// ---- Reusable supporting components
-export function SingleEstateField({ field, estates, setFormData }) {
+// ---- Reusable supporting components ----
+export function SingleEstateField({ field, estates, setFormData, currency_sign }) {
   return (
     <div className='card mb-3 p-3'>
       <label className='form-label'>{field.label}</label>
@@ -352,53 +374,91 @@ export function SingleEstateField({ field, estates, setFormData }) {
             }
           }))
         }
-        placeholder={field.placeholder || ''}
+        placeholder={field.placeholder || currency_sign}
       />
     </div>
   );
 }
 
 export function EstateArrayField({
-  label, field, estates, handleChange, addItem, removeItem, placeholder, lendable = true
+  label, field, estates, handleChange, addItem, removeItem, placeholder, lendable = true, currency_sign
 }) {
+  // Fields where description should be a textarea
+  const textareaFields = [
+    'financial_assets',
+    'life_insurance',
+    'debts_owing',
+    'securities_quoted',
+    'securities_unquoted',
+    'other_property'
+  ];
+
   return (
     <div className='mb-3'>
       <div className='card p-3'>
         <label className='form-label'>{label}</label>
-        {estates[field].map((item, idx) => (
-          <div key={idx} className='row mb-1'>
-            <div className='col-md-8 mb-2'>
-              <input
-                type='text'
-                className='form-control form-control-sm'
-                placeholder={placeholder || 'Description'}
-                value={item.description}
-                onChange={e => handleChange(field, idx, 'description', e.target.value)}
-              />
+        {estates[field].map((item, idx) => {
+          const descriptionMissing = item.description.trim() === '' && item.value.trim() !== '';
+          const valueMissing = item.value.trim() === '' && item.description.trim() !== '';
+
+          return (
+            <div key={idx} className='row mb-1'>
+              <div className='col-md-8 mb-2'>
+                {textareaFields.includes(field) ? (
+                  <textarea
+                    className={`form-control form-control-sm${descriptionMissing ? ' is-invalid' : ''}`}
+                    placeholder={placeholder || 'Description'}
+                    value={item.description}
+                    onChange={e => handleChange(field, idx, 'description', e.target.value)}
+                    rows={2}
+                    required={item.value.trim() !== ''}
+                  />
+                ) : (
+                  <input
+                    type='text'
+                    className={`form-control form-control-sm${descriptionMissing ? ' is-invalid' : ''}`}
+                    placeholder={placeholder || 'Description'}
+                    value={item.description}
+                    onChange={e => handleChange(field, idx, 'description', e.target.value)}
+                    required={item.value.trim() !== ''}
+                  />
+                )}
+                {descriptionMissing && (
+                  <div className="invalid-feedback d-block">
+                    Description is required when value is entered.
+                  </div>
+                )}
+              </div>
+              <div className='col-md-3 mb-2'>
+                <input
+                  type='number'
+                  min='0'
+                  step='0.01'
+                  className={`form-control form-control-sm${valueMissing ? ' is-invalid' : ''}`}
+                  placeholder={currency_sign}
+                  value={item.value}
+                  onChange={e => handleChange(field, idx, 'value', e.target.value)}
+                  required={item.description.trim() !== ''}
+                />
+                {valueMissing && (
+                  <div className="invalid-feedback d-block">
+                    Value is required when description is entered.
+                  </div>
+                )}
+              </div>
+              <div className='col-md-1 mb-2 text-end'>
+                <button
+                  type='button'
+                  className='btn btn-danger btn-sm'
+                  onClick={() => removeItem(field, idx)}
+                  disabled={estates[field].length === 1}
+                >
+                  <FaTrash />
+                </button>
+              </div>
             </div>
-            <div className='col-md-3 mb-2'>
-              <input
-                type='number'
-                min='0'
-                step='0.01'
-                className='form-control form-control-sm'
-                placeholder={estates.currency_sign}
-                value={item.value}
-                onChange={e => handleChange(field, idx, 'value', e.target.value)}
-              />
-            </div>
-            <div className='col-md-1 mb-2 text-end'>
-              <button
-                type='button'
-                className='btn btn-danger btn-sm'
-                onClick={() => removeItem(field, idx)}
-                disabled={estates[field].length === 1}
-              >
-                <FaTrash />
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
         <button
           type='button'
           className='btn btn-primary btn-sm mb-2'
