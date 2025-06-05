@@ -1,17 +1,20 @@
-import { FaPlus, FaTrash } from 'react-icons/fa';
-
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Cookies from 'js-cookie';
 import renderErrors from '../../../GenericFunctions/HelperGenericFunctions';
 import { postData } from '../../../GenericFunctions/AxiosGenericFunctions';
-
-import Cookies from 'js-cookie';
-import { useState } from 'react';
 import LoadingComponent from '../../../GenericComponents/LoadingComponent';
 
-const TITLE_CHOICES = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];
+import ApplicationPart from './FormParts/ApplicationPart';
+import ApplicantsPart from './FormParts/ApplicantsPart';
+import EstatesPart, { defaultEstates, toNumber, estateSingleFields } from './FormParts/EstatesPart';
+import EstateSummarySticky from './FormParts/EstateSummarySticky';
 
-const NewApplicationForm = () => {
+const currency_sign = Cookies.get('currency_sign');
+const idNumberArray = JSON.parse(Cookies.get('id_number'));
+
+export default function NewApplicationForm() {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,105 +22,110 @@ const NewApplicationForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     amount: '',
-    term: '',
-    deceased: {
-      first_name: '',
-      last_name: '',
-    },
-    dispute: {
-      details: '',
-    },
-    applicants: [
-      {
-        title: 'Mr',
-        first_name: '',
-        last_name: '',
-        pps_number: '',
-      },
-    ],
-    estates: [
-      {
-        description: '',
-        value: '',
-      },
-    ],
+    term: 12,
+    deceased: { first_name: '', last_name: '' },
+    dispute: { details: '' },
+    applicants: [{ title: 'Mr', first_name: '', last_name: '', pps_number: '' }],
+    estates: JSON.parse(JSON.stringify(defaultEstates)),
   });
 
-  const currency_sign = Cookies.get('currency_sign');
-  const idNumberArray = JSON.parse(Cookies.get('id_number'));
-
-  const handleChange = (e, field) => {
-    let value = e.target.value;
-    if (field === 'amount') {
-      value = value.replace(/[^0-9.]/g, ''); // Remove any non-numeric characters except for decimal points
-    }
-    setFormData({
-      ...formData,
-      [field]: value,
+  // ---- Estate calculation helpers
+  const sumEstate = (formData, filterFn) => {
+    let total = 0;
+    total += formData.estates.real_and_leasehold.reduce((sum, item) =>
+      filterFn(item) ? sum + toNumber(item.value) : sum, 0);
+    ['household_contents', 'cars_boats', 'business_farming', 'business_other', 'unpaid_purchase_money'].forEach(key => {
+      if (filterFn(formData.estates[key])) total += toNumber(formData.estates[key].value);
     });
+    ['financial_assets', 'life_insurance', 'securities_quoted', 'securities_unquoted', 'other_property'].forEach(key => {
+      formData.estates[key].forEach(item => { if (filterFn(item)) total += toNumber(item.value); });
+    });
+    return total;
+  };
+  const sumIrishDebts = (formData) =>
+    formData.estates.irish_debts.reduce((sum, item) => sum + toNumber(item.value), 0);
+
+  const netIrishEstate = sumEstate(formData, () => true) - sumIrishDebts(formData);
+  const lendableIrishEstate = sumEstate(formData, item => item.lendable !== false) - sumIrishDebts(formData);
+
+  // ---- Estates: Compile for backend
+  const compileEstatesForBackend = (estates) => {
+    const items = [];
+    estates.real_and_leasehold.forEach((item) => {
+      if (item.address || item.county || item.nature || item.value) {
+        items.push({
+          description: `Real and leasehold property: ${item.address}${item.county ? ', ' + item.county : ''}${item.nature ? ', ' + item.nature : ''}`,
+          value: item.value || '',
+          lendable: item.lendable,
+        });
+      }
+    });
+    estateSingleFields.forEach(f => {
+      if (estates[f.key] && estates[f.key].value) {
+        items.push({ description: f.label, value: estates[f.key].value, lendable: estates[f.key].lendable });
+      }
+    });
+    estates.financial_assets.forEach((item) => {
+      if (item.description || item.value)
+        items.push({ description: 'Assets with financial institutions: ' + item.description, value: item.value, lendable: item.lendable });
+    });
+    estates.life_insurance.forEach((item) => {
+      if (item.description || item.value)
+        items.push({ description: 'Proceeds of life insurance policies: ' + item.description, value: item.value, lendable: item.lendable });
+    });
+    estates.debts_owing.forEach((item) => {
+      if (item.description || item.value)
+        items.push({ description: 'Debts owing to the deceased: ' + item.description, value: item.value });
+    });
+    estates.securities_quoted.forEach((item) => {
+      if (item.description || item.value)
+        items.push({ description: 'Stocks, shares and securities (Quoted): ' + item.description, value: item.value, lendable: item.lendable });
+    });
+    estates.securities_unquoted.forEach((item) => {
+      if (item.description || item.value)
+        items.push({ description: 'Stocks, shares and securities (Unquoted): ' + item.description, value: item.value, lendable: item.lendable });
+    });
+    if (estates.unpaid_purchase_money && estates.unpaid_purchase_money.value)
+      items.push({ description: 'Unpaid purchase money of property contracted to be sold', value: estates.unpaid_purchase_money.value, lendable: estates.unpaid_purchase_money.lendable });
+    estates.other_property.forEach((item) => {
+      if (item.description || item.value)
+        items.push({ description: 'Other property not already included: ' + item.description, value: item.value, lendable: item.lendable });
+    });
+    estates.irish_debts.forEach((item) => {
+      if (item.creditor || item.description || item.value)
+        items.push({
+          description: `Irish debts/funeral expenses: Creditor: ${item.creditor} - ${item.description}`,
+          value: item.value
+        });
+    });
+    return items;
   };
 
-  const handleNestedChange = (e, parentField, field) => {
-    setFormData({
-      ...formData,
-      [parentField]: {
-        ...formData[parentField],
-        [field]: e.target.value,
-      },
-    });
-  };
-
-  const handleListChange = (e, index, listName, field) => {
-    const newList = formData[listName].slice();
-    newList[index][field] = e.target.value;
-    setFormData({
-      ...formData,
-      [listName]: newList,
-    });
-  };
-
-  const addItem = (listName, newItem) => {
-    setFormData({
-      ...formData,
-      [listName]: [...formData[listName], newItem],
-    });
-  };
-
-  const removeItem = (listName, index) => {
-    const newList = formData[listName].slice();
-    newList.splice(index, 1);
-    setFormData({
-      ...formData,
-      [listName]: newList,
-    });
-  };
-
+  // ---- Submit handler
   const submitHandler = async (e) => {
     e.preventDefault();
     setMessage('');
     setIsError(false);
     setLoading(true);
-    const data = formData;
-    // Ensure dispute.details is not empty
+
+    const data = {
+      ...formData,
+      estates: compileEstatesForBackend(formData.estates),
+    };
     if (data.dispute.details.trim() === '') {
       data.dispute.details = 'No dispute';
     }
     try {
       const endpoint = `/api/applications/solicitor_applications/`;
       const response = await postData(token, endpoint, data);
-
       if (response.status === 201) {
         setIsError(false);
         setMessage([{ value: response.statusText }]);
-        console.log(response.data);
         const new_app_id = response.data.id;
-
-        // Delay execution for 2 seconds
         await new Promise((resolve) => setTimeout(resolve, 2000));
         setLoading(false);
         navigate(`/applications/${new_app_id}`);
       } else {
-        console.error('Error creating application:', response.data);
         setIsError(true);
         setMessage(response.data);
         setLoading(false);
@@ -126,12 +134,9 @@ const NewApplicationForm = () => {
       setIsError(true);
       if (error.response && error.response.data) {
         setMessage(renderErrors(error.response.data));
-        setLoading(false);
       } else {
         setMessage(error.message);
-        setLoading(false);
       }
-      console.error('Error creating new application:', error);
       setLoading(false);
     }
   };
@@ -139,222 +144,31 @@ const NewApplicationForm = () => {
   return (
     <div className='card mt-5'>
       <div className='card-header text-center'>
-        <div className='card-title'>
-          <h1>Create New Application</h1>
-        </div>
+        <div className='card-title'><h1>Create New Application</h1></div>
       </div>
       <div className='card-body'>
-        <form onSubmit={submitHandler}>
-          <h5 className='my-2'>Application</h5>
-          <div className='row mb-3'>
-            <div className='col-md-6'>
-              <label className='form-label'>Amount</label>
-              <input
-                type='number'
-                className='form-control form-control-sm'
-                value={formData.amount}
-                onChange={(e) => handleChange(e, 'amount')}
-                min='0'
-                step='0.01'
-                placeholder={currency_sign}
-                required
-              />
-            </div>
-            <div className='col-md-6'>
-              <label className='form-label'>Term (months)</label>
-              <input
-                type='number'
-                className='form-control form-control-sm'
-                value={formData.term}
-                onChange={(e) => handleChange(e, 'term')}
-                required
-              />
-            </div>
-          </div>
-          <div className='row mb-3'>
-            <div className='col-md-6'>
-              <label className='form-label'>Deceased First Name</label>
-              <input
-                type='text'
-                className='form-control form-control-sm'
-                value={formData.deceased.first_name}
-                onChange={(e) =>
-                  handleNestedChange(e, 'deceased', 'first_name')
-                }
-                required
-              />
-            </div>
-            <div className='col-md-6'>
-              <label className='form-label'>Deceased Last Name</label>
-              <input
-                type='text'
-                className='form-control form-control-sm'
-                value={formData.deceased.last_name}
-                onChange={(e) => handleNestedChange(e, 'deceased', 'last_name')}
-                required
-              />
-            </div>
-          </div>
-          <div className='row mb-3'>
-            <div className='col-md-12'>
-              <label className='form-label'>Dispute Details</label>
-              <textarea
-                type='text'
-                className='form-control form-control-sm'
-                value={formData.dispute.details}
-                onChange={(e) => handleNestedChange(e, 'dispute', 'details')}
-                placeholder='Optional: You may add details about any disputes related to this application. If there are no disputes, feel free to leave this field empty.'
-              />
-            </div>
-          </div>
-          <div className='mb-3'>
-            <hr />
-            <h5 className='my-2'>Applicants</h5>
-            {formData.applicants.map((applicant, index) => (
-              <div key={index} className='row mb-3'>
-                <div className='col-md-2'>
-                  <label className='form-label'>Title</label>
-                  <select
-                    className='form-control form-control-sm'
-                    value={applicant.title}
-                    onChange={(e) =>
-                      handleListChange(e, index, 'applicants', 'title')
-                    }
-                    required
-                  >
-                    {TITLE_CHOICES.map((title) => (
-                      <option key={title} value={title}>
-                        {title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className='col-md-3'>
-                  <label className='form-label'>First Name</label>
-                  <input
-                    type='text'
-                    className='form-control form-control-sm'
-                    value={applicant.first_name}
-                    onChange={(e) =>
-                      handleListChange(e, index, 'applicants', 'first_name')
-                    }
-                    required
-                  />
-                </div>
-                <div className='col-md-3'>
-                  <label className='form-label'>Last Name</label>
-                  <input
-                    type='text'
-                    className='form-control  form-control-sm'
-                    value={applicant.last_name}
-                    onChange={(e) =>
-                      handleListChange(e, index, 'applicants', 'last_name')
-                    }
-                    required
-                  />
-                </div>
-                <div className='col-md-3'>
-                  <label className='form-label'>
-                    {idNumberArray[0]} Number
-                  </label>
-                  <input
-                    type='text'
-                    className='form-control form-control-sm'
-                    value={applicant.pps_number}
-                    onChange={(e) =>
-                      handleListChange(e, index, 'applicants', 'pps_number')
-                    }
-                    placeholder={idNumberArray[1]}
-                    required
-                  />
-                </div>
-                <div className='col-md-1 text-end'>
-                  <button
-                    type='button'
-                    className='btn btn-danger mt-4 btn-sm'
-                    onClick={() => removeItem('applicants', index)}
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </div>
-            ))}
-            <button
-              type='button'
-              className='btn btn-primary btn-sm'
-              onClick={() =>
-                addItem('applicants', {
-                  title: 'Mr',
-                  first_name: '',
-                  last_name: '',
-                  pps_number: '',
-                })
-              }
-            >
-              <FaPlus /> Add Applicant
-            </button>
-          </div>
-          <div className='mb-3'>
-            <hr />
-            <h5 className='my-2'>Estates</h5>
-            {formData.estates.map((estate, index) => (
-              <div key={index} className='row mb-3'>
-                <div className='col-md-5'>
-                  <label className='form-label'>Description</label>
-                  <input
-                    type='text'
-                    className='form-control form-control-sm'
-                    value={estate.description}
-                    onChange={(e) =>
-                      handleListChange(e, index, 'estates', 'description')
-                    }
-                    required
-                  />
-                </div>
-                <div className='col-md-5'>
-                  <label className='form-label'>Value</label>
-                  <input
-                    type='number'
-                    min='0'
-                    step='0.01'
-                    className='form-control form-control-sm'
-                    value={estate.value}
-                    onChange={(e) =>
-                      handleListChange(e, index, 'estates', 'value')
-                    }
-                    placeholder={currency_sign}
-                    required
-                  />
-                </div>
-                <div className='col-md-2 text-end'>
-                  <button
-                    type='button'
-                    className='btn btn-danger mt-4 btn-sm'
-                    onClick={() => removeItem('estates', index)}
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </div>
-            ))}
-            <button
-              type='button'
-              className='btn btn-primary btn-sm'
-              onClick={() =>
-                addItem('estates', {
-                  description: '',
-                  value: '',
-                })
-              }
-            >
-              <FaPlus /> Add Estate
-            </button>
-          </div>
+        <form onSubmit={submitHandler} style={{ marginBottom: "200px" }}>
+          <ApplicationPart formData={formData} setFormData={setFormData} />
+          <ApplicantsPart
+            applicants={formData.applicants}
+            setFormData={setFormData}
+            idNumberArray={idNumberArray}
+          />
+          <EstatesPart
+            estates={formData.estates}
+            setFormData={setFormData}
+            currency_sign={currency_sign}
+          />
           <div className='row'>
             <button
               type='submit'
               className='btn btn-info my-2'
-              disabled={loading}
+              disabled={
+                loading ||
+                lendableIrishEstate <= 0 ||
+                toNumber(formData.amount) <= 0 ||
+                toNumber(formData.amount) > lendableIrishEstate * 0.5
+              }
             >
               {loading ? (
                 <LoadingComponent message='Adding application...' />
@@ -363,20 +177,19 @@ const NewApplicationForm = () => {
               )}
             </button>
             {message && (
-              <div
-                className={`alert text-center ${
-                  isError ? ' alert-danger' : 'alert-success'
-                }`}
-                role='alert'
-              >
+              <div className={`alert text-center ${isError ? ' alert-danger' : 'alert-success'}`} role='alert'>
                 {renderErrors(message)}
               </div>
             )}
           </div>
         </form>
+        <EstateSummarySticky
+          netIrishEstate={netIrishEstate}
+          lendableIrishEstate={lendableIrishEstate}
+          formData={formData}
+          currency_sign={currency_sign}
+        />
       </div>
     </div>
   );
-};
-
-export default NewApplicationForm;
+}
