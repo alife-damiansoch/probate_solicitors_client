@@ -10,7 +10,7 @@ export const defaultEstates = {
   business_other: { value: '', lendable: true },
   financial_assets: [{ description: '', value: '', lendable: true }],
   life_insurance: [{ description: '', value: '', lendable: true }],
-  debts_owing: [{ description: '', value: '' }],
+  debts_owing: [{ description: '', value: '', lendable: false }], // <-- lendable: false
   securities_quoted: [{ description: '', value: '', lendable: true }],
   securities_unquoted: [{ description: '', value: '', lendable: false }],
   unpaid_purchase_money: { value: '', lendable: true },

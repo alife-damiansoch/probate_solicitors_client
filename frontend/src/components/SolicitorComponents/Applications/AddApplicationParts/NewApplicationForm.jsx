@@ -30,76 +30,79 @@ export default function NewApplicationForm() {
   });
 
   // ---- Estate calculation helpers
-  const sumEstate = (formData, filterFn) => {
-    let total = 0;
-    total += formData.estates.real_and_leasehold.reduce((sum, item) =>
-      filterFn(item) ? sum + toNumber(item.value) : sum, 0);
-    ['household_contents', 'cars_boats', 'business_farming', 'business_other', 'unpaid_purchase_money'].forEach(key => {
-      if (filterFn(formData.estates[key])) total += toNumber(formData.estates[key].value);
-    });
-    ['financial_assets', 'life_insurance', 'securities_quoted', 'securities_unquoted', 'other_property'].forEach(key => {
-      formData.estates[key].forEach(item => { if (filterFn(item)) total += toNumber(item.value); });
-    });
-    return total;
-  };
-  const sumIrishDebts = (formData) =>
-    formData.estates.irish_debts.reduce((sum, item) => sum + toNumber(item.value), 0);
+const sumEstate = (formData, filterFn) => {
+  let total = 0;
+  total += formData.estates.real_and_leasehold.reduce((sum, item) =>
+    filterFn(item) ? sum + toNumber(item.value) : sum, 0);
+  ['household_contents', 'cars_boats', 'business_farming', 'business_other', 'unpaid_purchase_money'].forEach(key => {
+    if (filterFn(formData.estates[key])) total += toNumber(formData.estates[key].value);
+  });
+  // ---- Add 'debts_owing' field here:
+  ['financial_assets', 'life_insurance', 'debts_owing', 'securities_quoted', 'securities_unquoted', 'other_property'].forEach(key => {
+    formData.estates[key].forEach(item => { if (filterFn(item)) total += toNumber(item.value); });
+  });
+  return total;
+};
+const sumIrishDebts = (formData) =>
+  formData.estates.irish_debts.reduce((sum, item) => sum + toNumber(item.value), 0);
 
-  const netIrishEstate = sumEstate(formData, () => true) - sumIrishDebts(formData);
-  const lendableIrishEstate = sumEstate(formData, item => item.lendable !== false) - sumIrishDebts(formData);
+const netIrishEstate = sumEstate(formData, () => true) - sumIrishDebts(formData);
+const lendableIrishEstate = sumEstate(formData, item => item.lendable !== false) - sumIrishDebts(formData);
 
-  // ---- Estates: Compile for backend
-  const compileEstatesForBackend = (estates) => {
-    const items = [];
-    estates.real_and_leasehold.forEach((item) => {
-      if (item.address || item.county || item.nature || item.value) {
-        items.push({
-          description: `Real and leasehold property: ${item.address}${item.county ? ', ' + item.county : ''}${item.nature ? ', ' + item.nature : ''}`,
-          value: item.value || '',
-          lendable: item.lendable,
-        });
-      }
-    });
-    estateSingleFields.forEach(f => {
-      if (estates[f.key] && estates[f.key].value) {
-        items.push({ description: f.label, value: estates[f.key].value, lendable: estates[f.key].lendable });
-      }
-    });
-    estates.financial_assets.forEach((item) => {
-      if (item.description || item.value)
-        items.push({ description: 'Assets with financial institutions: ' + item.description, value: item.value, lendable: item.lendable });
-    });
-    estates.life_insurance.forEach((item) => {
-      if (item.description || item.value)
-        items.push({ description: 'Proceeds of life insurance policies: ' + item.description, value: item.value, lendable: item.lendable });
-    });
-    estates.debts_owing.forEach((item) => {
-      if (item.description || item.value)
-        items.push({ description: 'Debts owing to the deceased: ' + item.description, value: item.value });
-    });
-    estates.securities_quoted.forEach((item) => {
-      if (item.description || item.value)
-        items.push({ description: 'Stocks, shares and securities (Quoted): ' + item.description, value: item.value, lendable: item.lendable });
-    });
-    estates.securities_unquoted.forEach((item) => {
-      if (item.description || item.value)
-        items.push({ description: 'Stocks, shares and securities (Unquoted): ' + item.description, value: item.value, lendable: item.lendable });
-    });
-    if (estates.unpaid_purchase_money && estates.unpaid_purchase_money.value)
-      items.push({ description: 'Unpaid purchase money of property contracted to be sold', value: estates.unpaid_purchase_money.value, lendable: estates.unpaid_purchase_money.lendable });
-    estates.other_property.forEach((item) => {
-      if (item.description || item.value)
-        items.push({ description: 'Other property not already included: ' + item.description, value: item.value, lendable: item.lendable });
-    });
-    estates.irish_debts.forEach((item) => {
-      if (item.creditor || item.description || item.value)
-        items.push({
-          description: `Irish debts/funeral expenses: Creditor: ${item.creditor} - ${item.description}`,
-          value: item.value
-        });
-    });
-    return items;
-  };
+// ---- Estates: Compile for backend
+const compileEstatesForBackend = (estates) => {
+  const items = [];
+  estates.real_and_leasehold.forEach((item) => {
+    if (item.address || item.county || item.nature || item.value) {
+      items.push({
+        description: `Real and leasehold property: ${item.address}${item.county ? ', ' + item.county : ''}${item.nature ? ', ' + item.nature : ''}`,
+        value: item.value || '',
+        lendable: item.lendable,
+      });
+    }
+  });
+  estateSingleFields.forEach(f => {
+    if (estates[f.key] && estates[f.key].value) {
+      items.push({ description: f.label, value: estates[f.key].value, lendable: estates[f.key].lendable });
+    }
+  });
+  estates.financial_assets.forEach((item) => {
+    if (item.description || item.value)
+      items.push({ description: 'Assets with financial institutions: ' + item.description, value: item.value, lendable: item.lendable });
+  });
+  estates.life_insurance.forEach((item) => {
+    if (item.description || item.value)
+      items.push({ description: 'Proceeds of life insurance policies: ' + item.description, value: item.value, lendable: item.lendable });
+  });
+  // ---- ADD lendable here for debts_owing:
+  estates.debts_owing.forEach((item) => {
+    if (item.description || item.value)
+      items.push({ description: 'Debts owing to the deceased: ' + item.description, value: item.value, lendable: item.lendable });
+  });
+  estates.securities_quoted.forEach((item) => {
+    if (item.description || item.value)
+      items.push({ description: 'Stocks, shares and securities (Quoted): ' + item.description, value: item.value, lendable: item.lendable });
+  });
+  estates.securities_unquoted.forEach((item) => {
+    if (item.description || item.value)
+      items.push({ description: 'Stocks, shares and securities (Unquoted): ' + item.description, value: item.value, lendable: item.lendable });
+  });
+  if (estates.unpaid_purchase_money && estates.unpaid_purchase_money.value)
+    items.push({ description: 'Unpaid purchase money of property contracted to be sold', value: estates.unpaid_purchase_money.value, lendable: estates.unpaid_purchase_money.lendable });
+  estates.other_property.forEach((item) => {
+    if (item.description || item.value)
+      items.push({ description: 'Other property not already included: ' + item.description, value: item.value, lendable: item.lendable });
+  });
+  estates.irish_debts.forEach((item) => {
+    if (item.creditor || item.description || item.value)
+      items.push({
+        description: `Irish debts/funeral expenses: Creditor: ${item.creditor} - ${item.description}`,
+        value: item.value
+      });
+  });
+  return items;
+};
+
 
   // ---- Submit handler
   const submitHandler = async (e) => {
@@ -115,6 +118,7 @@ export default function NewApplicationForm() {
     if (data.dispute.details.trim() === '') {
       data.dispute.details = 'No dispute';
     }
+    console.log('data:', JSON.stringify(data, null, 2));
     try {
       const endpoint = `/api/applications/solicitor_applications/`;
       const response = await postData(token, endpoint, data);
