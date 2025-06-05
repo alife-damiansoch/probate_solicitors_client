@@ -39,7 +39,7 @@ import UnderstandingProbate from './components/StaticPagesComponents/Understandi
 import { loginSuccess, logout } from './store/authSlice';
 import { clearUser, fetchUser } from './store/userSlice';
 import apiEventEmitter from './utils/eventEmitter';
-
+// app
 function App() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
