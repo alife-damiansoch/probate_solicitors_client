@@ -118,7 +118,7 @@ const compileEstatesForBackend = (estates) => {
     if (data.dispute.details.trim() === '') {
       data.dispute.details = 'No dispute';
     }
-    console.log('data:', JSON.stringify(data, null, 2));
+    // console.log('data:', JSON.stringify(data, null, 2));
     try {
       const endpoint = `/api/applications/solicitor_applications/`;
       const response = await postData(token, endpoint, data);

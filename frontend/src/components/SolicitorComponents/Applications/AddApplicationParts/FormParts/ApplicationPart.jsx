@@ -1,4 +1,3 @@
-import React from 'react';
 
 export default function ApplicationPart({ formData, setFormData }) {
   const handleChange = (e, field) => {

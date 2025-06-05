@@ -57,9 +57,9 @@ const RequiredDetailsPart = ({
           pps_number,
         })
       ),
-      estates: estates.map(({ description, value }) => ({
+      estates: estates.map(({ description, value,lendable }) => ({
         description,
-        value,
+        value,lendable,
       })),
     };
   };
@@ -119,6 +119,7 @@ const RequiredDetailsPart = ({
     setIsError(false);
 
     if (application && originalApplication) {
+
       if (JSON.stringify(application) === JSON.stringify(originalApplication)) {
         console.log('No changes detected, skipping update.');
         return;

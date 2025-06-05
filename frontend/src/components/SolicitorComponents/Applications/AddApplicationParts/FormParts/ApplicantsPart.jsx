@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
 const TITLE_CHOICES = ['Mr', 'Ms', 'Mrs', 'Dr', 'Prof'];

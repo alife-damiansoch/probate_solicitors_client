@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FaTrash, FaEdit, FaSave } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import {EstateSummaryForApp} from "./EstateSummaryForApp.jsx";
 
 // AutoResizingTextarea: Extracted for cleanliness
 function AutoResizingTextarea({ value, onChange, readOnly, className }) {
@@ -68,6 +69,7 @@ const EstatesPart = ({
     setNewEstate({
       description: '',
       value: '',
+      lendable:true
     });
     setTriggerChandleChange(!triggerChandleChange);
   };
@@ -83,6 +85,11 @@ const EstatesPart = ({
       !newEstate[field] && isAnyFieldFilled ? 'border-1 border-danger' : ''
     }`;
   };
+  useEffect(() => {
+    if(application) {
+      console.log(application.estates);
+    }
+  }, [application]);
 
   useEffect(() => {
     submitChangesHandler();
@@ -90,7 +97,7 @@ const EstatesPart = ({
   }, [triggerChandleChange]);
 
   return (
-    <div className='card mt-3  mx-md-3 rounded border-0'>
+    <div className='card mt-3  mx-md-3 rounded border-0 '>
       <div className='card-header  rounded-top mt-3'>
         <h4 className='card-subtitle text-info-emphasis'>Estates</h4>
       </div>
@@ -105,7 +112,7 @@ const EstatesPart = ({
         {application.estates.map((estate, index) => (
           <div
             key={index}
-            className='row my-2 py-2 rounded mx-1 d-flex align-items-center shadow'
+            className={`row my-2 py-2 rounded mx-1 d-flex align-items-center shadow ${estate.lendable === null ? "bg-danger-subtle" : ""}`}
           >
             <div className='col-md-8'>
               <label className='form-label col-12'>Description:</label>
@@ -231,7 +238,13 @@ const EstatesPart = ({
             </div>
           </div>
         )}
+        <EstateSummaryForApp
+          estates={application.estates}
+          requestedAmount={application.amount}
+          currency_sign={currency_sign}
+        />
       </div>
+
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import { toNumber } from './EstatesPart';
 
 export default function EstateSummarySticky({ netIrishEstate, lendableIrishEstate, formData, currency_sign }) {
