@@ -2,42 +2,10 @@ import { useEffect, useState } from 'react';
 import { FaTrash, FaEdit, FaSave } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 import {EstateSummaryForApp} from "./EstateSummaryForApp.jsx";
+import AutoResizingTextarea from "./AutoResizingTextarea.jsx";
 
-// AutoResizingTextarea: Extracted for cleanliness
-function AutoResizingTextarea({ value, onChange, readOnly, className }) {
-  // Local ref for textarea
-  const handleInput = e => {
-    e.target.style.height = '38px'; // reset to base for shrinking
-    e.target.style.height = (e.target.scrollHeight) + 'px';
-  };
 
-  // Set height on mount and value change
-  useEffect(() => {
-    const textarea = document.getElementById(className + value.length); // crude unique ID
-    if (textarea) {
-      textarea.style.height = '38px';
-      textarea.style.height = textarea.scrollHeight + 'px';
-    }
-  }, [value, className]);
 
-  return (
-    <textarea
-      id={className + value.length}
-      className={className}
-      value={value}
-      onChange={onChange}
-      readOnly={readOnly}
-      rows={1}
-      style={{
-        resize: "none",
-        overflow: "hidden",
-        minHeight: "38px",
-        height: "auto",
-      }}
-      onInput={handleInput}
-    />
-  );
-}
 
 const EstatesPart = ({
   addItem,

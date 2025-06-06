@@ -243,7 +243,7 @@ const RequiredDetailsPart = ({
                     )}
                   </div>
                   <div className='col-md-6'>
-                    <label className='form-label col-12'>Term:</label>
+                    <label className='form-label col-12'>Initial term:</label>
                     <div className='input-group input-group-sm shadow mb-2'>
                       <input
                         type='text'
@@ -265,9 +265,10 @@ const RequiredDetailsPart = ({
                           if (editMode.term) submitChangesHandler();
                           toggleEditMode('term');
                         }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
+                        // disabled={
+                        //   application.approved || application.is_rejected
+                        // }
+                          disabled
                       >
                         {editMode.term ? (
                           <FaSave size={20} color='red' />

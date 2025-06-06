@@ -15,6 +15,16 @@ export function EstateSummaryForApp({ estates, requestedAmount, currency_sign })
   const maxAdvance = lendableIrishEstate * 0.5;
   const requested = toNumber(requestedAmount);
 
+  console.log(estates)
+  console.log(assets)
+  console.log(totalAssets)
+  console.log(totalLendable)
+  console.log(totalDeductions)
+  console.log(netIrishEstate)
+
+
+
+
   return (
     <div className={`mt-4 p-3 bg-light rounded border ${requested > maxAdvance ? "border-danger":"border-success"}`}>
       <div className="mb-2 pb-2 border-bottom">
