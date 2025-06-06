@@ -55,7 +55,7 @@ const EstatesPart = ({
   };
   useEffect(() => {
     if(application) {
-      console.log(application.estates);
+      console.log(application);
     }
   }, [application]);
 

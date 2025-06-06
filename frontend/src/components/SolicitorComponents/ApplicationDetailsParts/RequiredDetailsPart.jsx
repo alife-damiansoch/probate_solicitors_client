@@ -1,11 +1,11 @@
-import { FaEdit, FaSave } from 'react-icons/fa';
-import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
 import { useEffect, useState } from 'react';
+import { FaEdit, FaSave } from 'react-icons/fa';
 import { patchData } from '../../GenericFunctions/AxiosGenericFunctions';
+import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
+import DocumentsUpload from '../Applications/DocumentsUpload';
 import ApplicantsPart from './ApplicantsPart';
 import EstatesPart from './EstatesPart';
 import SolicitorPart from './SolicitorPart';
-import DocumentsUpload from '../Applications/DocumentsUpload';
 
 import Cookies from 'js-cookie';
 import LoadingComponent from '../../GenericComponents/LoadingComponent';
@@ -36,8 +36,15 @@ const RequiredDetailsPart = ({
   }, []);
 
   const getFilteredApplicationData = (application) => {
-    const { amount, term, deceased, dispute, applicants, estates } =
-      application;
+    const {
+      amount,
+      term,
+      deceased,
+      dispute,
+      applicants,
+      estates,
+      was_will_prepared_by_solicitor,
+    } = application;
 
     return {
       amount,
@@ -57,10 +64,12 @@ const RequiredDetailsPart = ({
           pps_number,
         })
       ),
-      estates: estates.map(({ description, value,lendable }) => ({
+      estates: estates.map(({ description, value, lendable }) => ({
         description,
-        value,lendable,
+        value,
+        lendable,
       })),
+      was_will_prepared_by_solicitor, // Include this field
     };
   };
 
@@ -119,7 +128,6 @@ const RequiredDetailsPart = ({
     setIsError(false);
 
     if (application && originalApplication) {
-
       if (JSON.stringify(application) === JSON.stringify(originalApplication)) {
         console.log('No changes detected, skipping update.');
         return;
@@ -131,6 +139,8 @@ const RequiredDetailsPart = ({
       if (filteredApplication.dispute.details.trim() === '') {
         filteredApplication.dispute.details = 'No dispute';
       }
+      console.log('Application Data:', application);
+      console.log('Filtered Application Data:', filteredApplication);
 
       try {
         setIsUpdating(true);
@@ -268,7 +278,7 @@ const RequiredDetailsPart = ({
                         // disabled={
                         //   application.approved || application.is_rejected
                         // }
-                          disabled
+                        disabled
                       >
                         {editMode.term ? (
                           <FaSave size={20} color='red' />
@@ -374,6 +384,77 @@ const RequiredDetailsPart = ({
                         Deceased&#39;s last name is required.
                       </sup>
                     )}
+                  </div>
+                </div>
+                <hr />
+                <div className='row mb-3 align-items-center'>
+                  <div className='col-12'>
+                    <div className='d-flex align-items-center gap-3'>
+                      <label
+                        className='form-label mb-0'
+                        style={{ minWidth: 320 }}
+                      >
+                        Was this will professionally prepared by a solicitor?
+                      </label>
+                      <div className='form-check form-check-inline mb-0'>
+                        <input
+                          className='form-check-input'
+                          type='radio'
+                          name='was_will_prepared_by_solicitor'
+                          id='will_prepared_yes'
+                          value={true}
+                          checked={!!application.was_will_prepared_by_solicitor}
+                          onChange={() => {
+                            setApplication({
+                              ...application,
+                              was_will_prepared_by_solicitor: true,
+                            });
+                            setTriggerChandleChange(!triggerHandleChange);
+                          }}
+                          disabled={
+                            application.approved || application.is_rejected
+                          }
+                        />
+                        <label
+                          className='form-check-label'
+                          htmlFor='will_prepared_yes'
+                          style={{
+                            marginLeft: 4,
+                            marginRight: 16,
+                            fontWeight: 500,
+                          }}
+                        >
+                          Yes
+                        </label>
+                      </div>
+                      <div className='form-check form-check-inline mb-0'>
+                        <input
+                          className='form-check-input'
+                          type='radio'
+                          name='was_will_prepared_by_solicitor'
+                          id='will_prepared_no'
+                          value={false}
+                          checked={!application.was_will_prepared_by_solicitor}
+                          onChange={() => {
+                            setApplication({
+                              ...application,
+                              was_will_prepared_by_solicitor: false,
+                            });
+                            setTriggerChandleChange(!triggerHandleChange);
+                          }}
+                          disabled={
+                            application.approved || application.is_rejected
+                          }
+                        />
+                        <label
+                          className='form-check-label'
+                          htmlFor='will_prepared_no'
+                          style={{ marginLeft: 4, fontWeight: 500 }}
+                        >
+                          No
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
