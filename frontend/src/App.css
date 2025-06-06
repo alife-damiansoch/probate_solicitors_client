@@ -640,24 +640,52 @@ p {
   align-items: stretch;
   gap: 8px;
 }
-.estate-summary-sticky .estate-summary-group:not(:last-child) {
-  border-bottom: 1px solid #eee;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+
+/* New wrapper for inner content, flex-col on mobile, flex-row on desktop */
+.estate-summary-sticky-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
+
+.estate-summary-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Desktop styles */
+@media (min-width: 992px) {
+  .estate-summary-sticky {
+    max-width: none;
+    left: 0;
+    right: 0;
+    transform: none;
+    border-radius: 12px 12px 0 0;
+    padding: 14px 60px 14px 60px;
+  }
+  .estate-summary-sticky-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 48px;
+    width: 100%;
+  }
+  .estate-summary-group {
+    flex: 1 1 0;
+    min-width: 0;
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+/* Messages and footnote styling */
 .estate-summary-sticky small,
 .estate-summary-sticky .form-text,
 .estate-summary-sticky .text-success,
 .estate-summary-sticky .text-danger {
-  font-size: 0.92rem !important;
+  font-size: 0.95rem !important;
 }
-@media (min-width: 992px) {
-  .estate-summary-sticky {
-    max-width: 600px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 12px 12px 0 0;
-    padding: 16px 24px 12px 24px;
-  }
-}
+
 

@@ -1,14 +1,18 @@
+import Cookies from 'js-cookie';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import Cookies from 'js-cookie';
-import renderErrors from '../../../GenericFunctions/HelperGenericFunctions';
-import { postData } from '../../../GenericFunctions/AxiosGenericFunctions';
 import LoadingComponent from '../../../GenericComponents/LoadingComponent';
+import { postData } from '../../../GenericFunctions/AxiosGenericFunctions';
+import renderErrors from '../../../GenericFunctions/HelperGenericFunctions';
 
-import ApplicationPart from './FormParts/ApplicationPart';
 import ApplicantsPart from './FormParts/ApplicantsPart';
-import EstatesPart, { ESTATE_DEFINITIONS, defaultEstates, toNumber } from './FormParts/EstatesPart';
+import ApplicationPart from './FormParts/ApplicationPart';
+import EstatesPart, {
+  ESTATE_DEFINITIONS,
+  defaultEstates,
+  toNumber,
+} from './FormParts/EstatesPart';
 import EstateSummarySticky from './FormParts/EstateSummarySticky';
 
 const currency_sign = Cookies.get('currency_sign');
@@ -25,49 +29,63 @@ export default function NewApplicationForm() {
     term: 12,
     deceased: { first_name: '', last_name: '' },
     dispute: { details: '' },
-    applicants: [{ title: 'Mr', first_name: '', last_name: '', pps_number: '' }],
+    applicants: [
+      { title: 'Mr', first_name: '', last_name: '', pps_number: '' },
+    ],
     estates: JSON.parse(JSON.stringify(defaultEstates)),
+    was_will_prepared_by_solicitor: null,
   });
 
   // --- Calculation helpers
   const sumEstate = (formData, filterFn) => {
     let total = 0;
-    ESTATE_DEFINITIONS.forEach(def => {
+    ESTATE_DEFINITIONS.forEach((def) => {
       if (def.key === 'irish_debts') return; // Exclude here
       if (def.type === 'array') {
-        formData.estates[def.key].forEach(item => { if (filterFn(item)) total += toNumber(item.value); });
+        formData.estates[def.key].forEach((item) => {
+          if (filterFn(item)) total += toNumber(item.value);
+        });
       } else if (def.type === 'single') {
-        if (filterFn(formData.estates[def.key])) total += toNumber(formData.estates[def.key].value);
+        if (filterFn(formData.estates[def.key]))
+          total += toNumber(formData.estates[def.key].value);
       }
     });
     return total;
   };
   const sumIrishDebts = (formData) =>
-    formData.estates.irish_debts.reduce((sum, item) => sum + toNumber(item.value), 0);
+    formData.estates.irish_debts.reduce(
+      (sum, item) => sum + toNumber(item.value),
+      0
+    );
 
-  const netIrishEstate = sumEstate(formData, () => true) - sumIrishDebts(formData);
-  const lendableIrishEstate = sumEstate(formData, item => item.lendable !== false) - sumIrishDebts(formData);
+  const netIrishEstate =
+    sumEstate(formData, () => true) - sumIrishDebts(formData);
+  const lendableIrishEstate =
+    sumEstate(formData, (item) => item.lendable !== false) -
+    sumIrishDebts(formData);
 
   // --- Compile for backend (schema-driven)
   const compileEstatesForBackend = (estates) => {
     const items = [];
-    ESTATE_DEFINITIONS.forEach(def => {
+    ESTATE_DEFINITIONS.forEach((def) => {
       if (def.key === 'real_and_leasehold') {
-        estates.real_and_leasehold.forEach(item => {
+        estates.real_and_leasehold.forEach((item) => {
           if (item.address || item.county || item.nature || item.value) {
             items.push({
-              description: `${def.label}: ${item.address}${item.county ? ', ' + item.county : ''}${item.nature ? ', ' + item.nature : ''}`,
+              description: `${def.label}: ${item.address}${
+                item.county ? ', ' + item.county : ''
+              }${item.nature ? ', ' + item.nature : ''}`,
               value: item.value || '',
               lendable: item.lendable,
             });
           }
         });
       } else if (def.key === 'irish_debts') {
-        estates.irish_debts.forEach(item => {
+        estates.irish_debts.forEach((item) => {
           if (item.creditor || item.description || item.value) {
             items.push({
               description: `Irish debts/funeral expenses: Creditor: ${item.creditor} - ${item.description}`,
-              value: item.value
+              value: item.value,
             });
           }
         });
@@ -76,16 +94,17 @@ export default function NewApplicationForm() {
           items.push({
             description: def.label,
             value: estates[def.key].value,
-            lendable: estates[def.key].lendable
+            lendable: estates[def.key].lendable,
           });
         }
       } else if (def.type === 'array') {
-        estates[def.key].forEach(item => {
+        estates[def.key].forEach((item) => {
           if (item.description || item.value) {
             items.push({
-              description: def.label + (item.description ? ': ' + item.description : ''),
+              description:
+                def.label + (item.description ? ': ' + item.description : ''),
               value: item.value,
-              lendable: item.lendable
+              lendable: item.lendable,
             });
           }
         });
@@ -135,12 +154,14 @@ export default function NewApplicationForm() {
   };
 
   return (
-    <div className='card mt-5 ' style={{ marginBottom: "200px" }}>
+    <div className='card mt-5 ' style={{ marginBottom: '200px' }}>
       <div className='card-header text-center'>
-        <div className='card-title'><h1>Create New Application</h1></div>
+        <div className='card-title'>
+          <h1>Create New Application</h1>
+        </div>
       </div>
       <div className='card-body'>
-        <form onSubmit={submitHandler} >
+        <form onSubmit={submitHandler}>
           <ApplicationPart formData={formData} setFormData={setFormData} />
           <ApplicantsPart
             applicants={formData.applicants}
@@ -170,7 +191,12 @@ export default function NewApplicationForm() {
               )}
             </button>
             {message && (
-              <div className={`alert text-center ${isError ? ' alert-danger' : 'alert-success'}`} role='alert'>
+              <div
+                className={`alert text-center ${
+                  isError ? ' alert-danger' : 'alert-success'
+                }`}
+                role='alert'
+              >
                 {renderErrors(message)}
               </div>
             )}
