@@ -89,7 +89,7 @@ const Application = ({ application}) => {
                 </div>
                 <div className='col-md-6'>
                   <label className='form-label col-12 text-black mb-1'>
-                    Term:
+                    Initial Term:
                     <input
                       type='text'
                       className='form-control form-control-sm rounded shadow'

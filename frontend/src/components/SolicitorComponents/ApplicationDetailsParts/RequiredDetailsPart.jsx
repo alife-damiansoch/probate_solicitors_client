@@ -57,9 +57,9 @@ const RequiredDetailsPart = ({
           pps_number,
         })
       ),
-      estates: estates.map(({ description, value }) => ({
+      estates: estates.map(({ description, value,lendable }) => ({
         description,
-        value,
+        value,lendable,
       })),
     };
   };
@@ -119,6 +119,7 @@ const RequiredDetailsPart = ({
     setIsError(false);
 
     if (application && originalApplication) {
+
       if (JSON.stringify(application) === JSON.stringify(originalApplication)) {
         console.log('No changes detected, skipping update.');
         return;
@@ -242,7 +243,7 @@ const RequiredDetailsPart = ({
                     )}
                   </div>
                   <div className='col-md-6'>
-                    <label className='form-label col-12'>Term:</label>
+                    <label className='form-label col-12'>Initial term:</label>
                     <div className='input-group input-group-sm shadow mb-2'>
                       <input
                         type='text'
@@ -264,9 +265,10 @@ const RequiredDetailsPart = ({
                           if (editMode.term) submitChangesHandler();
                           toggleEditMode('term');
                         }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
+                        // disabled={
+                        //   application.approved || application.is_rejected
+                        // }
+                          disabled
                       >
                         {editMode.term ? (
                           <FaSave size={20} color='red' />

@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { FaTrash, FaEdit, FaSave } from 'react-icons/fa';
-
 import Cookies from 'js-cookie';
+import {EstateSummaryForApp} from "./EstateSummaryForApp.jsx";
+import AutoResizingTextarea from "./AutoResizingTextarea.jsx";
+
+
+
 
 const EstatesPart = ({
   addItem,
@@ -33,6 +37,7 @@ const EstatesPart = ({
     setNewEstate({
       description: '',
       value: '',
+      lendable:true
     });
     setTriggerChandleChange(!triggerChandleChange);
   };
@@ -48,15 +53,19 @@ const EstatesPart = ({
       !newEstate[field] && isAnyFieldFilled ? 'border-1 border-danger' : ''
     }`;
   };
+  useEffect(() => {
+    if(application) {
+      console.log(application.estates);
+    }
+  }, [application]);
 
-  //   triggers submit change handler when button pressed
   useEffect(() => {
     submitChangesHandler();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerChandleChange]);
 
   return (
-    <div className='card mt-3  mx-md-3 rounded border-0'>
+    <div className='card mt-3  mx-md-3 rounded border-0 '>
       <div className='card-header  rounded-top mt-3'>
         <h4 className='card-subtitle text-info-emphasis'>Estates</h4>
       </div>
@@ -71,22 +80,21 @@ const EstatesPart = ({
         {application.estates.map((estate, index) => (
           <div
             key={index}
-            className='row my-2 py-2 rounded mx-1 d-flex align-items-center shadow'
+            className={`row my-2 py-2 rounded mx-1 d-flex align-items-center shadow ${estate.lendable === null ? "bg-danger-subtle" : ""}`}
           >
             <div className='col-md-8'>
               <label className='form-label col-12'>Description:</label>
               <div className='input-group input-group-sm shadow'>
-                <input
-                  type='text'
-                  className={`form-control ${
-                    editMode[`estate_${index}_description`] &&
-                    ' bg-warning-subtle'
-                  }`}
+                <AutoResizingTextarea
                   value={estate.description}
-                  onChange={(e) =>
+                  onChange={e =>
                     handleListChange(e, index, 'estates', 'description')
                   }
                   readOnly={!editMode[`estate_${index}_description`]}
+                  className={
+                    `form-control form-control-sm` +
+                    (editMode[`estate_${index}_description`] ? ' bg-warning-subtle' : '')
+                  }
                 />
                 <button
                   type='button'
@@ -162,26 +170,25 @@ const EstatesPart = ({
               <h4 className='card-subtitle text-warning-emphasis'>
                 Add Estate
               </h4>
-
               <div className='row'>
                 <div className='col-md-7'>
                   <label className='form-label col-12'>Description:</label>
-                  <input
-                    type='text'
-                    className={`shadow ${getFieldClassName('description')}`}
+                  <AutoResizingTextarea
                     value={newEstate.description}
-                    onChange={(e) => handleNewEstateChange(e, 'description')}
+                    onChange={e => handleNewEstateChange(e, 'description')}
+                    readOnly={false}
+                    className={`shadow ${getFieldClassName('description')}`}
                   />
                 </div>
                 <div className='col-md-3'>
                   <label className='form-label col-12'>Value:</label>
                   <input
                     type='number'
-                    step='0.01' // Allows two decimal places
+                    step='0.01'
                     min='0'
                     className={`shadow ${getFieldClassName('value')}`}
                     value={newEstate.value}
-                    onChange={(e) => handleNewEstateChange(e, 'value')}
+                    onChange={e => handleNewEstateChange(e, 'value')}
                     placeholder={currency_sign}
                   />
                 </div>
@@ -199,7 +206,13 @@ const EstatesPart = ({
             </div>
           </div>
         )}
+        <EstateSummaryForApp
+          estates={application.estates}
+          requestedAmount={application.amount}
+          currency_sign={currency_sign}
+        />
       </div>
+
     </div>
   );
 };
