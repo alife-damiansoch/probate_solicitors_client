@@ -15,8 +15,6 @@ import EstatesPart, {
 } from './FormParts/EstatesPart';
 import EstateSummarySticky from './FormParts/EstateSummarySticky';
 
-
-
 export default function NewApplicationForm() {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -36,7 +34,7 @@ export default function NewApplicationForm() {
   });
 
   const currency_sign = Cookies.get('currency_sign');
-const idNumberArray = JSON.parse(Cookies.get('id_number'));
+  const idNumberArray = JSON.parse(Cookies.get('id_number'));
 
   // --- Calculation helpers
   const sumEstate = (formData, filterFn) => {
@@ -74,9 +72,12 @@ const idNumberArray = JSON.parse(Cookies.get('id_number'));
         estates.real_and_leasehold.forEach((item) => {
           if (item.address || item.county || item.nature || item.value) {
             items.push({
-              description: `${def.label}: ${item.address}${
-                item.county ? ', ' + item.county : ''
-              }${item.nature ? ', ' + item.nature : ''}`,
+              name: def.label,
+              details: {
+                address: item.address,
+                county: item.county,
+                nature: item.nature,
+              },
               value: item.value || '',
               lendable: item.lendable,
             });
@@ -86,15 +87,21 @@ const idNumberArray = JSON.parse(Cookies.get('id_number'));
         estates.irish_debts.forEach((item) => {
           if (item.creditor || item.description || item.value) {
             items.push({
-              description: `Irish debts/funeral expenses: Creditor: ${item.creditor} - ${item.description}`,
+              name: def.label,
+              details: {
+                creditor: item.creditor,
+                description: item.description,
+              },
               value: item.value,
+              lendable: null, // Not relevant or you can omit if you want
             });
           }
         });
       } else if (def.type === 'single') {
         if (estates[def.key] && estates[def.key].value) {
           items.push({
-            description: def.label,
+            name: def.label,
+            details: {}, // nothing extra to store
             value: estates[def.key].value,
             lendable: estates[def.key].lendable,
           });
@@ -103,8 +110,10 @@ const idNumberArray = JSON.parse(Cookies.get('id_number'));
         estates[def.key].forEach((item) => {
           if (item.description || item.value) {
             items.push({
-              description:
-                def.label + (item.description ? ': ' + item.description : ''),
+              name: def.label,
+              details: {
+                description: item.description,
+              },
               value: item.value,
               lendable: item.lendable,
             });
