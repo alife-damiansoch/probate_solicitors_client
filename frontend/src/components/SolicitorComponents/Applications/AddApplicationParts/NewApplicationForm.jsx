@@ -15,8 +15,7 @@ import EstatesPart, {
 } from './FormParts/EstatesPart';
 import EstateSummarySticky from './FormParts/EstateSummarySticky';
 
-const currency_sign = Cookies.get('currency_sign');
-const idNumberArray = JSON.parse(Cookies.get('id_number'));
+
 
 export default function NewApplicationForm() {
   const [message, setMessage] = useState('');
@@ -35,6 +34,9 @@ export default function NewApplicationForm() {
     estates: JSON.parse(JSON.stringify(defaultEstates)),
     was_will_prepared_by_solicitor: null,
   });
+
+  const currency_sign = Cookies.get('currency_sign');
+const idNumberArray = JSON.parse(Cookies.get('id_number'));
 
   // --- Calculation helpers
   const sumEstate = (formData, filterFn) => {
