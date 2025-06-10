@@ -64,11 +64,13 @@ const RequiredDetailsPart = ({
           pps_number,
         })
       ),
-      estates: estates.map(({ description, value, lendable }) => ({
-        description,
+      estates: estates.map(({ name, value, lendable, details }) => ({
+        name,
         value,
         lendable,
+        details: details || {},
       })),
+
       was_will_prepared_by_solicitor, // Include this field
     };
   };
@@ -391,65 +393,65 @@ const RequiredDetailsPart = ({
                   <div className='col-12'>
                     <div className='d-flex align-items-center gap-3'>
                       <label
-                          className='form-label mb-0'
-                          style={{minWidth: 320}}
+                        className='form-label mb-0'
+                        style={{ minWidth: 320 }}
                       >
                         Was this will professionally prepared by a solicitor?
                       </label>
                       <div className='form-check form-check-inline mb-0'>
                         <input
-                            className='form-check-input'
-                            type='radio'
-                            name='was_will_prepared_by_solicitor'
-                            id='will_prepared_yes'
-                            value={true}
-                            checked={!!application.was_will_prepared_by_solicitor}
-                            onChange={() => {
-                              setApplication({
-                                ...application,
-                                was_will_prepared_by_solicitor: true,
-                              });
-                              setTriggerChandleChange(!triggerHandleChange);
-                            }}
-                            disabled={
-                                application.approved || application.is_rejected
-                            }
+                          className='form-check-input'
+                          type='radio'
+                          name='was_will_prepared_by_solicitor'
+                          id='will_prepared_yes'
+                          value={true}
+                          checked={!!application.was_will_prepared_by_solicitor}
+                          onChange={() => {
+                            setApplication({
+                              ...application,
+                              was_will_prepared_by_solicitor: true,
+                            });
+                            setTriggerChandleChange(!triggerHandleChange);
+                          }}
+                          disabled={
+                            application.approved || application.is_rejected
+                          }
                         />
                         <label
-                            className='form-check-label'
-                            htmlFor='will_prepared_yes'
-                            style={{
-                              marginLeft: 4,
-                              marginRight: 16,
-                              fontWeight: 500,
-                            }}
+                          className='form-check-label'
+                          htmlFor='will_prepared_yes'
+                          style={{
+                            marginLeft: 4,
+                            marginRight: 16,
+                            fontWeight: 500,
+                          }}
                         >
                           Yes
                         </label>
                       </div>
                       <div className='form-check form-check-inline mb-0'>
                         <input
-                            className='form-check-input'
-                            type='radio'
-                            name='was_will_prepared_by_solicitor'
-                            id='will_prepared_no'
-                            value={false}
-                            checked={!application.was_will_prepared_by_solicitor}
-                            onChange={() => {
-                              setApplication({
-                                ...application,
-                                was_will_prepared_by_solicitor: false,
-                              });
-                              setTriggerChandleChange(!triggerHandleChange);
-                            }}
-                            disabled={
-                                application.approved || application.is_rejected
-                            }
+                          className='form-check-input'
+                          type='radio'
+                          name='was_will_prepared_by_solicitor'
+                          id='will_prepared_no'
+                          value={false}
+                          checked={!application.was_will_prepared_by_solicitor}
+                          onChange={() => {
+                            setApplication({
+                              ...application,
+                              was_will_prepared_by_solicitor: false,
+                            });
+                            setTriggerChandleChange(!triggerHandleChange);
+                          }}
+                          disabled={
+                            application.approved || application.is_rejected
+                          }
                         />
                         <label
-                            className='form-check-label'
-                            htmlFor='will_prepared_no'
-                            style={{marginLeft: 4, fontWeight: 500}}
+                          className='form-check-label'
+                          htmlFor='will_prepared_no'
+                          style={{ marginLeft: 4, fontWeight: 500 }}
                         >
                           No
                         </label>
@@ -458,7 +460,7 @@ const RequiredDetailsPart = ({
                   </div>
                 </div>
 
-                <hr/>
+                <hr />
                 <div className='row '>
                   <div className='col-md-12'>
                     <label className='form-label col-12'>
@@ -518,15 +520,9 @@ const RequiredDetailsPart = ({
           setTriggerChandleChange={setTriggerChandleChange}
         />
         <EstatesPart
-          addItem={addItem}
           application={application}
-          handleListChange={handleListChange}
-          editMode={editMode}
-          submitChangesHandler={submitChangesHandler}
-          toggleEditMode={toggleEditMode}
-          removeItem={removeItem}
-          triggerChandleChange={triggerHandleChange}
-          setTriggerChandleChange={setTriggerChandleChange}
+          refresh={refresh}
+          setRefresh={setRefresh}
         />
       </div>
       <SolicitorPart

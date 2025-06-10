@@ -1,218 +1,527 @@
-import { useEffect, useState } from 'react';
-import { FaTrash, FaEdit, FaSave } from 'react-icons/fa';
 import Cookies from 'js-cookie';
-import {EstateSummaryForApp} from "./EstateSummaryForApp.jsx";
-import AutoResizingTextarea from "./AutoResizingTextarea.jsx";
+import { useEffect, useState } from 'react';
+import { FaFileInvoiceDollar } from 'react-icons/fa';
+import { fetchData } from '../../GenericFunctions/AxiosGenericFunctions';
+import EstateSummarySticky from '../Applications/AddApplicationParts/FormParts/EstateSummarySticky';
+import EstateManagerModal from './EstatesManagerModal';
+import { estateFieldMap } from './EstatesManagerModalParts/estateFieldConfig'; // Import the field configuration
 
-
-
-
-const EstatesPart = ({
-  addItem,
-  application,
-  handleListChange,
-  editMode,
-  submitChangesHandler,
-  toggleEditMode,
-  removeItem,
-  triggerChandleChange,
-  setTriggerChandleChange,
-}) => {
+const EstatesPart = ({ application, refresh, setRefresh }) => {
   const currency_sign = Cookies.get('currency_sign');
+  const [estates, setEstates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showEstateModal, setShowEstateModal] = useState(false);
 
-  const [newEstate, setNewEstate] = useState({
-    description: '',
-    value: '',
+  console.log('Application:', application.id);
+
+  // Fetch estates when application.estate_summary changes
+  useEffect(() => {
+    const getEstates = async () => {
+      if (!application.estate_summary) return;
+      console.log(
+        `Fetching estates for application ${application.id} from ${application.estate_summary}`
+      );
+      setLoading(true);
+      try {
+        const token = Cookies.get('auth_token')?.access;
+        // Use fetchData helper. (Adjust if yours expects full auth object.)
+        const response = await fetchData(
+          token,
+          application.estate_summary,
+          true
+        ); // true = absolute url
+        console.log('Estates response:', response);
+
+        // Flatten all estate categories into a single array
+        const estatesData = response.data;
+        const allEstates = [];
+
+        // Extract estates from all categories and add category labels
+        Object.entries(estatesData).forEach(([category, categoryEstates]) => {
+          if (Array.isArray(categoryEstates) && categoryEstates.length > 0) {
+            categoryEstates.forEach((estate) => {
+              // Add category information to each estate
+              const isLiability = category === 'irish_debt';
+              allEstates.push({
+                ...estate,
+                category: category,
+                group_label: formatCategoryName(category),
+                is_asset: isLiability ? false : estate.is_asset, // Mark irish_debt as liability
+              });
+            });
+          }
+        });
+
+        console.log('Flattened estates:', allEstates);
+        setEstates(allEstates);
+      } catch (e) {
+        console.error('Error fetching estates:', e);
+        setEstates([]);
+      }
+      setLoading(false);
+    };
+    getEstates();
+  }, [application.estate_summary, refresh]);
+
+  // Helper function to format category names for display
+  const formatCategoryName = (category) => {
+    return category
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  // Helper function to format field names for display
+  const formatFieldName = (fieldName) => {
+    return fieldName
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  // Helper function to get field configuration for an estate category
+  const getFieldsForCategory = (category) => {
+    return estateFieldMap[category] || [];
+  };
+
+  // Helper function to render estate fields based on configuration
+  const renderEstateFields = (estate) => {
+    const fields = getFieldsForCategory(estate.category);
+
+    if (fields.length === 0) {
+      // Fallback to displaying all available properties if no config found
+      const relevantFields = Object.entries(estate).filter(
+        ([key, val]) =>
+          val !== null &&
+          val !== undefined &&
+          val !== '' &&
+          !['id', 'category', 'group_label', 'is_asset', 'value'].includes(key)
+      );
+
+      if (relevantFields.length === 0) return null;
+
+      return (
+        <div>
+          {relevantFields.map(([key, val]) => (
+            <div key={key} style={{ marginBottom: '0.6rem' }}>
+              <div
+                style={{
+                  fontWeight: 500,
+                  color: '#495057',
+                  fontSize: '0.9rem',
+                  marginBottom: '0.2rem',
+                }}
+              >
+                {formatFieldName(key)}:
+              </div>
+              <div
+                style={{
+                  color: '#6c757d',
+                  fontSize: '0.9rem',
+                  paddingLeft: '0.5rem',
+                }}
+              >
+                {val}
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // Use field configuration to display structured data
+    const fieldsToShow = fields.filter((field) => {
+      const value = estate[field.name];
+      return (
+        field.name !== 'value' &&
+        value !== null &&
+        value !== undefined &&
+        value !== ''
+      );
+    });
+
+    if (fieldsToShow.length === 0) return null;
+
+    return (
+      <div>
+        {fieldsToShow.map((field) => {
+          const value = estate[field.name];
+          return (
+            <div key={field.name} style={{ marginBottom: '0.6rem' }}>
+              <div
+                style={{
+                  fontWeight: 500,
+                  color: '#495057',
+                  fontSize: '0.9rem',
+                  marginBottom: '0.2rem',
+                }}
+              >
+                {field.label}:
+              </div>
+              <div
+                style={{
+                  color: '#6c757d',
+                  fontSize: '0.9rem',
+                  paddingLeft: '0.5rem',
+                }}
+              >
+                {value}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  if (loading) {
+    return <div className='text-center my-4'>Loading estates...</div>;
+  }
+
+  if (!estates || estates.length === 0) {
+    return (
+      <div className='card mt-3 mx-md-3 rounded border-0'>
+        <div className='card-header rounded-top my-3'>
+          <h4 className='card-subtitle text-info-emphasis'>Estates</h4>
+        </div>
+        <div className='alert alert-danger col-auto mx-auto'>
+          No estate information available for this application.
+        </div>
+        <div className='text-end mb-3'>
+          <button
+            className='btn btn-outline-primary btn-sm'
+            onClick={() => setShowEstateModal(true)}
+          >
+            + Manage Estates
+          </button>
+        </div>
+        <EstateManagerModal
+          show={showEstateModal}
+          onClose={() => setShowEstateModal(false)}
+          estates={estates}
+          applicationId={application.id}
+          refreshEstates={() => setRefresh(!refresh)}
+        />
+      </div>
+    );
+  }
+
+  // Group by label and separate assets from liabilities
+  const grouped = estates.reduce((acc, estate) => {
+    const key = estate.group_label || estate.label || estate.name || 'Unnamed';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(estate);
+    return acc;
+  }, {});
+
+  // Separate assets and liabilities
+  const assetGroups = {};
+  const liabilityGroups = {};
+
+  Object.entries(grouped).forEach(([key, estatesArray]) => {
+    if (estatesArray.some((estate) => estate.is_asset === false)) {
+      liabilityGroups[key] = estatesArray;
+    } else {
+      assetGroups[key] = estatesArray;
+    }
   });
 
-  const handleNewEstateChange = (e, field) => {
-    setNewEstate({
-      ...newEstate,
-      [field]: e.target.value,
-    });
-  };
-
-  const addEstate = () => {
-    addItem('estates', newEstate);
-    setNewEstate({
-      description: '',
-      value: '',
-      lendable:true
-    });
-    setTriggerChandleChange(!triggerChandleChange);
-  };
-
-  const isEstateFormValid = newEstate.description && newEstate.value;
-
-  const isAnyFieldFilled = Object.values(newEstate).some(
-    (value) => value !== ''
-  );
-
-  const getFieldClassName = (field) => {
-    return `form-control form-control-sm ${
-      !newEstate[field] && isAnyFieldFilled ? 'border-1 border-danger' : ''
-    }`;
-  };
-  useEffect(() => {
-    if(application) {
-      console.log(application);
-    }
-  }, [application]);
-
-  useEffect(() => {
-    submitChangesHandler();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerChandleChange]);
-
   return (
-    <div className='card mt-3  mx-md-3 rounded border-0 '>
-      <div className='card-header  rounded-top mt-3'>
+    <div className='card mt-3 mx-md-3 rounded border-0'>
+      <div className='card-header rounded-top mt-3'>
         <h4 className='card-subtitle text-info-emphasis'>Estates</h4>
       </div>
-      {(!application.estates || application.estates.length === 0) && (
-        <div className='row mt-3'>
-          <div className=' alert alert-danger col-auto mx-auto'>
-            Please provide details for at least one estate.
-          </div>
-        </div>
-      )}
+
       <div className='card-body p-0 p-md-3'>
-        {application.estates.map((estate, index) => (
-          <div
-            key={index}
-            className={`row my-2 py-2 rounded mx-1 d-flex align-items-center shadow ${estate.lendable === null ? "bg-danger-subtle" : ""}`}
-          >
-            <div className='col-md-8'>
-              <label className='form-label col-12'>Description:</label>
-              <div className='input-group input-group-sm shadow'>
-                <AutoResizingTextarea
-                  value={estate.description}
-                  onChange={e =>
-                    handleListChange(e, index, 'estates', 'description')
-                  }
-                  readOnly={!editMode[`estate_${index}_description`]}
-                  className={
-                    `form-control form-control-sm` +
-                    (editMode[`estate_${index}_description`] ? ' bg-warning-subtle' : '')
-                  }
-                />
-                <button
-                  type='button'
-                  className='btn btn-dark'
-                  onClick={() => {
-                    if (editMode[`estate_${index}_description`])
-                      submitChangesHandler();
-                    toggleEditMode(`estate_${index}_description`);
-                  }}
-                  disabled={application.approved || application.is_rejected}
-                >
-                  {editMode[`estate_${index}_description`] ? (
-                    <FaSave size={20} color='red' />
-                  ) : (
-                    <FaEdit size={20} />
-                  )}
-                </button>
-              </div>
-            </div>
-            <div className='col-md-3'>
-              <label className='form-label col-12'>Value:</label>
-              <div className='input-group input-group-sm shadow'>
-                <input
-                  type='text'
-                  className={`form-control ${
-                    editMode[`estate_${index}_value`] && ' bg-warning-subtle'
-                  }`}
-                  value={
-                    editMode[`estate_${index}_value`]
-                      ? estate.value
-                      : `${currency_sign} ${estate.value}`
-                  }
-                  onChange={(e) =>
-                    handleListChange(e, index, 'estates', 'value')
-                  }
-                  readOnly={!editMode[`estate_${index}_value`]}
-                />
-                <button
-                  type='button'
-                  className='btn btn-dark'
-                  onClick={() => {
-                    if (editMode[`estate_${index}_value`])
-                      submitChangesHandler();
-                    toggleEditMode(`estate_${index}_value`);
-                  }}
-                  disabled={application.approved || application.is_rejected}
-                >
-                  {editMode[`estate_${index}_value`] ? (
-                    <FaSave size={20} color='red' />
-                  ) : (
-                    <FaEdit size={20} />
-                  )}
-                </button>
-              </div>
-            </div>
-            <div className='col-md-1 text-end my-auto'>
-              <button
-                type='button'
-                className='btn btn-sm btn-outline-danger mt-2 border-0 icon-shadow'
-                onClick={() => removeItem('estates', index)}
-                disabled={application.approved || application.is_rejected}
+        {/* Assets Section */}
+        {Object.keys(assetGroups).length > 0 && (
+          <>
+            <div
+              style={{
+                backgroundColor: '#e3f2fd',
+                border: '1px solid #1976d2',
+                borderRadius: '8px',
+                padding: '1rem 1.5rem',
+                marginBottom: '1.5rem',
+                marginTop: '1rem',
+              }}
+            >
+              <h6
+                style={{
+                  margin: 0,
+                  color: '#1976d2',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                }}
               >
-                <FaTrash size={15} />
-              </button>
+                ESTATE ASSETS
+              </h6>
+              <p
+                style={{
+                  margin: '0.5rem 0 0 0',
+                  color: '#424242',
+                  fontSize: '0.85rem',
+                  fontStyle: 'italic',
+                }}
+              >
+                Property, investments, debts owed to the deceased, and other
+                valuable items comprising the gross estate
+              </p>
             </div>
-          </div>
-        ))}
-        {/* Add New Estate Form */}
-        <hr />
-        {!application.approved && !application.is_rejected && (
-          <div className='row border border-3 border-warning rounded mx-1 pb-1 mx-md-5 shadow'>
-            <div className='card-body px-2 px-md-1 mx-md-3'>
-              <h4 className='card-subtitle text-warning-emphasis'>
-                Add Estate
-              </h4>
-              <div className='row'>
-                <div className='col-md-7'>
-                  <label className='form-label col-12'>Description:</label>
-                  <AutoResizingTextarea
-                    value={newEstate.description}
-                    onChange={e => handleNewEstateChange(e, 'description')}
-                    readOnly={false}
-                    className={`shadow ${getFieldClassName('description')}`}
-                  />
+
+            {Object.entries(assetGroups).map(
+              ([estateName, groupedEstates], groupIndex) => (
+                <div key={groupIndex} className='mb-4'>
+                  {/* Create individual cards for each estate group */}
+                  <div className='card border rounded-3 shadow-sm'>
+                    <div className='card-header bg-light'>
+                      <h5 className='text-primary fw-bold mb-0'>
+                        {estateName}
+                      </h5>
+                    </div>
+                    <div className='card-body'>
+                      {groupedEstates.map((estate, index) => {
+                        const displayName =
+                          groupedEstates.length > 1
+                            ? `${estateName} (${index + 1})`
+                            : estateName;
+
+                        return (
+                          <div
+                            key={index}
+                            className={
+                              'd-flex flex-column flex-md-row align-items-start align-items-md-center ' +
+                              'border rounded-3 p-3 pb-2 position-relative ' +
+                              (index < groupedEstates.length - 1
+                                ? 'mb-3 '
+                                : '') +
+                              (estate.is_asset === false
+                                ? 'bg-liability'
+                                : 'bg-white')
+                            }
+                            style={{
+                              borderLeft:
+                                estate.is_asset === false
+                                  ? '5px solid #495d8b'
+                                  : '5px solid #0dcaf0',
+                              minHeight: '120px',
+                              transition: 'box-shadow 0.2s',
+                            }}
+                          >
+                            <div className='flex-grow-1'>
+                              {groupedEstates.length > 1 && (
+                                <div className='mb-2 d-flex align-items-center'>
+                                  <span className='fw-bold fs-6 text-secondary'>
+                                    {displayName}
+                                  </span>
+                                  {estate.is_asset === false && (
+                                    <span
+                                      className='ms-2'
+                                      title='Non-asset item'
+                                      style={{
+                                        color: '#495d8b',
+                                        opacity: 0.7,
+                                        verticalAlign: 'middle',
+                                      }}
+                                    >
+                                      <FaFileInvoiceDollar size={15} />
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Enhanced field rendering using configuration */}
+                              {renderEstateFields(estate)}
+                            </div>
+
+                            <div
+                              className='d-flex flex-row align-items-center ms-md-3 my-2 my-md-0'
+                              style={{ minWidth: 220 }}
+                            >
+                              <div>
+                                <div className='form-label mb-1 small text-nowrap'>
+                                  {estate.category === 'irish_debt'
+                                    ? 'Amount Owed:'
+                                    : 'Value:'}
+                                </div>
+                                <div className='input-group input-group-sm'>
+                                  <input
+                                    type='text'
+                                    className='form-control shadow-none'
+                                    style={{ minWidth: 90, fontWeight: 500 }}
+                                    value={`${currency_sign} ${estate.value}`}
+                                    readOnly
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-                <div className='col-md-3'>
-                  <label className='form-label col-12'>Value:</label>
-                  <input
-                    type='number'
-                    step='0.01'
-                    min='0'
-                    className={`shadow ${getFieldClassName('value')}`}
-                    value={newEstate.value}
-                    onChange={e => handleNewEstateChange(e, 'value')}
-                    placeholder={currency_sign}
-                  />
-                </div>
-                <div className='col-md-2 my-auto text-end'>
-                  <button
-                    type='button'
-                    className='btn btn-sm btn-dark me-1 mt-4'
-                    onClick={addEstate}
-                    disabled={!isEstateFormValid}
-                  >
-                    <FaSave size={20} color={isEstateFormValid && 'red'} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+              )
+            )}
+          </>
         )}
-        <EstateSummaryForApp
-          estates={application.estates}
-          requestedAmount={application.amount}
+
+        {/* Liabilities Section */}
+        {Object.keys(liabilityGroups).length > 0 && (
+          <>
+            <div
+              style={{
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffc107',
+                borderRadius: '8px',
+                padding: '1rem 1.5rem',
+                marginBottom: '1.5rem',
+                marginTop:
+                  Object.keys(assetGroups).length > 0 ? '2rem' : '1rem',
+              }}
+            >
+              <h6
+                style={{
+                  margin: 0,
+                  color: '#856404',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                }}
+              >
+                ESTATE LIABILITIES
+              </h6>
+              <p
+                style={{
+                  margin: '0.5rem 0 0 0',
+                  color: '#424242',
+                  fontSize: '0.85rem',
+                  fontStyle: 'italic',
+                }}
+              >
+                Debts, funeral expenses, and other obligations payable by the
+                estate
+              </p>
+            </div>
+
+            {Object.entries(liabilityGroups).map(
+              ([estateName, groupedEstates], groupIndex) => (
+                <div key={groupIndex} className='mb-4'>
+                  {/* Create individual cards for each estate group */}
+                  <div className='card border rounded-3 shadow-sm'>
+                    <div className='card-header bg-light'>
+                      <h5 className='text-primary fw-bold mb-0'>
+                        {estateName}
+                      </h5>
+                    </div>
+                    <div className='card-body'>
+                      {groupedEstates.map((estate, index) => {
+                        const displayName =
+                          groupedEstates.length > 1
+                            ? `${estateName} (${index + 1})`
+                            : estateName;
+
+                        return (
+                          <div
+                            key={index}
+                            className={
+                              'd-flex flex-column flex-md-row align-items-start align-items-md-center ' +
+                              'border rounded-3 p-3 pb-2 position-relative ' +
+                              (index < groupedEstates.length - 1
+                                ? 'mb-3 '
+                                : '') +
+                              (estate.is_asset === false
+                                ? 'bg-liability'
+                                : 'bg-white')
+                            }
+                            style={{
+                              borderLeft:
+                                estate.is_asset === false
+                                  ? '5px solid #495d8b'
+                                  : '5px solid #0dcaf0',
+                              minHeight: '120px',
+                              transition: 'box-shadow 0.2s',
+                            }}
+                          >
+                            <div className='flex-grow-1'>
+                              {groupedEstates.length > 1 && (
+                                <div className='mb-2 d-flex align-items-center'>
+                                  <span className='fw-bold fs-6 text-secondary'>
+                                    {displayName}
+                                  </span>
+                                  {estate.is_asset === false && (
+                                    <span
+                                      className='ms-2'
+                                      title='Non-asset item'
+                                      style={{
+                                        color: '#495d8b',
+                                        opacity: 0.7,
+                                        verticalAlign: 'middle',
+                                      }}
+                                    >
+                                      <FaFileInvoiceDollar size={15} />
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Enhanced field rendering using configuration */}
+                              {renderEstateFields(estate)}
+                            </div>
+
+                            <div
+                              className='d-flex flex-row align-items-center ms-md-3 my-2 my-md-0'
+                              style={{ minWidth: 220 }}
+                            >
+                              <div>
+                                <div className='form-label mb-1 small text-nowrap'>
+                                  {estate.category === 'irish_debt'
+                                    ? 'Amount Owed:'
+                                    : 'Value:'}
+                                </div>
+                                <div className='input-group input-group-sm'>
+                                  <input
+                                    type='text'
+                                    className='form-control shadow-none'
+                                    style={{ minWidth: 90, fontWeight: 500 }}
+                                    value={`${currency_sign} ${estate.value}`}
+                                    readOnly
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </>
+        )}
+
+        <div className='text-end mb-3'>
+          <button
+            className='btn btn-outline-primary btn-sm'
+            onClick={() => setShowEstateModal(true)}
+          >
+            + Manage Estates
+          </button>
+        </div>
+
+        <EstateSummarySticky
+          estates={estates}
+          formData={application}
           currency_sign={currency_sign}
         />
       </div>
-
+      <EstateManagerModal
+        show={showEstateModal}
+        onClose={() => setShowEstateModal(false)}
+        estates={estates}
+        applicationId={application.id}
+        refreshEstates={() => setRefresh(!refresh)}
+      />
     </div>
   );
 };
