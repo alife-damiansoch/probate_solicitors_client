@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import Application from './Application';
-import LoadingComponent from '../../GenericComponents/LoadingComponent';
+import { FaFileAlt, FaPlus, FaSearch, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { MdAddchart } from 'react-icons/md';
+import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import { fetchData } from '../../GenericFunctions/AxiosGenericFunctions';
+import Application from './Application';
 
 import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
 
@@ -17,7 +17,6 @@ import StatusFilter from './FilterringApplication.jsx/StatusFilter';
 const Applications = () => {
   const token = Cookies.get('auth_token');
   const [applications, setApplications] = useState(null);
-  // const [filteredApplications, setFilteredApplications] = useState(null);
 
   const [refresh, setRefresh] = useState(false);
   const [errors, setErrors] = useState('');
@@ -61,11 +60,9 @@ const Applications = () => {
           }
         }
         const response = await fetchData(token, endpoint);
-        // console.log(response);
 
         if (response && response.status === 200) {
           setApplications(response.data.results);
-          // setFilteredApplications(response.data.results);
           setTotalItems(response.data.count);
           setIsLoading(false);
         } else {
@@ -102,8 +99,6 @@ const Applications = () => {
     setPageTitle('All applications');
   };
 
-  // console.log(applications);
-
   const addApplicationHandler = () => {
     navigate('/addApplication');
   };
@@ -115,96 +110,250 @@ const Applications = () => {
   // Function to handle page change
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Make request to your API with updated pageNumber
   };
 
   if (isLoading) {
-    return <LoadingComponent />;
+    return (
+      <div
+        className='min-vh-100 d-flex justify-content-center align-items-center'
+        style={{ backgroundColor: '#f8fafc' }}
+      >
+        <LoadingComponent />
+      </div>
+    );
   }
 
   return (
-    <>
-      <div>
-        <div className='text-center my-3'>
-          <h1
-            className='text-center my-3'
-            dangerouslySetInnerHTML={{
-              __html: `${pagerTitle} <br />(${totalItems})`,
-            }}
-          ></h1>
-          {isFiltered && (
-            <button
-              className='btn btn-link text-info text-decoration-underline p-0'
-              onClick={handleClearAllFilters} // Call your function to clear filters
-            >
-              Clear all filters
-            </button>
-          )}
-        </div>
-        <div className='row'>
-          <div className=' col-md-6 mx-auto my-2'>
-            <button
-              className=' btn btn-info w-100 shadow'
-              onClick={addApplicationHandler}
-            >
-              <MdAddchart size={20} className=' mx-3' />
-              Add application
-            </button>
+    <div className='min-vh-100' style={{ backgroundColor: '#f8fafc' }}>
+      <div className='container-fluid px-4 py-4'>
+        {/* Header Section */}
+        <div
+          className='card border-0 mb-4'
+          style={{
+            borderRadius: '16px',
+            boxShadow:
+              '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+            color: 'white',
+            overflow: 'hidden',
+          }}
+        >
+          <div className='card-body p-4'>
+            <div className='row align-items-center'>
+              <div className='col-md-8'>
+                <div className='d-flex align-items-center mb-2'>
+                  <div
+                    className='rounded-circle d-flex align-items-center justify-content-center me-3'
+                    style={{
+                      width: '48px',
+                      height: '48px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backdropFilter: 'blur(10px)',
+                    }}
+                  >
+                    <FaFileAlt size={20} />
+                  </div>
+                  <div>
+                    <h2
+                      className='mb-0 fw-bold'
+                      dangerouslySetInnerHTML={{ __html: pagerTitle }}
+                    ></h2>
+                    <p className='mb-0 opacity-75'>
+                      <span className='fw-semibold'>{totalItems}</span> total
+                      applications
+                    </p>
+                  </div>
+                </div>
+
+                {isFiltered && (
+                  <button
+                    className='btn btn-link text-white text-decoration-underline p-0 fw-medium opacity-75'
+                    style={{ fontSize: '0.9rem' }}
+                    onClick={handleClearAllFilters}
+                    onMouseOver={(e) => {
+                      e.target.style.opacity = '1';
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.opacity = '0.75';
+                    }}
+                  >
+                    <FaTimes className='me-1' size={12} />
+                    Clear all filters
+                  </button>
+                )}
+              </div>
+
+              <div className='col-md-4 text-md-end mt-3 mt-md-0'>
+                <button
+                  className='btn px-4 py-3 fw-semibold'
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    color: 'white',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    borderRadius: '12px',
+                    transition: 'all 0.2s ease',
+                    backdropFilter: 'blur(10px)',
+                    fontSize: '1rem',
+                  }}
+                  onClick={addApplicationHandler}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                    e.target.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <FaPlus className='me-2' size={16} />
+                  Add Application
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <StatusFilter
-          status={status}
-          setStatus={setStatus}
-          searchId={searchId}
-          setSearchId={setSearchId}
-          applicantDetailSearch={applicantDetailSearch}
-          setApplicantDetailSearch={setApplicantDetailSearch}
-          setIsFiltered={setIsFiltered}
-          setPageTitle={setPageTitle}
-        />
 
+        {/* Filters Section */}
+        <div className='mb-4'>
+          <StatusFilter
+            status={status}
+            setStatus={setStatus}
+            searchId={searchId}
+            setSearchId={setSearchId}
+            applicantDetailSearch={applicantDetailSearch}
+            setApplicantDetailSearch={setApplicantDetailSearch}
+            setIsFiltered={setIsFiltered}
+            setPageTitle={setPageTitle}
+          />
+        </div>
+
+        {/* Error Messages */}
         {errors && (
-          <div className='alert alert-danger'>
-            <div className={`alert text-center text-danger`} role='alert'>
+          <div
+            className='alert border-0 text-center mb-4'
+            style={{
+              backgroundColor: '#fef2f2',
+              color: '#dc2626',
+              borderRadius: '12px',
+              boxShadow: '0 4px 6px rgba(239, 68, 68, 0.1)',
+              fontWeight: '500',
+            }}
+            role='alert'
+          >
+            <div className='d-flex align-items-center justify-content-center'>
+              <i className='fas fa-exclamation-triangle me-2'></i>
               {renderErrors(errors)}
             </div>
           </div>
         )}
 
+        {/* Applications Content */}
         {applications ? (
           <>
             {applications.length > 0 ? (
-              <>
-                {applications.map((application) => (
-                  <Application
-                    key={application.id}
-                    application={application}
-                    onDelete={refreshApplications}
-                  />
-                ))}
-                <PaginationComponent
-                  totalItems={totalItems}
-                  itemsPerPage={itemsPerPage}
-                  onPageChange={handlePageChange}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  setItemsPerPage={setItemsPerPage}
-                />
-              </>
+              <div className='row'>
+                <div className='col-12'>
+                  {/* Applications List */}
+                  <div className='mb-4'>
+                    {applications.map((application) => (
+                      <Application
+                        key={application.id}
+                        application={application}
+                        onDelete={refreshApplications}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  <div
+                    className='card border-0'
+                    style={{
+                      borderRadius: '12px',
+                      boxShadow:
+                        '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                      backgroundColor: '#ffffff',
+                    }}
+                  >
+                    <div className='card-body p-3'>
+                      <PaginationComponent
+                        totalItems={totalItems}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={handlePageChange}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        setItemsPerPage={setItemsPerPage}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             ) : (
-              <div className='alert alert-info text-center' role='alert'>
-                <strong>No Applications Found</strong>
-                <br />
-                There are no applications matching the current search criteria.
-                Please adjust your filters and try again.
+              /* Empty State */
+              <div
+                className='card border-0 text-center'
+                style={{
+                  borderRadius: '16px',
+                  boxShadow:
+                    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                  backgroundColor: '#ffffff',
+                  padding: '3rem 2rem',
+                }}
+              >
+                <div
+                  className='rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4'
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    backgroundColor: '#f3f4f6',
+                    color: '#6b7280',
+                  }}
+                >
+                  <FaSearch size={32} />
+                </div>
+                <h4 className='fw-bold text-slate-700 mb-2'>
+                  No Applications Found
+                </h4>
+                <p
+                  className='text-slate-500 mb-4'
+                  style={{ maxWidth: '400px', margin: '0 auto' }}
+                >
+                  There are no applications matching the current search
+                  criteria. Please adjust your filters and try again.
+                </p>
+                {isFiltered && (
+                  <button
+                    className='btn px-4 py-2 fw-medium'
+                    style={{
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '10px',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onClick={handleClearAllFilters}
+                    onMouseOver={(e) => {
+                      e.target.style.backgroundColor = '#2563eb';
+                      e.target.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = '#3b82f6';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <FaTimes className='me-2' size={14} />
+                    Clear All Filters
+                  </button>
+                )}
               </div>
             )}
           </>
         ) : (
-          <LoadingComponent />
+          <div className='d-flex justify-content-center'>
+            <LoadingComponent />
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

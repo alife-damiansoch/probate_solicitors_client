@@ -42,7 +42,6 @@ const RequiredDetailsPart = ({
       deceased,
       dispute,
       applicants,
-      estates,
       was_will_prepared_by_solicitor,
     } = application;
 
@@ -64,13 +63,6 @@ const RequiredDetailsPart = ({
           pps_number,
         })
       ),
-      estates: estates.map(({ name, value, lendable, details }) => ({
-        name,
-        value,
-        lendable,
-        details: details || {},
-      })),
-
       was_will_prepared_by_solicitor, // Include this field
     };
   };
@@ -136,7 +128,6 @@ const RequiredDetailsPart = ({
       }
 
       // Ensure dispute.details is not empty
-
       const filteredApplication = getFilteredApplicationData(application);
       if (filteredApplication.dispute.details.trim() === '') {
         filteredApplication.dispute.details = 'No dispute';
@@ -177,6 +168,7 @@ const RequiredDetailsPart = ({
       }
     }
   };
+
   useEffect(() => {
     submitChangesHandler();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,330 +176,543 @@ const RequiredDetailsPart = ({
 
   return (
     <>
+      {/* Status Messages */}
       {errorMessage && (
         <div
-          className={` col-8 mx-auto alert text-center ${
-            isError ? 'alert-warning text-danger' : 'alert-success text-success'
+          className={`alert border-0 text-center mx-auto mb-4 ${
+            isError ? 'alert-danger' : 'alert-success'
           }`}
+          style={{
+            maxWidth: '600px',
+            borderRadius: '12px',
+            boxShadow: isError
+              ? '0 4px 6px rgba(239, 68, 68, 0.1)'
+              : '0 4px 6px rgba(34, 197, 94, 0.1)',
+            backgroundColor: isError ? '#fef2f2' : '#f0fdf4',
+            color: isError ? '#dc2626' : '#16a34a',
+            fontWeight: '500',
+          }}
           role='alert'
         >
-          {renderErrors(errorMessage)}
+          <div className='d-flex align-items-center justify-content-center'>
+            <i
+              className={`fas ${
+                isError ? 'fa-exclamation-triangle' : 'fa-check-circle'
+              } me-2`}
+            ></i>
+            {renderErrors(errorMessage)}
+          </div>
         </div>
       )}
+
       {isUpdating && <LoadingComponent message='Saving changes ...' />}
 
+      {/* Basic Details Section */}
       <div
-        className={`card rounded  shadow pb-3 ${
+        className={`mb-4 ${
           highlitedSectionId === 'Basic Details' && 'highlited_section'
         }`}
         id='Basic Details'
+        style={{
+          borderRadius: '16px',
+          boxShadow:
+            '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          overflow: 'hidden',
+        }}
       >
-        <div className='card-header  rounded-top'>
-          <h4 className={` card-subtitle text-info-emphasis `}>
-            Basic Details
-          </h4>
+        {/* Header */}
+        <div
+          className='card-header border-0 d-flex align-items-center'
+          style={{
+            background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+            color: 'white',
+            padding: '1.5rem',
+          }}
+        >
+          <div
+            className='rounded-circle d-flex align-items-center justify-content-center me-3'
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+            }}
+          >
+            <i className='fas fa-info-circle'></i>
+          </div>
+          <h4 className='mb-0 fw-semibold'>Basic Details</h4>
         </div>
-        <div className='card-body'>
-          <form>
-            <div className='card rounded  border-0'>
-              <div className='card-body px-0 px-md-2'>
-                <div className='row mb-3'>
-                  <div className='col-12 col-md-6'>
-                    <label className='form-label col-12'>Amount:</label>
-                    <div className='input-group input-group-sm shadow mb-2'>
-                      <input
-                        type='text'
-                        className={`form-control  ${
-                          editMode.amount && ' border border-danger'
-                        }`}
-                        value={
-                          editMode.amount
-                            ? application.amount
-                            : `${currency_sign} ${application.amount}`
-                        }
-                        onChange={(e) => handleChange(e, 'amount')}
-                        readOnly={!editMode.amount}
-                      />
-                      <button
-                        type='button'
-                        className='btn btn-dark'
-                        onClick={() => {
-                          if (editMode.amount) submitChangesHandler();
-                          toggleEditMode('amount');
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                      >
-                        {editMode.amount ? (
-                          <FaSave size={20} color='red' />
-                        ) : (
-                          <FaEdit size={20} />
-                        )}
-                      </button>
-                    </div>
-                    {(application.amount === '' ||
-                      isNaN(parseFloat(application.amount)) ||
-                      parseFloat(application.amount) <= 0) && (
-                      <sup className='text-danger'>
-                        Please enter a valid amount greater than zero.
-                      </sup>
-                    )}
-                  </div>
-                  <div className='col-md-6'>
-                    <label className='form-label col-12'>Initial term:</label>
-                    <div className='input-group input-group-sm shadow mb-2'>
-                      <input
-                        type='text'
-                        className={`form-control ${
-                          editMode.term && ' border border-danger'
-                        }`}
-                        value={
-                          editMode.term
-                            ? application.term
-                            : `${application.term} months`
-                        }
-                        onChange={(e) => handleChange(e, 'term')}
-                        readOnly={!editMode.term}
-                      />
-                      <button
-                        type='button'
-                        className='btn  btn-dark'
-                        onClick={() => {
-                          if (editMode.term) submitChangesHandler();
-                          toggleEditMode('term');
-                        }}
-                        // disabled={
-                        //   application.approved || application.is_rejected
-                        // }
-                        disabled
-                      >
-                        {editMode.term ? (
-                          <FaSave size={20} color='red' />
-                        ) : (
-                          <FaEdit size={20} />
-                        )}
-                      </button>
-                    </div>
-                    {(application.term === '' ||
-                      isNaN(parseFloat(application.term)) ||
-                      parseFloat(application.term) <= 0 ||
-                      parseFloat(application.term) > 36) && (
-                      <sup className='text-danger'>
-                        Term must be a positive number of months, between 1 and
-                        36.
-                      </sup>
-                    )}
-                  </div>
-                </div>
-                <hr />
-                <div className='row mb-3'>
-                  <div className='col-md-6 '>
-                    <label className='form-label col-12'>
-                      Deceased First Name:
-                    </label>
-                    <div className='input-group input-group-sm shadow mb-2'>
-                      <input
-                        type='text'
-                        className={`form-control ${
-                          editMode.deceased_first_name &&
-                          ' border border-danger'
-                        }`}
-                        value={application.deceased.first_name}
-                        onChange={(e) =>
-                          handleNestedChange(e, 'deceased', 'first_name')
-                        }
-                        readOnly={!editMode.deceased_first_name}
-                      />
-                      <button
-                        type='button'
-                        className='btn  btn-dark'
-                        onClick={() => {
-                          if (editMode.deceased_first_name)
-                            submitChangesHandler();
-                          toggleEditMode('deceased_first_name');
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                      >
-                        {editMode.deceased_first_name ? (
-                          <FaSave size={20} color='red' />
-                        ) : (
-                          <FaEdit size={20} />
-                        )}
-                      </button>
-                    </div>
-                    {(!application.deceased.first_name ||
-                      application.deceased.first_name === '') && (
-                      <sup className='text-danger'>
-                        Deceased&#39;s first name is required.
-                      </sup>
-                    )}
-                  </div>
-                  <div className='col-md-6'>
-                    <label className='form-label col-12'>
-                      Deceased Last Name:
-                    </label>
-                    <div className='input-group input-group-sm shadow mb-2'>
-                      <input
-                        type='text'
-                        className={`form-control ${
-                          editMode.deceased_last_name && ' border border-danger'
-                        }`}
-                        value={application.deceased.last_name}
-                        onChange={(e) =>
-                          handleNestedChange(e, 'deceased', 'last_name')
-                        }
-                        readOnly={!editMode.deceased_last_name}
-                      />
-                      <button
-                        type='button'
-                        className='btn btn-dark'
-                        onClick={() => {
-                          if (editMode.deceased_last_name)
-                            submitChangesHandler();
-                          toggleEditMode('deceased_last_name');
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                      >
-                        {editMode.deceased_last_name ? (
-                          <FaSave size={20} color='red' />
-                        ) : (
-                          <FaEdit size={20} />
-                        )}
-                      </button>
-                    </div>
-                    {(!application.deceased.last_name ||
-                      application.deceased.last_name === '') && (
-                      <sup className='text-danger'>
-                        Deceased&#39;s last name is required.
-                      </sup>
-                    )}
-                  </div>
-                </div>
-                <hr />
-                <div className='row mb-3 align-items-center'>
-                  <div className='col-12'>
-                    <div className='d-flex align-items-center gap-3'>
-                      <label
-                        className='form-label mb-0'
-                        style={{ minWidth: 320 }}
-                      >
-                        Was this will professionally prepared by a solicitor?
-                      </label>
-                      <div className='form-check form-check-inline mb-0'>
-                        <input
-                          className='form-check-input'
-                          type='radio'
-                          name='was_will_prepared_by_solicitor'
-                          id='will_prepared_yes'
-                          value={true}
-                          checked={!!application.was_will_prepared_by_solicitor}
-                          onChange={() => {
-                            setApplication({
-                              ...application,
-                              was_will_prepared_by_solicitor: true,
-                            });
-                            setTriggerChandleChange(!triggerHandleChange);
-                          }}
-                          disabled={
-                            application.approved || application.is_rejected
-                          }
-                        />
-                        <label
-                          className='form-check-label'
-                          htmlFor='will_prepared_yes'
-                          style={{
-                            marginLeft: 4,
-                            marginRight: 16,
-                            fontWeight: 500,
-                          }}
-                        >
-                          Yes
-                        </label>
-                      </div>
-                      <div className='form-check form-check-inline mb-0'>
-                        <input
-                          className='form-check-input'
-                          type='radio'
-                          name='was_will_prepared_by_solicitor'
-                          id='will_prepared_no'
-                          value={false}
-                          checked={!application.was_will_prepared_by_solicitor}
-                          onChange={() => {
-                            setApplication({
-                              ...application,
-                              was_will_prepared_by_solicitor: false,
-                            });
-                            setTriggerChandleChange(!triggerHandleChange);
-                          }}
-                          disabled={
-                            application.approved || application.is_rejected
-                          }
-                        />
-                        <label
-                          className='form-check-label'
-                          htmlFor='will_prepared_no'
-                          style={{ marginLeft: 4, fontWeight: 500 }}
-                        >
-                          No
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                <hr />
-                <div className='row '>
-                  <div className='col-md-12'>
-                    <label className='form-label col-12'>
-                      Dispute Details:
-                    </label>
-                    <div className='input-group input-group-sm shadow'>
-                      <textarea
-                        // type='text'
-                        className={`form-control ${
-                          editMode.dispute_details && '  border border-danger'
-                        }`}
-                        value={
-                          application.dispute.details === 'No dispute'
-                            ? ''
-                            : application.dispute.details
-                        }
-                        onChange={(e) =>
-                          handleNestedChange(e, 'dispute', 'details')
-                        }
-                        readOnly={!editMode.dispute_details}
-                        style={{ minHeight: '150px' }}
-                      />
-                      <button
-                        type='button'
-                        className='btn btn-dark'
-                        onClick={() => {
-                          if (editMode.dispute_details) submitChangesHandler();
-                          toggleEditMode('dispute_details');
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                      >
-                        {editMode.dispute_details ? (
-                          <FaSave size={20} color='red' />
-                        ) : (
-                          <FaEdit size={20} />
-                        )}
-                      </button>
-                    </div>
-                  </div>
+        {/* Content */}
+        <div className='card-body' style={{ padding: '2rem' }}>
+          <form>
+            {/* Amount and Term Row */}
+            <div className='row g-4 mb-4'>
+              <div className='col-md-6'>
+                <label className='form-label fw-semibold text-slate-700 mb-2'>
+                  <i className='fas fa-euro-sign me-2 text-success'></i>
+                  Amount
+                </label>
+                <div
+                  className='input-group'
+                  style={{
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                  }}
+                >
+                  <input
+                    type='text'
+                    className={`form-control border-0 ${
+                      editMode.amount ? 'border-end border-danger border-2' : ''
+                    }`}
+                    style={{
+                      backgroundColor: editMode.amount ? '#fef2f2' : '#f8fafc',
+                      fontSize: '1rem',
+                      fontWeight: '500',
+                      padding: '0.75rem 1rem',
+                    }}
+                    value={
+                      editMode.amount
+                        ? application.amount
+                        : `${currency_sign} ${application.amount}`
+                    }
+                    onChange={(e) => handleChange(e, 'amount')}
+                    readOnly={!editMode.amount}
+                  />
+                  <button
+                    type='button'
+                    className='btn'
+                    style={{
+                      backgroundColor: editMode.amount ? '#ef4444' : '#1f2937',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0 1rem',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onClick={() => {
+                      if (editMode.amount) submitChangesHandler();
+                      toggleEditMode('amount');
+                    }}
+                    disabled={application.approved || application.is_rejected}
+                    onMouseOver={(e) => {
+                      if (!e.target.disabled) {
+                        e.target.style.transform = 'scale(1.05)';
+                      }
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.transform = 'scale(1)';
+                    }}
+                  >
+                    {editMode.amount ? (
+                      <FaSave size={16} />
+                    ) : (
+                      <FaEdit size={16} />
+                    )}
+                  </button>
                 </div>
+                {(application.amount === '' ||
+                  isNaN(parseFloat(application.amount)) ||
+                  parseFloat(application.amount) <= 0) && (
+                  <div className='text-danger mt-2 small fw-medium'>
+                    <i className='fas fa-exclamation-circle me-1'></i>
+                    Please enter a valid amount greater than zero.
+                  </div>
+                )}
+              </div>
+
+              <div className='col-md-6'>
+                <label className='form-label fw-semibold text-slate-700 mb-2'>
+                  <i className='fas fa-calendar-alt me-2 text-blue-500'></i>
+                  Initial Term
+                </label>
+                <div
+                  className='input-group'
+                  style={{
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                  }}
+                >
+                  <input
+                    type='text'
+                    className={`form-control border-0 ${
+                      editMode.term ? 'border-end border-danger border-2' : ''
+                    }`}
+                    style={{
+                      backgroundColor: '#f1f5f9',
+                      fontSize: '1rem',
+                      fontWeight: '500',
+                      padding: '0.75rem 1rem',
+                    }}
+                    value={
+                      editMode.term
+                        ? application.term
+                        : `${application.term} months`
+                    }
+                    onChange={(e) => handleChange(e, 'term')}
+                    readOnly={!editMode.term}
+                  />
+                  <button
+                    type='button'
+                    className='btn'
+                    style={{
+                      backgroundColor: '#94a3b8',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0 1rem',
+                      cursor: 'not-allowed',
+                    }}
+                    disabled
+                  >
+                    <FaEdit size={16} />
+                  </button>
+                </div>
+                {(application.term === '' ||
+                  isNaN(parseFloat(application.term)) ||
+                  parseFloat(application.term) <= 0 ||
+                  parseFloat(application.term) > 36) && (
+                  <div className='text-danger mt-2 small fw-medium'>
+                    <i className='fas fa-exclamation-circle me-1'></i>
+                    Term must be between 1 and 36 months.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div
+              className='my-4'
+              style={{
+                height: '1px',
+                background:
+                  'linear-gradient(90deg, transparent, #e2e8f0, transparent)',
+              }}
+            ></div>
+
+            {/* Deceased Details Row */}
+            <div className='row g-4 mb-4'>
+              <div className='col-md-6'>
+                <label className='form-label fw-semibold text-slate-700 mb-2'>
+                  <i className='fas fa-user me-2 text-purple-500'></i>
+                  Deceased First Name
+                </label>
+                <div
+                  className='input-group'
+                  style={{
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                  }}
+                >
+                  <input
+                    type='text'
+                    className={`form-control border-0 ${
+                      editMode.deceased_first_name
+                        ? 'border-end border-danger border-2'
+                        : ''
+                    }`}
+                    style={{
+                      backgroundColor: editMode.deceased_first_name
+                        ? '#fef2f2'
+                        : '#f8fafc',
+                      fontSize: '1rem',
+                      fontWeight: '500',
+                      padding: '0.75rem 1rem',
+                    }}
+                    value={application.deceased.first_name}
+                    onChange={(e) =>
+                      handleNestedChange(e, 'deceased', 'first_name')
+                    }
+                    readOnly={!editMode.deceased_first_name}
+                  />
+                  <button
+                    type='button'
+                    className='btn'
+                    style={{
+                      backgroundColor: editMode.deceased_first_name
+                        ? '#ef4444'
+                        : '#1f2937',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0 1rem',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onClick={() => {
+                      if (editMode.deceased_first_name) submitChangesHandler();
+                      toggleEditMode('deceased_first_name');
+                    }}
+                    disabled={application.approved || application.is_rejected}
+                    onMouseOver={(e) => {
+                      if (!e.target.disabled) {
+                        e.target.style.transform = 'scale(1.05)';
+                      }
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.transform = 'scale(1)';
+                    }}
+                  >
+                    {editMode.deceased_first_name ? (
+                      <FaSave size={16} />
+                    ) : (
+                      <FaEdit size={16} />
+                    )}
+                  </button>
+                </div>
+                {(!application.deceased.first_name ||
+                  application.deceased.first_name === '') && (
+                  <div className='text-danger mt-2 small fw-medium'>
+                    <i className='fas fa-exclamation-circle me-1'></i>
+                    Deceased's first name is required.
+                  </div>
+                )}
+              </div>
+
+              <div className='col-md-6'>
+                <label className='form-label fw-semibold text-slate-700 mb-2'>
+                  <i className='fas fa-user me-2 text-purple-500'></i>
+                  Deceased Last Name
+                </label>
+                <div
+                  className='input-group'
+                  style={{
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                  }}
+                >
+                  <input
+                    type='text'
+                    className={`form-control border-0 ${
+                      editMode.deceased_last_name
+                        ? 'border-end border-danger border-2'
+                        : ''
+                    }`}
+                    style={{
+                      backgroundColor: editMode.deceased_last_name
+                        ? '#fef2f2'
+                        : '#f8fafc',
+                      fontSize: '1rem',
+                      fontWeight: '500',
+                      padding: '0.75rem 1rem',
+                    }}
+                    value={application.deceased.last_name}
+                    onChange={(e) =>
+                      handleNestedChange(e, 'deceased', 'last_name')
+                    }
+                    readOnly={!editMode.deceased_last_name}
+                  />
+                  <button
+                    type='button'
+                    className='btn'
+                    style={{
+                      backgroundColor: editMode.deceased_last_name
+                        ? '#ef4444'
+                        : '#1f2937',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0 1rem',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onClick={() => {
+                      if (editMode.deceased_last_name) submitChangesHandler();
+                      toggleEditMode('deceased_last_name');
+                    }}
+                    disabled={application.approved || application.is_rejected}
+                    onMouseOver={(e) => {
+                      if (!e.target.disabled) {
+                        e.target.style.transform = 'scale(1.05)';
+                      }
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.transform = 'scale(1)';
+                    }}
+                  >
+                    {editMode.deceased_last_name ? (
+                      <FaSave size={16} />
+                    ) : (
+                      <FaEdit size={16} />
+                    )}
+                  </button>
+                </div>
+                {(!application.deceased.last_name ||
+                  application.deceased.last_name === '') && (
+                  <div className='text-danger mt-2 small fw-medium'>
+                    <i className='fas fa-exclamation-circle me-1'></i>
+                    Deceased's last name is required.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div
+              className='my-4'
+              style={{
+                height: '1px',
+                background:
+                  'linear-gradient(90deg, transparent, #e2e8f0, transparent)',
+              }}
+            ></div>
+
+            {/* Will Preparation Question */}
+            <div className='mb-4'>
+              <label className='form-label fw-semibold text-slate-700 mb-3'>
+                <i className='fas fa-gavel me-2 text-amber-500'></i>
+                Was this will professionally prepared by a solicitor?
+              </label>
+              <div
+                className='d-flex gap-4 p-3 rounded-3'
+                style={{ backgroundColor: '#f8fafc' }}
+              >
+                <div className='form-check'>
+                  <input
+                    className='form-check-input'
+                    type='radio'
+                    name='was_will_prepared_by_solicitor'
+                    id='will_prepared_yes'
+                    value={true}
+                    checked={!!application.was_will_prepared_by_solicitor}
+                    onChange={() => {
+                      setApplication({
+                        ...application,
+                        was_will_prepared_by_solicitor: true,
+                      });
+                      setTriggerChandleChange(!triggerHandleChange);
+                    }}
+                    disabled={application.approved || application.is_rejected}
+                    style={{ transform: 'scale(1.2)' }}
+                  />
+                  <label
+                    className='form-check-label fw-medium ms-2'
+                    htmlFor='will_prepared_yes'
+                    style={{ color: '#059669' }}
+                  >
+                    <i className='fas fa-check-circle me-1'></i>
+                    Yes
+                  </label>
+                </div>
+                <div className='form-check'>
+                  <input
+                    className='form-check-input'
+                    type='radio'
+                    name='was_will_prepared_by_solicitor'
+                    id='will_prepared_no'
+                    value={false}
+                    checked={!application.was_will_prepared_by_solicitor}
+                    onChange={() => {
+                      setApplication({
+                        ...application,
+                        was_will_prepared_by_solicitor: false,
+                      });
+                      setTriggerChandleChange(!triggerHandleChange);
+                    }}
+                    disabled={application.approved || application.is_rejected}
+                    style={{ transform: 'scale(1.2)' }}
+                  />
+                  <label
+                    className='form-check-label fw-medium ms-2'
+                    htmlFor='will_prepared_no'
+                    style={{ color: '#dc2626' }}
+                  >
+                    <i className='fas fa-times-circle me-1'></i>
+                    No
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div
+              className='my-4'
+              style={{
+                height: '1px',
+                background:
+                  'linear-gradient(90deg, transparent, #e2e8f0, transparent)',
+              }}
+            ></div>
+
+            {/* Dispute Details */}
+            <div className='mb-4'>
+              <label className='form-label fw-semibold text-slate-700 mb-2'>
+                <i className='fas fa-exclamation-triangle me-2 text-orange-500'></i>
+                Dispute Details
+              </label>
+              <div
+                className='input-group'
+                style={{
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                }}
+              >
+                <textarea
+                  className={`form-control border-0 ${
+                    editMode.dispute_details
+                      ? 'border-end border-danger border-2'
+                      : ''
+                  }`}
+                  style={{
+                    backgroundColor: editMode.dispute_details
+                      ? '#fef2f2'
+                      : '#f8fafc',
+                    fontSize: '1rem',
+                    fontWeight: '400',
+                    padding: '1rem',
+                    minHeight: '120px',
+                    resize: 'vertical',
+                  }}
+                  value={
+                    application.dispute.details === 'No dispute'
+                      ? ''
+                      : application.dispute.details
+                  }
+                  onChange={(e) => handleNestedChange(e, 'dispute', 'details')}
+                  readOnly={!editMode.dispute_details}
+                  placeholder={
+                    editMode.dispute_details
+                      ? "Describe any disputes or leave empty for 'No dispute'"
+                      : ''
+                  }
+                />
+                <button
+                  type='button'
+                  className='btn align-self-stretch'
+                  style={{
+                    backgroundColor: editMode.dispute_details
+                      ? '#ef4444'
+                      : '#1f2937',
+                    color: 'white',
+                    border: 'none',
+                    padding: '1rem',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onClick={() => {
+                    if (editMode.dispute_details) submitChangesHandler();
+                    toggleEditMode('dispute_details');
+                  }}
+                  disabled={application.approved || application.is_rejected}
+                  onMouseOver={(e) => {
+                    if (!e.target.disabled) {
+                      e.target.style.transform = 'scale(1.05)';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.transform = 'scale(1)';
+                  }}
+                >
+                  {editMode.dispute_details ? (
+                    <FaSave size={16} />
+                  ) : (
+                    <FaEdit size={16} />
+                  )}
+                </button>
               </div>
             </div>
           </form>
         </div>
 
+        {/* Sub-components */}
         <ApplicantsPart
           addItem={addItem}
           application={application}
@@ -525,6 +730,7 @@ const RequiredDetailsPart = ({
           setRefresh={setRefresh}
         />
       </div>
+
       <SolicitorPart
         application_id={application.id}
         solicitor_id={application.solicitor}

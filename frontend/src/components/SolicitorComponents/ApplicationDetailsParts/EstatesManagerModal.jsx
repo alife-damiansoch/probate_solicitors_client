@@ -58,6 +58,7 @@ const EstateManagerModal = ({
   estates,
   applicationId,
   refreshEstates,
+  currency_sign = '€',
 }) => {
   if (!show) return null;
 
@@ -533,6 +534,7 @@ const EstateManagerModal = ({
                       onAdd={openForm}
                       onEdit={openForm}
                       onDelete={handleDelete}
+                      currency_sign={currency_sign}
                     />
                   )}
                 </div>
@@ -587,6 +589,7 @@ const EstateManagerModal = ({
                       onAdd={openForm}
                       onEdit={openForm}
                       onDelete={handleDelete}
+                      currency_sign={currency_sign}
                     />
                   )}
                 </div>
@@ -638,6 +641,7 @@ const EstateManagerModal = ({
         onSubmit={handleFormSubmit}
         estateType={formState.estateType}
         initialData={formState.initialData}
+        currency_sign={currency_sign}
       />
     </div>
   );

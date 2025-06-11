@@ -1,470 +1,501 @@
-import { MdDoneAll } from 'react-icons/md';
-import { TbFaceIdError } from 'react-icons/tb';
-import { MdOutlineBookmarkAdded } from 'react-icons/md';
-import { GrDocumentUpdate } from 'react-icons/gr';
-import { LiaExclamationTriangleSolid } from 'react-icons/lia';
-import { IoDocumentsOutline } from 'react-icons/io5';
-import { BsExclamationOctagon } from 'react-icons/bs';
-import { FcApproval } from 'react-icons/fc';
-import { TbArrowMoveDown } from 'react-icons/tb';
-import { PiDotDuotone } from 'react-icons/pi';
-import { FaArrowsDownToPeople } from 'react-icons/fa6';
-import { MdPersonAddAlt } from 'react-icons/md';
-
-import { formatDate } from '../../../GenericFunctions/HelperGenericFunctions';
-
-import LoadingComponent from '../../../GenericComponents/LoadingComponent';
-import Popover from './Popover';
-import {
-  advancementAgreementsInfo,
-  approvedByCommitteeInfo,
-  approvedInfo,
-  awaitingCommitteeDecisionInfo,
-  awaitingDecissionInfo,
-  documentsInfo,
-  rejectedByCommitteeInfo,
-  rejectedInfo,
-  solicitorInfo,
-  submittedInfo,
-  undertakingAgreementsInfo,
-} from './StagesPopoverInfo';
-
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import {
+  FaCheck,
+  FaClock,
+  FaFileAlt,
+  FaFileUpload,
+  FaGavel,
+  FaInfoCircle,
+  FaTimes,
+  FaUser,
+} from 'react-icons/fa';
 
-const ApplicationDetailStages = ({ application, setHighlightedSectionId }) => {
-  // Define the animation variants for the pulsing effect
+const ModernApplicationProgress = ({
+  application,
+  setHighlightedSectionId,
+  estates = [],
+}) => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [hoveredStep, setHoveredStep] = useState(null);
 
-  const stageArrow = () => {
-    return (
-      <div className='flex-grow-1 d-flex align-items-center justify-content-center icon-shadow'>
-        <TbArrowMoveDown size={30} color='white' className=' icon-shadow' />
-      </div>
-    );
-  };
-  const stageDot = () => {
-    return (
-      <div className='flex-grow-1 d-flex align-items-center justify-content-center icon-shadow'>
-        <PiDotDuotone size={30} color='white' className=' icon-shadow' />
-      </div>
-    );
-  };
-  const renderInputWithIcon = (
-    label,
-    value,
-    condition,
-    icon,
-    html_info_text = 'No info provided',
-    html_info_text_header = 'No header provided'
-  ) => {
-    if (label !== 'Rejected') {
-      return (
-        <div className='my-3 w-100 mx-0 text-center p-2 border-top border-bottom border-2 border-info rounded shadow'>
-          <div className='flex-grow-1 d-flex align-items-center text-center justify-content-center'>
-            <Popover content={html_info_text} header={html_info_text_header}>
-              <label
-                style={{ cursor: 'pointer' }}
-                className='form-label w-100 mt-3'
-              >
-                <div>{icon}</div>
-                <small
-                  className='text-nowrap text-light'
-                  dangerouslySetInnerHTML={{ __html: label }}
-                ></small>
-
-                <div
-                  className='input-icon-wrapper mt-3 w-100'
-                  id='input-icon-wrapper'
-                >
-                  <div
-                    id='input-field'
-                    className={`form-control rounded-bottom-pill text-center text-light shadow w-100 ${
-                      condition ? 'bg-success' : 'bg-danger'
-                    }`}
-                    dangerouslySetInnerHTML={{ __html: value }}
-                  ></div>
-                  {condition ? (
-                    <MdDoneAll
-                      size={30}
-                      color='darkgreen'
-                      className='icon icon-shadow'
-                      id='input-icon'
-                    />
-                  ) : (
-                    <LiaExclamationTriangleSolid
-                      size={30}
-                      color='red'
-                      className='icon icon-shadow'
-                      id='input-icon'
-                    />
-                  )}
-                </div>
-              </label>
-            </Popover>
+  // Hover info content (from original component)
+  const getHoverInfo = (stepId) => {
+    const hoverData = {
+      submitted: {
+        header: 'Application Submission',
+        content: `
+          <div>
+            <p><strong>Required Information:</strong></p>
+            <ul>
+              <li>Application amount and term</li>
+              <li>Deceased person details</li>
+              <li>At least one applicant</li>
+              <li>Estate information</li>
+            </ul>
+            <p><small>All basic details must be completed before proceeding.</small></p>
           </div>
-        </div>
-      );
+        `,
+      },
+      solicitor: {
+        header: 'Solicitor Assignment',
+        content: `
+          <div>
+            <p><strong>Solicitor Selection:</strong></p>
+            <p>A qualified solicitor must be assigned to handle the legal aspects of this application.</p>
+            <ul>
+              <li>Choose from your firm's solicitor list</li>
+              <li>Solicitor will handle documentation</li>
+              <li>Required for legal compliance</li>
+            </ul>
+          </div>
+        `,
+      },
+      documents: {
+        header: 'Document Upload Requirements',
+        content: `
+          <div>
+            <p><strong>Required Documents:</strong></p>
+            <ul>
+              <li><strong>Undertaking:</strong> Legal undertaking document</li>
+              <li><strong>Advancement Agreement:</strong> Loan agreement documentation</li>
+              <li><strong>Supporting Documents:</strong> Additional required files</li>
+            </ul>
+            <p><small>All documents must be uploaded and properly signed.</small></p>
+          </div>
+        `,
+      },
+      review: {
+        header: 'Review Process',
+        content: `
+          <div>
+            <p><strong>Application Review:</strong></p>
+            <p>Your application is being reviewed by our team.</p>
+            <ul>
+              <li>All documents are verified</li>
+              <li>Financial assessment conducted</li>
+              <li>Legal compliance checked</li>
+              ${
+                application.loan?.needs_committee_approval
+                  ? '<li>Committee approval required</li>'
+                  : ''
+              }
+            </ul>
+          </div>
+        `,
+      },
+      decision: {
+        header: 'Final Decision',
+        content: `
+          <div>
+            <p><strong>Application Status:</strong></p>
+            ${
+              application.approved
+                ? '<p class="text-success"><strong>✓ Application Approved</strong></p><p>Your application has been approved and is ready for advancement.</p>'
+                : application.is_rejected
+                ? '<p class="text-danger"><strong>✗ Application Rejected</strong></p><p>Unfortunately, your application has been rejected.</p>'
+                : '<p><strong>Pending Decision</strong></p><p>Your application is awaiting final approval decision.</p>'
+            }
+          </div>
+        `,
+      },
+    };
+    return (
+      hoverData[stepId] || {
+        header: 'Information',
+        content: 'No additional information available.',
+      }
+    );
+  };
+
+  // Define the steps with their conditions and click handlers
+  const steps = [
+    {
+      id: 'submitted',
+      label: 'Submitted',
+      icon: FaFileAlt,
+      section: 'Basic Details',
+      completed:
+        application.amount &&
+        application.term &&
+        application.deceased?.first_name &&
+        application.deceased?.last_name &&
+        application.applicants?.length > 0 &&
+        estates?.length > 0,
+      shortDesc: 'Details',
+    },
+    {
+      id: 'solicitor',
+      label: 'Solicitor',
+      icon: FaUser,
+      section: 'Solicitor Part',
+      completed: application.solicitor !== null,
+      shortDesc: 'Assigned',
+    },
+    {
+      id: 'documents',
+      label: 'Documents',
+      icon: FaFileUpload,
+      section: 'Uploaded Documents',
+      completed:
+        application.undertaking_ready &&
+        application.loan_agreement_ready &&
+        (application.documents?.length > 0 ||
+          application.signed_documents?.length > 0),
+      shortDesc: 'Uploaded',
+    },
+    {
+      id: 'review',
+      label: 'Review',
+      icon: FaClock,
+      section: '',
+      completed: false,
+      inProgress: !application.approved && !application.is_rejected,
+      shortDesc: application.loan?.needs_committee_approval
+        ? 'Committee'
+        : 'Review',
+    },
+    {
+      id: 'decision',
+      label: 'Decision',
+      icon: application.approved
+        ? FaCheck
+        : application.is_rejected
+        ? FaTimes
+        : FaGavel,
+      section: '',
+      completed: application.approved || application.is_rejected,
+      approved: application.approved,
+      rejected: application.is_rejected,
+      shortDesc: application.approved
+        ? 'Approved'
+        : application.is_rejected
+        ? 'Rejected'
+        : 'Pending',
+    },
+  ];
+
+  // Calculate current step based on completion
+  useEffect(() => {
+    const completedSteps = steps.filter((step) => step.completed).length;
+    setCurrentStep(completedSteps);
+  }, [application, steps]);
+
+  const handleStepClick = (step) => {
+    if (step.section) {
+      setHighlightedSectionId(step.section);
+    }
+  };
+
+  const getStepStatus = (step, index) => {
+    // For rejected applications, show rejected status
+    if (application.is_rejected) {
+      if (step.id === 'decision') return 'rejected';
+      return step.completed ? 'completed' : 'danger';
     }
 
-    return (
-      <div className='my-3 w-100 text-center p-2 border-top border-bottom border-2 border-info rounded shadow'>
-        <div className='flex-grow-1 d-flex align-items-center text-center justify-content-center '>
-          <Popover content={html_info_text} header={html_info_text_header}>
-            <label
-              style={{ cursor: 'pointer' }}
-              className='form-label text-center align-items-center justify-content-center w-100 mt-3'
-            >
-              <div>{icon}</div>
-              <small
-                className='text-nowrap text-light'
-                dangerouslySetInnerHTML={{ __html: label }}
-              ></small>
-              <div
-                className='input-icon-wrapper mt-3 w-100'
-                id='input-icon-wrapper'
-              >
-                <div
-                  id='input-field'
-                  className={`form-control rounded-bottom-pill text-center text-light shadow w-100 ${
-                    condition ? 'bg-danger' : 'bg-warning'
-                  }`}
-                  dangerouslySetInnerHTML={{ __html: value }}
-                ></div>
-                {condition && (
-                  <TbFaceIdError
-                    size={30}
-                    color='darkred'
-                    className='icon icon-shadow'
-                    id='input-icon'
-                  />
-                )}
-              </div>
-            </label>
-          </Popover>
-        </div>
-      </div>
-    );
+    // For approved applications
+    if (application.approved) {
+      if (step.id === 'decision') return 'approved';
+      return step.completed ? 'completed' : 'danger';
+    }
+
+    // For in-progress applications
+    if (
+      step.id === 'review' &&
+      !application.approved &&
+      !application.is_rejected
+    ) {
+      return 'in-progress';
+    }
+
+    // Default logic: completed = green, not completed = red/danger
+    if (step.completed) return 'completed';
+    return 'danger';
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'completed':
+        return '#22c55e'; // Green
+      case 'approved':
+        return '#22c55e'; // Green
+      case 'rejected':
+        return '#ef4444'; // Red
+      case 'in-progress':
+        return '#f59e0b'; // Amber/Orange
+      case 'danger':
+        return '#ef4444'; // Red (not completed)
+      default:
+        return '#e5e7eb'; // Gray
+    }
+  };
+
+  const getStatusBg = (status) => {
+    switch (status) {
+      case 'completed':
+        return '#f0fdf4'; // Light green
+      case 'approved':
+        return '#f0fdf4'; // Light green
+      case 'rejected':
+        return '#fef2f2'; // Light red
+      case 'in-progress':
+        return '#fefbf3'; // Light amber
+      case 'danger':
+        return '#fef2f2'; // Light red
+      default:
+        return '#f9fafb'; // Light gray
+    }
   };
 
   return (
     <>
-      {application ? (
-        <div className=' hide-on-mobile col-lg-3'>
-          <div
-            className='card rounded bg-transparent my-2 mx-auto
-                           px-4 border-0 shadow position-relative h-100'
-          >
-            <div className=' card-header text-center text-light w-100'>
-              <h5 className=' icon-shadow'>
-                Application
-                <br />
-                <br /> Journey
-              </h5>
+      {/* Compact Progress Header */}
+      <div
+        className='sticky-top bg-white border-bottom'
+        style={{
+          zIndex: 1020,
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          top: '0',
+        }}
+      >
+        <div className='container-fluid px-4 py-2'>
+          {/* Single Row Layout */}
+          <div className='d-flex align-items-center justify-content-between'>
+            {/* Left: Title */}
+            <div className='d-flex align-items-center'>
+              <h6 className='mb-0 fw-semibold text-slate-700 me-3'>
+                Application #{application.id}
+              </h6>
+
+              {/* Progress Bar */}
+              <div className='d-flex align-items-center me-3'>
+                <div
+                  className='progress me-2'
+                  style={{
+                    width: '100px',
+                    height: '6px',
+                    backgroundColor: '#f1f5f9',
+                    borderRadius: '3px',
+                  }}
+                >
+                  <div
+                    className='progress-bar'
+                    style={{
+                      width: `${(currentStep / (steps.length - 1)) * 100}%`,
+                      backgroundColor: '#3b82f6',
+                      borderRadius: '3px',
+                      transition: 'width 0.3s ease',
+                    }}
+                  />
+                </div>
+                <span
+                  className='small fw-medium text-slate-600'
+                  style={{ fontSize: '0.75rem' }}
+                >
+                  {Math.round((currentStep / (steps.length - 1)) * 100)}%
+                </span>
+              </div>
             </div>
 
-            <div className='d-flex flex-column w-100 h-100  align-items-center my-5 '>
-              {/* SUBMITTED PART */}
-              <div
-                className='col-12'
-                onClick={() => {
-                  setHighlightedSectionId('Basic Details'); // Replace with your current section ID
-                }}
-              >
-                {renderInputWithIcon(
-                  'Submitted',
-                  formatDate(application.date_submitted),
-                  application.amount &&
-                    application.term &&
-                    application.deceased?.first_name &&
-                    application.deceased?.last_name &&
-                    application.applicants?.length > 0 &&
-                    application.estates?.length > 0,
-                  <MdOutlineBookmarkAdded
-                    size={30}
-                    color={
-                      application.amount &&
-                      application.term &&
-                      application.deceased?.first_name &&
-                      application.deceased?.last_name &&
-                      application.applicants?.length > 0 &&
-                      application.estates?.length > 0
-                        ? 'green'
-                        : 'red'
-                    }
-                    className='icon-shadow'
-                  />,
-                  submittedInfo.message,
-                  submittedInfo.header
-                )}
-              </div>
+            {/* Right: Compact Steps */}
+            <div className='d-flex align-items-center' style={{ gap: '8px' }}>
+              {steps.map((step, index) => {
+                const status = getStepStatus(step, index);
+                const IconComponent = step.icon;
+                const hoverInfo = getHoverInfo(step.id);
 
-              <div className='d-flex flex-grow-1 flex-column w-100  justify-content-evenly align-items-center'>
-                {stageDot()}
-                {stageArrow()}
-                {stageDot()}
-              </div>
+                return (
+                  <div
+                    key={step.id}
+                    className='position-relative'
+                    onMouseEnter={() => setHoveredStep(step.id)}
+                    onMouseLeave={() => setHoveredStep(null)}
+                  >
+                    {/* Step Button */}
+                    <div
+                      className={`d-flex align-items-center px-2 py-1 rounded-pill ${
+                        step.section ? 'cursor-pointer' : ''
+                      }`}
+                      style={{
+                        backgroundColor: getStatusBg(status),
+                        border: `2px solid ${getStatusColor(status)}`,
+                        transition: 'all 0.2s ease',
+                        cursor: step.section ? 'pointer' : 'default',
+                        minWidth: '80px',
+                      }}
+                      onClick={() => handleStepClick(step)}
+                      onMouseOver={(e) => {
+                        if (step.section) {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow =
+                            '0 2px 4px rgba(0, 0, 0, 0.1)';
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        if (step.section) {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }
+                      }}
+                    >
+                      {/* Icon with status-based styling */}
+                      <div
+                        className='rounded-circle d-flex align-items-center justify-content-center me-1'
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          backgroundColor: getStatusColor(status),
+                          color: 'white',
+                          fontSize: '10px',
+                        }}
+                      >
+                        {status === 'completed' || status === 'approved' ? (
+                          <FaCheck size={10} />
+                        ) : status === 'rejected' ? (
+                          <FaTimes size={10} />
+                        ) : status === 'danger' ? (
+                          <FaTimes size={10} />
+                        ) : (
+                          <IconComponent size={10} />
+                        )}
+                      </div>
 
-              {/* SOLICITOR PART */}
-              <div
-                className='col-12'
-                onClick={() => {
-                  setHighlightedSectionId('Solicitor Part'); // Replace with your current section ID
-                }}
-              >
-                {renderInputWithIcon(
-                  'Solicitor selected',
-                  application.solicitor !== null
-                    ? 'OK'
-                    : 'Select solicitor ...',
-                  application.solicitor !== null,
-                  <MdPersonAddAlt
-                    size={30}
-                    color={application.solicitor !== null ? 'green' : 'red'}
-                    className='icon-shadow'
-                  />,
-                  solicitorInfo.message,
-                  solicitorInfo.header
-                )}
-              </div>
+                      {/* Label */}
+                      <span
+                        className='small fw-medium'
+                        style={{
+                          color: getStatusColor(status),
+                          fontSize: '0.7rem',
+                        }}
+                      >
+                        {step.shortDesc}
+                      </span>
 
-              <div className='d-flex flex-grow-1 flex-column w-100  justify-content-evenly align-items-center'>
-                {stageDot()}
-                {stageArrow()}
-                {stageDot()}
-              </div>
-
-              {/* UNDERTAKING PART */}
-              <div
-                className='col-12'
-                onClick={() => {
-                  setHighlightedSectionId('Uploaded Documents'); // Replace with your current section ID
-                }}
-              >
-                {renderInputWithIcon(
-                  'Undertaking<wbr /> uploaded',
-                  application.undertaking_ready ? 'Uploaded' : 'Waiting ...',
-                  application.undertaking_ready,
-                  <GrDocumentUpdate
-                    size={30}
-                    color={application.undertaking_ready ? 'green' : 'red'}
-                    className='icon-shadow'
-                  />,
-                  undertakingAgreementsInfo.message,
-                  undertakingAgreementsInfo.header
-                )}
-              </div>
-
-              <div className='d-flex flex-grow-1 flex-column w-100  justify-content-evenly align-items-center'>
-                {stageDot()}
-                {stageArrow()}
-                {stageDot()}
-              </div>
-
-              {/* ADVANCEMENT PART */}
-              <div
-                className='col-12'
-                onClick={() => {
-                  setHighlightedSectionId('Uploaded Documents'); // Replace with your current section ID
-                }}
-              >
-                {renderInputWithIcon(
-                  'Advancement<wbr /> Agreement<wbr /> uploaded',
-                  application.loan_agreement_ready ? 'Uploaded' : 'Waiting ...',
-                  application.loan_agreement_ready,
-                  <GrDocumentUpdate
-                    size={30}
-                    color={application.loan_agreement_ready ? 'green' : 'red'}
-                    className='icon-shadow'
-                  />,
-                  advancementAgreementsInfo.message,
-                  advancementAgreementsInfo.header
-                )}
-              </div>
-              <div className='d-flex flex-grow-1 flex-column w-100  justify-content-evenly align-items-center'>
-                {stageDot()}
-                {stageArrow()}
-                {stageDot()}
-              </div>
-
-              {/* GENERAL DOC PART */}
-              <div
-                className='col-12'
-                onClick={() => {
-                  setHighlightedSectionId('Uploaded Documents'); // Replace with your current section ID
-                }}
-              >
-                {renderInputWithIcon(
-                  'Documents<wbr /> Uploaded',
-                  application.documents.length > 0 ||
-                    application.signed_documents.length > 0
-                    ? 'Uploaded'
-                    : 'Waiting ...',
-                  application.documents.length > 0 ||
-                    application.signed_documents.length > 0,
-                  <IoDocumentsOutline
-                    size={30}
-                    color={
-                      application.documents.length > 0 ||
-                      application.signed_documents.length > 0
-                        ? 'green'
-                        : 'red'
-                    }
-                    className='icon-shadow'
-                  />,
-                  documentsInfo.message,
-                  documentsInfo.header
-                )}
-              </div>
-              <div className='d-flex flex-grow-1 flex-column w-100  justify-content-evenly align-items-center'>
-                {stageDot()}
-                {stageArrow()}
-                {stageDot()}
-              </div>
-
-              <div
-                className='col-12'
-                onClick={() => setHighlightedSectionId('')}
-              >
-                {/* APPROVED NEW STAGES */}
-                {application.approved &&
-                  application.loan &&
-                  application.loan.needs_committee_approval === false &&
-                  renderInputWithIcon(
-                    'Approved',
-                    'Approved',
-                    application.approved,
-                    <FcApproval
-                      size={30}
-                      color={'darkgreen'}
-                      className='icon-shadow'
-                    />,
-                    approvedInfo.message,
-                    approvedInfo.header
-                  )}
-                {application.approved &&
-                  application.loan &&
-                  application.loan.needs_committee_approval === true &&
-                  application.loan.is_committee_approved === true &&
-                  renderInputWithIcon(
-                    'Approved',
-                    'Approved<wbr /> by<wbr /> committee',
-                    application.approved,
-                    <FcApproval
-                      size={30}
-                      color={'darkgreen'}
-                      className='icon-shadow'
-                    />,
-                    approvedByCommitteeInfo.message,
-                    approvedByCommitteeInfo.header
-                  )}
-
-                {/* REJECTED NEW STAGES */}
-                {application.is_rejected &&
-                  renderInputWithIcon(
-                    'Rejected',
-                    'Rejected',
-                    application.is_rejected,
-                    <BsExclamationOctagon
-                      size={30}
-                      color={'red'}
-                      className='icon-shadow'
-                    />,
-                    rejectedInfo.message,
-                    rejectedInfo.header
-                  )}
-                {application.approved &&
-                  application.loan &&
-                  application.loan.needs_committee_approval === true &&
-                  application.loan.is_committee_approved === false &&
-                  renderInputWithIcon(
-                    'Rejected',
-                    'Rejected<wbr /> by<wbr /> committee',
-                    true,
-                    <BsExclamationOctagon
-                      size={30}
-                      color={'red'}
-                      className='icon-shadow'
-                    />,
-                    rejectedByCommitteeInfo.message,
-                    rejectedByCommitteeInfo.header
-                  )}
-
-                {/* AWAITIND DECISION NEW STAGES */}
-                {application.is_rejected === false &&
-                  application.approved === false &&
-                  renderInputWithIcon(
-                    'Status',
-                    'Awaiting decision ...',
-                    false,
-                    <FaArrowsDownToPeople
-                      size={30}
-                      color={'red'}
-                      className='icon-shadow'
-                    />,
-                    awaitingDecissionInfo.message,
-                    awaitingDecissionInfo.header
-                  )}
-
-                {application.is_rejected === false &&
-                  application.approved === true &&
-                  application.loan &&
-                  application.loan.needs_committee_approval === true &&
-                  application.loan.is_committee_approved === null &&
-                  renderInputWithIcon(
-                    'Status',
-                    'Awaiting<wbr /> committee<wbr /> decision ...',
-                    false,
-                    <FaArrowsDownToPeople
-                      size={30}
-                      color={'red'}
-                      className='icon-shadow'
-                    />,
-                    awaitingCommitteeDecisionInfo.message,
-                    awaitingCommitteeDecisionInfo.header
-                  )}
-
-                {/* Reason for rejection */}
-                {application.is_rejected && (
-                  <div className='col-12'>
-                    <div className='alert  text-center rounded mt-5 text-white-50 shadow'>
-                      <h6> Reason for rejection</h6>
-                      <small>{application.rejected_reason}</small>
+                      {/* Info Icon */}
+                      <FaInfoCircle
+                        className='ms-1 opacity-50'
+                        size={8}
+                        style={{ color: getStatusColor(status) }}
+                      />
                     </div>
+
+                    {/* Pulsing effect for in-progress */}
+                    {status === 'in-progress' && (
+                      <motion.div
+                        className='position-absolute top-0 start-0 w-100 h-100 rounded-pill'
+                        style={{
+                          border: '2px solid #f59e0b',
+                          zIndex: -1,
+                        }}
+                        animate={{
+                          boxShadow: [
+                            '0 0 0 0 rgba(245, 158, 11, 0.4)',
+                            '0 0 0 4px rgba(245, 158, 11, 0)',
+                          ],
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          repeatType: 'loop',
+                        }}
+                      />
+                    )}
+
+                    {/* Hover Tooltip */}
+                    {hoveredStep === step.id && (
+                      <div
+                        className='position-absolute bg-white border rounded-3 p-3 shadow-lg'
+                        style={{
+                          top: '100%',
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          marginTop: '8px',
+                          width: '280px',
+                          zIndex: 1030,
+                          fontSize: '0.8rem',
+                          lineHeight: '1.4',
+                        }}
+                      >
+                        {/* Arrow */}
+                        <div
+                          className='position-absolute bg-white border'
+                          style={{
+                            top: '-6px',
+                            left: '50%',
+                            transform: 'translateX(-50%) rotate(45deg)',
+                            width: '12px',
+                            height: '12px',
+                            borderBottom: 'none',
+                            borderRight: 'none',
+                          }}
+                        />
+
+                        {/* Content */}
+                        <div className='position-relative'>
+                          <h6
+                            className='fw-bold mb-2 text-slate-800'
+                            style={{ fontSize: '0.85rem' }}
+                          >
+                            {hoverInfo.header}
+                          </h6>
+                          <div
+                            className='text-slate-600'
+                            dangerouslySetInnerHTML={{
+                              __html: hoverInfo.content,
+                            }}
+                            style={{ fontSize: '0.75rem' }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Connection Line */}
+                    {index < steps.length - 1 && (
+                      <div
+                        className='position-absolute'
+                        style={{
+                          top: '50%',
+                          right: '-4px',
+                          width: '8px',
+                          height: '1px',
+                          backgroundColor:
+                            status === 'completed' || status === 'approved'
+                              ? '#22c55e'
+                              : '#e5e7eb',
+                          transform: 'translateY(-50%)',
+                          zIndex: 1,
+                        }}
+                      />
+                    )}
                   </div>
-                )}
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Rejection Reason - Compact */}
+          {application.is_rejected && application.rejected_reason && (
+            <div
+              className='alert border-0 mt-2 mb-0 py-1 px-2'
+              style={{
+                backgroundColor: '#fef2f2',
+                color: '#dc2626',
+                borderRadius: '6px',
+                fontSize: '0.75rem',
+              }}
+            >
+              <div className='d-flex align-items-center'>
+                <FaTimes className='me-1' size={10} />
+                <span className='fw-medium me-2'>Rejected:</span>
+                <span>{application.rejected_reason}</span>
               </div>
             </div>
-            {/*ANIMATED BACKGROUNG DIV */}
-            <motion.div
-              className='position-absolute shadow-lg'
-              initial={{ backgroundPosition: '0% 50%' }}
-              animate={{ backgroundPosition: '100% 50%' }}
-              transition={{
-                duration: 7,
-                repeat: Infinity,
-                repeatType: 'mirror',
-              }}
-              style={{
-                padding: '4px', // Ensure there's space for the border effect
-                borderRadius: '12px',
-                backgroundImage:
-                  'linear-gradient(90deg,  #16222a, #044297,#16222a)',
-                backgroundPosition: '0% 50%',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '200% 200%',
-                top: '0',
-                left: '0',
-                width: `100%`,
-                height: `100%`,
-                zIndex: -1,
-              }}
-            ></motion.div>
-          </div>
+          )}
         </div>
-      ) : (
-        <LoadingComponent />
-      )}
+      </div>
     </>
   );
 };
 
-export default ApplicationDetailStages;
+export default ModernApplicationProgress;

@@ -7,7 +7,7 @@ const EstateGroupManager = ({
   onAdd,
   onEdit,
   onDelete,
-  currency_sign = '$',
+  currency_sign = '€',
 }) => {
   const formatFieldName = (fieldName) => {
     return fieldName

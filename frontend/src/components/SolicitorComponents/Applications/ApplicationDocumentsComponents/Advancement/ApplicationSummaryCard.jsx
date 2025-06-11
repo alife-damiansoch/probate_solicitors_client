@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
 import LoadingComponent from '../../../../GenericComponents/LoadingComponent';
 import AnimatedWrapper from '../../../../GenericFunctions/AnimationFuctions';
-import { useEffect } from 'react';
+import { formatCategoryName } from '../../../../GenericFunctions/HelperGenericFunctions';
 
-const ApplicationSummaryCard = ({ application, setIssues }) => {
+const ApplicationSummaryCard = ({ application, setIssues, estates }) => {
   useEffect(() => {
     if (application) {
       if (!application.loan_agreement_ready) {
@@ -63,26 +64,7 @@ const ApplicationSummaryCard = ({ application, setIssues }) => {
               <p className='card-text'>
                 <strong>Dispute:</strong> {application.dispute.details}
               </p>
-              {/* <p
-                className={`card-text ${
-                  !application.loan_agreement_ready ? 'text-danger' : ''
-                }`}
-              >
-                <strong>Advancement Agreement Ready:</strong>{' '}
-                {application.loan_agreement_ready ? 'Yes' : 'No'}
-              </p>
-              <p
-                className={`card-text ${
-                  !application.undertaking_ready ? 'text-danger' : ''
-                }`}
-              >
-                <strong>Undertaking Ready:</strong>{' '}
-                {application.undertaking_ready ? 'Yes' : 'No'}
-              </p> */}
-              {/* <p className='card-text'>
-                <strong>Value of Estate After Expenses:</strong> €
-                {application.value_of_the_estate_after_expenses}
-              </p> */}
+
               <div
                 className='card-group p-2 mb-2'
                 style={{ border: '0.5px solid grey' }}
@@ -107,65 +89,18 @@ const ApplicationSummaryCard = ({ application, setIssues }) => {
               >
                 <h6 className='card-subtitle mb-2'>Estates</h6>
                 <ul className='list-group list-group-flush'>
-                  {application.estates.map((estate, index) => (
-                    <li
-                      key={index}
-                      className='list-group-item bg-dark text-white'
-                    >
-                      <strong>{estate.description}:</strong> ${estate.value}
-                    </li>
-                  ))}
+                  {estates &&
+                    estates.map((estate, index) => (
+                      <li
+                        key={index}
+                        className='list-group-item bg-dark text-white'
+                      >
+                        <strong>{formatCategoryName(estate.category)}:</strong>{' '}
+                        ${estate.value}
+                      </li>
+                    ))}
                 </ul>
               </div>
-              {/* <div
-                className='card-group p-2 mb-2'
-                style={{ border: '0.5px solid grey' }}
-              >
-                <h6 className='card-subtitle mb-2'>Documents</h6>
-                <ul className='list-group list-group-flush'>
-                  {application.documents.map((doc, index) => (
-                    <li
-                      key={index}
-                      className='list-group-item bg-dark text-white'
-                    >
-                      {doc.original_name}
-                    </li>
-                  ))}
-                </ul>
-              </div> */}
-              {/* <div
-                className='card-group p-2 mb-2'
-                style={{ border: '0.5px solid grey' }}
-              >
-                <p className='card-text'>
-                  <strong>Name:</strong> {application.user.name}
-                </p>
-                <p className='card-text'>
-                  <strong>Email:</strong> {application.user.email}
-                </p>
-                <p className='card-text'>
-                  <strong>Phone:</strong> {application.user.phone_number}
-                </p>
-                <p className='card-text'>
-                  <strong>Address:</strong> {application.user.address.line1},{' '}
-                  {application.user.address.line2},{' '}
-                  {application.user.address.town_city},{' '}
-                  {application.user.address.county}
-                </p>
-              </div> */}
-              {/* {issues.length > 0 && (
-                <div
-                  className='card-group bg-danger p-2 mb-2'
-                  style={{ border: '0.5px solid grey' }}
-                >
-                  <h6 className=' mb-3'>Issues</h6>
-                  <ul>
-                    {issues.map((i) => (
-                      <li key={i}>{i}</li>
-                    ))}
-                  </ul>
-                </div>
-              )} */}
             </div>
           </div>
         </AnimatedWrapper>

@@ -1,10 +1,14 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import { FaFileInvoiceDollar } from 'react-icons/fa';
-import { fetchData } from '../../GenericFunctions/AxiosGenericFunctions';
+import { FaBuilding, FaCog, FaFileInvoiceDollar, FaPlus } from 'react-icons/fa';
 import EstateSummarySticky from '../Applications/AddApplicationParts/FormParts/EstateSummarySticky';
 import EstateManagerModal from './EstatesManagerModal';
-import { estateFieldMap } from './EstatesManagerModalParts/estateFieldConfig'; // Import the field configuration
+import { estateFieldMap } from './EstatesManagerModalParts/estateFieldConfig';
+// Import the extracted functions
+import {
+  formatFieldName,
+  getEstates,
+} from '../../GenericFunctions/HelperGenericFunctions';
 
 const EstatesPart = ({ application, refresh, setRefresh }) => {
   const currency_sign = Cookies.get('currency_sign');
@@ -16,68 +20,20 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
 
   // Fetch estates when application.estate_summary changes
   useEffect(() => {
-    const getEstates = async () => {
-      if (!application.estate_summary) return;
-      console.log(
-        `Fetching estates for application ${application.id} from ${application.estate_summary}`
-      );
+    const fetchEstates = async () => {
       setLoading(true);
       try {
-        const token = Cookies.get('auth_token')?.access;
-        // Use fetchData helper. (Adjust if yours expects full auth object.)
-        const response = await fetchData(
-          token,
-          application.estate_summary,
-          true
-        ); // true = absolute url
-        console.log('Estates response:', response);
-
-        // Flatten all estate categories into a single array
-        const estatesData = response.data;
-        const allEstates = [];
-
-        // Extract estates from all categories and add category labels
-        Object.entries(estatesData).forEach(([category, categoryEstates]) => {
-          if (Array.isArray(categoryEstates) && categoryEstates.length > 0) {
-            categoryEstates.forEach((estate) => {
-              // Add category information to each estate
-              const isLiability = category === 'irish_debt';
-              allEstates.push({
-                ...estate,
-                category: category,
-                group_label: formatCategoryName(category),
-                is_asset: isLiability ? false : estate.is_asset, // Mark irish_debt as liability
-              });
-            });
-          }
-        });
-
-        console.log('Flattened estates:', allEstates);
-        setEstates(allEstates);
-      } catch (e) {
-        console.error('Error fetching estates:', e);
+        const estatesData = await getEstates(application);
+        setEstates(estatesData);
+      } catch (error) {
+        console.error('Error fetching estates:', error);
         setEstates([]);
       }
       setLoading(false);
     };
-    getEstates();
+
+    fetchEstates();
   }, [application.estate_summary, refresh]);
-
-  // Helper function to format category names for display
-  const formatCategoryName = (category) => {
-    return category
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
-  // Helper function to format field names for display
-  const formatFieldName = (fieldName) => {
-    return fieldName
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
 
   // Helper function to get field configuration for an estate category
   const getFieldsForCategory = (category) => {
@@ -101,30 +57,34 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
       if (relevantFields.length === 0) return null;
 
       return (
-        <div>
-          {relevantFields.map(([key, val]) => (
-            <div key={key} style={{ marginBottom: '0.6rem' }}>
-              <div
-                style={{
-                  fontWeight: 500,
-                  color: '#495057',
-                  fontSize: '0.9rem',
-                  marginBottom: '0.2rem',
-                }}
+        <div className='d-flex flex-wrap gap-3'>
+          {relevantFields.slice(0, 3).map(([key, val]) => (
+            <div key={key} className='d-flex align-items-center'>
+              <span
+                className='fw-medium text-slate-600 me-1'
+                style={{ fontSize: '0.8rem' }}
               >
                 {formatFieldName(key)}:
-              </div>
-              <div
-                style={{
-                  color: '#6c757d',
-                  fontSize: '0.9rem',
-                  paddingLeft: '0.5rem',
-                }}
-              >
+              </span>
+              <span className='text-slate-500' style={{ fontSize: '0.8rem' }}>
                 {val}
-              </div>
+              </span>
             </div>
           ))}
+          {relevantFields.length > 3 && (
+            <div className='d-flex align-items-center'>
+              <span
+                className='badge rounded-pill px-2 py-1'
+                style={{
+                  backgroundColor: '#e5e7eb',
+                  color: '#6b7280',
+                  fontSize: '0.7rem',
+                }}
+              >
+                +{relevantFields.length - 3} more
+              </span>
+            </div>
+          )}
         </div>
       );
     }
@@ -143,64 +103,143 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
     if (fieldsToShow.length === 0) return null;
 
     return (
-      <div>
-        {fieldsToShow.map((field) => {
+      <div className='d-flex flex-wrap gap-3'>
+        {fieldsToShow.slice(0, 3).map((field) => {
           const value = estate[field.name];
           return (
-            <div key={field.name} style={{ marginBottom: '0.6rem' }}>
-              <div
-                style={{
-                  fontWeight: 500,
-                  color: '#495057',
-                  fontSize: '0.9rem',
-                  marginBottom: '0.2rem',
-                }}
+            <div key={field.name} className='d-flex align-items-center'>
+              <span
+                className='fw-medium text-slate-600 me-1'
+                style={{ fontSize: '0.8rem' }}
               >
                 {field.label}:
-              </div>
-              <div
-                style={{
-                  color: '#6c757d',
-                  fontSize: '0.9rem',
-                  paddingLeft: '0.5rem',
-                }}
-              >
+              </span>
+              <span className='text-slate-500' style={{ fontSize: '0.8rem' }}>
                 {value}
-              </div>
+              </span>
             </div>
           );
         })}
+        {fieldsToShow.length > 3 && (
+          <div className='d-flex align-items-center'>
+            <span
+              className='badge rounded-pill px-2 py-1'
+              style={{
+                backgroundColor: '#e5e7eb',
+                color: '#6b7280',
+                fontSize: '0.7rem',
+              }}
+            >
+              +{fieldsToShow.length - 3} more
+            </span>
+          </div>
+        )}
       </div>
     );
   };
 
   if (loading) {
-    return <div className='text-center my-4'>Loading estates...</div>;
+    return (
+      <div
+        className='text-center py-5'
+        style={{
+          background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+          borderRadius: '16px',
+        }}
+      >
+        <div className='spinner-border text-primary mb-3' role='status'>
+          <span className='visually-hidden'>Loading...</span>
+        </div>
+        <div className='fw-medium text-slate-600'>Loading estates...</div>
+      </div>
+    );
   }
 
   if (!estates || estates.length === 0) {
     return (
-      <div className='card mt-3 mx-md-3 rounded border-0'>
-        <div className='card-header rounded-top my-3'>
-          <h4 className='card-subtitle text-info-emphasis'>Estates</h4>
-        </div>
-        <div className='alert alert-danger col-auto mx-auto'>
-          No estate information available for this application.
-        </div>
-        <div className='text-end mb-3'>
-          <button
-            className='btn btn-outline-primary btn-sm'
-            onClick={() => setShowEstateModal(true)}
+      <div
+        className='border-0 mt-4'
+        style={{
+          borderRadius: '16px',
+          boxShadow:
+            '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div
+          className='d-flex align-items-center border-0 p-4'
+          style={{
+            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+            color: 'white',
+          }}
+        >
+          <div
+            className='rounded-circle d-flex align-items-center justify-content-center me-3'
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+            }}
           >
-            + Manage Estates
-          </button>
+            <FaBuilding size={18} />
+          </div>
+          <h4 className='mb-0 fw-semibold'>Estates</h4>
         </div>
+
+        {/* Content */}
+        <div className='p-4' style={{ backgroundColor: '#ffffff' }}>
+          <div
+            className='alert border-0 text-center mb-4'
+            style={{
+              backgroundColor: '#fef2f2',
+              color: '#dc2626',
+              borderRadius: '12px',
+              boxShadow: '0 2px 4px rgba(239, 68, 68, 0.1)',
+            }}
+          >
+            <div className='d-flex align-items-center justify-content-center'>
+              <i className='fas fa-exclamation-triangle me-2'></i>
+              <span className='fw-medium'>
+                No estate information available for this application.
+              </span>
+            </div>
+          </div>
+
+          <div className='text-end'>
+            <button
+              className='btn px-4 py-2 fw-medium'
+              style={{
+                backgroundColor: '#3b82f6',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                transition: 'all 0.2s ease',
+              }}
+              onClick={() => setShowEstateModal(true)}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = '#2563eb';
+                e.target.style.transform = 'translateY(-1px)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = '#3b82f6';
+                e.target.style.transform = 'translateY(0)';
+              }}
+            >
+              <FaPlus className='me-2' size={14} />
+              Manage Estates
+            </button>
+          </div>
+        </div>
+
         <EstateManagerModal
           show={showEstateModal}
           onClose={() => setShowEstateModal(false)}
           estates={estates}
           applicationId={application.id}
           refreshEstates={() => setRefresh(!refresh)}
+          currency_sign={currency_sign}
         />
       </div>
     );
@@ -227,42 +266,72 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
   });
 
   return (
-    <div className='card mt-3 mx-md-3 rounded border-0'>
-      <div className='card-header rounded-top mt-3'>
-        <h4 className='card-subtitle text-info-emphasis'>Estates</h4>
+    <div
+      className='border-0 mt-4'
+      style={{
+        borderRadius: '16px',
+        boxShadow:
+          '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Header */}
+      <div
+        className='d-flex align-items-center border-0 p-4'
+        style={{
+          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+          color: 'white',
+        }}
+      >
+        <div
+          className='rounded-circle d-flex align-items-center justify-content-center me-3'
+          style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          <FaBuilding size={18} />
+        </div>
+        <h4 className='mb-0 fw-semibold'>Estates</h4>
       </div>
 
-      <div className='card-body p-0 p-md-3'>
+      {/* Content */}
+      <div className='p-4' style={{ backgroundColor: '#ffffff' }}>
         {/* Assets Section */}
         {Object.keys(assetGroups).length > 0 && (
           <>
             <div
+              className='p-4 mb-4'
               style={{
-                backgroundColor: '#e3f2fd',
-                border: '1px solid #1976d2',
-                borderRadius: '8px',
-                padding: '1rem 1.5rem',
-                marginBottom: '1.5rem',
-                marginTop: '1rem',
+                background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                border: '1px solid #3b82f6',
+                borderRadius: '12px',
               }}
             >
-              <h6
-                style={{
-                  margin: 0,
-                  color: '#1976d2',
-                  fontWeight: 600,
-                  fontSize: '1rem',
-                }}
-              >
-                ESTATE ASSETS
-              </h6>
+              <div className='d-flex align-items-center mb-2'>
+                <div
+                  className='rounded-circle d-flex align-items-center justify-content-center me-3'
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                  }}
+                >
+                  <i
+                    className='fas fa-chart-line'
+                    style={{ fontSize: '0.875rem' }}
+                  ></i>
+                </div>
+                <h6 className='mb-0 fw-bold' style={{ color: '#1e40af' }}>
+                  ESTATE ASSETS
+                </h6>
+              </div>
               <p
-                style={{
-                  margin: '0.5rem 0 0 0',
-                  color: '#424242',
-                  fontSize: '0.85rem',
-                  fontStyle: 'italic',
-                }}
+                className='mb-0 small'
+                style={{ color: '#1e3a8a', fontStyle: 'italic' }}
               >
                 Property, investments, debts owed to the deceased, and other
                 valuable items comprising the gross estate
@@ -272,14 +341,26 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
             {Object.entries(assetGroups).map(
               ([estateName, groupedEstates], groupIndex) => (
                 <div key={groupIndex} className='mb-4'>
-                  {/* Create individual cards for each estate group */}
-                  <div className='card border rounded-3 shadow-sm'>
-                    <div className='card-header bg-light'>
-                      <h5 className='text-primary fw-bold mb-0'>
+                  <div
+                    className='border-0'
+                    style={{
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      className='p-3'
+                      style={{
+                        backgroundColor: '#f8fafc',
+                        borderBottom: '1px solid #e2e8f0',
+                      }}
+                    >
+                      <h5 className='mb-0 fw-bold' style={{ color: '#3b82f6' }}>
                         {estateName}
                       </h5>
                     </div>
-                    <div className='card-body'>
+                    <div className='p-3' style={{ backgroundColor: '#ffffff' }}>
                       {groupedEstates.map((estate, index) => {
                         const displayName =
                           groupedEstates.length > 1
@@ -289,69 +370,88 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
                         return (
                           <div
                             key={index}
-                            className={
-                              'd-flex flex-column flex-md-row align-items-start align-items-md-center ' +
-                              'border rounded-3 p-3 pb-2 position-relative ' +
-                              (index < groupedEstates.length - 1
-                                ? 'mb-3 '
-                                : '') +
-                              (estate.is_asset === false
-                                ? 'bg-liability'
-                                : 'bg-white')
-                            }
+                            className={`d-flex align-items-center justify-content-between 
+                            px-3 py-2 position-relative ${
+                              index < groupedEstates.length - 1 ? 'mb-2' : ''
+                            }`}
                             style={{
+                              backgroundColor:
+                                estate.is_asset === false
+                                  ? '#fef2f2'
+                                  : '#f8fafc',
                               borderLeft:
                                 estate.is_asset === false
-                                  ? '5px solid #495d8b'
-                                  : '5px solid #0dcaf0',
-                              minHeight: '120px',
-                              transition: 'box-shadow 0.2s',
+                                  ? '4px solid #ef4444'
+                                  : '4px solid #06b6d4',
+                              borderRadius: '6px',
+                              minHeight: '60px',
+                              transition: 'all 0.2s ease',
+                            }}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.boxShadow =
+                                '0 2px 4px rgba(0, 0, 0, 0.1)';
+                              e.currentTarget.style.transform =
+                                'translateX(2px)';
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.boxShadow = 'none';
+                              e.currentTarget.style.transform = 'translateX(0)';
                             }}
                           >
-                            <div className='flex-grow-1'>
-                              {groupedEstates.length > 1 && (
-                                <div className='mb-2 d-flex align-items-center'>
-                                  <span className='fw-bold fs-6 text-secondary'>
+                            <div className='flex-grow-1 pe-3'>
+                              <div className='d-flex align-items-center flex-wrap gap-2'>
+                                {groupedEstates.length > 1 && (
+                                  <span className='fw-bold text-slate-700 small'>
                                     {displayName}
                                   </span>
-                                  {estate.is_asset === false && (
-                                    <span
-                                      className='ms-2'
-                                      title='Non-asset item'
-                                      style={{
-                                        color: '#495d8b',
-                                        opacity: 0.7,
-                                        verticalAlign: 'middle',
-                                      }}
-                                    >
-                                      <FaFileInvoiceDollar size={15} />
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-
-                              {/* Enhanced field rendering using configuration */}
-                              {renderEstateFields(estate)}
+                                )}
+                                {estate.is_asset === false && (
+                                  <span
+                                    className='badge rounded-pill px-2 py-1'
+                                    style={{
+                                      backgroundColor: '#fee2e2',
+                                      color: '#dc2626',
+                                      fontSize: '0.7rem',
+                                    }}
+                                    title='Liability'
+                                  >
+                                    <FaFileInvoiceDollar
+                                      size={10}
+                                      className='me-1'
+                                    />
+                                    Liability
+                                  </span>
+                                )}
+                              </div>
+                              <div className='mt-1'>
+                                {renderEstateFields(estate)}
+                              </div>
                             </div>
 
                             <div
-                              className='d-flex flex-row align-items-center ms-md-3 my-2 my-md-0'
-                              style={{ minWidth: 220 }}
+                              className='d-flex align-items-center'
+                              style={{ minWidth: '140px' }}
                             >
-                              <div>
-                                <div className='form-label mb-1 small text-nowrap'>
+                              <div className='text-end w-100'>
+                                <div
+                                  className='small text-muted mb-1'
+                                  style={{ fontSize: '0.75rem' }}
+                                >
                                   {estate.category === 'irish_debt'
-                                    ? 'Amount Owed:'
-                                    : 'Value:'}
+                                    ? 'Amount Owed'
+                                    : 'Value'}
                                 </div>
-                                <div className='input-group input-group-sm'>
-                                  <input
-                                    type='text'
-                                    className='form-control shadow-none'
-                                    style={{ minWidth: 90, fontWeight: 500 }}
-                                    value={`${currency_sign} ${estate.value}`}
-                                    readOnly
-                                  />
+                                <div
+                                  className='fw-bold'
+                                  style={{
+                                    color:
+                                      estate.is_asset === false
+                                        ? '#ef4444'
+                                        : '#059669',
+                                    fontSize: '1rem',
+                                  }}
+                                >
+                                  {currency_sign} {estate.value}
                                 </div>
                               </div>
                             </div>
@@ -370,33 +470,36 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
         {Object.keys(liabilityGroups).length > 0 && (
           <>
             <div
+              className='p-4 mb-4'
               style={{
-                backgroundColor: '#fff3cd',
-                border: '1px solid #ffc107',
-                borderRadius: '8px',
-                padding: '1rem 1.5rem',
-                marginBottom: '1.5rem',
-                marginTop:
-                  Object.keys(assetGroups).length > 0 ? '2rem' : '1rem',
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                border: '1px solid #f59e0b',
+                borderRadius: '12px',
+                marginTop: Object.keys(assetGroups).length > 0 ? '2rem' : '0',
               }}
             >
-              <h6
-                style={{
-                  margin: 0,
-                  color: '#856404',
-                  fontWeight: 600,
-                  fontSize: '1rem',
-                }}
-              >
-                ESTATE LIABILITIES
-              </h6>
+              <div className='d-flex align-items-center mb-2'>
+                <div
+                  className='rounded-circle d-flex align-items-center justify-content-center me-3'
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    backgroundColor: '#f59e0b',
+                    color: 'white',
+                  }}
+                >
+                  <i
+                    className='fas fa-exclamation-triangle'
+                    style={{ fontSize: '0.875rem' }}
+                  ></i>
+                </div>
+                <h6 className='mb-0 fw-bold' style={{ color: '#92400e' }}>
+                  ESTATE LIABILITIES
+                </h6>
+              </div>
               <p
-                style={{
-                  margin: '0.5rem 0 0 0',
-                  color: '#424242',
-                  fontSize: '0.85rem',
-                  fontStyle: 'italic',
-                }}
+                className='mb-0 small'
+                style={{ color: '#92400e', fontStyle: 'italic' }}
               >
                 Debts, funeral expenses, and other obligations payable by the
                 estate
@@ -406,14 +509,26 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
             {Object.entries(liabilityGroups).map(
               ([estateName, groupedEstates], groupIndex) => (
                 <div key={groupIndex} className='mb-4'>
-                  {/* Create individual cards for each estate group */}
-                  <div className='card border rounded-3 shadow-sm'>
-                    <div className='card-header bg-light'>
-                      <h5 className='text-primary fw-bold mb-0'>
+                  <div
+                    className='border-0'
+                    style={{
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      className='p-3'
+                      style={{
+                        backgroundColor: '#f8fafc',
+                        borderBottom: '1px solid #e2e8f0',
+                      }}
+                    >
+                      <h5 className='mb-0 fw-bold' style={{ color: '#3b82f6' }}>
                         {estateName}
                       </h5>
                     </div>
-                    <div className='card-body'>
+                    <div className='p-3' style={{ backgroundColor: '#ffffff' }}>
                       {groupedEstates.map((estate, index) => {
                         const displayName =
                           groupedEstates.length > 1
@@ -423,69 +538,88 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
                         return (
                           <div
                             key={index}
-                            className={
-                              'd-flex flex-column flex-md-row align-items-start align-items-md-center ' +
-                              'border rounded-3 p-3 pb-2 position-relative ' +
-                              (index < groupedEstates.length - 1
-                                ? 'mb-3 '
-                                : '') +
-                              (estate.is_asset === false
-                                ? 'bg-liability'
-                                : 'bg-white')
-                            }
+                            className={`d-flex align-items-center justify-content-between 
+                            px-3 py-2 position-relative ${
+                              index < groupedEstates.length - 1 ? 'mb-2' : ''
+                            }`}
                             style={{
+                              backgroundColor:
+                                estate.is_asset === false
+                                  ? '#fef2f2'
+                                  : '#f8fafc',
                               borderLeft:
                                 estate.is_asset === false
-                                  ? '5px solid #495d8b'
-                                  : '5px solid #0dcaf0',
-                              minHeight: '120px',
-                              transition: 'box-shadow 0.2s',
+                                  ? '4px solid #ef4444'
+                                  : '4px solid #06b6d4',
+                              borderRadius: '6px',
+                              minHeight: '60px',
+                              transition: 'all 0.2s ease',
+                            }}
+                            onMouseOver={(e) => {
+                              e.currentTarget.style.boxShadow =
+                                '0 2px 4px rgba(0, 0, 0, 0.1)';
+                              e.currentTarget.style.transform =
+                                'translateX(2px)';
+                            }}
+                            onMouseOut={(e) => {
+                              e.currentTarget.style.boxShadow = 'none';
+                              e.currentTarget.style.transform = 'translateX(0)';
                             }}
                           >
-                            <div className='flex-grow-1'>
-                              {groupedEstates.length > 1 && (
-                                <div className='mb-2 d-flex align-items-center'>
-                                  <span className='fw-bold fs-6 text-secondary'>
+                            <div className='flex-grow-1 pe-3'>
+                              <div className='d-flex align-items-center flex-wrap gap-2'>
+                                {groupedEstates.length > 1 && (
+                                  <span className='fw-bold text-slate-700 small'>
                                     {displayName}
                                   </span>
-                                  {estate.is_asset === false && (
-                                    <span
-                                      className='ms-2'
-                                      title='Non-asset item'
-                                      style={{
-                                        color: '#495d8b',
-                                        opacity: 0.7,
-                                        verticalAlign: 'middle',
-                                      }}
-                                    >
-                                      <FaFileInvoiceDollar size={15} />
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-
-                              {/* Enhanced field rendering using configuration */}
-                              {renderEstateFields(estate)}
+                                )}
+                                {estate.is_asset === false && (
+                                  <span
+                                    className='badge rounded-pill px-2 py-1'
+                                    style={{
+                                      backgroundColor: '#fee2e2',
+                                      color: '#dc2626',
+                                      fontSize: '0.7rem',
+                                    }}
+                                    title='Liability'
+                                  >
+                                    <FaFileInvoiceDollar
+                                      size={10}
+                                      className='me-1'
+                                    />
+                                    Liability
+                                  </span>
+                                )}
+                              </div>
+                              <div className='mt-1'>
+                                {renderEstateFields(estate)}
+                              </div>
                             </div>
 
                             <div
-                              className='d-flex flex-row align-items-center ms-md-3 my-2 my-md-0'
-                              style={{ minWidth: 220 }}
+                              className='d-flex align-items-center'
+                              style={{ minWidth: '140px' }}
                             >
-                              <div>
-                                <div className='form-label mb-1 small text-nowrap'>
+                              <div className='text-end w-100'>
+                                <div
+                                  className='small text-muted mb-1'
+                                  style={{ fontSize: '0.75rem' }}
+                                >
                                   {estate.category === 'irish_debt'
-                                    ? 'Amount Owed:'
-                                    : 'Value:'}
+                                    ? 'Amount Owed'
+                                    : 'Value'}
                                 </div>
-                                <div className='input-group input-group-sm'>
-                                  <input
-                                    type='text'
-                                    className='form-control shadow-none'
-                                    style={{ minWidth: 90, fontWeight: 500 }}
-                                    value={`${currency_sign} ${estate.value}`}
-                                    readOnly
-                                  />
+                                <div
+                                  className='fw-bold'
+                                  style={{
+                                    color:
+                                      estate.is_asset === false
+                                        ? '#ef4444'
+                                        : '#059669',
+                                    fontSize: '1rem',
+                                  }}
+                                >
+                                  {currency_sign} {estate.value}
                                 </div>
                               </div>
                             </div>
@@ -500,12 +634,31 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
           </>
         )}
 
+        {/* Manage Estates Button */}
         <div className='text-end mb-3'>
           <button
-            className='btn btn-outline-primary btn-sm'
+            className='btn px-4 py-2 fw-medium'
+            style={{
+              backgroundColor: 'transparent',
+              color: '#3b82f6',
+              border: '2px solid #3b82f6',
+              borderRadius: '10px',
+              transition: 'all 0.2s ease',
+            }}
             onClick={() => setShowEstateModal(true)}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#3b82f6';
+              e.target.style.color = 'white';
+              e.target.style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.color = '#3b82f6';
+              e.target.style.transform = 'translateY(0)';
+            }}
           >
-            + Manage Estates
+            <FaCog className='me-2' size={14} />
+            Manage Estates
           </button>
         </div>
 
@@ -515,12 +668,14 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
           currency_sign={currency_sign}
         />
       </div>
+
       <EstateManagerModal
         show={showEstateModal}
         onClose={() => setShowEstateModal(false)}
         estates={estates}
         applicationId={application.id}
         refreshEstates={() => setRefresh(!refresh)}
+        currency_sign={currency_sign}
       />
     </div>
   );

@@ -7,6 +7,7 @@ const EstateFormModal = ({
   onSubmit,
   estateType,
   initialData,
+  currency_sign = '€',
 }) => {
   const [formData, setFormData] = useState({});
 
