@@ -1,11 +1,20 @@
 import axios from 'axios';
-
-import { API_URL } from '../../baseUrls';
-import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import Cookies from 'js-cookie';
-import RedirectCountdown from '../GenericComponents/RedirectCountdown';
 import { useState } from 'react';
+import {
+  FaArrowLeft,
+  FaBuilding,
+  FaCheckCircle,
+  FaEye,
+  FaEyeSlash,
+  FaMapMarkerAlt,
+  FaUserPlus,
+} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../baseUrls';
 import LoadingComponent from '../GenericComponents/LoadingComponent';
+import RedirectCountdown from '../GenericComponents/RedirectCountdown';
+import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 
 const RegisterComponent = () => {
   const [formData, setFormData] = useState({
@@ -27,12 +36,15 @@ const RegisterComponent = () => {
   });
   const [errors, setErrors] = useState(null);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const country = Cookies.get('country_solicitors');
   const postcode_placeholders = JSON.parse(
     Cookies.get('postcode_placeholders')
   );
   const phone_nr_placeholder = Cookies.get('phone_nr_placeholder');
+  const navigate = useNavigate();
 
   const [showForm, setShowForm] = useState(true);
 
@@ -43,8 +55,8 @@ const RegisterComponent = () => {
         formData,
         {
           headers: {
-            Country: country, // Adding the country header
-            'Frontend-Host': window.location.origin, // Sends the current frontend's URL
+            Country: country,
+            'Frontend-Host': window.location.origin,
           },
         }
       );
@@ -110,269 +122,653 @@ const RegisterComponent = () => {
     }
   };
 
-  return (
-    <>
-      {showForm ? (
-        <div className='container my-5'>
-          <div className='row justify-content-center px-sm-0 mx-sm-0'>
-            <div className='col-md-8 px-sm-0'>
-              <div className='card shadow-lg'>
-                <div className='card-body shadow-lg text-center'>
-                  <h3 className='card-title text-center'>Register</h3>
-                  <form onSubmit={handleSubmit}>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='email'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Email:
-                        <input
-                          type='email'
-                          id='email'
-                          name='email'
-                          className='form-control form-control-sm shadow'
-                          value={formData.email}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
-                      <div className='text-center'>
-                        <sub className='text-info '>
-                          This should be the solicitor firm&#39;s default email
-                          address. <br />
-                          It will be used to authenticate the account, login and
-                          for multi-factor authentication purposes. <br />
-                          Solicitor-specific email addresses can be added later
-                          when assigning solicitors to applications.
-                        </sub>
+  if (!showForm) {
+    return (
+      <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+        <div className='container'>
+          <div className='row justify-content-center'>
+            <div className='col-lg-6 col-md-8'>
+              <div
+                className='card border-0'
+                style={{
+                  borderRadius: '12px',
+                  boxShadow:
+                    '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                  backgroundColor: 'white',
+                }}
+              >
+                {/* Success Header */}
+                <div
+                  className='card-header border-0 py-4 text-center'
+                  style={{
+                    backgroundColor: '#f0fdf4',
+                    borderBottom: '1px solid #dcfce7',
+                    borderRadius: '12px 12px 0 0',
+                  }}
+                >
+                  <div
+                    className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                    }}
+                  >
+                    <FaCheckCircle size={32} />
+                  </div>
+                  <h3 className='mb-1 fw-bold text-green-800'>
+                    Registration Successful!
+                  </h3>
+                  <p className='mb-0 text-green-600'>
+                    Your account has been created successfully
+                  </p>
+                </div>
+
+                {/* Success Body */}
+                <div className='card-body p-4'>
+                  <div className='text-center mb-4'>
+                    <h5 className='fw-bold text-slate-800 mb-3'>
+                      What's Next?
+                    </h5>
+                    <div className='text-start'>
+                      <div className='d-flex align-items-start mb-3'>
+                        <div
+                          className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            fontSize: '14px',
+                          }}
+                        >
+                          1
+                        </div>
+                        <div>
+                          <p className='mb-1 fw-medium text-slate-700'>
+                            Check Your Email
+                          </p>
+                          <small className='text-slate-500'>
+                            We've sent an activation link to your email address.
+                            Please check your inbox.
+                          </small>
+                        </div>
+                      </div>
+
+                      <div className='d-flex align-items-start mb-3'>
+                        <div
+                          className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            fontSize: '14px',
+                          }}
+                        >
+                          2
+                        </div>
+                        <div>
+                          <p className='mb-1 fw-medium text-slate-700'>
+                            Click the Activation Link
+                          </p>
+                          <small className='text-slate-500'>
+                            Click the link in the email to activate your
+                            account.
+                          </small>
+                        </div>
+                      </div>
+
+                      <div className='d-flex align-items-start mb-3'>
+                        <div
+                          className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            fontSize: '14px',
+                          }}
+                        >
+                          3
+                        </div>
+                        <div>
+                          <p className='mb-1 fw-medium text-slate-700'>
+                            Start Using Your Account
+                          </p>
+                          <small className='text-slate-500'>
+                            Once activated, you can sign in and start managing
+                            your applications.
+                          </small>
+                        </div>
                       </div>
                     </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='password'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Password:
-                        <input
-                          type='password'
-                          id='password'
-                          name='password'
-                          className='form-control form-control-sm shadow'
-                          value={formData.password}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
+                  </div>
+
+                  {/* Important Notice */}
+                  <div
+                    className='p-3 rounded mb-4'
+                    style={{
+                      backgroundColor: '#fef3c7',
+                      border: '1px solid #fbbf24',
+                    }}
+                  >
+                    <div className='d-flex align-items-center mb-2'>
+                      <FaCheckCircle
+                        className='me-2 text-amber-600'
+                        size={16}
+                      />
+                      <strong className='text-amber-800'>
+                        Important Notice
+                      </strong>
                     </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='confirmPassword'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Confirm Password:
-                        <input
-                          type='password'
-                          id='confirmPassword'
-                          name='confirmPassword'
-                          className='form-control form-control-sm shadow'
-                          value={formData.confirmPassword}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
-                    </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='name'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Law Firm Name:
-                        <input
-                          type='text'
-                          id='name'
-                          name='name'
-                          className='form-control form-control-sm shadow'
-                          value={formData.name}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
-                    </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='phone_number'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Phone Number:
-                        <input
-                          type='text'
-                          id='phone_number'
-                          name='phone_number'
-                          className='form-control form-control-sm shadow'
-                          value={formData.phone_number}
-                          onChange={handleChange}
-                          required
-                        />
-                        <sub id='phoneHelp' className='form-text text-info'>
-                          Please provide your phone number in international
-                          format starting with <br />
-                          <strong> +[country code]</strong> followed by the full
-                          number. <br />
-                          Example:<strong>{phone_nr_placeholder}</strong>
-                        </sub>
-                      </label>
-                    </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='line1'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Address Line 1:
-                        <input
-                          type='text'
-                          id='line1'
-                          name='address.line1'
-                          className='form-control form-control-sm shadow'
-                          value={formData.address.line1}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
-                    </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='line2'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Address Line 2:
-                        <input
-                          type='text'
-                          id='line2'
-                          name='address.line2'
-                          className='form-control form-control-sm shadow'
-                          value={formData.address.line2}
-                          onChange={handleChange}
-                        />
-                      </label>
-                    </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='town_city'
-                        className='form-label col-12 col-md-10'
-                      >
-                        Town/City:
-                        <input
-                          type='text'
-                          id='town_city'
-                          name='address.town_city'
-                          className='form-control form-control-sm shadow'
-                          value={formData.address.town_city}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
-                    </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='county'
-                        className='form-label col-12 col-md-10'
-                      >
-                        County:
-                        <input
-                          type='text'
-                          id='county'
-                          name='address.county'
-                          className='form-control form-control-sm shadow'
-                          value={formData.address.county}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
-                    </div>
-                    <div className='mb-3'>
-                      <label
-                        htmlFor='eircode'
-                        className='form-label col-12 col-md-10'
-                      >
-                        {postcode_placeholders[0]}:
-                        <input
-                          type='text'
-                          id='eircode'
-                          name='address.eircode'
-                          className='form-control form-control-sm shadow'
-                          value={formData.address.eircode}
-                          onChange={handleChange}
-                          required
-                        />
-                      </label>
-                      <br />
-                      <small className='form-text text-info'>
-                        Please enter a valid {postcode_placeholders[0]} in the
-                        format <strong>{postcode_placeholders[1]}</strong>{' '}
-                        (e.g., {postcode_placeholders[2]}).
-                      </small>
-                    </div>
-                    <button
-                      type='submit'
-                      className='btn btn-outline-primary w-100 shadow mt-2'
-                      disabled={isRegistering}
-                    >
-                      {isRegistering ? (
-                        <LoadingComponent message='Registering...' />
-                      ) : (
-                        'Register'
-                      )}
-                    </button>
-                    {errors ? (
-                      <div
-                        className='alert alert-danger text-start mt-2'
-                        role='alert'
-                      >
-                        {renderErrors(errors)}
-                      </div>
-                    ) : null}
-                  </form>
+                    <ul className='mb-0 text-amber-800 small'>
+                      <li>
+                        Check your spam/junk folder if you don't see the email
+                      </li>
+                      <li>The activation link expires in 24 hours</li>
+                      <li>Mark our emails as safe to ensure future delivery</li>
+                    </ul>
+                  </div>
+
+                  <RedirectCountdown
+                    message='Redirecting to login in'
+                    redirectPath='/login'
+                    countdownTime={30}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      ) : (
-        <div className=' card  my-5 shadow rounded'>
-          <div className=' card-header bg-success-subtle'>
-            <h4 className='text-center'> Registration successfull</h4>
-          </div>
-          <div className='card-body my-5 text-center'>
-            <h2 className=' text-success'>
-              Your account has been successfully created!
-            </h2>{' '}
-            <br /> <br />
-            <br />
-            <p style={{ fontSize: '20px' }}>
-              Please check your email inbox to activate your account. <br />
-              <br />
-              If you don&#39;t see the email in your inbox, please check your
-              spam or junk folder. <br />
-              <br />
-              To ensure you receive future emails, mark our messages as safe or
-              move them to your primary inbox. <br />
-              <br />
-              <span style={{ color: 'red', fontWeight: 'bold' }}>
-                Important: The activation link is valid for 24 hours only. If
-                you do not activate your account within this time, the link will
-                expire, and you will need to contact our support team to
-                complete the activation process.
-              </span>
-            </p>
-          </div>
-          <RedirectCountdown
-            message='Redirecting to login in'
-            redirectPath='/login'
-            countdownTime={30}
-          />
+      </div>
+    );
+  }
+
+  return (
+    <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+      <div className='container'>
+        {/* Header Section */}
+        <div className='d-flex align-items-center mb-4'>
+          <button
+            className='btn d-flex align-items-center px-3 py-2'
+            style={{
+              backgroundColor: 'white',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              color: '#64748b',
+              fontSize: '0.9rem',
+              transition: 'all 0.2s ease',
+            }}
+            onClick={() => navigate(-1)}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#f1f5f9';
+              e.target.style.borderColor = '#cbd5e1';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = 'white';
+              e.target.style.borderColor = '#e2e8f0';
+            }}
+          >
+            <FaArrowLeft className='me-2' size={14} />
+            Back
+          </button>
         </div>
-      )}
-    </>
+
+        {/* Main Registration Card */}
+        <div className='row justify-content-center'>
+          <div className='col-lg-8 col-xl-7'>
+            <div
+              className='card border-0'
+              style={{
+                borderRadius: '12px',
+                boxShadow:
+                  '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                backgroundColor: 'white',
+              }}
+            >
+              {/* Card Header */}
+              <div
+                className='card-header border-0 py-4'
+                style={{
+                  backgroundColor: 'white',
+                  borderBottom: '1px solid #f1f5f9',
+                }}
+              >
+                <div className='text-center'>
+                  <div
+                    className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                    }}
+                  >
+                    <FaUserPlus size={24} />
+                  </div>
+                  <h4 className='mb-1 fw-bold text-slate-800'>
+                    Create Your Account
+                  </h4>
+                  <p className='mb-0 text-slate-500 small'>
+                    Register your law firm to get started
+                  </p>
+                </div>
+              </div>
+
+              {/* Error Display */}
+              {errors && (
+                <div className='mx-4 mt-3'>
+                  <div
+                    className='alert border-0'
+                    style={{
+                      backgroundColor: '#fef2f2',
+                      color: '#dc2626',
+                      borderRadius: '8px',
+                      fontSize: '0.9rem',
+                    }}
+                  >
+                    {renderErrors(errors)}
+                  </div>
+                </div>
+              )}
+
+              {/* Form Body */}
+              <div className='card-body px-4 pb-4'>
+                <form onSubmit={handleSubmit}>
+                  <div className='row'>
+                    {/* Left Column - Account & Firm Info */}
+                    <div className='col-md-6'>
+                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
+                        <FaBuilding className='me-2 text-slate-400' size={14} />
+                        Account & Firm Information
+                      </h6>
+
+                      {/* Email */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Firm Email Address *
+                        </label>
+                        <input
+                          type='email'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='email'
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#10b981')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                        <small className='text-info'>
+                          This will be used for authentication and login
+                          purposes
+                        </small>
+                      </div>
+
+                      {/* Firm Name */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Law Firm Name *
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='name'
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#10b981')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                      </div>
+
+                      {/* Password */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-2 small'>
+                          Password *
+                        </label>
+                        <div className='position-relative'>
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            className='form-control form-control-sm'
+                            style={{
+                              borderRadius: '6px',
+                              border: '1px solid #d1d5db',
+                              fontSize: '0.9rem',
+                              paddingRight: '40px',
+                              transition: 'border-color 0.2s ease',
+                            }}
+                            name='password'
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            onFocus={(e) =>
+                              (e.target.style.borderColor = '#10b981')
+                            }
+                            onBlur={(e) =>
+                              (e.target.style.borderColor = '#d1d5db')
+                            }
+                          />
+                          <button
+                            type='button'
+                            className='btn btn-sm position-absolute'
+                            style={{
+                              right: '8px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              border: 'none',
+                              background: 'none',
+                              color: '#64748b',
+                              padding: '0',
+                              width: '24px',
+                              height: '24px',
+                            }}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <FaEyeSlash size={14} />
+                            ) : (
+                              <FaEye size={14} />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Confirm Password */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-2 small'>
+                          Confirm Password *
+                        </label>
+                        <div className='position-relative'>
+                          <input
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            className='form-control form-control-sm'
+                            style={{
+                              borderRadius: '6px',
+                              border: '1px solid #d1d5db',
+                              fontSize: '0.9rem',
+                              paddingRight: '40px',
+                              transition: 'border-color 0.2s ease',
+                            }}
+                            name='confirmPassword'
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            required
+                            onFocus={(e) =>
+                              (e.target.style.borderColor = '#10b981')
+                            }
+                            onBlur={(e) =>
+                              (e.target.style.borderColor = '#d1d5db')
+                            }
+                          />
+                          <button
+                            type='button'
+                            className='btn btn-sm position-absolute'
+                            style={{
+                              right: '8px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              border: 'none',
+                              background: 'none',
+                              color: '#64748b',
+                              padding: '0',
+                              width: '24px',
+                              height: '24px',
+                            }}
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                          >
+                            {showConfirmPassword ? (
+                              <FaEyeSlash size={14} />
+                            ) : (
+                              <FaEye size={14} />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Phone */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Phone Number *
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='phone_number'
+                          value={formData.phone_number}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#10b981')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                        <small className='text-info'>
+                          Format: <strong>{phone_nr_placeholder}</strong>
+                        </small>
+                      </div>
+                    </div>
+
+                    {/* Right Column - Address */}
+                    <div className='col-md-6'>
+                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
+                        <FaMapMarkerAlt
+                          className='me-2 text-slate-400'
+                          size={14}
+                        />
+                        Firm Address
+                      </h6>
+
+                      {/* Address Line 1 */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Address Line 1 *
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='address.line1'
+                          value={formData.address.line1}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#3b82f6')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                      </div>
+
+                      {/* Address Line 2 */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Address Line 2
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='address.line2'
+                          value={formData.address.line2}
+                          onChange={handleChange}
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#3b82f6')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                      </div>
+
+                      {/* Town and County Row */}
+                      <div className='row'>
+                        <div className='col-7 mb-3'>
+                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                            Town/City *
+                          </label>
+                          <input
+                            type='text'
+                            className='form-control form-control-sm'
+                            style={{
+                              borderRadius: '6px',
+                              border: '1px solid #d1d5db',
+                              fontSize: '0.9rem',
+                              transition: 'border-color 0.2s ease',
+                            }}
+                            name='address.town_city'
+                            value={formData.address.town_city}
+                            onChange={handleChange}
+                            required
+                            onFocus={(e) =>
+                              (e.target.style.borderColor = '#3b82f6')
+                            }
+                            onBlur={(e) =>
+                              (e.target.style.borderColor = '#d1d5db')
+                            }
+                          />
+                        </div>
+                        <div className='col-5 mb-3'>
+                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                            County *
+                          </label>
+                          <input
+                            type='text'
+                            className='form-control form-control-sm'
+                            style={{
+                              borderRadius: '6px',
+                              border: '1px solid #d1d5db',
+                              fontSize: '0.9rem',
+                              transition: 'border-color 0.2s ease',
+                            }}
+                            name='address.county'
+                            value={formData.address.county}
+                            onChange={handleChange}
+                            required
+                            onFocus={(e) =>
+                              (e.target.style.borderColor = '#3b82f6')
+                            }
+                            onBlur={(e) =>
+                              (e.target.style.borderColor = '#d1d5db')
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      {/* Postcode */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          {postcode_placeholders[0]} *
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='address.eircode'
+                          value={formData.address.eircode}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#3b82f6')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                        <small className='text-muted'>
+                          Format: {postcode_placeholders[1]} (e.g.,{' '}
+                          {postcode_placeholders[2]})
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div
+                    className='text-center mt-4 pt-3'
+                    style={{ borderTop: '1px solid #f1f5f9' }}
+                  >
+                    {isRegistering ? (
+                      <LoadingComponent message='Creating your account...' />
+                    ) : (
+                      <button
+                        type='submit'
+                        className='btn px-5 py-2 fw-medium w-100'
+                        style={{
+                          backgroundColor: '#10b981',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '0.95rem',
+                          transition: 'all 0.2s ease',
+                          maxWidth: '300px',
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.backgroundColor = '#059669';
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.backgroundColor = '#10b981';
+                        }}
+                      >
+                        <FaUserPlus className='me-2' size={14} />
+                        Create Account
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
