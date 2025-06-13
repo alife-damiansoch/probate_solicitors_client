@@ -1,14 +1,16 @@
-import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import BackToApplicationsIcon from '../../../../GenericComponents/BackToApplicationsIcon';
+import LoadingComponent from '../../../../GenericComponents/LoadingComponent';
 import {
   fetchData,
   postPdfRequest,
 } from '../../../../GenericFunctions/AxiosGenericFunctions';
-import BackToApplicationsIcon from '../../../../GenericComponents/BackToApplicationsIcon';
+import renderErrors, {
+  getEstates,
+} from '../../../../GenericFunctions/HelperGenericFunctions';
 import ApplicationSummaryCard from './ApplicationSummaryCard';
-import renderErrors from '../../../../GenericFunctions/HelperGenericFunctions';
-import { useEffect, useState } from 'react';
-import LoadingComponent from '../../../../GenericComponents/LoadingComponent';
 
 const AdvancementDetailsConfirm = () => {
   const token = Cookies.get('auth_token');
@@ -19,6 +21,7 @@ const AdvancementDetailsConfirm = () => {
   const [feeCounted, setFeeCounted] = useState(false);
   const [applicationErrors, setApplicationErrors] = useState([]);
   const [isGeneratingDocuments, setIsGeneratingDocuments] = useState(false);
+  const [estates, setEstates] = useState([]);
 
   const { id } = useParams();
 
@@ -65,7 +68,7 @@ const AdvancementDetailsConfirm = () => {
     }
 
     // Application validations
-    if (application) {
+    if (application && estates) {
       if (!application.amount || parseFloat(application.amount) <= 0) {
         errors.push('Amount must be a positive value.');
       }
@@ -82,7 +85,7 @@ const AdvancementDetailsConfirm = () => {
         errors.push("Deceased person's first and last name must be provided.");
       }
 
-      if (!application.estates || application.estates.length === 0) {
+      if (!estates || estates.length === 0) {
         errors.push('At least one estate is required.');
       }
 
@@ -103,7 +106,7 @@ const AdvancementDetailsConfirm = () => {
     // Update the application errors state
     // console.log(errors);
     setApplicationErrors(errors);
-  }, [application, fee, feeCounted]);
+  }, [application, fee, feeCounted, estates]);
 
   const generateUndertakingHandler = async () => {
     setLoading(true); // Set loading to true when request starts
@@ -143,6 +146,26 @@ const AdvancementDetailsConfirm = () => {
       setLoading(false); // Set loading to false when request completes
     }
   };
+
+  // Fetch estates when application.estate_summary changes
+  useEffect(() => {
+    const fetchEstates = async () => {
+      setLoading(true);
+      try {
+        const estatesData = await getEstates(application);
+        console.log('Estates data fetched:', estatesData);
+        setEstates(estatesData);
+      } catch (error) {
+        console.error('Error fetching estates:', error);
+        setEstates([]);
+      }
+      setLoading(false);
+    };
+
+    if (application && application.estate_summary) {
+      fetchEstates();
+    }
+  }, [application]);
 
   const generateAdvanceAggreementHandler = async () => {
     setLoading(true); // Set loading to true when request starts
@@ -294,6 +317,7 @@ const AdvancementDetailsConfirm = () => {
                 application={application}
                 issues={issues}
                 setIssues={setIssues}
+                estates={estates}
               />
             </div>
           </div>

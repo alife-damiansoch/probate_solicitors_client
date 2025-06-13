@@ -1,8 +1,8 @@
-import React from 'react';
+
 
 const toNumber = val => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
-export function EstateSummaryForApp({ estates, requestedAmount, currency_sign }) {
+export function EstateSummaryForApp({ estates =[], requestedAmount, currency_sign }) {
   const assets = estates.filter(e => e.lendable !== null);
   const deductions = estates.filter(e => e.lendable === null);
 

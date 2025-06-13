@@ -1,12 +1,13 @@
 import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import { FaExternalLinkAlt, FaPlus, FaUserTie } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import {
   fetchData,
   patchData,
 } from '../../GenericFunctions/AxiosGenericFunctions';
 import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
-import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import LoadingComponent from '../../GenericComponents/LoadingComponent';
 
 const SolicitorPart = ({
   solicitor_id,
@@ -102,112 +103,276 @@ const SolicitorPart = ({
 
   return (
     <div
-      className={`card my-2 rounded   shadow ${
+      className={`border-0 my-4 ${
         highlitedSectionId === 'Solicitor Part' && 'highlited_section'
       }`}
       id='Solicitor Part'
+      style={{
+        borderRadius: '16px',
+        boxShadow:
+          '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        overflow: 'hidden',
+      }}
     >
-      <div className='card-header rounded-top'>
-        <h4 className=' card-subtitle text-info-emphasis'>
-          Assigned Solicitor
-        </h4>
+      {/* Header */}
+      <div
+        className='d-flex align-items-center border-0 p-4'
+        style={{
+          background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+          color: 'white',
+        }}
+      >
+        <div
+          className='rounded-circle d-flex align-items-center justify-content-center me-3'
+          style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          <FaUserTie size={18} />
+        </div>
+        <h4 className='mb-0 fw-semibold'>Assigned Solicitor</h4>
       </div>
+
+      {/* Loading State */}
       {isUpdatingSolicitorAssigned ? (
-        <LoadingComponent message='Updating solicitors...' />
+        <div className='p-4' style={{ backgroundColor: '#ffffff' }}>
+          <LoadingComponent message='Updating solicitors...' />
+        </div>
       ) : (
-        <>
+        <div className='p-4' style={{ backgroundColor: '#ffffff' }}>
+          {/* No Solicitor Warning */}
           {!assignedSolicitor && (
-            <div className='row mt-3'>
-              <div className=' alert alert-danger col-12 col-md-6 mx-auto text-center'>
-                <p>Please select a solicitor from the list.</p>
-                <p>
-                  {' '}
-                  If the desired solicitor is not listed, click &#39;Add or Edit
-                  Solicitor&#39; to add a new solicitor.
-                </p>
+            <div className='mb-4'>
+              <div
+                className='alert border-0 text-center'
+                style={{
+                  backgroundColor: '#fef2f2',
+                  color: '#dc2626',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 4px rgba(239, 68, 68, 0.1)',
+                }}
+              >
+                <div className='d-flex align-items-center justify-content-center mb-2'>
+                  <i className='fas fa-exclamation-triangle me-2'></i>
+                  <span className='fw-semibold'>
+                    Solicitor Assignment Required
+                  </span>
+                </div>
+                <div className='small'>
+                  <p className='mb-1'>
+                    Please select a solicitor from the list.
+                  </p>
+                  <p className='mb-0'>
+                    If the desired solicitor is not listed, click 'Add or Edit
+                    Solicitor' to add a new solicitor.
+                  </p>
+                </div>
               </div>
             </div>
           )}
-          <div className='card-body'>
-            {isLoading ? ( // Show loading spinner or message when data is loading
-              <LoadingComponent message='Loading solicitors...' />
-            ) : (
-              <>
-                <div className='row mb-3'>
-                  <div className='col-md-6 '>
-                    <label htmlFor='solicitor-select' className='form-label'>
-                      Assigned Solicitor:
-                    </label>
-                    {solicitors.length === 0 ? (
-                      <div className='alert alert-warning'>
-                        <p>
+
+          {/* Main Content */}
+          {isLoading ? (
+            <LoadingComponent message='Loading solicitors...' />
+          ) : (
+            <div className='row g-4 align-items-end'>
+              {/* Solicitor Selection */}
+              <div className='col-md-8'>
+                <label
+                  htmlFor='solicitor-select'
+                  className='form-label fw-semibold text-slate-700 mb-2'
+                >
+                  <i className='fas fa-user-tie me-2 text-purple-500'></i>
+                  Assigned Solicitor
+                </label>
+
+                {solicitors.length === 0 ? (
+                  <div
+                    className='alert border-0'
+                    style={{
+                      backgroundColor: '#fef3c7',
+                      color: '#92400e',
+                      borderRadius: '10px',
+                      boxShadow: '0 2px 4px rgba(245, 158, 11, 0.1)',
+                    }}
+                  >
+                    <div className='d-flex align-items-center'>
+                      <i className='fas fa-info-circle me-2'></i>
+                      <div>
+                        <div className='fw-semibold mb-1'>
+                          No Solicitors Available
+                        </div>
+                        <div className='small'>
                           No solicitors have been created for this firm. Please
-                          create them by clicking the &#39;ADD OR EDIT
-                          SOLICITORS&#39; button.
-                        </p>
+                          create them by clicking the 'ADD OR EDIT SOLICITORS'
+                          button.
+                        </div>
                       </div>
-                    ) : (
-                      <select
-                        id='solicitor-select'
-                        className={`form-select form-select-sm shadow ${
-                          !assignedSolicitor ? 'bg-danger-subtle' : ''
-                        }`}
-                        onChange={(e) =>
-                          updateSelectedSolicitor(e.target.value)
-                        }
-                        value={assignedSolicitor ? assignedSolicitor.id : ''}
-                      >
-                        <option value='' disabled>
-                          {assignedSolicitor
-                            ? `${assignedSolicitor.title} ${assignedSolicitor.first_name} ${assignedSolicitor.last_name}`
-                            : 'Select assigned solicitor'}
-                        </option>
-                        {solicitors.map((solicitor) => (
-                          <option
-                            key={solicitor.id}
-                            value={solicitor.id}
-                            className={
-                              solicitor.id === solicitor_id
-                                ? 'text-bg-info'
-                                : ''
-                            }
-                          >
-                            {solicitor.title} {solicitor.first_name}{' '}
-                            {solicitor.last_name}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  </div>
-                  <div className='col-md-6 mt-4 text-center mt-md-auto'>
-                    <div className='col-12'>
-                      <Link
-                        className='btn btn-sm btn-primary shadow'
-                        to={`/solicitors`}
-                      >
-                        Add or edit solicitors
-                      </Link>
                     </div>
                   </div>
-                </div>
-              </>
-            )}
+                ) : (
+                  <div
+                    className='input-group'
+                    style={{
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                    }}
+                  >
+                    <div
+                      className='input-group-text border-0 d-flex align-items-center justify-content-center'
+                      style={{
+                        backgroundColor: '#f1f5f9',
+                        width: '45px',
+                      }}
+                    >
+                      <i className='fas fa-user text-slate-500'></i>
+                    </div>
+                    <select
+                      id='solicitor-select'
+                      className={`form-select border-0 fw-medium ${
+                        !assignedSolicitor ? 'text-danger' : 'text-slate-700'
+                      }`}
+                      style={{
+                        backgroundColor: !assignedSolicitor
+                          ? '#fef2f2'
+                          : '#ffffff',
+                        fontSize: '1rem',
+                        padding: '0.75rem 1rem',
+                      }}
+                      onChange={(e) => updateSelectedSolicitor(e.target.value)}
+                      value={assignedSolicitor ? assignedSolicitor.id : ''}
+                    >
+                      <option value='' disabled>
+                        {assignedSolicitor
+                          ? `${assignedSolicitor.title} ${assignedSolicitor.first_name} ${assignedSolicitor.last_name}`
+                          : 'Select assigned solicitor'}
+                      </option>
+                      {solicitors.map((solicitor) => (
+                        <option
+                          key={solicitor.id}
+                          value={solicitor.id}
+                          style={{
+                            backgroundColor:
+                              solicitor.id === solicitor_id
+                                ? '#dbeafe'
+                                : 'transparent',
+                            fontWeight:
+                              solicitor.id === solicitor_id ? '600' : '400',
+                          }}
+                        >
+                          {solicitor.title} {solicitor.first_name}{' '}
+                          {solicitor.last_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
-            {isError &&
-              errors && ( // Display error messages if any
-                <div
-                  className={`col-8 mx-auto alert text-center ${
-                    isError
-                      ? 'alert-warning text-danger'
-                      : 'alert-success text-success'
-                  }`}
-                  role='alert'
+                {/* Current Solicitor Display */}
+                {assignedSolicitor && (
+                  <div
+                    className='mt-3 p-3 rounded-3 d-flex align-items-center'
+                    style={{
+                      backgroundColor: '#f0fdf4',
+                      border: '1px solid #bbf7d0',
+                    }}
+                  >
+                    <div
+                      className='rounded-circle d-flex align-items-center justify-content-center me-3'
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        backgroundColor: '#059669',
+                        color: 'white',
+                      }}
+                    >
+                      <i
+                        className='fas fa-check'
+                        style={{ fontSize: '0.875rem' }}
+                      ></i>
+                    </div>
+                    <div>
+                      <div
+                        className='fw-semibold text-green-700'
+                        style={{ fontSize: '0.95rem' }}
+                      >
+                        Currently Assigned
+                      </div>
+                      <div className='text-green-600 small'>
+                        {assignedSolicitor.title} {assignedSolicitor.first_name}{' '}
+                        {assignedSolicitor.last_name}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Add/Edit Button */}
+              <div className='col-md-4 text-center text-md-end'>
+                <Link
+                  className='btn px-4 py-3 fw-medium text-decoration-none'
+                  to='/solicitors'
+                  style={{
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '10px',
+                    transition: 'all 0.2s ease',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = '#2563eb';
+                    e.target.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = '#3b82f6';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
                 >
+                  <FaPlus size={14} />
+                  Add or Edit Solicitors
+                  <FaExternalLinkAlt size={12} />
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Error Messages */}
+          {errors && (
+            <div className='mt-4'>
+              <div
+                className={`alert border-0 text-center ${
+                  isError ? 'alert-danger' : 'alert-success'
+                }`}
+                style={{
+                  borderRadius: '12px',
+                  boxShadow: isError
+                    ? '0 4px 6px rgba(239, 68, 68, 0.1)'
+                    : '0 4px 6px rgba(34, 197, 94, 0.1)',
+                  backgroundColor: isError ? '#fef2f2' : '#f0fdf4',
+                  color: isError ? '#dc2626' : '#16a34a',
+                  fontWeight: '500',
+                }}
+                role='alert'
+              >
+                <div className='d-flex align-items-center justify-content-center'>
+                  <i
+                    className={`fas ${
+                      isError ? 'fa-exclamation-triangle' : 'fa-check-circle'
+                    } me-2`}
+                  ></i>
                   {renderErrors(errors)}
                 </div>
-              )}
-          </div>
-        </>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

@@ -1,12 +1,11 @@
-
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { logout } from '../../store/authSlice';
 import { clearUser } from '../../store/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { postData } from '../GenericFunctions/AxiosGenericFunctions';
 import useApiKeyExpiration from '../GenericFunctions/CustomHooks/useApiKeyExpiration';
 import TimeoutWarning from './TimeoutWarningComponent';
-import { postData } from '../GenericFunctions/AxiosGenericFunctions';
-import {useEffect, useState} from "react";
 
 const AutoLogoutComponent = () => {
   const WARNING_TIME = 5 * 60 * 1000; // 5 minutes before expiration
@@ -65,15 +64,15 @@ const AutoLogoutComponent = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expirationTime,WARNING_TIME,logoutUser]);
+  }, [expirationTime, WARNING_TIME, logoutUser]);
 
   return (
     <div>
-      <div className='timer-display'>
+      {/* <div className='timer-display'>
         <p>
           Session Time Remaining: {Math.floor(remainingTime / 1000)} seconds
         </p>
-      </div>
+      </div> */}
       {showWarning && (
         <TimeoutWarning
           remainingTime={Math.floor(remainingTime / 1000)}

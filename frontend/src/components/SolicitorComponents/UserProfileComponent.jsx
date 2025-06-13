@@ -1,14 +1,19 @@
-import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import {
+  FaArrowLeft,
+  FaEdit,
+  FaLock,
+  FaMapMarkerAlt,
+  FaUser,
+} from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from '../../store/userSlice';
 
-import Cookies from 'js-cookie';
-
-import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 import { useNavigate } from 'react-router-dom';
-import { patchData } from '../GenericFunctions/AxiosGenericFunctions';
-import BackToApplicationsIcon from '../GenericComponents/BackToApplicationsIcon';
 import LoadingComponent from '../GenericComponents/LoadingComponent';
+import { patchData } from '../GenericFunctions/AxiosGenericFunctions';
+import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 
 const UserProfile = () => {
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
@@ -39,13 +44,6 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (user) {
-      // Format phone number if it starts with +353, otherwise use the phone number as is or an empty string
-      // const formattedPhoneNumber =
-      //   user.phone_number && user.phone_number.startsWith('+353')
-      //     ? '0' + user.phone_number.slice(4)
-      //     : user?.phone_number ?? '';
-
-      // Set the form data with proper checks for null and undefined values
       setFormData({
         email: user?.email ?? '',
         name: user?.name ?? '',
@@ -59,7 +57,7 @@ const UserProfile = () => {
         },
       });
     }
-  }, [user]); // Dependency array ensures this runs when the user object changes
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -82,18 +80,17 @@ const UserProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors(null); // Clear errors
+    setErrors(null);
     try {
       setIsUpdatingProfile(true);
       const endpoint = `/api/user/me/`;
       const response = await patchData(endpoint, formData);
       if (response.status === 200) {
         alert('Profile updated successfully!');
-
-        dispatch(fetchUser()); // Fetch the updated user data
+        dispatch(fetchUser());
       } else {
         setErrors(response.data);
-        dispatch(fetchUser()); // Fetch the updated user data
+        dispatch(fetchUser());
       }
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -103,191 +100,411 @@ const UserProfile = () => {
     }
   };
 
-  return (
-    <>
-      <BackToApplicationsIcon backUrl={-1} />
-      <div className='row mx-3'>
-        <button
-          className='col-lg-6 mx-auto my-3 btn btn-sm btn-outline-danger shadow'
-          onClick={() => {
-            navigate('/update_password');
-          }}
-        >
-          Change password
-        </button>
+  if (!user) {
+    return (
+      <div
+        className='min-vh-100 d-flex align-items-center justify-content-center'
+        style={{ backgroundColor: '#f8fafc' }}
+      >
+        <LoadingComponent message='Loading user data...' />
       </div>
-      {user ? (
-        <form onSubmit={handleSubmit}>
-          <div className='card rounded col-8 mx-auto rounded shadow-lg border-0 my-4'>
-            <div className='card-header rounded-top '>
-              <h4 className='card-title  text-danger-emphasis'>User Profile</h4>
-            </div>
-            {errors ? (
-              <div className=' card-footer'>
-                <div className='alert alert-danger text-center' role='alert'>
-                  {renderErrors(errors)}
+    );
+  }
+
+  return (
+    <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+      <div className='container'>
+        {/* Header Section */}
+        <div className='d-flex align-items-center justify-content-between mb-4'>
+          <button
+            className='btn d-flex align-items-center px-3 py-2'
+            style={{
+              backgroundColor: 'white',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              color: '#64748b',
+              fontSize: '0.9rem',
+              transition: 'all 0.2s ease',
+            }}
+            onClick={() => navigate(-1)}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#f1f5f9';
+              e.target.style.borderColor = '#cbd5e1';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = 'white';
+              e.target.style.borderColor = '#e2e8f0';
+            }}
+          >
+            <FaArrowLeft className='me-2' size={14} />
+            Back
+          </button>
+
+          <button
+            className='btn d-flex align-items-center px-3 py-2'
+            style={{
+              backgroundColor: '#ef4444',
+              border: 'none',
+              borderRadius: '8px',
+              color: 'white',
+              fontSize: '0.9rem',
+              transition: 'all 0.2s ease',
+            }}
+            onClick={() => navigate('/update_password')}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#dc2626';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = '#ef4444';
+            }}
+          >
+            <FaLock className='me-2' size={12} />
+            Change Password
+          </button>
+        </div>
+
+        {/* Main Profile Card */}
+        <div className='row justify-content-center'>
+          <div className='col-lg-8 col-xl-7'>
+            <div
+              className='card border-0'
+              style={{
+                borderRadius: '12px',
+                boxShadow:
+                  '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+                backgroundColor: 'white',
+              }}
+            >
+              {/* Card Header */}
+              <div
+                className='card-header border-0 py-4'
+                style={{
+                  backgroundColor: 'white',
+                  borderBottom: '1px solid #f1f5f9',
+                }}
+              >
+                <div className='text-center'>
+                  <div
+                    className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                    }}
+                  >
+                    <FaUser size={24} />
+                  </div>
+                  <h4 className='mb-1 fw-bold text-slate-800'>User Profile</h4>
+                  <p className='mb-0 text-slate-500 small'>
+                    Manage your account information
+                  </p>
                 </div>
               </div>
-            ) : null}
 
-            <div className='card-body shadow-lg'>
-              <div className='mb-3 row mt-3 mx-0'>
-                <label htmlFor='email' className='form-label col-lg-8 mx-auto'>
-                  Email:
-                  <input
-                    type='email'
-                    className='form-control form-control-sm shadow'
-                    id='email'
-                    name='email'
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  <small className=' text-muted'>
-                    When the email address is updated, the login email will be
-                    updated as well.
-                  </small>
-                </label>
-              </div>
-              <div className='mb-3 row'>
-                <label htmlFor='name' className='form-label col-lg-8 mx-auto'>
-                  Name:
-                  <input
-                    type='text'
-                    className='form-control form-control-sm shadow'
-                    id='name'
-                    name='name'
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-              </div>
-              <div className='mb-3 row'>
-                <label
-                  htmlFor='phone_number'
-                  className='form-label col-lg-8 mx-auto'
-                >
-                  Phone Number:
-                  <input
-                    type='text'
-                    className='form-control form-control-sm shadow'
-                    id='phone_number'
-                    name='phone_number'
-                    value={formData.phone_number}
-                    onChange={handleChange}
-                  />
-                  <div className='text-center'>
-                    <sub id='phoneHelp' className='form-text text-info'>
-                      Please provide your phone number in international format
-                      starting with <br />
-                      <strong> +[country code]</strong> followed by the full
-                      number. <br />
-                      Example:<strong>{phone_nr_placeholder}</strong>
-                    </sub>
-                  </div>
-                </label>
-              </div>
-
-              <h4 className='my-3 text-center'>Address</h4>
-              <div className='mb-3 row'>
-                <label htmlFor='line1' className='form-label col-lg-8 mx-auto'>
-                  Address Line 1:
-                  <input
-                    type='text'
-                    className='form-control form-control-sm shadow'
-                    id='line1'
-                    name='address.line1'
-                    value={formData.address.line1}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-              </div>
-              <div className='mb-3 row'>
-                <label htmlFor='line2' className='form-label col-lg-8 mx-auto'>
-                  Address Line 2:
-                  <input
-                    type='text'
-                    className='form-control form-control-sm shadow'
-                    id='line2'
-                    name='address.line2'
-                    value={formData.address.line2}
-                    onChange={handleChange}
-                  />
-                </label>
-              </div>
-              <div className='mb-3 row'>
-                <label
-                  htmlFor='town_city'
-                  className='form-label col-lg-8 mx-auto'
-                >
-                  Town/City:
-                  <input
-                    type='text'
-                    className='form-control form-control-sm shadow'
-                    id='town_city'
-                    name='address.town_city'
-                    value={formData.address.town_city}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-              </div>
-              <div className='mb-3 row'>
-                <label htmlFor='county' className='form-label col-lg-8 mx-auto'>
-                  County:
-                  <input
-                    type='text'
-                    className='form-control form-control-sm shadow'
-                    id='county'
-                    name='address.county'
-                    value={formData.address.county}
-                    onChange={handleChange}
-                  />
-                </label>
-              </div>
-              <div className='mb-3 row'>
-                <label
-                  htmlFor='eircode'
-                  className='form-label col-lg-8 mx-auto'
-                >
-                  {postcode_placeholders[0]}:
-                  <input
-                    type='text'
-                    className='form-control form-control-sm shadow'
-                    id='eircode'
-                    name='address.eircode'
-                    value={formData.address.eircode}
-                    onChange={handleChange}
-                    required
-                  />
-                  <small className='form-text text-info'>
-                    Please enter a valid {postcode_placeholders[0]} in the
-                    format <strong>{postcode_placeholders[1]}</strong> (e.g.,{' '}
-                    {postcode_placeholders[2]}).
-                  </small>
-                </label>
-              </div>
-              <div className='row my-3'>
-                {isUpdatingProfile ? (
-                  <LoadingComponent message='Updating profile...' />
-                ) : (
-                  <button
-                    type='submit'
-                    className='btn btn-outline-danger btn-sm col-lg-7 mx-auto shadow'
+              {/* Error Display */}
+              {errors && (
+                <div className='mx-4 mt-3'>
+                  <div
+                    className='alert border-0'
+                    style={{
+                      backgroundColor: '#fef2f2',
+                      color: '#dc2626',
+                      borderRadius: '8px',
+                      fontSize: '0.9rem',
+                    }}
                   >
-                    Update Profile
-                  </button>
-                )}
+                    {renderErrors(errors)}
+                  </div>
+                </div>
+              )}
+
+              {/* Form Body */}
+              <div className='card-body px-4 pb-4'>
+                <form onSubmit={handleSubmit}>
+                  <div className='row'>
+                    {/* Left Column - Personal Info */}
+                    <div className='col-md-6'>
+                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
+                        <FaUser className='me-2 text-slate-400' size={14} />
+                        Personal Information
+                      </h6>
+
+                      {/* Email */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Email Address *
+                        </label>
+                        <input
+                          type='email'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='email'
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#3b82f6')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                        <small className='text-muted'>
+                          Login email will be updated
+                        </small>
+                      </div>
+
+                      {/* Name */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Firm Name *
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='name'
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#3b82f6')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                      </div>
+
+                      {/* Phone */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Phone Number
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='phone_number'
+                          value={formData.phone_number}
+                          onChange={handleChange}
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#3b82f6')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                        <small className='text-info'>
+                          Format: <strong>{phone_nr_placeholder}</strong>
+                        </small>
+                      </div>
+                    </div>
+
+                    {/* Right Column - Address */}
+                    <div className='col-md-6'>
+                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
+                        <FaMapMarkerAlt
+                          className='me-2 text-slate-400'
+                          size={14}
+                        />
+                        Address Information
+                      </h6>
+
+                      {/* Address Line 1 */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Address Line 1 *
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='address.line1'
+                          value={formData.address.line1}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#10b981')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                      </div>
+
+                      {/* Address Line 2 */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          Address Line 2
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='address.line2'
+                          value={formData.address.line2}
+                          onChange={handleChange}
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#10b981')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                      </div>
+
+                      {/* Town and County Row */}
+                      <div className='row'>
+                        <div className='col-7 mb-3'>
+                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                            Town/City *
+                          </label>
+                          <input
+                            type='text'
+                            className='form-control form-control-sm'
+                            style={{
+                              borderRadius: '6px',
+                              border: '1px solid #d1d5db',
+                              fontSize: '0.9rem',
+                              transition: 'border-color 0.2s ease',
+                            }}
+                            name='address.town_city'
+                            value={formData.address.town_city}
+                            onChange={handleChange}
+                            required
+                            onFocus={(e) =>
+                              (e.target.style.borderColor = '#10b981')
+                            }
+                            onBlur={(e) =>
+                              (e.target.style.borderColor = '#d1d5db')
+                            }
+                          />
+                        </div>
+                        <div className='col-5 mb-3'>
+                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                            County
+                          </label>
+                          <input
+                            type='text'
+                            className='form-control form-control-sm'
+                            style={{
+                              borderRadius: '6px',
+                              border: '1px solid #d1d5db',
+                              fontSize: '0.9rem',
+                              transition: 'border-color 0.2s ease',
+                            }}
+                            name='address.county'
+                            value={formData.address.county}
+                            onChange={handleChange}
+                            onFocus={(e) =>
+                              (e.target.style.borderColor = '#10b981')
+                            }
+                            onBlur={(e) =>
+                              (e.target.style.borderColor = '#d1d5db')
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      {/* Postcode */}
+                      <div className='mb-3'>
+                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          {postcode_placeholders[0]} *
+                        </label>
+                        <input
+                          type='text'
+                          className='form-control form-control-sm'
+                          style={{
+                            borderRadius: '6px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '0.9rem',
+                            transition: 'border-color 0.2s ease',
+                          }}
+                          name='address.eircode'
+                          value={formData.address.eircode}
+                          onChange={handleChange}
+                          required
+                          onFocus={(e) =>
+                            (e.target.style.borderColor = '#10b981')
+                          }
+                          onBlur={(e) =>
+                            (e.target.style.borderColor = '#d1d5db')
+                          }
+                        />
+                        <small className='text-muted'>
+                          Format: {postcode_placeholders[1]} (e.g.,{' '}
+                          {postcode_placeholders[2]})
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div
+                    className='text-center mt-4 pt-3'
+                    style={{ borderTop: '1px solid #f1f5f9' }}
+                  >
+                    {isUpdatingProfile ? (
+                      <LoadingComponent message='Updating profile...' />
+                    ) : (
+                      <button
+                        type='submit'
+                        className='btn px-4 py-2 fw-medium'
+                        style={{
+                          backgroundColor: '#3b82f6',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '0.95rem',
+                          transition: 'all 0.2s ease',
+                          minWidth: '160px',
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.backgroundColor = '#2563eb';
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.backgroundColor = '#3b82f6';
+                        }}
+                      >
+                        <FaEdit className='me-2' size={14} />
+                        Update Profile
+                      </button>
+                    )}
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-        </form>
-      ) : (
-        <LoadingComponent message='Loading user data...' />
-      )}
-    </>
+        </div>
+      </div>
+    </div>
   );
 };
 
