@@ -120,6 +120,7 @@ const ApplicationDetails = () => {
         application={application}
         setHighlightedSectionId={setHighlightedSectionId}
         estates={estates}
+        advancement={advancement}
       />
 
       {/* Navigation */}

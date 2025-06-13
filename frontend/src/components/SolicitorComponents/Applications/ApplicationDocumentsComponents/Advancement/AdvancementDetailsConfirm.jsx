@@ -68,7 +68,7 @@ const AdvancementDetailsConfirm = () => {
     }
 
     // Application validations
-    if (application) {
+    if (application && estates) {
       if (!application.amount || parseFloat(application.amount) <= 0) {
         errors.push('Amount must be a positive value.');
       }
@@ -106,7 +106,7 @@ const AdvancementDetailsConfirm = () => {
     // Update the application errors state
     // console.log(errors);
     setApplicationErrors(errors);
-  }, [application, fee, feeCounted]);
+  }, [application, fee, feeCounted, estates]);
 
   const generateUndertakingHandler = async () => {
     setLoading(true); // Set loading to true when request starts
@@ -153,6 +153,7 @@ const AdvancementDetailsConfirm = () => {
       setLoading(true);
       try {
         const estatesData = await getEstates(application);
+        console.log('Estates data fetched:', estatesData);
         setEstates(estatesData);
       } catch (error) {
         console.error('Error fetching estates:', error);

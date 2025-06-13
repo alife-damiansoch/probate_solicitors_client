@@ -7,6 +7,7 @@ import {
   FaFileUpload,
   FaGavel,
   FaInfoCircle,
+  FaMoneyBillWave,
   FaTimes,
   FaUser,
 } from 'react-icons/fa';
@@ -15,6 +16,7 @@ const ModernApplicationProgress = ({
   application,
   setHighlightedSectionId,
   estates = [],
+  advancement = {},
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [hoveredStep, setHoveredStep] = useState(null);
@@ -99,6 +101,24 @@ const ModernApplicationProgress = ({
           </div>
         `,
       },
+      paidout: {
+        header: 'Payment Status',
+        content: `
+          <div>
+            <p><strong>Payment Processing:</strong></p>
+            ${
+              advancement?.is_paid_out
+                ? '<p class="text-success"><strong>✓ Payment Completed</strong></p><p>The approved amount has been paid out successfully.</p>'
+                : '<p><strong>Payment Pending</strong></p><p>Payment is being processed and will be completed shortly.</p>'
+            }
+            <ul>
+              <li>Payment amount processed</li>
+              <li>Funds transferred to beneficiary</li>
+              <li>Transaction completed</li>
+            </ul>
+          </div>
+        `,
+      },
     };
     return (
       hoverData[stepId] || {
@@ -173,6 +193,19 @@ const ModernApplicationProgress = ({
         ? 'Rejected'
         : 'Pending',
     },
+    // Add Paid Out step - only show when approved and no committee needed
+    ...(application.approved && !application.loan?.needs_committee_approval
+      ? [
+          {
+            id: 'paidout',
+            label: 'Paid Out',
+            icon: FaMoneyBillWave,
+            section: '',
+            completed: advancement?.is_paid_out || false,
+            shortDesc: advancement?.is_paid_out ? 'Paid' : 'Pending',
+          },
+        ]
+      : []),
   ];
 
   // Calculate current step based on completion
@@ -188,19 +221,30 @@ const ModernApplicationProgress = ({
   };
 
   const getStepStatus = (step, index) => {
-    // For rejected applications, show rejected status
+    // For rejected applications
     if (application.is_rejected) {
       if (step.id === 'decision') return 'rejected';
-      return step.completed ? 'completed' : 'danger';
+      return step.completed ? 'completed' : 'incomplete';
     }
 
-    // For approved applications
-    if (application.approved) {
+    // For approved applications that need committee approval
+    if (application.approved && application.loan?.needs_committee_approval) {
+      if (step.id === 'decision') return 'in-progress';
+      if (step.id === 'review') return 'in-progress';
+      return step.completed ? 'completed' : 'incomplete';
+    }
+
+    // For fully approved applications (no committee needed)
+    if (application.approved && !application.loan?.needs_committee_approval) {
+      if (step.id === 'paidout') {
+        return step.completed ? 'completed' : 'in-progress';
+      }
       if (step.id === 'decision') return 'approved';
-      return step.completed ? 'completed' : 'danger';
+      if (step.id === 'review') return 'completed';
+      return step.completed ? 'completed' : 'incomplete';
     }
 
-    // For in-progress applications
+    // For in-progress applications (not approved yet, not rejected)
     if (
       step.id === 'review' &&
       !application.approved &&
@@ -209,44 +253,47 @@ const ModernApplicationProgress = ({
       return 'in-progress';
     }
 
-    // Default logic: completed = green, not completed = red/danger
+    // Default logic for other steps
     if (step.completed) return 'completed';
-    return 'danger';
+    return 'incomplete';
   };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'completed':
-        return '#22c55e'; // Green
+        return '#22c55e';
       case 'approved':
-        return '#22c55e'; // Green
+        return '#22c55e';
       case 'rejected':
-        return '#ef4444'; // Red
+        return '#ef4444';
       case 'in-progress':
-        return '#f59e0b'; // Amber/Orange
-      case 'danger':
-        return '#ef4444'; // Red (not completed)
+        return '#f59e0b';
+      case 'incomplete':
+        return '#9ca3af';
       default:
-        return '#e5e7eb'; // Gray
+        return '#e5e7eb';
     }
   };
 
   const getStatusBg = (status) => {
     switch (status) {
       case 'completed':
-        return '#f0fdf4'; // Light green
+        return '#f0fdf4';
       case 'approved':
-        return '#f0fdf4'; // Light green
+        return '#f0fdf4';
       case 'rejected':
-        return '#fef2f2'; // Light red
+        return '#fef2f2';
       case 'in-progress':
-        return '#fefbf3'; // Light amber
-      case 'danger':
-        return '#fef2f2'; // Light red
+        return '#fefbf3';
+      case 'incomplete':
+        return '#f9fafb';
       default:
-        return '#f9fafb'; // Light gray
+        return '#f9fafb';
     }
   };
+
+  // Check if first 3 steps are completed
+  const firstThreeCompleted = steps.slice(0, 3).every((s) => s.completed);
 
   return (
     <>
@@ -304,170 +351,208 @@ const ModernApplicationProgress = ({
                 const status = getStepStatus(step, index);
                 const IconComponent = step.icon;
                 const hoverInfo = getHoverInfo(step.id);
+                const isReviewDivider = index === 3; // Before review step
 
                 return (
                   <div
                     key={step.id}
-                    className='position-relative'
-                    onMouseEnter={() => setHoveredStep(step.id)}
-                    onMouseLeave={() => setHoveredStep(null)}
+                    className='d-flex align-items-center'
+                    style={{ gap: '8px' }}
                   >
-                    {/* Step Button */}
-                    <div
-                      className={`d-flex align-items-center px-2 py-1 rounded-pill ${
-                        step.section ? 'cursor-pointer' : ''
-                      }`}
-                      style={{
-                        backgroundColor: getStatusBg(status),
-                        border: `2px solid ${getStatusColor(status)}`,
-                        transition: 'all 0.2s ease',
-                        cursor: step.section ? 'pointer' : 'default',
-                        minWidth: '80px',
-                      }}
-                      onClick={() => handleStepClick(step)}
-                      onMouseOver={(e) => {
-                        if (step.section) {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow =
-                            '0 2px 4px rgba(0, 0, 0, 0.1)';
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        if (step.section) {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = 'none';
-                        }
-                      }}
-                    >
-                      {/* Icon with status-based styling */}
-                      <div
-                        className='rounded-circle d-flex align-items-center justify-content-center me-1'
-                        style={{
-                          width: '20px',
-                          height: '20px',
-                          backgroundColor: getStatusColor(status),
-                          color: 'white',
-                          fontSize: '10px',
-                        }}
-                      >
-                        {status === 'completed' || status === 'approved' ? (
-                          <FaCheck size={10} />
-                        ) : status === 'rejected' ? (
-                          <FaTimes size={10} />
-                        ) : status === 'danger' ? (
-                          <FaTimes size={10} />
-                        ) : (
-                          <IconComponent size={10} />
-                        )}
-                      </div>
-
-                      {/* Label */}
-                      <span
-                        className='small fw-medium'
-                        style={{
-                          color: getStatusColor(status),
-                          fontSize: '0.7rem',
-                        }}
-                      >
-                        {step.shortDesc}
-                      </span>
-
-                      {/* Info Icon */}
-                      <FaInfoCircle
-                        className='ms-1 opacity-50'
-                        size={8}
-                        style={{ color: getStatusColor(status) }}
-                      />
-                    </div>
-
-                    {/* Pulsing effect for in-progress */}
-                    {status === 'in-progress' && (
-                      <motion.div
-                        className='position-absolute top-0 start-0 w-100 h-100 rounded-pill'
-                        style={{
-                          border: '2px solid #f59e0b',
-                          zIndex: -1,
-                        }}
-                        animate={{
-                          boxShadow: [
-                            '0 0 0 0 rgba(245, 158, 11, 0.4)',
-                            '0 0 0 4px rgba(245, 158, 11, 0)',
-                          ],
-                        }}
-                        transition={{
-                          duration: 1.5,
-                          repeat: Infinity,
-                          repeatType: 'loop',
-                        }}
-                      />
-                    )}
-
-                    {/* Hover Tooltip */}
-                    {hoveredStep === step.id && (
-                      <div
-                        className='position-absolute bg-white border rounded-3 p-3 shadow-lg'
-                        style={{
-                          top: '100%',
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          marginTop: '8px',
-                          width: '280px',
-                          zIndex: 1030,
-                          fontSize: '0.8rem',
-                          lineHeight: '1.4',
-                        }}
-                      >
-                        {/* Arrow */}
+                    {/* Add divider before review step */}
+                    {isReviewDivider && (
+                      <div className='d-flex flex-column align-items-center mx-2'>
                         <div
-                          className='position-absolute bg-white border'
                           style={{
-                            top: '-6px',
-                            left: '50%',
-                            transform: 'translateX(-50%) rotate(45deg)',
-                            width: '12px',
-                            height: '12px',
-                            borderBottom: 'none',
-                            borderRight: 'none',
-                          }}
-                        />
-
-                        {/* Content */}
-                        <div className='position-relative'>
-                          <h6
-                            className='fw-bold mb-2 text-slate-800'
-                            style={{ fontSize: '0.85rem' }}
-                          >
-                            {hoverInfo.header}
-                          </h6>
-                          <div
-                            className='text-slate-600'
-                            dangerouslySetInnerHTML={{
-                              __html: hoverInfo.content,
-                            }}
-                            style={{ fontSize: '0.75rem' }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Connection Line */}
-                    {index < steps.length - 1 && (
-                      <div
-                        className='position-absolute'
-                        style={{
-                          top: '50%',
-                          right: '-4px',
-                          width: '8px',
-                          height: '1px',
-                          backgroundColor:
-                            status === 'completed' || status === 'approved'
+                            width: '2px',
+                            height: '25px',
+                            backgroundColor: firstThreeCompleted
                               ? '#22c55e'
                               : '#e5e7eb',
-                          transform: 'translateY(-50%)',
-                          zIndex: 1,
-                        }}
-                      />
+                            borderRadius: '1px',
+                          }}
+                        />
+                        <span
+                          className='small'
+                          style={{
+                            fontSize: '0.6rem',
+                            color: firstThreeCompleted ? '#22c55e' : '#9ca3af',
+                            fontWeight: '500',
+                            marginTop: '2px',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {firstThreeCompleted ? 'Ready' : 'Pending'}
+                        </span>
+                      </div>
                     )}
+
+                    <div
+                      className='position-relative'
+                      onMouseEnter={() => setHoveredStep(step.id)}
+                      onMouseLeave={() => setHoveredStep(null)}
+                    >
+                      {/* Step Button */}
+                      <div
+                        className={`d-flex align-items-center px-2 py-1 rounded-pill ${
+                          step.section ? 'cursor-pointer' : ''
+                        }`}
+                        style={{
+                          backgroundColor: getStatusBg(status),
+                          border: `2px solid ${getStatusColor(status)}`,
+                          transition: 'all 0.2s ease',
+                          cursor: step.section ? 'pointer' : 'default',
+                          minWidth: '80px',
+                          // CHANGED: Much more aggressive dimming - barely visible when pending
+                          opacity:
+                            !firstThreeCompleted && index >= 3 ? 0.15 : 1,
+                        }}
+                        onClick={() => handleStepClick(step)}
+                        onMouseOver={(e) => {
+                          if (step.section) {
+                            e.currentTarget.style.transform =
+                              'translateY(-1px)';
+                            e.currentTarget.style.boxShadow =
+                              '0 2px 4px rgba(0, 0, 0, 0.1)';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (step.section) {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }
+                        }}
+                      >
+                        {/* Icon with status-based styling */}
+                        <div
+                          className='rounded-circle d-flex align-items-center justify-content-center me-1'
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            backgroundColor: getStatusColor(status),
+                            color: 'white',
+                            fontSize: '10px',
+                          }}
+                        >
+                          {status === 'completed' || status === 'approved' ? (
+                            <FaCheck size={10} />
+                          ) : status === 'rejected' ? (
+                            <FaTimes size={10} />
+                          ) : status === 'incomplete' ? (
+                            <FaTimes size={10} />
+                          ) : (
+                            <IconComponent size={10} />
+                          )}
+                        </div>
+
+                        {/* Label */}
+                        <span
+                          className='small fw-medium'
+                          style={{
+                            color: getStatusColor(status),
+                            fontSize: '0.7rem',
+                          }}
+                        >
+                          {step.shortDesc}
+                        </span>
+
+                        {/* Info Icon */}
+                        <FaInfoCircle
+                          className='ms-1 opacity-50'
+                          size={8}
+                          style={{ color: getStatusColor(status) }}
+                        />
+                      </div>
+
+                      {/* Pulsing effect for in-progress */}
+                      {status === 'in-progress' && (
+                        <motion.div
+                          className='position-absolute top-0 start-0 w-100 h-100 rounded-pill'
+                          style={{
+                            border: '2px solid #f59e0b',
+                            zIndex: -1,
+                          }}
+                          animate={{
+                            boxShadow: [
+                              '0 0 0 0 rgba(245, 158, 11, 0.4)',
+                              '0 0 0 4px rgba(245, 158, 11, 0)',
+                            ],
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            repeatType: 'loop',
+                          }}
+                        />
+                      )}
+
+                      {/* Hover Tooltip */}
+                      {hoveredStep === step.id && (
+                        <div
+                          className='position-absolute bg-white border rounded-3 p-3 shadow-lg'
+                          style={{
+                            top: '100%',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            marginTop: '8px',
+                            width: '280px',
+                            zIndex: 1030,
+                            fontSize: '0.8rem',
+                            lineHeight: '1.4',
+                          }}
+                        >
+                          {/* Arrow */}
+                          <div
+                            className='position-absolute bg-white border'
+                            style={{
+                              top: '-6px',
+                              left: '50%',
+                              transform: 'translateX(-50%) rotate(45deg)',
+                              width: '12px',
+                              height: '12px',
+                              borderBottom: 'none',
+                              borderRight: 'none',
+                            }}
+                          />
+
+                          {/* Content */}
+                          <div className='position-relative'>
+                            <h6
+                              className='fw-bold mb-2 text-slate-800'
+                              style={{ fontSize: '0.85rem' }}
+                            >
+                              {hoverInfo.header}
+                            </h6>
+                            <div
+                              className='text-slate-600'
+                              dangerouslySetInnerHTML={{
+                                __html: hoverInfo.content,
+                              }}
+                              style={{ fontSize: '0.75rem' }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Connection Line */}
+                      {index < steps.length - 1 && !isReviewDivider && (
+                        <div
+                          className='position-absolute'
+                          style={{
+                            top: '50%',
+                            right: '-4px',
+                            width: '8px',
+                            height: '1px',
+                            backgroundColor:
+                              status === 'completed' || status === 'approved'
+                                ? '#22c55e'
+                                : '#e5e7eb',
+                            transform: 'translateY(-50%)',
+                            zIndex: 1,
+                          }}
+                        />
+                      )}
+                    </div>
                   </div>
                 );
               })}
