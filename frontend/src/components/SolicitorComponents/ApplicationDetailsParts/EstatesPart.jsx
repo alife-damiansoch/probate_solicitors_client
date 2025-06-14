@@ -7,6 +7,7 @@ import { estateFieldMap } from './EstatesManagerModalParts/estateFieldConfig';
 // Import the extracted functions
 import {
   formatFieldName,
+  formatMoney,
   getEstates,
 } from '../../GenericFunctions/HelperGenericFunctions';
 
@@ -451,7 +452,7 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
                                     fontSize: '1rem',
                                   }}
                                 >
-                                  {currency_sign} {estate.value}
+                                  {formatMoney(estate.value, currency_sign)}
                                 </div>
                               </div>
                             </div>

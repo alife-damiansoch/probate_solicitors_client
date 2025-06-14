@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FaEdit, FaSave } from 'react-icons/fa';
 import { patchData } from '../../GenericFunctions/AxiosGenericFunctions';
-import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
+import renderErrors, {
+  formatMoney,
+} from '../../GenericFunctions/HelperGenericFunctions';
 import DocumentsUpload from '../Applications/DocumentsUpload';
 import ApplicantsPart from './ApplicantsPart';
 import EstatesPart from './EstatesPart';
@@ -275,7 +277,7 @@ const RequiredDetailsPart = ({
                     value={
                       editMode.amount
                         ? application.amount
-                        : `${currency_sign} ${application.amount}`
+                        : ` ${formatMoney(application.amount, currency_sign)}`
                     }
                     onChange={(e) => handleChange(e, 'amount')}
                     readOnly={!editMode.amount}

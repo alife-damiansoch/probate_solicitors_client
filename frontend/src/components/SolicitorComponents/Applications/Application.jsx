@@ -16,6 +16,7 @@ import {
   FaMoneyBillWave,
   FaUser,
 } from 'react-icons/fa';
+import { formatMoney } from '../../GenericFunctions/HelperGenericFunctions';
 
 const Application = ({ application }) => {
   const [rejectedInAnyStage, setRejectedInAnyStage] = useState(false);
@@ -192,8 +193,7 @@ const Application = ({ application }) => {
                         className='fw-bold'
                         style={{ color: theme.text, fontSize: '0.9rem' }}
                       >
-                        {currency_sign}
-                        {formData.amount}
+                        {formatMoney(formData.amount, currency_sign)}
                       </div>
                     </div>
                   </div>

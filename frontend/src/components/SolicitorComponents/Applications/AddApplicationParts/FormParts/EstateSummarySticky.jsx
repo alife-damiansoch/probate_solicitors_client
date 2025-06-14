@@ -8,6 +8,7 @@ import {
   FaEyeSlash,
   FaInfoCircle,
 } from 'react-icons/fa';
+import { formatMoney } from '../../../../GenericFunctions/HelperGenericFunctions';
 
 // Helper function to convert to number (you may need to import this from wherever it's defined)
 const toNumber = (value) => {
@@ -80,12 +81,7 @@ export default function EstateSummarySticky({
     };
   }, [estates]);
 
-  const formatCurrency = (amount) => {
-    return `${currency_sign}${Math.abs(amount).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
-  };
+  const formatCurrency = (amount) => formatMoney(amount, currency_sign);
 
   const getStatusMessage = () => {
     if (calculations.lendableIrishEstate <= 0) {
