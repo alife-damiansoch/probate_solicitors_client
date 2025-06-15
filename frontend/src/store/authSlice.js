@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_URL } from '../baseUrls';
 import Cookies from 'js-cookie';
+import { API_URL } from '../baseUrls';
 
 export const signup = createAsyncThunk(
   'auth/signup',

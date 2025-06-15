@@ -4,13 +4,13 @@ import { patchData } from '../../GenericFunctions/AxiosGenericFunctions';
 import renderErrors, {
   formatMoney,
 } from '../../GenericFunctions/HelperGenericFunctions';
-import DocumentsUpload from '../Applications/DocumentsUpload';
 import ApplicantsPart from './ApplicantsPart';
 import EstatesPart from './EstatesPart';
 import SolicitorPart from './SolicitorPart';
 
 import Cookies from 'js-cookie';
 import LoadingComponent from '../../GenericComponents/LoadingComponent';
+import DocumentsUpload from '../Applications/UploadingFileComponents/DocumentsUpload.jsx';
 
 const RequiredDetailsPart = ({
   application,
