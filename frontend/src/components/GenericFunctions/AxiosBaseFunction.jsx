@@ -62,9 +62,9 @@ apiClient.interceptors.request.use((config) => {
   config.headers['Country'] = country;
   config.headers['Frontend-Host'] = frontendHost;
 
-  // Add API key header as fallback for incognito/mobile (for solicitors/non-staff users)
-  const apiKey = sessionStorage.getItem('frontend_api_key_solicitors');
-  const userType = sessionStorage.getItem('user_type_solicitors');
+  // Add API key header from localStorage (persists across tabs)
+  const apiKey = localStorage.getItem('frontend_api_key_solicitors');
+  const userType = localStorage.getItem('user_type_solicitors');
 
   if (apiKey) {
     // For solicitors (non-staff), always use 'X-Frontend-API-Key'
@@ -156,7 +156,7 @@ apiClient.interceptors.response.use(
               error.headers['Country'] = country;
 
               // Re-add the API key header if it exists
-              const apiKey = sessionStorage.getItem(
+              const apiKey = localStorage.getItem(
                 'frontend_api_key_solicitors'
               );
               if (apiKey) {
@@ -203,7 +203,7 @@ apiClient.interceptors.response.use(
           error.config.headers['Country'] = country;
 
           // Re-add the API key header if it exists
-          const apiKey = sessionStorage.getItem('frontend_api_key_solicitors');
+          const apiKey = localStorage.getItem('frontend_api_key_solicitors');
           if (apiKey) {
             error.config.headers['X-Frontend-API-Key'] = apiKey;
           }

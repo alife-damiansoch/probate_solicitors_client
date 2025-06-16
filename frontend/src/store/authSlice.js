@@ -53,9 +53,9 @@ export const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       Cookies.remove('auth_token'); // Clear the token from cookies
-      // Clear sessionStorage items
-      sessionStorage.removeItem('frontend_api_key_solicitors');
-      sessionStorage.removeItem('user_type_solicitors');
+      // Clear localStorage items
+      localStorage.removeItem('frontend_api_key_solicitors');
+      localStorage.removeItem('user_type_solicitors');
     },
     loginSuccess: (state, action) => {
       const { access, refresh, api_key, user_type } = action.payload.tokenObj;
@@ -67,10 +67,10 @@ export const authSlice = createSlice({
         path: '/',
       });
 
-      // Store API key and user type in sessionStorage as fallback
+      // Store API key and user type in localStorage (persists across tabs)
       if (api_key) {
-        sessionStorage.setItem('frontend_api_key_solicitors', api_key);
-        sessionStorage.setItem('user_type_solicitors', user_type || 'regular');
+        localStorage.setItem('frontend_api_key_solicitors', api_key);
+        localStorage.setItem('user_type_solicitors', user_type || 'regular');
       }
 
       state.token = action.payload.tokenObj;
@@ -111,13 +111,10 @@ export const authSlice = createSlice({
           path: '/',
         });
 
-        // Store API key and user type in sessionStorage as fallback
+        // Store API key and user type in localStorage (persists across tabs)
         if (api_key) {
-          sessionStorage.setItem('frontend_api_key_solicitors', api_key);
-          sessionStorage.setItem(
-            'user_type_solicitors',
-            user_type || 'regular'
-          );
+          localStorage.setItem('frontend_api_key_solicitors', api_key);
+          localStorage.setItem('user_type_solicitors', user_type || 'regular');
         }
 
         state.token = action.payload;
