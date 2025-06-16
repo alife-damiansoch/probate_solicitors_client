@@ -31,6 +31,7 @@ export const refreshToken = async () => {
       {
         secure: true,
         sameSite: 'strict',
+        path: '/',
       }
     );
     return Promise.resolve(response);
@@ -61,13 +62,22 @@ apiClient.interceptors.request.use((config) => {
   config.headers['Country'] = country;
   config.headers['Frontend-Host'] = frontendHost;
 
+  // Add API key header as fallback for incognito/mobile (for solicitors/non-staff users)
+  const apiKey = sessionStorage.getItem('frontend_api_key_solicitors');
+  const userType = sessionStorage.getItem('user_type_solicitors');
+
+  if (apiKey) {
+    // For solicitors (non-staff), always use 'X-Frontend-API-Key'
+    config.headers['X-Frontend-API-Key'] = apiKey;
+    console.log('Added solicitor API key header: X-Frontend-API-Key');
+  }
+
   return config;
 });
 
 const refreshTokenEndpoint = `${API_URL}/api/user/token/refresh/`;
 
 // Add a response interceptor
-// Preserve the original response interceptor for non-blob requests
 apiClient.interceptors.response.use(
   async (response) => {
     // console.log('Response Headers:', response.headers); // 🔍 Debugging
@@ -145,6 +155,14 @@ apiClient.interceptors.response.use(
               error.config.headers['Authorization'] = `Bearer ${access}`;
               error.headers['Country'] = country;
 
+              // Re-add the API key header if it exists
+              const apiKey = sessionStorage.getItem(
+                'frontend_api_key_solicitors'
+              );
+              if (apiKey) {
+                error.config.headers['X-Frontend-API-Key'] = apiKey;
+              }
+
               // Retry the original request with the new token
               return apiClient.request(error.config);
             } catch (err) {
@@ -184,6 +202,12 @@ apiClient.interceptors.response.use(
           error.config.headers['Authorization'] = `Bearer ${access}`;
           error.config.headers['Country'] = country;
 
+          // Re-add the API key header if it exists
+          const apiKey = sessionStorage.getItem('frontend_api_key_solicitors');
+          if (apiKey) {
+            error.config.headers['X-Frontend-API-Key'] = apiKey;
+          }
+
           // Retry the original request with the new token
           return apiClient.request(error.config);
         } catch (err) {
@@ -195,32 +219,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// // Add a response interceptor
-// apiClient.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     console.log(error);
-//     if (error.message === 'Network Error' && error.response === undefined) {
-//       error.message = 'Unable to connect to server. Please try again later.';
-//     } else if (
-//       error.response.status === 401 &&
-//       error.config.url !== refreshTokenEndpoint
-//     ) {
-//       try {
-//         await refreshToken();
-//         let tokenObj = Cookies.get('auth_token');
-//         tokenObj = tokenObj ? JSON.parse(tokenObj) : null;
-//         let { access } = tokenObj;
-//         error.config.headers['Authorization'] = `Bearer ${access}`;
-
-//         return apiClient.request(error.config);
-//       } catch (err) {
-//         // handle error during refreshing token, normally by logging out user or showing login form
-//       }
-//     }
-//     return Promise.reject(error);
-//   }
-// );
 
 export default apiClient;

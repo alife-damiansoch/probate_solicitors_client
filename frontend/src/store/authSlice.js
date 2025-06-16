@@ -53,13 +53,26 @@ export const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       Cookies.remove('auth_token'); // Clear the token from cookies
+      // Clear sessionStorage items
+      sessionStorage.removeItem('frontend_api_key_solicitors');
+      sessionStorage.removeItem('user_type_solicitors');
     },
     loginSuccess: (state, action) => {
-      const { access, refresh } = action.payload.tokenObj;
+      const { access, refresh, api_key, user_type } = action.payload.tokenObj;
+
+      // Set cookies
       Cookies.set('auth_token', JSON.stringify({ access, refresh }), {
         secure: import.meta.env.PROD,
         sameSite: 'strict',
-      }); // Set the token in cookies
+        path: '/',
+      });
+
+      // Store API key and user type in sessionStorage as fallback
+      if (api_key) {
+        sessionStorage.setItem('frontend_api_key_solicitors', api_key);
+        sessionStorage.setItem('user_type_solicitors', user_type || 'regular');
+      }
+
       state.token = action.payload.tokenObj;
       state.isLoggedIn = true;
       state.loading = false;
@@ -78,8 +91,9 @@ export const authSlice = createSlice({
         {
           secure: import.meta.env.PROD,
           sameSite: 'strict',
+          path: '/',
         }
-      ); // Set the new tokens in cookies
+      );
     },
     clearAuthError: (state) => {
       state.error = null;
@@ -88,11 +102,24 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(signup.fulfilled, (state, action) => {
-        const { access, refresh } = action.payload;
+        const { access, refresh, api_key, user_type } = action.payload;
+
+        // Set cookies
         Cookies.set('auth_token', JSON.stringify({ access, refresh }), {
           secure: import.meta.env.PROD,
           sameSite: 'strict',
-        }); // Set the token in cookies
+          path: '/',
+        });
+
+        // Store API key and user type in sessionStorage as fallback
+        if (api_key) {
+          sessionStorage.setItem('frontend_api_key_solicitors', api_key);
+          sessionStorage.setItem(
+            'user_type_solicitors',
+            user_type || 'regular'
+          );
+        }
+
         state.token = action.payload;
         state.isLoggedIn = true;
         state.loading = false;
