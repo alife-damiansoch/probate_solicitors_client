@@ -17,6 +17,7 @@ export default defineConfig({
   server: {
     port: 4000,
     open: true,
+     allowedHosts: ['ab96-79-97-102-189.ngrok-free.app'],
   },
   build: {
     cssCodeSplit: true,

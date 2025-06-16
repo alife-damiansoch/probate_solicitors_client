@@ -628,3 +628,17 @@ p {
 .bg-liability {
   background: #f7faff !important;
 }
+.sigCanvas {
+  z-index: 10000 !important;
+  position: relative !important;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid red !important;
+  touch-action: none !important;     /* 🔑 Required for touch devices */
+  pointer-events: auto !important;   /* 🔑 Ensures canvas accepts events */
+}
+.signature-container {
+  position: relative;
+  z-index: 9999;
+}

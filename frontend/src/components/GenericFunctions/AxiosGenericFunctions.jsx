@@ -5,6 +5,8 @@ export const fetchData = async (token, endpoint) => {
     const uri = `${endpoint}`;
     const response = await apiClient.get(uri);
 
+    console.log('Response', response);
+
     if (!(response.status >= 200 && response.status < 300)) {
       console.error(`Error: Received status code ${response.status}`);
       return null;
@@ -145,6 +147,37 @@ export const downloadFileAxios = async (token, endpoint) => {
   }
 };
 
+// NEW FUNCTION: Fetch document for signing (same as downloadFileAxios but with different name for clarity)
+export const fetchDocumentForSigning = async (token, endpoint) => {
+  try {
+    const uri = `${endpoint}`;
+    const response = await apiClient.get(uri, {
+      responseType: 'blob', // Important to handle binary data
+    });
+    if (!(response.status >= 200 && response.status < 300)) {
+      // Log the response status and data to the console if the status is not in the 200 range
+      console.error(`Error: Received status code ${response.status}`);
+
+      // If using fetch, you might need to parse the response as JSON
+      response
+        .json()
+        .then((data) => {
+          console.error('Response data:', data);
+        })
+        .catch((err) => {
+          console.error('Failed to parse response data:', err);
+        });
+    } else {
+      // Handle successful response
+      console.log('Success fetching document for signing:', response);
+    }
+    return response;
+  } catch (error) {
+    console.error('Error fetching document for signing:', error);
+    return error.response;
+  }
+};
+
 export const uploadFile = async (endpoint, formData) => {
   try {
     const response = await apiClient.post(endpoint, formData, {
@@ -176,6 +209,7 @@ export const uploadFile = async (endpoint, formData) => {
     return error.response; // Return the response in case of an error
   }
 };
+
 export const postPdfRequest = async (token, endpoint, data) => {
   try {
     const uri = `${endpoint}`;
