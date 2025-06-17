@@ -296,13 +296,13 @@ const ApplicantsPart = ({
                 <h6 className='mb-0 fw-bold text-primary'>
                   <i className='fas fa-user me-2'></i>Basic Information
                 </h6>
-                <button
-                  className='btn btn-outline-danger btn-sm rounded-pill'
-                  onClick={() => removeItem('applicants', index)}
-                  disabled={application.approved || application.is_rejected}
-                >
-                  <FaTrash size={12} className='me-1' /> Remove
-                </button>
+                {/*<button*/}
+                {/*  className='btn btn-outline-danger btn-sm rounded-pill'*/}
+                {/*  onClick={() => removeItem('applicants', index)}*/}
+                {/*  disabled={application.approved || application.is_rejected}*/}
+                {/*>*/}
+                {/*  <FaTrash size={12} className='me-1' /> Remove*/}
+                {/*</button>*/}
               </div>
               <div className='card-body'>
                 <div className='row g-3'>
