@@ -26,6 +26,15 @@ const ApplicantsPart = ({
     first_name: '',
     last_name: '',
     pps_number: '',
+    address_line_1: '',
+    address_line_2: '',
+    city: '',
+    county: '',
+    postal_code: '',
+    country: 'Ireland',
+    date_of_birth: '',
+    email: '',
+    phone_number: '',
   });
 
   const [showAddForm, setShowAddForm] = useState(false);
@@ -40,733 +49,620 @@ const ApplicantsPart = ({
 
   const idNumberArray = JSON.parse(Cookies.get('id_number'));
 
+  // Required fields validation
+  const requiredFields = [
+    'title',
+    'first_name',
+    'last_name',
+    'pps_number',
+    'address_line_1',
+    'city',
+    'county',
+    'postal_code',
+    'date_of_birth',
+    'email',
+    'phone_number',
+    'country',
+  ];
+
+  const isFormValid = requiredFields.every(
+    (field) =>
+      newApplicant[field] && newApplicant[field].toString().trim() !== ''
+  );
+
   const handleNewApplicantChange = (e, field) => {
-    const value = e.target.value;
-    setNewApplicant({
-      ...newApplicant,
-      [field]: value,
-    });
+    setNewApplicant({ ...newApplicant, [field]: e.target.value });
   };
 
   const addApplicant = () => {
     addItem('applicants', newApplicant);
+    resetForm();
+    setTriggerChandleChange(!triggerHandleChange);
+    setShowAddForm(false);
+  };
+
+  const resetForm = () => {
     setNewApplicant({
       title: '',
       first_name: '',
       last_name: '',
       pps_number: '',
+      address_line_1: '',
+      address_line_2: '',
+      city: '',
+      county: '',
+      postal_code: '',
+      country: 'Ireland',
+      date_of_birth: '',
+      email: '',
+      phone_number: '',
     });
-    setTriggerChandleChange(!triggerHandleChange);
-    setShowAddForm(false); // Hide form after adding
   };
 
-  const isAnyFieldFilled = Object.values(newApplicant).some(
-    (value) => value !== ''
-  );
+  // Editable field component
+  const EditableField = ({
+    applicant,
+    index,
+    field,
+    label,
+    type = 'text',
+    options = null,
+    cols = 6,
+  }) => {
+    const editKey = `applicant_${index}_${field}`;
+    const isEditing = editMode[editKey];
 
-  // Validate forms
-  const isApplicantFormValid =
-    newApplicant.title &&
-    newApplicant.first_name &&
-    newApplicant.last_name &&
-    newApplicant.pps_number;
-
-  const getFieldClassName = (field) => {
-    return `form-control border-0 ${
-      !newApplicant[field] && isAnyFieldFilled ? 'border-2 border-danger' : ''
-    }`;
+    return (
+      <div className={`col-md-${cols} mb-3`}>
+        <label className='form-label fw-semibold mb-2 text-slate-600'>
+          {label}
+        </label>
+        <div className='input-group rounded-3 overflow-hidden shadow-sm'>
+          {options ? (
+            <select
+              className='form-control border-0'
+              style={{
+                backgroundColor: isEditing ? '#f0f9ff' : '#fff',
+                fontSize: '0.95rem',
+                padding: '0.75rem',
+              }}
+              value={applicant[field] || ''}
+              onChange={(e) => handleListChange(e, index, 'applicants', field)}
+              disabled={!isEditing}
+            >
+              {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type={type}
+              className='form-control border-0'
+              style={{
+                backgroundColor: isEditing ? '#f0f9ff' : '#fff',
+                fontSize: '0.95rem',
+                padding: '0.75rem',
+              }}
+              value={applicant[field] || ''}
+              onChange={(e) => handleListChange(e, index, 'applicants', field)}
+              readOnly={!isEditing}
+            />
+          )}
+          <button
+            type='button'
+            className='btn px-3'
+            style={{
+              backgroundColor: isEditing ? '#3b82f6' : '#64748b',
+              color: 'white',
+              border: 'none',
+              transition: 'all 0.2s ease',
+            }}
+            onClick={() => {
+              if (isEditing) submitChangesHandler();
+              toggleEditMode(editKey);
+            }}
+            disabled={application.approved || application.is_rejected}
+          >
+            {isEditing ? <FaSave size={14} /> : <FaEdit size={14} />}
+          </button>
+        </div>
+      </div>
+    );
   };
+
+  // Form field component with validation
+  const FormField = ({
+    field,
+    label,
+    type = 'text',
+    cols = 6,
+    required = false,
+    options = null,
+  }) => {
+    const isRequired = requiredFields.includes(field);
+    const hasError = !newApplicant[field] && isRequired;
+    const hasValue = Object.values(newApplicant).some((val) => val !== '');
+
+    return (
+      <div className={`col-md-${cols}`}>
+        <label className='form-label fw-semibold mb-2 text-slate-700'>
+          {label} {isRequired && <span className='text-danger'>*</span>}
+        </label>
+        {options ? (
+          <select
+            className='form-control rounded-3 border-0 shadow-sm'
+            style={{
+              padding: '0.75rem',
+              fontSize: '0.95rem',
+              borderLeft: hasError && hasValue ? '3px solid #ef4444' : '',
+              backgroundColor: hasError && hasValue ? '#fef2f2' : '#fff',
+            }}
+            value={newApplicant[field]}
+            onChange={(e) => handleNewApplicantChange(e, field)}
+          >
+            <option value=''>Select {label}</option>
+            {options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type={type}
+            className='form-control rounded-3 border-0 shadow-sm'
+            style={{
+              padding: '0.75rem',
+              fontSize: '0.95rem',
+              borderLeft: hasError && hasValue ? '3px solid #ef4444' : '',
+              backgroundColor: hasError && hasValue ? '#fef2f2' : '#fff',
+            }}
+            value={newApplicant[field]}
+            onChange={(e) => handleNewApplicantChange(e, field)}
+            placeholder={`Enter ${label.toLowerCase()}`}
+          />
+        )}
+        {hasError && hasValue && (
+          <small className='text-danger mt-1 d-block'>
+            <i className='fas fa-exclamation-circle me-1'></i>
+            {label} is required
+          </small>
+        )}
+      </div>
+    );
+  };
+
+  if (!application) return <LoadingComponent />;
 
   return (
-    <>
-      {application ? (
-        <div
-          className='border-0 mt-4'
-          style={{
-            borderRadius: '16px',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Header */}
+    <div className='mt-4 rounded-4 overflow-hidden shadow-lg'>
+      {/* Modern Header */}
+      <div
+        className='d-flex align-items-center justify-content-between p-4 text-white'
+        style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        }}
+      >
+        <div className='d-flex align-items-center'>
           <div
-            className='d-flex align-items-center border-0 p-4'
+            className='rounded-circle d-flex align-items-center justify-content-center me-3'
             style={{
-              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-              color: 'white',
+              width: '45px',
+              height: '45px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
             }}
           >
-            <div
-              className='rounded-circle d-flex align-items-center justify-content-center me-3'
-              style={{
-                width: '40px',
-                height: '40px',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                backdropFilter: 'blur(10px)',
-              }}
-            >
-              <FaUsers size={18} />
-            </div>
-            <h4 className='mb-0 fw-semibold'>Applicants</h4>
+            <FaUsers size={20} />
           </div>
-
-          {/* No Applicants Warning */}
-          {(!application.applicants || application.applicants.length === 0) && (
-            <div className='p-4'>
-              <div
-                className='alert border-0 text-center'
-                style={{
-                  backgroundColor: '#fef2f2',
-                  color: '#dc2626',
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 4px rgba(239, 68, 68, 0.1)',
-                }}
-              >
-                <div className='d-flex align-items-center justify-content-center'>
-                  <i className='fas fa-exclamation-triangle me-2'></i>
-                  <span className='fw-medium'>
-                    Please provide details for at least one applicant.
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Applicants List */}
-          <div className='p-4' style={{ backgroundColor: '#ffffff' }}>
-            {application.applicants.map((applicant, index) => (
-              <div
-                key={index}
-                className='mb-4 p-4 rounded-3'
-                style={{
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    '0 4px 8px rgba(0, 0, 0, 0.1)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    '0 2px 4px rgba(0, 0, 0, 0.05)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <div className='row g-3 align-items-end'>
-                  {/* Title */}
-                  <div className='col-md-2'>
-                    <label className='form-label fw-semibold text-slate-700 mb-2'>
-                      <i className='fas fa-user-tag me-2 text-blue-500'></i>
-                      Title
-                    </label>
-                    <div
-                      className='input-group'
-                      style={{
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                      }}
-                    >
-                      <select
-                        className={`form-control border-0 ${
-                          editMode[`applicant_${index}_title`]
-                            ? 'border-end border-danger border-2'
-                            : ''
-                        }`}
-                        style={{
-                          backgroundColor: editMode[`applicant_${index}_title`]
-                            ? '#fef2f2'
-                            : '#ffffff',
-                          fontSize: '0.95rem',
-                          fontWeight: '500',
-                          padding: '0.5rem 0.75rem',
-                        }}
-                        value={applicant.title}
-                        onChange={(e) =>
-                          handleListChange(e, index, 'applicants', 'title')
-                        }
-                        disabled={!editMode[`applicant_${index}_title`]}
-                      >
-                        {TITLE_CHOICES.map((choice) => (
-                          <option key={choice.value} value={choice.value}>
-                            {choice.label}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        type='button'
-                        className='btn px-3'
-                        style={{
-                          backgroundColor: editMode[`applicant_${index}_title`]
-                            ? '#ef4444'
-                            : '#1f2937',
-                          color: 'white',
-                          border: 'none',
-                          transition: 'all 0.2s ease',
-                        }}
-                        onClick={() => {
-                          if (editMode[`applicant_${index}_title`])
-                            submitChangesHandler();
-                          toggleEditMode(`applicant_${index}_title`);
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                        onMouseOver={(e) => {
-                          if (!e.target.disabled) {
-                            e.target.style.transform = 'scale(1.05)';
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.transform = 'scale(1)';
-                        }}
-                      >
-                        {editMode[`applicant_${index}_title`] ? (
-                          <FaSave size={14} />
-                        ) : (
-                          <FaEdit size={14} />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* First Name */}
-                  <div className='col-md-3'>
-                    <label className='form-label fw-semibold text-slate-700 mb-2'>
-                      <i className='fas fa-user me-2 text-green-500'></i>
-                      First Name
-                    </label>
-                    <div
-                      className='input-group'
-                      style={{
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                      }}
-                    >
-                      <input
-                        type='text'
-                        className={`form-control border-0 ${
-                          editMode[`applicant_${index}_first_name`]
-                            ? 'border-end border-danger border-2'
-                            : ''
-                        }`}
-                        style={{
-                          backgroundColor: editMode[
-                            `applicant_${index}_first_name`
-                          ]
-                            ? '#fef2f2'
-                            : '#ffffff',
-                          fontSize: '0.95rem',
-                          fontWeight: '500',
-                          padding: '0.5rem 0.75rem',
-                        }}
-                        value={applicant.first_name}
-                        onChange={(e) =>
-                          handleListChange(e, index, 'applicants', 'first_name')
-                        }
-                        readOnly={!editMode[`applicant_${index}_first_name`]}
-                      />
-                      <button
-                        type='button'
-                        className='btn px-3'
-                        style={{
-                          backgroundColor: editMode[
-                            `applicant_${index}_first_name`
-                          ]
-                            ? '#ef4444'
-                            : '#1f2937',
-                          color: 'white',
-                          border: 'none',
-                          transition: 'all 0.2s ease',
-                        }}
-                        onClick={() => {
-                          if (editMode[`applicant_${index}_first_name`])
-                            submitChangesHandler();
-                          toggleEditMode(`applicant_${index}_first_name`);
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                        onMouseOver={(e) => {
-                          if (!e.target.disabled) {
-                            e.target.style.transform = 'scale(1.05)';
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.transform = 'scale(1)';
-                        }}
-                      >
-                        {editMode[`applicant_${index}_first_name`] ? (
-                          <FaSave size={14} />
-                        ) : (
-                          <FaEdit size={14} />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Last Name */}
-                  <div className='col-md-3'>
-                    <label className='form-label fw-semibold text-slate-700 mb-2'>
-                      <i className='fas fa-user me-2 text-green-500'></i>
-                      Last Name
-                    </label>
-                    <div
-                      className='input-group'
-                      style={{
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                      }}
-                    >
-                      <input
-                        type='text'
-                        className={`form-control border-0 ${
-                          editMode[`applicant_${index}_last_name`]
-                            ? 'border-end border-danger border-2'
-                            : ''
-                        }`}
-                        style={{
-                          backgroundColor: editMode[
-                            `applicant_${index}_last_name`
-                          ]
-                            ? '#fef2f2'
-                            : '#ffffff',
-                          fontSize: '0.95rem',
-                          fontWeight: '500',
-                          padding: '0.5rem 0.75rem',
-                        }}
-                        value={applicant.last_name}
-                        onChange={(e) =>
-                          handleListChange(e, index, 'applicants', 'last_name')
-                        }
-                        readOnly={!editMode[`applicant_${index}_last_name`]}
-                      />
-                      <button
-                        type='button'
-                        className='btn px-3'
-                        style={{
-                          backgroundColor: editMode[
-                            `applicant_${index}_last_name`
-                          ]
-                            ? '#ef4444'
-                            : '#1f2937',
-                          color: 'white',
-                          border: 'none',
-                          transition: 'all 0.2s ease',
-                        }}
-                        onClick={() => {
-                          if (editMode[`applicant_${index}_last_name`])
-                            submitChangesHandler();
-                          toggleEditMode(`applicant_${index}_last_name`);
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                        onMouseOver={(e) => {
-                          if (!e.target.disabled) {
-                            e.target.style.transform = 'scale(1.05)';
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.transform = 'scale(1)';
-                        }}
-                      >
-                        {editMode[`applicant_${index}_last_name`] ? (
-                          <FaSave size={14} />
-                        ) : (
-                          <FaEdit size={14} />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* ID Number */}
-                  <div className='col-md-3'>
-                    <label className='form-label fw-semibold text-slate-700 mb-2'>
-                      <i className='fas fa-id-card me-2 text-purple-500'></i>
-                      {idNumberArray[0]} Number
-                    </label>
-                    <div
-                      className='input-group'
-                      style={{
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                      }}
-                    >
-                      <input
-                        type='text'
-                        className={`form-control border-0 ${
-                          editMode[`applicant_${index}_pps_number`]
-                            ? 'border-end border-danger border-2'
-                            : ''
-                        }`}
-                        style={{
-                          backgroundColor: editMode[
-                            `applicant_${index}_pps_number`
-                          ]
-                            ? '#fef2f2'
-                            : '#ffffff',
-                          fontSize: '0.95rem',
-                          fontWeight: '500',
-                          padding: '0.5rem 0.75rem',
-                        }}
-                        value={applicant.pps_number}
-                        onChange={(e) =>
-                          handleListChange(e, index, 'applicants', 'pps_number')
-                        }
-                        readOnly={!editMode[`applicant_${index}_pps_number`]}
-                      />
-                      <button
-                        type='button'
-                        className='btn px-3'
-                        style={{
-                          backgroundColor: editMode[
-                            `applicant_${index}_pps_number`
-                          ]
-                            ? '#ef4444'
-                            : '#1f2937',
-                          color: 'white',
-                          border: 'none',
-                          transition: 'all 0.2s ease',
-                        }}
-                        onClick={() => {
-                          if (editMode[`applicant_${index}_pps_number`])
-                            submitChangesHandler();
-                          toggleEditMode(`applicant_${index}_pps_number`);
-                        }}
-                        disabled={
-                          application.approved || application.is_rejected
-                        }
-                        onMouseOver={(e) => {
-                          if (!e.target.disabled) {
-                            e.target.style.transform = 'scale(1.05)';
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.transform = 'scale(1)';
-                        }}
-                      >
-                        {editMode[`applicant_${index}_pps_number`] ? (
-                          <FaSave size={14} />
-                        ) : (
-                          <FaEdit size={14} />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Delete Button */}
-                  <div className='col-md-1 text-end'>
-                    <button
-                      type='button'
-                      className='btn btn-outline-danger border-0 p-2'
-                      style={{
-                        borderRadius: '8px',
-                        transition: 'all 0.2s ease',
-                        backgroundColor: 'transparent',
-                      }}
-                      onClick={() => removeItem('applicants', index)}
-                      disabled={application.approved || application.is_rejected}
-                      onMouseOver={(e) => {
-                        if (!e.target.disabled) {
-                          e.target.style.backgroundColor = '#fef2f2';
-                          e.target.style.transform = 'scale(1.1)';
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.backgroundColor = 'transparent';
-                        e.target.style.transform = 'scale(1)';
-                      }}
-                    >
-                      <FaTrash size={14} color='#ef4444' />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Add New Applicant Form - Only show when showAddForm is true */}
-            {!application.approved &&
-              !application.is_rejected &&
-              showAddForm && (
-                <>
-                  {/* Divider */}
-                  <div
-                    className='my-4'
-                    style={{
-                      height: '1px',
-                      background:
-                        'linear-gradient(90deg, transparent, #e2e8f0, transparent)',
-                    }}
-                  ></div>
-
-                  <div
-                    className='p-4 rounded-3'
-                    style={{
-                      background:
-                        'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                      border: '2px solid #f59e0b',
-                      boxShadow: '0 4px 6px rgba(245, 158, 11, 0.1)',
-                    }}
-                  >
-                    {/* Add Form Header */}
-                    <div className='d-flex align-items-center justify-content-between mb-4'>
-                      <div className='d-flex align-items-center'>
-                        <div
-                          className='rounded-circle d-flex align-items-center justify-content-center me-3'
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            backgroundColor: '#f59e0b',
-                            color: 'white',
-                          }}
-                        >
-                          <FaPlus size={14} />
-                        </div>
-                        <h5
-                          className='mb-0 fw-semibold'
-                          style={{ color: '#92400e' }}
-                        >
-                          Add New Applicant
-                        </h5>
-                      </div>
-
-                      {/* Close Button */}
-                      <button
-                        type='button'
-                        className='btn btn-sm'
-                        style={{
-                          backgroundColor: 'transparent',
-                          border: 'none',
-                          color: '#92400e',
-                          padding: '0.25rem',
-                          borderRadius: '6px',
-                          transition: 'all 0.2s ease',
-                        }}
-                        onClick={() => {
-                          setShowAddForm(false);
-                          setNewApplicant({
-                            title: '',
-                            first_name: '',
-                            last_name: '',
-                            pps_number: '',
-                          });
-                        }}
-                        onMouseOver={(e) => {
-                          e.target.style.backgroundColor =
-                            'rgba(146, 64, 14, 0.1)';
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.backgroundColor = 'transparent';
-                        }}
-                      >
-                        <FaTimes size={16} />
-                      </button>
-                    </div>
-
-                    <div className='row g-3'>
-                      {/* Title */}
-                      <div className='col-md-2'>
-                        <label
-                          className='form-label fw-semibold mb-2'
-                          style={{ color: '#92400e' }}
-                        >
-                          Title
-                        </label>
-                        <select
-                          className={getFieldClassName('title')}
-                          style={{
-                            backgroundColor: '#ffffff',
-                            borderRadius: '8px',
-                            padding: '0.5rem 0.75rem',
-                            fontSize: '0.95rem',
-                            fontWeight: '500',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                          }}
-                          value={newApplicant.title}
-                          onChange={(e) => handleNewApplicantChange(e, 'title')}
-                        >
-                          <option value=''>Select Title</option>
-                          {TITLE_CHOICES.map((choice) => (
-                            <option key={choice.value} value={choice.value}>
-                              {choice.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* First Name */}
-                      <div className='col-md-3'>
-                        <label
-                          className='form-label fw-semibold mb-2'
-                          style={{ color: '#92400e' }}
-                        >
-                          First Name
-                        </label>
-                        <input
-                          type='text'
-                          className={getFieldClassName('first_name')}
-                          style={{
-                            backgroundColor: '#ffffff',
-                            borderRadius: '8px',
-                            padding: '0.5rem 0.75rem',
-                            fontSize: '0.95rem',
-                            fontWeight: '500',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                          }}
-                          value={newApplicant.first_name}
-                          onChange={(e) =>
-                            handleNewApplicantChange(e, 'first_name')
-                          }
-                          placeholder='Enter first name'
-                        />
-                      </div>
-
-                      {/* Last Name */}
-                      <div className='col-md-3'>
-                        <label
-                          className='form-label fw-semibold mb-2'
-                          style={{ color: '#92400e' }}
-                        >
-                          Last Name
-                        </label>
-                        <input
-                          type='text'
-                          className={getFieldClassName('last_name')}
-                          style={{
-                            backgroundColor: '#ffffff',
-                            borderRadius: '8px',
-                            padding: '0.5rem 0.75rem',
-                            fontSize: '0.95rem',
-                            fontWeight: '500',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                          }}
-                          value={newApplicant.last_name}
-                          onChange={(e) =>
-                            handleNewApplicantChange(e, 'last_name')
-                          }
-                          placeholder='Enter last name'
-                        />
-                      </div>
-
-                      {/* ID Number */}
-                      <div className='col-md-3'>
-                        <label
-                          className='form-label fw-semibold mb-2'
-                          style={{ color: '#92400e' }}
-                        >
-                          {idNumberArray[0]} Number
-                        </label>
-                        <input
-                          type='text'
-                          className={getFieldClassName('pps_number')}
-                          style={{
-                            backgroundColor: '#ffffff',
-                            borderRadius: '8px',
-                            padding: '0.5rem 0.75rem',
-                            fontSize: '0.95rem',
-                            fontWeight: '500',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                          }}
-                          value={newApplicant.pps_number}
-                          onChange={(e) =>
-                            handleNewApplicantChange(e, 'pps_number')
-                          }
-                          placeholder={idNumberArray[1]}
-                        />
-                      </div>
-
-                      {/* Add Button */}
-                      <div className='col-md-1 d-flex align-items-end'>
-                        <button
-                          type='button'
-                          className='btn w-100'
-                          style={{
-                            backgroundColor: isApplicantFormValid
-                              ? '#059669'
-                              : '#94a3b8',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '8px',
-                            padding: '0.5rem',
-                            transition: 'all 0.2s ease',
-                            cursor: isApplicantFormValid
-                              ? 'pointer'
-                              : 'not-allowed',
-                          }}
-                          onClick={addApplicant}
-                          disabled={!isApplicantFormValid}
-                          onMouseOver={(e) => {
-                            if (isApplicantFormValid) {
-                              e.target.style.backgroundColor = '#047857';
-                              e.target.style.transform = 'scale(1.05)';
-                            }
-                          }}
-                          onMouseOut={(e) => {
-                            if (isApplicantFormValid) {
-                              e.target.style.backgroundColor = '#059669';
-                              e.target.style.transform = 'scale(1)';
-                            }
-                          }}
-                        >
-                          <FaSave size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
+          <div>
+            <h4 className='mb-0 fw-bold'>Applicant Information</h4>
+            <small className='opacity-75'>Single applicant required</small>
           </div>
+        </div>
+        <div
+          className='px-3 py-1 rounded-pill fw-semibold'
+          style={{
+            backgroundColor:
+              application.applicants?.length > 0
+                ? 'rgba(34,197,94,0.3)'
+                : 'rgba(239,68,68,0.3)',
+            color: application.applicants?.length > 0 ? '#22c55e' : '#ef4444',
+            border: `1px solid ${
+              application.applicants?.length > 0 ? '#22c55e' : '#ef4444'
+            }`,
+          }}
+        >
+          {application.applicants?.length > 0 ? '✓ Complete' : '! Required'}
+        </div>
+      </div>
 
-          {/* Add New Applicant Section - Styled like Manage Estates */}
-          {!application.approved &&
-            !application.is_rejected &&
-            !showAddForm && (
-              <div className='text-end mb-3'>
-                <div className='mb-2'>
-                  <small
-                    className='text-muted fw-medium'
-                    style={{ fontSize: '0.8rem' }}
-                  >
-                    Need to add more applicants?
-                  </small>
-                </div>
+      <div className='p-4 bg-white'>
+        {/* No Applicant Warning */}
+        {(!application.applicants || application.applicants.length === 0) && (
+          <div className='alert alert-warning border-0 rounded-3 text-center mb-4'>
+            <i className='fas fa-exclamation-triangle me-2'></i>
+            Please provide applicant details to continue.
+          </div>
+        )}
+
+        {/* Existing Applicant Display */}
+        {application.applicants?.map((applicant, index) => (
+          <div key={applicant.id || index} className='mb-4'>
+            {/* Basic Info Section */}
+            <div className='card border-0 shadow-sm rounded-3 mb-3'>
+              <div className='card-header bg-light d-flex justify-content-between align-items-center'>
+                <h6 className='mb-0 fw-bold text-primary'>
+                  <i className='fas fa-user me-2'></i>Basic Information
+                </h6>
                 <button
-                  className='btn px-4 py-2 fw-medium'
-                  style={{
-                    backgroundColor: 'transparent',
-                    color: '#059669',
-                    border: '2px solid #059669',
-                    borderRadius: '10px',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onClick={() => setShowAddForm(true)}
-                  onMouseOver={(e) => {
-                    e.target.style.backgroundColor = '#059669';
-                    e.target.style.color = 'white';
-                    e.target.style.transform = 'translateY(-1px)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.color = '#059669';
-                    e.target.style.transform = 'translateY(0)';
-                  }}
+                  className='btn btn-outline-danger btn-sm rounded-pill'
+                  onClick={() => removeItem('applicants', index)}
+                  disabled={application.approved || application.is_rejected}
                 >
-                  <FaPlus className='me-2' size={14} />
-                  Add New Applicant
+                  <FaTrash size={12} className='me-1' /> Remove
                 </button>
               </div>
-            )}
-        </div>
-      ) : (
-        <LoadingComponent />
-      )}
-    </>
+              <div className='card-body'>
+                <div className='row g-3'>
+                  <EditableField
+                    applicant={applicant}
+                    index={index}
+                    field='title'
+                    label='Title'
+                    options={TITLE_CHOICES}
+                    cols={3}
+                  />
+                  <EditableField
+                    applicant={applicant}
+                    index={index}
+                    field='first_name'
+                    label='First Name'
+                    cols={3}
+                  />
+                  <EditableField
+                    applicant={applicant}
+                    index={index}
+                    field='last_name'
+                    label='Last Name'
+                    cols={3}
+                  />
+                  <EditableField
+                    applicant={applicant}
+                    index={index}
+                    field='pps_number'
+                    label={`${idNumberArray[0]} Number`}
+                    cols={3}
+                  />
+                  <EditableField
+                    applicant={applicant}
+                    index={index}
+                    field='date_of_birth'
+                    label='Date of Birth'
+                    type='date'
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Contact & Address in Compact Cards */}
+            <div className='row g-3'>
+              <div className='col-md-6'>
+                <div className='card border-0 shadow-sm rounded-3'>
+                  <div className='card-header bg-success bg-opacity-10'>
+                    <h6 className='mb-0 fw-bold text-success'>
+                      <i className='fas fa-phone me-2'></i>Contact
+                    </h6>
+                  </div>
+                  <div className='card-body'>
+                    <div className='row g-3'>
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='email'
+                        label='Email'
+                        type='email'
+                        cols={12}
+                      />
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='phone_number'
+                        label='Phone'
+                        type='tel'
+                        cols={12}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='col-md-6'>
+                <div className='card border-0 shadow-sm rounded-3'>
+                  <div className='card-header bg-warning bg-opacity-10'>
+                    <h6 className='mb-0 fw-bold text-warning'>
+                      <i className='fas fa-home me-2'></i>Address
+                    </h6>
+                  </div>
+                  <div className='card-body'>
+                    <div className='row g-2'>
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='address_line_1'
+                        label='Address 1'
+                        cols={12}
+                      />
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='address_line_2'
+                        label='Address 2 (Optional)'
+                        cols={12}
+                      />
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='city'
+                        label='City'
+                        cols={6}
+                      />
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='county'
+                        label='County'
+                        cols={6}
+                      />
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='postal_code'
+                        label='Postal Code'
+                        cols={6}
+                      />
+                      <EditableField
+                        applicant={applicant}
+                        index={index}
+                        field='country'
+                        label='Country'
+                        cols={6}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Add Form */}
+        {!application.approved &&
+          !application.is_rejected &&
+          (!application.applicants || application.applicants.length === 0) && (
+            <>
+              {showAddForm ? (
+                <div
+                  className='card border-warning shadow-lg rounded-3'
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                  }}
+                >
+                  <div className='card-header d-flex justify-content-between align-items-center'>
+                    <h5 className='mb-0 fw-bold text-warning-emphasis'>
+                      <FaPlus className='me-2' />
+                      Add Applicant
+                    </h5>
+                    <button
+                      className='btn btn-sm btn-outline-secondary rounded-pill'
+                      onClick={() => {
+                        setShowAddForm(false);
+                        resetForm();
+                      }}
+                    >
+                      <FaTimes size={14} />
+                    </button>
+                  </div>
+                  <div className='card-body'>
+                    {/* Validation Summary */}
+                    {!isFormValid &&
+                      Object.values(newApplicant).some((val) => val !== '') && (
+                        <div className='alert alert-info border-0 rounded-3 mb-4'>
+                          <i className='fas fa-info-circle me-2'></i>
+                          <strong>
+                            Please complete all required fields marked with *
+                          </strong>
+                        </div>
+                      )}
+
+                    {/* Compact Form Sections */}
+                    <div className='mb-4'>
+                      <h6 className='fw-bold mb-3 text-primary'>
+                        Basic Information
+                      </h6>
+                      <div className='row g-3'>
+                        <FormField
+                          field='title'
+                          label='Title'
+                          cols={3}
+                          required
+                          options={TITLE_CHOICES}
+                        />
+                        <FormField
+                          field='first_name'
+                          label='First Name'
+                          cols={3}
+                          required
+                        />
+                        <FormField
+                          field='last_name'
+                          label='Last Name'
+                          cols={3}
+                          required
+                        />
+                        <FormField
+                          field='pps_number'
+                          label={`${idNumberArray[0]} Number`}
+                          cols={3}
+                          required
+                        />
+                        <FormField
+                          field='date_of_birth'
+                          label='Date of Birth'
+                          type='date'
+                          cols={6}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className='row g-3 mb-4'>
+                      <div className='col-md-6'>
+                        <h6 className='fw-bold mb-3 text-success'>
+                          Contact Information
+                        </h6>
+                        <div className='row g-3'>
+                          <FormField
+                            field='email'
+                            label='Email'
+                            type='email'
+                            cols={12}
+                            required
+                          />
+                          <FormField
+                            field='phone_number'
+                            label='Phone'
+                            type='tel'
+                            cols={12}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className='col-md-6'>
+                        <h6 className='fw-bold mb-3 text-warning'>
+                          Address Information
+                        </h6>
+                        <div className='row g-3'>
+                          <FormField
+                            field='address_line_1'
+                            label='Address Line 1'
+                            cols={12}
+                            required
+                          />
+                          <FormField
+                            field='address_line_2'
+                            label='Address Line 2 (Optional)'
+                            cols={12}
+                          />
+                          <FormField
+                            field='city'
+                            label='City'
+                            cols={6}
+                            required
+                          />
+                          <FormField
+                            field='county'
+                            label='County'
+                            cols={6}
+                            required
+                          />
+                          <FormField
+                            field='postal_code'
+                            label='Postal Code'
+                            cols={6}
+                            required
+                          />
+                          <FormField
+                            field='country'
+                            label='Country'
+                            cols={6}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='d-flex gap-2 justify-content-end'>
+                      <button
+                        className='btn btn-secondary rounded-pill px-4'
+                        onClick={() => {
+                          setShowAddForm(false);
+                          resetForm();
+                        }}
+                      >
+                        <FaTimes className='me-2' size={14} />
+                        Cancel
+                      </button>
+                      <button
+                        className='btn rounded-pill px-4'
+                        onClick={addApplicant}
+                        disabled={!isFormValid}
+                        style={{
+                          backgroundColor: isFormValid ? '#22c55e' : '#94a3b8',
+                          color: 'white',
+                          border: 'none',
+                          opacity: isFormValid ? 1 : 0.7,
+                          cursor: isFormValid ? 'pointer' : 'not-allowed',
+                        }}
+                      >
+                        <FaSave className='me-2' size={14} />
+                        Save Applicant
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className='text-center py-5'>
+                  <div className='mb-4'>
+                    <div
+                      className='mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3'
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        background:
+                          'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        color: 'white',
+                      }}
+                    >
+                      <FaPlus size={30} />
+                    </div>
+                    <h5 className='fw-bold mb-2'>Add Applicant Information</h5>
+                    <p className='text-muted'>
+                      Provide applicant details to continue
+                    </p>
+                  </div>
+                  <button
+                    className='btn btn-primary btn-lg rounded-pill px-5'
+                    style={{
+                      background:
+                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      border: 'none',
+                    }}
+                    onClick={() => setShowAddForm(true)}
+                  >
+                    <FaPlus className='me-2' />
+                    Add Applicant
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+        {/* Success Message */}
+        {!application.approved &&
+          !application.is_rejected &&
+          application.applicants?.length > 0 && (
+            <div className='alert alert-success border-0 rounded-3 text-center'>
+              <i className='fas fa-check-circle me-2'></i>
+              <strong>Applicant information completed!</strong> Only one
+              applicant allowed per application.
+            </div>
+          )}
+      </div>
+    </div>
   );
 };
 
