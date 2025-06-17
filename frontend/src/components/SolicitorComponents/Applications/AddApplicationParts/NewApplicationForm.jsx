@@ -16,13 +16,31 @@ export default function NewApplicationForm() {
   const token = useSelector((state) => state.auth.token.access);
   const navigate = useNavigate();
 
+  // Get country from cookies to set proper defaults
+  const countrySolicitors = Cookies.get('country_solicitors') || 'IE';
+  const countryName = countrySolicitors === 'IE' ? 'Ireland' : 'United Kingdom';
+
   const [formData, setFormData] = useState({
     amount: '',
     term: 12,
     deceased: { first_name: '', last_name: '' },
     dispute: { details: '' },
     applicants: [
-      { title: 'Mr', first_name: '', last_name: '', pps_number: '' },
+      {
+        title: 'Mr',
+        first_name: '',
+        last_name: '',
+        pps_number: '',
+        address_line_1: '',
+        address_line_2: '',
+        city: '',
+        county: '',
+        postal_code: '',
+        country: countryName,
+        date_of_birth: '',
+        email: '',
+        phone_number: '',
+      },
     ],
     was_will_prepared_by_solicitor: null,
   });

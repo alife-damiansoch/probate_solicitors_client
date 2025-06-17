@@ -37,6 +37,15 @@ const RequiredDetailsPart = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (application && !application.applicants) {
+      setApplication({
+        ...application,
+        applicants: [],
+      });
+    }
+  }, [application]);
+
   const getFilteredApplicationData = (application) => {
     const {
       amount,
@@ -58,11 +67,36 @@ const RequiredDetailsPart = ({
         details: dispute.details,
       },
       applicants: applicants.map(
-        ({ title, first_name, last_name, pps_number }) => ({
+        ({
+          id,
           title,
           first_name,
           last_name,
           pps_number,
+          address_line_1,
+          address_line_2,
+          city,
+          county,
+          postal_code,
+          country,
+          date_of_birth,
+          email,
+          phone_number,
+        }) => ({
+          id,
+          title,
+          first_name,
+          last_name,
+          pps_number,
+          address_line_1,
+          address_line_2,
+          city,
+          county,
+          postal_code,
+          country,
+          date_of_birth,
+          email,
+          phone_number,
         })
       ),
       was_will_prepared_by_solicitor, // Include this field
@@ -96,10 +130,18 @@ const RequiredDetailsPart = ({
   };
 
   const addItem = (listName, newItem) => {
-    setApplication({
-      ...application,
-      [listName]: [...application[listName], newItem],
-    });
+    // Ensure applicants array exists and handle single applicant constraint
+    if (listName === 'applicants') {
+      setApplication({
+        ...application,
+        [listName]: [newItem], // Replace existing applicant (only one allowed)
+      });
+    } else {
+      setApplication({
+        ...application,
+        [listName]: [...(application[listName] || []), newItem],
+      });
+    }
   };
 
   const removeItem = (listName, index) => {
