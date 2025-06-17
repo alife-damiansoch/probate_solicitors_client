@@ -1,13 +1,6 @@
 import Cookies from 'js-cookie';
-import { useState } from 'react';
-import {
-  FaEdit,
-  FaPlus,
-  FaSave,
-  FaTimes,
-  FaTrash,
-  FaUsers,
-} from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaEdit, FaPlus, FaSave, FaTimes, FaUsers } from 'react-icons/fa';
 import LoadingComponent from '../../GenericComponents/LoadingComponent';
 
 const ApplicantsPart = ({
@@ -99,7 +92,7 @@ const ApplicantsPart = ({
     });
   };
 
-  // Editable field component
+  // Fixed EditableField component with local state
   const EditableField = ({
     applicant,
     index,
@@ -109,8 +102,31 @@ const ApplicantsPart = ({
     options = null,
     cols = 6,
   }) => {
+    const [localValue, setLocalValue] = useState(applicant[field] || '');
     const editKey = `applicant_${index}_${field}`;
     const isEditing = editMode[editKey];
+
+    // Update local value when applicant data changes from outside
+    useEffect(() => {
+      setLocalValue(applicant[field] || '');
+    }, [applicant[field]]);
+
+    const handleFieldChange = (e) => {
+      setLocalValue(e.target.value); // Only update local state
+    };
+
+    const handleSaveClick = () => {
+      if (isEditing) {
+        // Update parent state only when saving
+        const fakeEvent = { target: { value: localValue } };
+        handleListChange(fakeEvent, index, 'applicants', field);
+        submitChangesHandler();
+      }
+      toggleEditMode(editKey);
+    };
+
+    // Use localValue when editing, applicant[field] when not editing
+    const displayValue = isEditing ? localValue : applicant[field] || '';
 
     return (
       <div className={`col-md-${cols} mb-3`}>
@@ -126,8 +142,8 @@ const ApplicantsPart = ({
                 fontSize: '0.95rem',
                 padding: '0.75rem',
               }}
-              value={applicant[field] || ''}
-              onChange={(e) => handleListChange(e, index, 'applicants', field)}
+              value={displayValue}
+              onChange={handleFieldChange}
               disabled={!isEditing}
             >
               {options.map((opt) => (
@@ -145,8 +161,8 @@ const ApplicantsPart = ({
                 fontSize: '0.95rem',
                 padding: '0.75rem',
               }}
-              value={applicant[field] || ''}
-              onChange={(e) => handleListChange(e, index, 'applicants', field)}
+              value={displayValue}
+              onChange={handleFieldChange}
               readOnly={!isEditing}
             />
           )}
@@ -159,10 +175,7 @@ const ApplicantsPart = ({
               border: 'none',
               transition: 'all 0.2s ease',
             }}
-            onClick={() => {
-              if (isEditing) submitChangesHandler();
-              toggleEditMode(editKey);
-            }}
+            onClick={handleSaveClick}
             disabled={application.approved || application.is_rejected}
           >
             {isEditing ? <FaSave size={14} /> : <FaEdit size={14} />}
@@ -296,13 +309,6 @@ const ApplicantsPart = ({
                 <h6 className='mb-0 fw-bold text-primary'>
                   <i className='fas fa-user me-2'></i>Basic Information
                 </h6>
-                {/*<button*/}
-                {/*  className='btn btn-outline-danger btn-sm rounded-pill'*/}
-                {/*  onClick={() => removeItem('applicants', index)}*/}
-                {/*  disabled={application.approved || application.is_rejected}*/}
-                {/*>*/}
-                {/*  <FaTrash size={12} className='me-1' /> Remove*/}
-                {/*</button>*/}
               </div>
               <div className='card-body'>
                 <div className='row g-3'>
