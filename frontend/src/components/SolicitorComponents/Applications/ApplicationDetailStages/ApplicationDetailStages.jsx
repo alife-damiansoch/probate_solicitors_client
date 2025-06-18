@@ -56,16 +56,16 @@ const ModernApplicationProgress = ({
       documents: {
         header: 'Document Upload Requirements',
         content: `
-          <div>
-            <p><strong>Required Documents:</strong></p>
-            <ul>
-              <li><strong>Undertaking:</strong> Legal undertaking document</li>
-              <li><strong>Advancement Agreement:</strong> Loan agreement documentation</li>
-              <li><strong>Supporting Documents:</strong> Additional required files</li>
-            </ul>
-            <p><small>All documents must be uploaded and properly signed.</small></p>
-          </div>
-        `,
+    <div>
+      <p><strong>Document Submission Checklist:</strong></p>
+      <ul>
+        <li><strong>Primary Documents:</strong> Essential application documentation</li>
+        <li><strong>Legal Agreements:</strong> Required contractual documentation</li>
+        <li><strong>Supporting Documents:</strong> All additional required documentation</li>
+      </ul>
+      <p><small>To proceed, ensure all required documents are uploaded and any documents requiring signatures are fully executed with verified digital signatures.</small></p>
+    </div>
+  `,
       },
       review: {
         header: 'Review Process',
@@ -158,10 +158,9 @@ const ModernApplicationProgress = ({
       icon: FaFileUpload,
       section: 'Uploaded Documents',
       completed:
-        application.undertaking_ready &&
-        application.loan_agreement_ready &&
-        (application.documents?.length > 0 ||
-          application.signed_documents?.length > 0),
+        application.documents?.length > 0 ||
+        (application.signed_documents?.length > 0 &&
+          application.signed_documents.every((doc) => doc.is_signed === true)),
       shortDesc: 'Uploaded',
     },
     {

@@ -65,14 +65,15 @@ const EstateManagerModal = ({
   const token = Cookies.get('auth_token')?.access;
 
   const grouped = ESTATE_DISPLAY_ORDER.reduce((acc, key) => {
-    acc[key] = estates.filter((e) => e.category === key);
+    acc[key] = estates?.filter((e) => e.category === key) || [];
     return acc;
   }, {});
 
   const [simpleValues, setSimpleValues] = useState(() => {
     const initial = {};
     SIMPLE_TYPES.forEach((type) => {
-      initial[type] = grouped[type]?.[0]?.value || '';
+      const typeEstates = estates?.filter((e) => e.category === type) || [];
+      initial[type] = typeEstates[0]?.value || '';
     });
     return initial;
   });
@@ -472,18 +473,13 @@ const EstateManagerModal = ({
               const label = estateLabels[type];
               const entries = grouped[type];
               const isSimple = SIMPLE_TYPES.includes(type);
-              const isRequired = type === 'real_and_leasehold';
-              const hasEntries = entries.length > 0;
-              const isRequiredAndEmpty = isRequired && !hasEntries;
 
               return (
                 <div
                   key={type}
                   style={{
                     backgroundColor: '#ffffff',
-                    border: `1px solid ${
-                      isRequiredAndEmpty ? '#dc2626' : '#e5e7eb'
-                    }`,
+                    border: '1px solid #e5e7eb',
                     borderRadius: '6px',
                     padding: '12px 16px',
                     transition: 'border-color 0.15s ease',
@@ -494,7 +490,7 @@ const EstateManagerModal = ({
                     style={{
                       fontSize: '14px',
                       fontWeight: '600',
-                      color: isRequiredAndEmpty ? '#dc2626' : '#3b82f6',
+                      color: '#3b82f6',
                       marginBottom: isSimple ? '8px' : '12px',
                       display: 'flex',
                       alignItems: 'center',
@@ -502,26 +498,6 @@ const EstateManagerModal = ({
                     }}
                   >
                     {label}
-                    {isRequired && (
-                      <span style={{ color: '#dc2626', fontSize: '14px' }}>
-                        *
-                      </span>
-                    )}
-                    {isRequiredAndEmpty && (
-                      <span
-                        style={{
-                          fontSize: '11px',
-                          fontWeight: '500',
-                          color: '#dc2626',
-                          backgroundColor: '#fee2e2',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          marginLeft: '8px',
-                        }}
-                      >
-                        Required
-                      </span>
-                    )}
                   </div>
 
                   {isSimple ? (
