@@ -24,6 +24,16 @@ const ApplicationDetails = () => {
   const [refresh, setRefresh] = useState(false);
 
   const [highlitedSectionId, setHighlightedSectionId] = useState('');
+  const [isApplicationLocked, setIsApplicationLocked] = useState(false);
+
+  //checking if application si locked
+  useEffect(() => {
+    if (
+      application?.processing_status?.application_details_completed_confirmed
+    ) {
+      setIsApplicationLocked(true);
+    }
+  }, [application]);
 
   // Fetch estates for the progress component
   useEffect(() => {
@@ -112,6 +122,8 @@ const ApplicationDetails = () => {
       </div>
     );
   }
+
+  console.log('Application Details:', application);
 
   return (
     <div className='min-vh-100' style={{ backgroundColor: '#f8fafc' }}>
@@ -270,6 +282,117 @@ const ApplicationDetails = () => {
                 </div>
               )}
 
+              {/* Status Alert */}
+              {(application.is_rejected ||
+                application.approved ||
+                isApplicationLocked) && (
+                <div
+                  className='mx-4 mb-4 p-3 rounded-3 d-flex align-items-center gap-3'
+                  style={{
+                    backgroundColor: application.is_rejected
+                      ? '#fef2f2'
+                      : application.approved
+                      ? '#f0fdf4'
+                      : '#fef3c7', // Yellow background for locked
+                    border: `1px solid ${
+                      application.is_rejected
+                        ? '#fecaca'
+                        : application.approved
+                        ? '#bbf7d0'
+                        : '#fde68a' // Yellow border for locked
+                    }`,
+                    marginTop: '16px',
+                  }}
+                >
+                  <div
+                    className='d-flex align-items-center justify-content-center rounded-2'
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      backgroundColor: application.is_rejected
+                        ? '#dc2626'
+                        : application.approved
+                        ? '#059669'
+                        : '#d97706', // Orange/amber for locked
+                      color: 'white',
+                    }}
+                  >
+                    {application.is_rejected ? (
+                      <svg
+                        width='20'
+                        height='20'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
+                    ) : application.approved ? (
+                      <svg
+                        width='20'
+                        height='20'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
+                    ) : (
+                      // Lock icon for locked state
+                      <svg
+                        width='20'
+                        height='20'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div>
+                    <h6
+                      className='mb-1 fw-bold'
+                      style={{
+                        color: application.is_rejected
+                          ? '#dc2626'
+                          : application.approved
+                          ? '#059669'
+                          : '#d97706', // Orange/amber for locked
+                      }}
+                    >
+                      Application{' '}
+                      {application.is_rejected
+                        ? 'Rejected'
+                        : application.approved
+                        ? 'Approved'
+                        : 'Locked'}
+                    </h6>
+                    <p
+                      className='mb-0'
+                      style={{ fontSize: '0.875rem', color: '#6b7280' }}
+                    >
+                      Options and editing are not available because application
+                      is{' '}
+                      {application.is_rejected
+                        ? 'rejected'
+                        : application.approved
+                        ? 'approved'
+                        : 'locked'}
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Application Details Section */}
               <div className='border-bottom'>
                 <div className='p-0'>
@@ -325,6 +448,7 @@ const ApplicationDetails = () => {
                           setRefresh={setRefresh}
                           highlitedSectionId={highlitedSectionId}
                           setHighlightedSectionId={setHighlightedSectionId}
+                          isApplicationLocked={isApplicationLocked}
                         />
                       </div>
                     </div>

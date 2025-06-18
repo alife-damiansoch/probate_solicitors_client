@@ -11,7 +11,12 @@ import {
   getEstates,
 } from '../../GenericFunctions/HelperGenericFunctions';
 
-const EstatesPart = ({ application, refresh, setRefresh }) => {
+const EstatesPart = ({
+  application,
+  refresh,
+  setRefresh,
+  isApplicationLocked,
+}) => {
   const currency_sign = Cookies.get('currency_sign');
   const [estates, setEstates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -227,6 +232,11 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
                 e.target.style.backgroundColor = '#3b82f6';
                 e.target.style.transform = 'translateY(0)';
               }}
+              disabled={
+                application.approved ||
+                application.is_rejected ||
+                isApplicationLocked
+              }
             >
               <FaPlus className='me-2' size={14} />
               Manage Estates
@@ -657,6 +667,11 @@ const EstatesPart = ({ application, refresh, setRefresh }) => {
               e.target.style.color = '#3b82f6';
               e.target.style.transform = 'translateY(0)';
             }}
+            disabled={
+              application.approved ||
+              application.is_rejected ||
+              isApplicationLocked
+            }
           >
             <FaCog className='me-2' size={14} />
             Manage Estates

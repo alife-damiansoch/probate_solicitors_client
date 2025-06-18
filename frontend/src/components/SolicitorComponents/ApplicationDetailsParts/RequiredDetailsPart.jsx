@@ -19,6 +19,7 @@ const RequiredDetailsPart = ({
   refresh,
   setRefresh,
   highlitedSectionId,
+  isApplicationLocked,
 }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -338,7 +339,11 @@ const RequiredDetailsPart = ({
                       if (editMode.amount) submitChangesHandler();
                       toggleEditMode('amount');
                     }}
-                    disabled={application.approved || application.is_rejected}
+                    disabled={
+                      application.approved ||
+                      application.is_rejected ||
+                      isApplicationLocked
+                    }
                     onMouseOver={(e) => {
                       if (!e.target.disabled) {
                         e.target.style.transform = 'scale(1.05)';
@@ -486,7 +491,11 @@ const RequiredDetailsPart = ({
                       if (editMode.deceased_first_name) submitChangesHandler();
                       toggleEditMode('deceased_first_name');
                     }}
-                    disabled={application.approved || application.is_rejected}
+                    disabled={
+                      application.approved ||
+                      application.is_rejected ||
+                      isApplicationLocked
+                    }
                     onMouseOver={(e) => {
                       if (!e.target.disabled) {
                         e.target.style.transform = 'scale(1.05)';
@@ -562,7 +571,11 @@ const RequiredDetailsPart = ({
                       if (editMode.deceased_last_name) submitChangesHandler();
                       toggleEditMode('deceased_last_name');
                     }}
-                    disabled={application.approved || application.is_rejected}
+                    disabled={
+                      application.approved ||
+                      application.is_rejected ||
+                      isApplicationLocked
+                    }
                     onMouseOver={(e) => {
                       if (!e.target.disabled) {
                         e.target.style.transform = 'scale(1.05)';
@@ -624,7 +637,11 @@ const RequiredDetailsPart = ({
                       });
                       setTriggerChandleChange(!triggerHandleChange);
                     }}
-                    disabled={application.approved || application.is_rejected}
+                    disabled={
+                      application.approved ||
+                      application.is_rejected ||
+                      isApplicationLocked
+                    }
                     style={{ transform: 'scale(1.2)' }}
                   />
                   <label
@@ -651,7 +668,11 @@ const RequiredDetailsPart = ({
                       });
                       setTriggerChandleChange(!triggerHandleChange);
                     }}
-                    disabled={application.approved || application.is_rejected}
+                    disabled={
+                      application.approved ||
+                      application.is_rejected ||
+                      isApplicationLocked
+                    }
                     style={{ transform: 'scale(1.2)' }}
                   />
                   <label
@@ -735,7 +756,11 @@ const RequiredDetailsPart = ({
                     if (editMode.dispute_details) submitChangesHandler();
                     toggleEditMode('dispute_details');
                   }}
-                  disabled={application.approved || application.is_rejected}
+                  disabled={
+                    application.approved ||
+                    application.is_rejected ||
+                    isApplicationLocked
+                  }
                   onMouseOver={(e) => {
                     if (!e.target.disabled) {
                       e.target.style.transform = 'scale(1.05)';
@@ -767,11 +792,13 @@ const RequiredDetailsPart = ({
           removeItem={removeItem}
           triggerHandleChange={triggerHandleChange}
           setTriggerChandleChange={setTriggerChandleChange}
+          isApplicationLocked={isApplicationLocked}
         />
         <EstatesPart
           application={application}
           refresh={refresh}
           setRefresh={setRefresh}
+          isApplicationLocked={isApplicationLocked}
         />
       </div>
 

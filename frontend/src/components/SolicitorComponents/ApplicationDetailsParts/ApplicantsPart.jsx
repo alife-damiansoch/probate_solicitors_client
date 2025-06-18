@@ -13,6 +13,7 @@ const ApplicantsPart = ({
   removeItem,
   triggerHandleChange,
   setTriggerChandleChange,
+  isApplicationLocked,
 }) => {
   const [newApplicant, setNewApplicant] = useState({
     title: '',
@@ -176,7 +177,11 @@ const ApplicantsPart = ({
               transition: 'all 0.2s ease',
             }}
             onClick={handleSaveClick}
-            disabled={application.approved || application.is_rejected}
+            disabled={
+              application.approved ||
+              application.is_rejected ||
+              isApplicationLocked
+            }
           >
             {isEditing ? <FaSave size={14} /> : <FaEdit size={14} />}
           </button>
