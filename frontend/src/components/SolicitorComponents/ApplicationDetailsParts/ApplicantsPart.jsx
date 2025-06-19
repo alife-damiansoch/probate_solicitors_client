@@ -2,6 +2,10 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { FaEdit, FaPlus, FaSave, FaTimes, FaUsers } from 'react-icons/fa';
 import LoadingComponent from '../../GenericComponents/LoadingComponent';
+import {
+  formatPhoneToInternational,
+  validatePPS,
+} from '../../GenericFunctions/HelperGenericFunctions';
 
 const ApplicantsPart = ({
   addItem,
@@ -32,6 +36,7 @@ const ApplicantsPart = ({
   });
 
   const [showAddForm, setShowAddForm] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const TITLE_CHOICES = [
     { value: 'Mr', label: 'Mr' },
@@ -42,8 +47,8 @@ const ApplicantsPart = ({
   ];
 
   const idNumberArray = JSON.parse(Cookies.get('id_number'));
+  const countrySolicitors = Cookies.get('country_solicitors') || 'IE';
 
-  // Required fields validation
   const requiredFields = [
     'title',
     'first_name',
@@ -91,9 +96,35 @@ const ApplicantsPart = ({
       email: '',
       phone_number: '',
     });
+    setFieldErrors({});
   };
 
-  // Fixed EditableField component with local state
+  // Simple validation functions
+  const validatePPSField = (value) => {
+    if (!value || value.trim() === '')
+      return { valid: false, message: 'PPS number is required' };
+    const isValid = validatePPS(value);
+    return {
+      valid: isValid,
+      message: isValid ? '' : 'Invalid PPS number format',
+    };
+  };
+
+  const validatePhoneField = (value) => {
+    if (!value || value.trim() === '')
+      return { valid: false, message: 'Phone number is required' };
+
+    console.log('Validating phone:', value, 'Country:', countrySolicitors); // Debug log
+    const result = formatPhoneToInternational(value, countrySolicitors);
+    console.log('Phone validation result:', result); // Debug log
+
+    return {
+      valid: result.success,
+      message: result.success ? '' : result.error,
+    };
+  };
+
+  // EditableField component
   const EditableField = ({
     applicant,
     index,
@@ -105,28 +136,78 @@ const ApplicantsPart = ({
   }) => {
     const [localValue, setLocalValue] = useState(applicant[field] || '');
     const editKey = `applicant_${index}_${field}`;
+    const errorKey = `${index}_${field}`;
     const isEditing = editMode[editKey];
+    const hasError = fieldErrors[errorKey];
 
-    // Update local value when applicant data changes from outside
     useEffect(() => {
       setLocalValue(applicant[field] || '');
     }, [applicant[field]]);
 
-    const handleFieldChange = (e) => {
-      setLocalValue(e.target.value); // Only update local state
-    };
-
-    const handleSaveClick = () => {
-      if (isEditing) {
-        // Update parent state only when saving
-        const fakeEvent = { target: { value: localValue } };
-        handleListChange(fakeEvent, index, 'applicants', field);
-        submitChangesHandler();
+    const handleEdit = () => {
+      // Clear any existing error when starting to edit
+      if (hasError) {
+        setFieldErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[errorKey];
+          return newErrors;
+        });
       }
       toggleEditMode(editKey);
     };
 
-    // Use localValue when editing, applicant[field] when not editing
+    const handleSave = () => {
+      // Validate special fields
+      if (field === 'pps_number') {
+        const validation = validatePPSField(localValue);
+        if (!validation.valid) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            [errorKey]: validation.message,
+          }));
+          setLocalValue(applicant[field] || ''); // Revert to original
+          toggleEditMode(editKey); // Exit edit mode
+          return;
+        }
+      }
+
+      if (field === 'phone_number') {
+        const validation = validatePhoneField(localValue);
+        if (!validation.valid) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            [errorKey]: validation.message,
+          }));
+          setLocalValue(applicant[field] || ''); // Revert to original
+          toggleEditMode(editKey); // Exit edit mode
+          return;
+        }
+        // Format phone number if valid
+        const phoneResult = formatPhoneToInternational(
+          localValue,
+          countrySolicitors
+        );
+        if (phoneResult.success) {
+          const formattedValue = phoneResult.formattedNumber;
+          setLocalValue(formattedValue);
+          // Update the event to save the formatted value
+          const fakeEvent = { target: { value: formattedValue } };
+          handleListChange(fakeEvent, index, 'applicants', field);
+          submitChangesHandler();
+          toggleEditMode(editKey);
+          return;
+        }
+      }
+
+      // Save the value (for non-phone fields or if phone formatting didn't happen above)
+      if (field !== 'phone_number') {
+        const fakeEvent = { target: { value: localValue } };
+        handleListChange(fakeEvent, index, 'applicants', field);
+        submitChangesHandler();
+        toggleEditMode(editKey);
+      }
+    };
+
     const displayValue = isEditing ? localValue : applicant[field] || '';
 
     return (
@@ -144,7 +225,7 @@ const ApplicantsPart = ({
                 padding: '0.75rem',
               }}
               value={displayValue}
-              onChange={handleFieldChange}
+              onChange={(e) => setLocalValue(e.target.value)}
               disabled={!isEditing}
             >
               {options.map((opt) => (
@@ -163,7 +244,7 @@ const ApplicantsPart = ({
                 padding: '0.75rem',
               }}
               value={displayValue}
-              onChange={handleFieldChange}
+              onChange={(e) => setLocalValue(e.target.value)}
               readOnly={!isEditing}
             />
           )}
@@ -176,7 +257,7 @@ const ApplicantsPart = ({
               border: 'none',
               transition: 'all 0.2s ease',
             }}
-            onClick={handleSaveClick}
+            onClick={isEditing ? handleSave : handleEdit}
             disabled={
               application.approved ||
               application.is_rejected ||
@@ -186,17 +267,23 @@ const ApplicantsPart = ({
             {isEditing ? <FaSave size={14} /> : <FaEdit size={14} />}
           </button>
         </div>
+
+        {hasError && (
+          <div className='text-danger mt-2 small'>
+            <i className='fas fa-exclamation-circle me-1'></i>
+            {hasError}
+          </div>
+        )}
       </div>
     );
   };
 
-  // Form field component with validation
+  // FormField component
   const FormField = ({
     field,
     label,
     type = 'text',
     cols = 6,
-    required = false,
     options = null,
   }) => {
     const isRequired = requiredFields.includes(field);
@@ -256,7 +343,7 @@ const ApplicantsPart = ({
 
   return (
     <div className='mt-4 rounded-4 overflow-hidden shadow-lg'>
-      {/* Modern Header */}
+      {/* Header */}
       <div
         className='d-flex align-items-center justify-content-between p-4 text-white'
         style={{
@@ -305,10 +392,10 @@ const ApplicantsPart = ({
           </div>
         )}
 
-        {/* Existing Applicant Display */}
+        {/* Existing Applicants */}
         {application.applicants?.map((applicant, index) => (
           <div key={applicant.id || index} className='mb-4'>
-            {/* Basic Info Section */}
+            {/* Basic Info */}
             <div className='card border-0 shadow-sm rounded-3 mb-3'>
               <div className='card-header bg-light d-flex justify-content-between align-items-center'>
                 <h6 className='mb-0 fw-bold text-primary'>
@@ -357,7 +444,7 @@ const ApplicantsPart = ({
               </div>
             </div>
 
-            {/* Contact & Address in Compact Cards */}
+            {/* Contact & Address */}
             <div className='row g-3'>
               <div className='col-md-6'>
                 <div className='card border-0 shadow-sm rounded-3'>
@@ -448,19 +535,13 @@ const ApplicantsPart = ({
           </div>
         ))}
 
-        {/* Add Form */}
+        {/* Add New Applicant Form */}
         {!application.approved &&
           !application.is_rejected &&
           (!application.applicants || application.applicants.length === 0) && (
             <>
               {showAddForm ? (
-                <div
-                  className='card border-warning shadow-lg rounded-3'
-                  style={{
-                    background:
-                      'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                  }}
-                >
+                <div className='card border-warning shadow-lg rounded-3'>
                   <div className='card-header d-flex justify-content-between align-items-center'>
                     <h5 className='mb-0 fw-bold text-warning-emphasis'>
                       <FaPlus className='me-2' />
@@ -477,7 +558,6 @@ const ApplicantsPart = ({
                     </button>
                   </div>
                   <div className='card-body'>
-                    {/* Validation Summary */}
                     {!isFormValid &&
                       Object.values(newApplicant).some((val) => val !== '') && (
                         <div className='alert alert-info border-0 rounded-3 mb-4'>
@@ -488,7 +568,6 @@ const ApplicantsPart = ({
                         </div>
                       )}
 
-                    {/* Compact Form Sections */}
                     <div className='mb-4'>
                       <h6 className='fw-bold mb-3 text-primary'>
                         Basic Information
@@ -498,33 +577,28 @@ const ApplicantsPart = ({
                           field='title'
                           label='Title'
                           cols={3}
-                          required
                           options={TITLE_CHOICES}
                         />
                         <FormField
                           field='first_name'
                           label='First Name'
                           cols={3}
-                          required
                         />
                         <FormField
                           field='last_name'
                           label='Last Name'
                           cols={3}
-                          required
                         />
                         <FormField
                           field='pps_number'
                           label={`${idNumberArray[0]} Number`}
                           cols={3}
-                          required
                         />
                         <FormField
                           field='date_of_birth'
                           label='Date of Birth'
                           type='date'
                           cols={6}
-                          required
                         />
                       </div>
                     </div>
@@ -540,14 +614,12 @@ const ApplicantsPart = ({
                             label='Email'
                             type='email'
                             cols={12}
-                            required
                           />
                           <FormField
                             field='phone_number'
                             label='Phone'
                             type='tel'
                             cols={12}
-                            required
                           />
                         </div>
                       </div>
@@ -561,37 +633,20 @@ const ApplicantsPart = ({
                             field='address_line_1'
                             label='Address Line 1'
                             cols={12}
-                            required
                           />
                           <FormField
                             field='address_line_2'
                             label='Address Line 2 (Optional)'
                             cols={12}
                           />
-                          <FormField
-                            field='city'
-                            label='City'
-                            cols={6}
-                            required
-                          />
-                          <FormField
-                            field='county'
-                            label='County'
-                            cols={6}
-                            required
-                          />
+                          <FormField field='city' label='City' cols={6} />
+                          <FormField field='county' label='County' cols={6} />
                           <FormField
                             field='postal_code'
                             label='Postal Code'
                             cols={6}
-                            required
                           />
-                          <FormField
-                            field='country'
-                            label='Country'
-                            cols={6}
-                            required
-                          />
+                          <FormField field='country' label='Country' cols={6} />
                         </div>
                       </div>
                     </div>

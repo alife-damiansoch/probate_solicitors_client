@@ -1,5 +1,10 @@
 import Cookies from 'js-cookie';
+import React, { useState } from 'react';
 import { FaHome, FaPhone, FaUsers } from 'react-icons/fa';
+import {
+  formatPhoneToInternational,
+  validatePPS,
+} from '../../../../GenericFunctions/HelperGenericFunctions';
 import {
   COUNTY_OPTIONS_IE,
   COUNTY_OPTIONS_UK,
@@ -30,7 +35,25 @@ const requiredFields = [
   'country',
 ];
 
-// Compact form field component - MOVED OUTSIDE
+// Validation functions
+const validatePPSField = (value) => {
+  if (!value || value.trim() === '')
+    return { valid: false, message: 'PPS number is required' };
+  const isValid = validatePPS(value);
+  return {
+    valid: isValid,
+    message: isValid ? '' : 'Invalid PPS number format',
+  };
+};
+
+const validatePhoneField = (value, country) => {
+  if (!value || value.trim() === '')
+    return { valid: false, message: 'Phone number is required' };
+  const result = formatPhoneToInternational(value, country);
+  return { valid: result.success, message: result.success ? '' : result.error };
+};
+
+// Enhanced field component with validation
 const Field = ({
   field,
   label,
@@ -41,9 +64,12 @@ const Field = ({
   options = null,
   handleListChange,
   phoneNrPlaceholder,
+  countrySolicitors,
+  validationErrors,
 }) => {
   const isRequired = requiredFields.includes(field);
   const hasError = isEmpty(applicant[field]) && isRequired;
+  const validationError = validationErrors[field];
 
   return (
     <div className={`col-${cols} mb-2`}>
@@ -59,10 +85,14 @@ const Field = ({
           style={{
             height: '32px',
             fontSize: '0.85rem',
-            background: hasError
-              ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
-              : 'linear-gradient(135deg, #ffffff, #f8fafc)',
-            border: hasError ? '1px solid #ef4444' : '1px solid #e2e8f0',
+            background:
+              hasError || validationError
+                ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
+                : 'linear-gradient(135deg, #ffffff, #f8fafc)',
+            border:
+              hasError || validationError
+                ? '1px solid #ef4444'
+                : '1px solid #e2e8f0',
           }}
           value={applicant[field] || ''}
           onChange={(e) => handleListChange(e, index, field)}
@@ -80,10 +110,14 @@ const Field = ({
           style={{
             height: '32px',
             fontSize: '0.85rem',
-            background: hasError
-              ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
-              : 'linear-gradient(135deg, #ffffff, #f8fafc)',
-            border: hasError ? '1px solid #ef4444' : '1px solid #e2e8f0',
+            background:
+              hasError || validationError
+                ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
+                : 'linear-gradient(135deg, #ffffff, #f8fafc)',
+            border:
+              hasError || validationError
+                ? '1px solid #ef4444'
+                : '1px solid #e2e8f0',
           }}
           value={applicant[field] || ''}
           onChange={(e) => handleListChange(e, index, field)}
@@ -91,6 +125,14 @@ const Field = ({
             field === 'phone_number' ? phoneNrPlaceholder : `${label}`
           }
         />
+      )}
+
+      {/* Validation error message */}
+      {validationError && (
+        <div className='text-danger mt-1' style={{ fontSize: '0.75rem' }}>
+          <i className='fas fa-exclamation-circle me-1'></i>
+          {validationError}
+        </div>
       )}
     </div>
   );
@@ -100,7 +142,11 @@ export default function ApplicantsPart({
   applicants,
   setFormData,
   idNumberArray,
+  onValidationChange, // Add this prop to notify parent about validation state
 }) {
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState({});
+
   // Get country and phone placeholder from cookies
   const countrySolicitors = Cookies.get('country_solicitors') || 'IE';
   const phoneNrPlaceholder =
@@ -112,29 +158,66 @@ export default function ApplicantsPart({
   const handleListChange = (e, index, field) => {
     let value = e.target.value;
 
-    // Format phone number based on country
-    if (field === 'phone_number') {
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+
+    // Validate special fields on blur/change
+    if (field === 'pps_number' && value.trim() !== '') {
+      const validation = validatePPSField(value);
+      if (!validation.valid) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          [field]: validation.message,
+        }));
+      }
+    }
+
+    if (field === 'phone_number' && value.trim() !== '') {
+      // First validate the original input
+      const validation = validatePhoneField(value, countrySolicitors);
+      if (!validation.valid) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          [field]: validation.message,
+        }));
+      } else {
+        // If valid, format the phone number
+        const result = formatPhoneToInternational(value, countrySolicitors);
+        if (result.success) {
+          value = result.formattedNumber;
+        }
+      }
+    }
+
+    // Legacy phone formatting (fallback if validation doesn't handle it)
+    if (field === 'phone_number' && !validationErrors[field]) {
       // Remove any existing formatting
-      value = value.replace(/[^\d]/g, '');
+      const cleanValue = value.replace(/[^\d]/g, '');
 
       if (countrySolicitors === 'IE') {
         // Irish phone formatting
-        if (value.startsWith('0')) {
-          value = '353' + value.substring(1);
+        if (cleanValue.startsWith('0')) {
+          value = '353' + cleanValue.substring(1);
         }
-        if (value.length > 0 && !value.startsWith('353')) {
-          value = '353' + value;
+        if (cleanValue.length > 0 && !cleanValue.startsWith('353')) {
+          value = '353' + cleanValue;
         }
         if (value.startsWith('353') && value.length >= 4) {
           value = '+353 ' + value.substring(3);
         }
       } else if (countrySolicitors === 'UK') {
         // UK phone formatting
-        if (value.startsWith('0')) {
-          value = '44' + value.substring(1);
+        if (cleanValue.startsWith('0')) {
+          value = '44' + cleanValue.substring(1);
         }
-        if (value.length > 0 && !value.startsWith('44')) {
-          value = '44' + value;
+        if (cleanValue.length > 0 && !cleanValue.startsWith('44')) {
+          value = '44' + cleanValue;
         }
         if (value.startsWith('44') && value.length >= 3) {
           value = '+44 ' + value.substring(2);
@@ -175,6 +258,31 @@ export default function ApplicantsPart({
   }
 
   const applicant = applicants[0];
+
+  // Check if form is valid (no validation errors and all required fields filled)
+  const hasValidationErrors = Object.keys(validationErrors).length > 0;
+  const allRequiredFieldsFilled = requiredFields.every(
+    (field) => !isEmpty(applicant[field])
+  );
+  const isFormComplete = allRequiredFieldsFilled && !hasValidationErrors;
+
+  // Notify parent component about validation state changes
+  React.useEffect(() => {
+    if (onValidationChange) {
+      onValidationChange({
+        isValid: isFormComplete,
+        hasErrors: hasValidationErrors,
+        missingFields: !allRequiredFieldsFilled,
+        validationErrors: validationErrors,
+      });
+    }
+  }, [
+    isFormComplete,
+    hasValidationErrors,
+    allRequiredFieldsFilled,
+    validationErrors,
+    onValidationChange,
+  ]);
 
   return (
     <div className='mb-4'>
@@ -229,6 +337,8 @@ export default function ApplicantsPart({
                   index={0}
                   options={TITLE_CHOICES}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='first_name'
@@ -237,6 +347,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='last_name'
@@ -245,6 +357,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='pps_number'
@@ -253,6 +367,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='date_of_birth'
@@ -262,6 +378,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
               </div>
             </div>
@@ -284,6 +402,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='phone_number'
@@ -296,6 +416,8 @@ export default function ApplicantsPart({
                   index={0}
                   handleListChange={handleListChange}
                   phoneNrPlaceholder={phoneNrPlaceholder}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
               </div>
             </div>
@@ -317,6 +439,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='address_line_2'
@@ -325,6 +449,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='city'
@@ -333,6 +459,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='county'
@@ -342,6 +470,8 @@ export default function ApplicantsPart({
                   index={0}
                   options={countyOptions}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
                 <Field
                   field='postal_code'
@@ -350,6 +480,8 @@ export default function ApplicantsPart({
                   applicant={applicant}
                   index={0}
                   handleListChange={handleListChange}
+                  countrySolicitors={countrySolicitors}
+                  validationErrors={validationErrors}
                 />
 
                 {/* Country field - readonly based on cookies */}
@@ -383,28 +515,22 @@ export default function ApplicantsPart({
             <div
               className='px-3 py-2 rounded-3'
               style={{
-                backgroundColor: requiredFields.every(
-                  (field) => !isEmpty(applicant[field])
-                )
+                backgroundColor: isFormComplete
                   ? 'rgba(34,197,94,0.1)'
                   : 'rgba(239,68,68,0.1)',
-                color: requiredFields.every(
-                  (field) => !isEmpty(applicant[field])
-                )
-                  ? '#22c55e'
-                  : '#ef4444',
+                color: isFormComplete ? '#22c55e' : '#ef4444',
                 fontSize: '0.85rem',
               }}
             >
               <i
                 className={`fas ${
-                  requiredFields.every((field) => !isEmpty(applicant[field]))
-                    ? 'fa-check-circle'
-                    : 'fa-exclamation-circle'
+                  isFormComplete ? 'fa-check-circle' : 'fa-exclamation-circle'
                 } me-2`}
               ></i>
-              {requiredFields.every((field) => !isEmpty(applicant[field]))
-                ? 'Applicant information completed!'
+              {isFormComplete
+                ? 'Applicant information completed and validated!'
+                : hasValidationErrors
+                ? 'Please fix validation errors above'
                 : 'Please complete all required fields marked with *'}
             </div>
           </div>

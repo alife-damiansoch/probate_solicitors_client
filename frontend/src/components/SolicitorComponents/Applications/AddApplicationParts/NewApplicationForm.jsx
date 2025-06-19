@@ -19,6 +19,11 @@ export default function NewApplicationForm() {
   // Get country from cookies to set proper defaults
   const countrySolicitors = Cookies.get('country_solicitors') || 'IE';
   const countryName = countrySolicitors === 'IE' ? 'Ireland' : 'United Kingdom';
+  const [applicantValidation, setApplicantValidation] = useState({
+    isValid: false,
+    hasErrors: false,
+    missingFields: true,
+  });
 
   const [formData, setFormData] = useState({
     amount: '',
@@ -98,17 +103,38 @@ export default function NewApplicationForm() {
             applicants={formData.applicants}
             setFormData={setFormData}
             idNumberArray={idNumberArray}
+            onValidationChange={setApplicantValidation}
           />
           <div className='row'>
             <button
               type='submit'
               className='btn btn-info my-2'
-              disabled={loading}
+              disabled={loading || !applicantValidation.isValid}
+              style={{
+                opacity: loading || !applicantValidation.isValid ? 0.6 : 1,
+                cursor:
+                  loading || !applicantValidation.isValid
+                    ? 'not-allowed'
+                    : 'pointer',
+              }}
             >
               {loading ? (
                 <LoadingComponent message='Adding application...' />
+              ) : applicantValidation.hasErrors ? (
+                <>
+                  <i className='fas fa-exclamation-triangle me-2'></i>
+                  Fix Validation Errors
+                </>
+              ) : applicantValidation.missingFields ? (
+                <>
+                  <i className='fas fa-info-circle me-2'></i>
+                  Complete Required Fields
+                </>
               ) : (
-                'Create Application'
+                <>
+                  <i className='fas fa-plus-circle me-2'></i>
+                  Create Application
+                </>
               )}
             </button>
             {message && (
