@@ -44,12 +44,22 @@ const renderErrors = (errors) => {
 export default renderErrors;
 
 export const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0'); // Get the day and add leading zero if needed
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Get the month (0-based) and add leading zero
-  const year = date.getFullYear(); // Get the full year
+  if (!dateString || dateString === null) {
+    return 'Pending...';
+  }
 
-  return `${day}/${month}/${year}`; // Format as dd/mm/yyyy
+  const date = new Date(dateString);
+
+  // Check if the date is invalid or is the Unix epoch (01/01/1970)
+  if (isNaN(date.getTime()) || date.getTime() === 0) {
+    return <span className=' text-warning'>'Pending...'</span>;
+  }
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
 };
 
 export const getPublicIp = async () => {

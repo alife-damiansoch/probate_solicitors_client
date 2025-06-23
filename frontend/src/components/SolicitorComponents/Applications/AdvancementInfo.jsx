@@ -4,7 +4,7 @@ import {
 } from '../../GenericFunctions/HelperGenericFunctions';
 
 const AdvancementInfo = ({ advancement }) => {
-  console.log(advancement);
+  console.log('ADVANCEMENT INFO: ', advancement);
 
   // Get styling based on settlement status
   const getStatusStyles = () => {
@@ -220,7 +220,7 @@ const AdvancementInfo = ({ advancement }) => {
                       className='fw-semibold'
                       style={{ color: '#374151', fontSize: '0.9rem' }}
                     >
-                      Term Agreed:
+                      Initial Term :
                     </span>
                     <span
                       className='fw-bold'
@@ -313,14 +313,15 @@ const AdvancementInfo = ({ advancement }) => {
                       className='fw-semibold'
                       style={{ color: '#374151', fontSize: '0.9rem' }}
                     >
-                      Amount Agreed:
+                      Advancement principal:
                     </span>
                     <span
                       className='fw-bold'
                       style={{ color: '#374151', fontSize: '1rem' }}
                     >
                       {formatMoney(
-                        advancement.amount_agreed,
+                        advancement?.loanbook_data?.initial_amount ||
+                          advancement.amount_agreed,
                         advancement.currency_sign
                       )}
                     </span>
@@ -340,14 +341,16 @@ const AdvancementInfo = ({ advancement }) => {
                       className='fw-semibold'
                       style={{ color: '#92400e', fontSize: '0.9rem' }}
                     >
-                      Fee Agreed:
+                      Total fees to date:
                     </span>
                     <span
                       className='fw-bold'
                       style={{ color: '#d97706', fontSize: '1rem' }}
                     >
                       {formatMoney(
-                        advancement.fee_agreed,
+                        advancement?.loanbook_data?.total_due -
+                          advancement?.loanbook_data?.initial_amount ||
+                          advancement.fee_agreed,
                         advancement.currency_sign
                       )}
                     </span>
@@ -425,14 +428,15 @@ const AdvancementInfo = ({ advancement }) => {
                       className='fw-bold'
                       style={{ color: '#1e40af', fontSize: '1rem' }}
                     >
-                      Current Balance:
+                      Total balance to date:
                     </span>
                     <span
                       className='fw-bold'
                       style={{ color: '#1e40af', fontSize: '1.2rem' }}
                     >
                       {formatMoney(
-                        advancement.current_balance,
+                        advancement?.loanbook_data?.total_due ||
+                          advancement.current_balance,
                         advancement.currency_sign
                       )}
                     </span>
