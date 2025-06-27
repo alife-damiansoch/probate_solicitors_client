@@ -11,9 +11,12 @@ import { useNavigate } from 'react-router-dom';
 import { fetchData } from '../../../GenericFunctions/AxiosGenericFunctions.jsx';
 import DocumentsGrid from './DocumentUploadsParts/DocumentsGrid';
 import DocumentsHeader from './DocumentUploadsParts/DocumentsHeader';
+import { DocumentsWaitingState } from './DocumentUploadsParts/DocumentsWaitingState.jsx';
 import EmptyState from './DocumentUploadsParts/EmptyState';
 import RequiredDocumentsList from './DocumentUploadsParts/RequiredDocumentsList';
 import SigningModal from './DocumentUploadsParts/SigningModal';
+
+// Cutting-edge waiting component
 
 const DocumentsUpload = ({ application, highlitedSectionId }) => {
   const [documents, setDocuments] = useState([]);
@@ -22,7 +25,8 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
   const [showSigningModal, setShowSigningModal] = useState(false);
   const [selectedDocumentForSigning, setSelectedDocumentForSigning] =
     useState(null);
-  const [activeTab, setActiveTab] = useState('uploaded'); // 'uploaded' or 'required'
+  const [activeTab, setActiveTab] = useState('uploaded');
+  const [isLoading, setIsLoading] = useState(true);
 
   let tokenObj = Cookies.get('auth_token');
   let token = null;
@@ -43,6 +47,7 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
         setDocuments(response.data);
       } catch (error) {
         console.error('Error fetching documents:', error);
+        setDocuments([]);
       }
     }
   };
@@ -57,6 +62,7 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
         setRequirements(response.data);
       } catch (error) {
         console.error('Error fetching requirements:', error);
+        setRequirements([]);
       }
     }
   };
@@ -71,14 +77,26 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
         setRequirementStatus(response.data);
       } catch (error) {
         console.error('Error fetching requirement status:', error);
+        setRequirementStatus(null);
       }
     }
   };
 
   useEffect(() => {
-    fetchDocuments();
-    fetchRequirements();
-    fetchRequirementStatus();
+    const fetchAllData = async () => {
+      setIsLoading(true);
+      await Promise.all([
+        fetchDocuments(),
+        fetchRequirements(),
+        fetchRequirementStatus(),
+      ]);
+      // Add a small delay to show the loading state
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    };
+
+    fetchAllData();
   }, [application.id, token]);
 
   const handleSignDocument = (doc) => {
@@ -101,6 +119,10 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
     fetchRequirements();
     fetchRequirementStatus();
   };
+
+  // Check if we should show the waiting state
+  const shouldShowWaitingState =
+    isLoading || (documents.length === 0 && requirements.length === 0);
 
   // Calculate stats from both uploaded documents and requirements
   const signatureRequiredDocs = documents.filter(
@@ -129,7 +151,7 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
     requirements: [
       {
         label: 'Requirements Fulfilled',
-        value: uploadedRequirements, // Only count documents that fulfill requirements
+        value: uploadedRequirements,
         icon: FaCheckCircle,
       },
       {
@@ -156,6 +178,23 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
       },
     ],
   };
+
+  console.log('APPLICATION IN DOCS: ', application);
+  console.log('Requirements IN DOCS: ', requirements);
+
+  // Show waiting state if both documents and requirements are empty or still loading
+  if (shouldShowWaitingState) {
+    return (
+      <div
+        className={`border-0 my-4 ${
+          highlitedSectionId === 'Uploaded Documents' && 'highlited_section'
+        }`}
+        id='Uploaded Documents'
+      >
+        <DocumentsWaitingState application={application} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -405,7 +444,6 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
           {/* Action Buttons */}
           <div className='mt-4 pt-4' style={{ borderTop: '1px solid #e2e8f0' }}>
             <div className='d-flex flex-wrap gap-3 justify-content-between align-items-center'>
-              {/* Action Buttons */}
               <div className='d-flex gap-3'>
                 <button
                   className='btn px-4 py-2 fw-semibold'

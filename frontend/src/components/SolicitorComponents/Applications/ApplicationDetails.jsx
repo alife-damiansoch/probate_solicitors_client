@@ -133,6 +133,7 @@ const ApplicationDetails = () => {
         setHighlightedSectionId={setHighlightedSectionId}
         estates={estates}
         advancement={advancement}
+        refresh={refresh}
       />
 
       {/* Navigation */}
