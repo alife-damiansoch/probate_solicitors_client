@@ -18,7 +18,12 @@ import SigningModal from './DocumentUploadsParts/SigningModal';
 
 // Cutting-edge waiting component
 
-const DocumentsUpload = ({ application, highlitedSectionId }) => {
+const DocumentsUpload = ({
+  application,
+  highlitedSectionId,
+  refresh,
+  setRefresh,
+}) => {
   const [documents, setDocuments] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [requirementStatus, setRequirementStatus] = useState(null);
@@ -97,7 +102,7 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
     };
 
     fetchAllData();
-  }, [application.id, token]);
+  }, [application.id, token, refresh]);
 
   const handleSignDocument = (doc) => {
     setSelectedDocumentForSigning(doc);
@@ -108,16 +113,18 @@ const DocumentsUpload = ({ application, highlitedSectionId }) => {
     setShowSigningModal(false);
     setSelectedDocumentForSigning(null);
     // Refresh all data
-    fetchDocuments();
-    fetchRequirements();
-    fetchRequirementStatus();
+    // fetchDocuments();
+    // fetchRequirements();
+    // fetchRequirementStatus();
+    setRefresh(!refresh);
   };
 
   const handleDocumentUploaded = () => {
     // Refresh all data when a document is uploaded
-    fetchDocuments();
-    fetchRequirements();
-    fetchRequirementStatus();
+    // fetchDocuments();
+    // fetchRequirements();
+    // fetchRequirementStatus();
+    setRefresh(!refresh);
   };
 
   // Check if we should show the waiting state

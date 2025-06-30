@@ -812,6 +812,8 @@ const RequiredDetailsPart = ({
       <DocumentsUpload
         application={application}
         highlitedSectionId={highlitedSectionId}
+        refresh={refresh}
+        setRefresh={setRefresh}
       />
     </>
   );
