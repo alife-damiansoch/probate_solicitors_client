@@ -320,8 +320,9 @@ const AdvancementInfo = ({ advancement }) => {
                       style={{ color: '#374151', fontSize: '1rem' }}
                     >
                       {formatMoney(
-                        advancement?.loanbook_data?.initial_amount ||
-                          advancement.amount_agreed,
+                        advancement?.loanbook_data
+                          ? advancement.loanbook_data.initial_amount
+                          : advancement.amount_agreed,
                         advancement.currency_sign
                       )}
                     </span>
@@ -348,10 +349,11 @@ const AdvancementInfo = ({ advancement }) => {
                       style={{ color: '#d97706', fontSize: '1rem' }}
                     >
                       {formatMoney(
-                        advancement?.amount_paid +
-                          advancement?.loanbook_data?.total_due -
-                          advancement?.loanbook_data?.initial_amount ||
-                          advancement.fee_agreed,
+                        advancement?.loanbook_data
+                          ? advancement.amount_paid +
+                              advancement.loanbook_data.total_due -
+                              advancement.loanbook_data.initial_amount
+                          : advancement.fee_agreed,
                         advancement.currency_sign
                       )}
                     </span>
@@ -436,8 +438,9 @@ const AdvancementInfo = ({ advancement }) => {
                       style={{ color: '#1e40af', fontSize: '1.2rem' }}
                     >
                       {formatMoney(
-                        advancement?.loanbook_data?.total_due ||
-                          advancement.current_balance,
+                        advancement?.loanbook_data
+                          ? advancement.loanbook_data.total_due
+                          : advancement.current_balance,
                         advancement.currency_sign
                       )}
                     </span>
