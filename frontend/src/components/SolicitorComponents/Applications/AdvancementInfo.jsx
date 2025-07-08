@@ -1,3 +1,4 @@
+import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import {
   formatDate,
   formatMoney,
@@ -8,7 +9,7 @@ const AdvancementInfo = ({ advancement }) => {
 
   // Get styling based on settlement status
   const getStatusStyles = () => {
-    if (advancement.is_settled) {
+    if (advancement?.is_settled) {
       return {
         background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
         borderColor: '#22c55e',
@@ -25,10 +26,12 @@ const AdvancementInfo = ({ advancement }) => {
   };
 
   const statusStyles = getStatusStyles();
-
+  if (!advancement) {
+    return <LoadingComponent />;
+  }
   return (
     <div
-      key={advancement.id}
+      key={advancement?.id}
       className='mb-4'
       style={{
         background: statusStyles.background,
@@ -89,7 +92,7 @@ const AdvancementInfo = ({ advancement }) => {
                 display: 'inline-block',
               }}
             >
-              ID: {advancement.id}
+              ID: {advancement?.id}
             </span>
           </div>
         </div>
@@ -102,7 +105,7 @@ const AdvancementInfo = ({ advancement }) => {
           <span
             className={`px-4 py-2 rounded-pill fw-bold d-flex align-items-center gap-2`}
             style={{
-              background: advancement.is_settled
+              background: advancement?.is_settled
                 ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
                 : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
               color: '#ffffff',
@@ -111,7 +114,7 @@ const AdvancementInfo = ({ advancement }) => {
             }}
           >
             <svg width='16' height='16' fill='currentColor' viewBox='0 0 20 20'>
-              {advancement.is_settled ? (
+              {advancement?.is_settled ? (
                 <path
                   fillRule='evenodd'
                   d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
@@ -125,7 +128,7 @@ const AdvancementInfo = ({ advancement }) => {
                 />
               )}
             </svg>
-            Settlement: {advancement.is_settled ? 'Complete' : 'Pending'}
+            Settlement: {advancement?.is_settled ? 'Complete' : 'Pending'}
           </span>
 
           <span
@@ -144,7 +147,7 @@ const AdvancementInfo = ({ advancement }) => {
                 clipRule='evenodd'
               />
             </svg>
-            Settled: {advancement.settled_date || 'N/A'}
+            Settled: {advancement?.settled_date || 'N/A'}
           </span>
         </div>
 
@@ -203,7 +206,7 @@ const AdvancementInfo = ({ advancement }) => {
                       className='fw-bold'
                       style={{ color: '#1e40af', fontSize: '1rem' }}
                     >
-                      {formatDate(advancement.approved_date)}
+                      {formatDate(advancement?.approved_date)}
                     </span>
                   </div>
                 </div>
@@ -226,7 +229,7 @@ const AdvancementInfo = ({ advancement }) => {
                       className='fw-bold'
                       style={{ color: '#374151', fontSize: '1rem' }}
                     >
-                      {advancement.term_agreed} months
+                      {advancement?.term_agreed} months
                     </span>
                   </div>
                 </div>
@@ -245,7 +248,7 @@ const AdvancementInfo = ({ advancement }) => {
                     >
                       Maturity Date:
                     </span>
-                    {!advancement.is_paid_out ? (
+                    {!advancement?.is_paid_out ? (
                       <span
                         className='fw-bold'
                         style={{ color: 'red', fontSize: '1rem' }}
@@ -321,9 +324,9 @@ const AdvancementInfo = ({ advancement }) => {
                     >
                       {formatMoney(
                         advancement?.loanbook_data
-                          ? advancement.loanbook_data.initial_amount
-                          : advancement.amount_agreed,
-                        advancement.currency_sign
+                          ? advancement?.loanbook_data.initial_amount
+                          : advancement?.amount_agreed,
+                        advancement?.currency_sign
                       )}
                     </span>
                   </div>
@@ -350,17 +353,17 @@ const AdvancementInfo = ({ advancement }) => {
                     >
                       {formatMoney(
                         advancement?.loanbook_data
-                          ? advancement.amount_paid +
-                              advancement.loanbook_data.total_due -
-                              advancement.loanbook_data.initial_amount
-                          : advancement.fee_agreed,
-                        advancement.currency_sign
+                          ? advancement?.amount_paid +
+                              advancement?.loanbook_data.total_due -
+                              advancement?.loanbook_data.initial_amount
+                          : advancement?.fee_agreed,
+                        advancement?.currency_sign
                       )}
                     </span>
                   </div>
                 </div>
 
-                {advancement.extension_fees_total > 0 && (
+                {advancement?.extension_fees_total > 0 && (
                   <div
                     className='p-3 rounded-3'
                     style={{
@@ -389,7 +392,7 @@ const AdvancementInfo = ({ advancement }) => {
                   </div>
                 )}
 
-                {advancement.amount_paid > 0 && (
+                {advancement?.amount_paid > 0 && (
                   <div
                     className='p-3 rounded-3'
                     style={{
@@ -439,9 +442,9 @@ const AdvancementInfo = ({ advancement }) => {
                     >
                       {formatMoney(
                         advancement?.loanbook_data
-                          ? advancement.loanbook_data.total_due
-                          : advancement.current_balance,
-                        advancement.currency_sign
+                          ? advancement?.loanbook_data.total_due
+                          : advancement?.current_balance,
+                        advancement?.currency_sign
                       )}
                     </span>
                   </div>

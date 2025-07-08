@@ -207,9 +207,9 @@ const DocumentsUpload = ({
     <>
       <div
         className={`border-0 my-4 ${
-          highlitedSectionId === 'Uploaded Documents' && 'highlited_section'
+          highlitedSectionId === 'documents' && 'highlited_section'
         }`}
-        id='Uploaded Documents'
+        id='documents'
         style={{
           borderRadius: '20px',
           boxShadow:

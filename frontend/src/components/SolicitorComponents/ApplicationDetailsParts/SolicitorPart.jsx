@@ -104,9 +104,9 @@ const SolicitorPart = ({
   return (
     <div
       className={`border-0 my-4 ${
-        highlitedSectionId === 'Solicitor Part' && 'highlited_section'
+        highlitedSectionId === 'solicitor' && 'highlited_section'
       }`}
-      id='Solicitor Part'
+      id='solicitor'
       style={{
         borderRadius: '16px',
         boxShadow:

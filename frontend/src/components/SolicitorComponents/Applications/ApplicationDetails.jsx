@@ -8,7 +8,6 @@ import Cookies from 'js-cookie';
 import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import { fetchData } from '../../GenericFunctions/AxiosGenericFunctions';
 import RequiredDetailsPart from '../ApplicationDetailsParts/RequiredDetailsPart';
-import AdvancementInfo from './AdvancementInfo';
 
 // Import the new modern progress component
 import ModernApplicationProgress from './ApplicationDetailStages/ApplicationDetailStages';
@@ -65,6 +64,7 @@ const ApplicationDetails = () => {
 
   useEffect(() => {
     if (highlitedSectionId !== '') {
+      console.log('H_S_id: ', highlitedSectionId);
       // Scroll to the section with the given ID
       const targetElement = document.getElementById(highlitedSectionId);
       if (targetElement) {
@@ -116,7 +116,11 @@ const ApplicationDetails = () => {
     return (
       <div
         className='min-vh-100 d-flex justify-content-center align-items-center'
-        style={{ backgroundColor: '#f8fafc' }}
+        style={{
+          backgroundColor: '#f8fafc',
+          marginLeft: '320px', // Account for sidebar
+          paddingLeft: '20px',
+        }}
       >
         <LoadingComponent />
       </div>
@@ -126,8 +130,16 @@ const ApplicationDetails = () => {
   console.log('Application Details:', application);
 
   return (
-    <div className='min-vh-100' style={{ backgroundColor: '#f8fafc' }}>
-      {/* Modern Progress Header - Always visible at top */}
+    <div
+      className='min-vh-100'
+      style={{
+        backgroundColor: '#f8fafc',
+        marginLeft: '320px', // Account for fixed sidebar
+        minHeight: '100vh',
+        position: 'relative',
+      }}
+    >
+      {/* Fixed Progress Sidebar - Always visible at left */}
       <ModernApplicationProgress
         application={application}
         setHighlightedSectionId={setHighlightedSectionId}
@@ -136,16 +148,16 @@ const ApplicationDetails = () => {
         refresh={refresh}
       />
 
-      {/* Navigation */}
+      {/* Navigation - Now properly positioned */}
       <div className='container-fluid px-4 pt-4'>
         <BackToApplicationsIcon backUrl={-1} />
       </div>
 
-      {/* Main Content Container - Full Width Now */}
-      <div className='container-fluid px-4 pb-5'>
+      {/* Main Content Container - Properly spaced from sidebar */}
+      <div className='container-fluid  pb-5'>
         <div className='row justify-content-center'>
           {/* Single Full-Width Content Panel */}
-          <div className='col-12 col-xl-10'>
+          <div className='col-12 col-xl-12'>
             <div
               className='card border-0 overflow-hidden'
               style={{
@@ -155,134 +167,6 @@ const ApplicationDetails = () => {
                 backgroundColor: '#f8fafc',
               }}
             >
-              {/* Modern Header with Gradient */}
-              <div
-                className='card-header border-0 text-white position-relative'
-                style={{
-                  background:
-                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  borderRadius: '16px 16px 0 0',
-                  padding: '2rem',
-                }}
-              >
-                {/* Subtle pattern overlay */}
-                <div
-                  className='position-absolute top-0 start-0 w-100 h-100'
-                  style={{
-                    background:
-                      'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-                    borderRadius: '16px 16px 0 0',
-                  }}
-                ></div>
-
-                <div className='row align-items-center position-relative'>
-                  <div className='col-md-10'>
-                    <div className='d-flex align-items-center mb-2'>
-                      <div
-                        className='rounded-circle d-flex align-items-center justify-content-center me-3'
-                        style={{
-                          width: '48px',
-                          height: '48px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                          backdropFilter: 'blur(10px)',
-                        }}
-                      >
-                        <i className='fas fa-file-alt text-white'></i>
-                      </div>
-                      <div>
-                        <h2
-                          className='mb-0 fw-bold'
-                          style={{ fontSize: '1.75rem' }}
-                        >
-                          Application #{application.id}
-                        </h2>
-                        <p
-                          className='mb-0 opacity-75'
-                          style={{ fontSize: '0.95rem' }}
-                        >
-                          Detailed overview and management
-                        </p>
-                      </div>
-                    </div>
-                    {advancement && (
-                      <div
-                        className='badge text-white px-3 py-2 mt-2'
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                          backdropFilter: 'blur(10px)',
-                          fontSize: '0.85rem',
-                        }}
-                      >
-                        <i className='fas fa-link me-2'></i>
-                        Advancement ID: {advancement.id}
-                      </div>
-                    )}
-                  </div>
-                  <div className='col-md-2 text-end'>
-                    <button
-                      className='btn btn-danger shadow-sm px-4 py-2 fw-medium'
-                      style={{
-                        borderRadius: '10px',
-                        border: 'none',
-                        backgroundColor: '#ef4444',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onClick={() => setDeleteAppId(id)}
-                      disabled={application.approved || application.is_rejected}
-                      onMouseOver={(e) => {
-                        if (!e.target.disabled) {
-                          e.target.style.backgroundColor = '#dc2626';
-                          e.target.style.transform = 'translateY(-1px)';
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        e.target.style.backgroundColor = '#ef4444';
-                        e.target.style.transform = 'translateY(0)';
-                      }}
-                    >
-                      <i className='fas fa-trash-alt me-2'></i>
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Advancement Section */}
-              {advancement && (
-                <div className='border-bottom'>
-                  <div
-                    className='card-header border-0'
-                    style={{
-                      backgroundColor: '#f1f5f9',
-                      borderBottom: '1px solid #e2e8f0',
-                    }}
-                  >
-                    <div className='d-flex align-items-center'>
-                      <div
-                        className='rounded-circle d-flex align-items-center justify-content-center me-3'
-                        style={{
-                          width: '40px',
-                          height: '40px',
-                          backgroundColor: '#3b82f6',
-                          color: 'white',
-                        }}
-                      >
-                        <i
-                          className='fas fa-chart-line'
-                          style={{ fontSize: '1rem' }}
-                        ></i>
-                      </div>
-                      <h3 className='mb-0 fw-semibold text-slate-700'>
-                        Advancement Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div className='card-body' style={{ padding: '2rem' }}>
-                    <AdvancementInfo advancement={advancement} />
-                  </div>
-                </div>
-              )}
-
               {/* Status Alert */}
               {(application.is_rejected ||
                 application.approved ||
@@ -419,7 +303,7 @@ const ApplicationDetails = () => {
                           </div>
                         )}
 
-                        {/* Status Alert */}
+                        {/* Status Alert
                         {(application.approved || application.is_rejected) && (
                           <div
                             className='alert border-0 text-center mb-4'
@@ -439,7 +323,7 @@ const ApplicationDetails = () => {
                               </span>
                             </div>
                           </div>
-                        )}
+                        )} */}
 
                         <RequiredDetailsPart
                           application={application}
@@ -450,6 +334,7 @@ const ApplicationDetails = () => {
                           highlitedSectionId={highlitedSectionId}
                           setHighlightedSectionId={setHighlightedSectionId}
                           isApplicationLocked={isApplicationLocked}
+                          advancement={advancement}
                         />
                       </div>
                     </div>
