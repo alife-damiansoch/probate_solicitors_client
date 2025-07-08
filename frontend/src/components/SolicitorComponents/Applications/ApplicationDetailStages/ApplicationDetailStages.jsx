@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { fetchData } from '../../../GenericFunctions/AxiosGenericFunctions';
+
 import StagesFooter from './ApplicationDetailStagesParts/StagesFooter';
 import StagesHeader from './ApplicationDetailStagesParts/StagesHeader';
 import { getTimelineSteps } from './ApplicationDetailStagesParts/StagesLogic';
@@ -15,6 +16,7 @@ const ApplicationDetailStages = ({
   setAllStagesCompleted,
   setHighlightedSectionId,
   advancement, // Add advancement prop
+  highlitedSectionId,
 }) => {
   const [hoveredStep, setHoveredStep] = useState(null);
   const [estates, setEstates] = useState([]);
@@ -184,9 +186,9 @@ const ApplicationDetailStages = ({
       style={{
         position: 'fixed',
         left: '0',
-        top: '0',
-        width: '340px',
-        height: '100vh',
+        top: '150px',
+        width: '330px',
+        height: 'calc(100vh-150px)',
         background:
           'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
         borderRight: '1px solid rgba(59, 130, 246, 0.3)',
@@ -270,7 +272,7 @@ const ApplicationDetailStages = ({
 
       <div
         className='scroll-container'
-        style={{ height: '100%', overflowY: 'auto' }}
+        style={{ height: 'calc(100%-150px)', overflowY: 'auto' }}
       >
         <StagesHeader
           application={application}
@@ -286,6 +288,7 @@ const ApplicationDetailStages = ({
           hoveredStep={hoveredStep}
           setHoveredStep={setHoveredStep}
           setHighlightedSectionId={setHighlightedSectionId}
+          highlitedSectionId={highlitedSectionId}
         />
 
         <StagesFooter

@@ -7,6 +7,7 @@ const StagesTimeline = ({
   hoveredStep,
   setHoveredStep,
   setHighlightedSectionId,
+  highlitedSectionId,
 }) => {
   return (
     <div style={{ padding: '24px 18px' }}>

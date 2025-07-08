@@ -1,0 +1,12 @@
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0) scale(1);}
+  50% { transform: translateY(-8px) scale(1.045);}
+}
+@keyframes statusPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.18); opacity: 0.82; }
+}
+@keyframes progressShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

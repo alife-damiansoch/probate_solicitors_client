@@ -1,10 +1,7 @@
 // Modified RequiredDetailsPart.js - Stage-Connected Component Display
 import { useEffect, useState } from 'react';
-import { FaEdit, FaSave } from 'react-icons/fa';
 import { patchData } from '../../GenericFunctions/AxiosGenericFunctions';
-import renderErrors, {
-  formatMoney,
-} from '../../GenericFunctions/HelperGenericFunctions';
+import renderErrors from '../../GenericFunctions/HelperGenericFunctions';
 
 import ApplicantsPart from './ApplicantsPart';
 import EstatesPart from './EstatesPart';
@@ -14,6 +11,7 @@ import Cookies from 'js-cookie';
 import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import AdvancementInfo from '../Applications/AdvancementInfo.jsx';
 import DocumentsUpload from '../Applications/UploadingFileComponents/DocumentsUpload.jsx';
+import BasicDetailsSection from './BasicDetailsSection.jsx';
 
 const RequiredDetailsPart = ({
   application,
@@ -275,6 +273,375 @@ const RequiredDetailsPart = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerHandleChange]);
 
+  const FinalReviewComponent = () => {
+    const isApproved = application.approved;
+    const isRejected = application.is_rejected;
+    const loan = application.loan || {};
+    const needsCommittee = !!loan.needs_committee_approval;
+    const isCommitteeApproved = loan.is_committee_approved;
+    const isPaidOut = loan.is_paid_out;
+    const isSettled = loan.is_settled;
+
+    // Logic for icon, color, main status, and description
+    let statusColor = '#64748b';
+    let icon = 'fa-search';
+    let statusText = 'Under Final Review';
+    let detailText =
+      'Your application is under final review by our processing team. You will be notified of the decision soon.';
+
+    if (isRejected) {
+      statusColor = '#dc2626';
+      icon = 'fa-times-circle';
+      statusText = 'Application Rejected';
+      detailText =
+        'Your application has been rejected. Contact your agent for details and next steps.';
+    } else if (isApproved) {
+      // Order: committee → payout → settlement
+      if (needsCommittee) {
+        if (isCommitteeApproved === null || isCommitteeApproved === undefined) {
+          statusColor = '#f59e0b';
+          icon = 'fa-users';
+          statusText = 'Awaiting Committee Approval';
+          detailText =
+            'Your application has been approved and is now pending committee review. You will be notified once a decision has been made.';
+        } else if (isCommitteeApproved === false) {
+          statusColor = '#dc2626';
+          icon = 'fa-times-circle';
+          statusText = 'Committee Rejected';
+          detailText =
+            'Your application was not approved by the committee. Please contact your agent for further details.';
+        } else if (isCommitteeApproved === true) {
+          if (!isPaidOut) {
+            statusColor = '#2563eb';
+            icon = 'fa-credit-card';
+            statusText = 'Awaiting Payment';
+            detailText =
+              'Your application has passed all approvals and is now awaiting payment. Your assigned agent will contact you with further details.';
+          } else if (!isSettled) {
+            statusColor = '#6366f1';
+            icon = 'fa-file-alt';
+            statusText = 'Awaiting Settlement';
+            detailText =
+              'Your application has been fully processed and payment has been issued. The advancement process is now complete. Once the probate process is finalised, please notify your agent so that settlement arrangements can be made. If you require any documentation or further assistance in the meantime, please contact your agent.';
+          } else {
+            statusColor = '#059669';
+            icon = 'fa-check-circle';
+            statusText = 'Advancement Process Completed';
+            detailText =
+              'Your advancement has been fully settled and the process is now complete. If you require any documentation or further support, please contact your agent.';
+          }
+        }
+      } else {
+        if (!isPaidOut) {
+          statusColor = '#2563eb';
+          icon = 'fa-credit-card';
+          statusText = 'Awaiting Payment';
+          detailText =
+            'Your application has been approved and is now awaiting payment. Your assigned agent will contact you with further details.';
+        } else if (!isSettled) {
+          statusColor = '#6366f1';
+          icon = 'fa-file-alt';
+          statusText = 'Awaiting Settlement';
+          detailText =
+            'Your application has been fully processed and payment has been issued. The advancement process is now complete. Once the probate process is finalised, please notify your agent so that settlement arrangements can be made. If you require any documentation or further assistance in the meantime, please contact your agent.';
+        } else {
+          statusColor = '#059669';
+          icon = 'fa-check-circle';
+          statusText = 'Advancement Process Completed';
+          detailText =
+            'Your advancement has been fully settled and the process is now complete. If you require any documentation or further support, please contact your agent.';
+        }
+      }
+    }
+
+    // --- UI below is unchanged except for using above variables ---
+
+    return (
+      <div
+        className='modern-main-card mb-4 position-relative overflow-hidden'
+        style={{
+          background: `
+          linear-gradient(135deg, rgba(255,255,255,0.10), rgba(248,250,252,0.05)),
+          radial-gradient(circle at 30% 10%, rgba(255,255,255,0.45), transparent 50%),
+          radial-gradient(circle at 70% 90%, ${statusColor}10, transparent 50%)
+        `,
+          border: '1px solid rgba(255,255,255,0.28)',
+          borderRadius: '24px',
+          boxShadow: `
+          0 20px 40px rgba(0,0,0,0.08),
+          0 8px 16px rgba(0,0,0,0.06),
+          inset 0 1px 0 rgba(255,255,255,0.3)
+        `,
+          backdropFilter: 'blur(20px)',
+          transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
+          maxWidth: '800px',
+          margin: '0 auto',
+        }}
+      >
+        {/* Animated Background */}
+        <div
+          className='position-absolute w-100 h-100'
+          style={{
+            background: `
+            radial-gradient(circle at 20% 20%, ${statusColor}12 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, ${statusColor}09 0%, transparent 50%)
+          `,
+            opacity: 0.2,
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        />
+
+        {/* Header */}
+        <div
+          className='px-3 py-2 d-flex align-items-center gap-2 position-relative'
+          style={{
+            background: `
+            linear-gradient(135deg, ${statusColor}, ${statusColor}),
+            linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))
+          `,
+            color: '#fff',
+            borderTopLeftRadius: '22px',
+            borderTopRightRadius: '22px',
+            border: '1px solid rgba(255,255,255,0.13)',
+            borderBottom: '1px solid rgba(255,255,255,0.18)',
+          }}
+        >
+          <div
+            className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+            style={{
+              width: '36px',
+              height: '36px',
+              background: 'rgba(255,255,255,0.13)',
+              border: '2px solid rgba(255,255,255,0.15)',
+              fontSize: '1.2rem',
+            }}
+          >
+            <i className={`fas ${icon}`} style={{ fontSize: '1.15rem' }} />
+            <div
+              className='position-absolute rounded-circle'
+              style={{
+                top: '-6px',
+                left: '-6px',
+                right: '-6px',
+                bottom: '-6px',
+                background: 'rgba(255,255,255,0.09)',
+                filter: 'blur(5px)',
+                zIndex: -1,
+              }}
+            />
+          </div>
+
+          <div className='flex-grow-1'>
+            <h5
+              className='fw-bold mb-1 text-white'
+              style={{ fontSize: '1.07rem', letterSpacing: '-0.01em' }}
+            >
+              Final Review &amp; Approval
+            </h5>
+            <div
+              className='px-2 py-1 rounded-pill fw-semibold text-white'
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                fontSize: '0.8rem',
+                border: '1px solid rgba(255,255,255,0.13)',
+                display: 'inline-block',
+                backdropFilter: 'blur(7px)',
+                letterSpacing: '0.01em',
+              }}
+            >
+              Final Stage
+            </div>
+          </div>
+
+          {/* Status Badge */}
+          <span
+            className='px-3 py-2 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+            style={{
+              background: `linear-gradient(135deg,${statusColor},${statusColor})`,
+              fontSize: '0.85rem',
+              border: '1px solid rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(9px)',
+              boxShadow: '0 6px 12px rgba(0,0,0,0.09)',
+              letterSpacing: '0.01em',
+              animation:
+                !isRejected && !isApproved
+                  ? 'statusPulse 2.3s ease-in-out infinite'
+                  : 'none',
+            }}
+          >
+            <i className={`fas ${icon}`}></i>
+            {statusText}
+          </span>
+        </div>
+
+        {/* Content Area */}
+        <div className='px-3 pb-3'>
+          {/* Main Status Card */}
+          <div
+            className='text-center p-3 mb-3 position-relative'
+            style={{
+              background: 'rgba(255,255,255,0.78)',
+              borderRadius: '14px',
+              border: `1px solid ${statusColor}30`,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+            }}
+          >
+            {/* Status glow */}
+            <div
+              className='position-absolute'
+              style={{
+                top: '-2px',
+                left: '-2px',
+                right: '-2px',
+                bottom: '-2px',
+                background: `linear-gradient(135deg,${statusColor}15,${statusColor}06)`,
+                borderRadius: '15px',
+                filter: 'blur(4px)',
+                zIndex: -1,
+                animation: 'selectionGlow 3s ease-in-out infinite alternate',
+              }}
+            />
+            {/* Large Status Icon */}
+            <div
+              className='mx-auto mb-3'
+              style={{
+                width: '54px',
+                height: '54px',
+                background: `linear-gradient(135deg,${statusColor},${statusColor})`,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: `0 6px 14px ${statusColor}33`,
+                animation:
+                  !isRejected && !isApproved
+                    ? 'statusPulse 4s ease-in-out infinite'
+                    : 'iconFloat 3s ease-in-out infinite',
+                position: 'relative',
+              }}
+            >
+              <div
+                className='position-absolute'
+                style={{
+                  top: '-3px',
+                  left: '-3px',
+                  right: '-3px',
+                  bottom: '-3px',
+                  background: `radial-gradient(circle,${statusColor}16,transparent 70%)`,
+                  borderRadius: '50%',
+                  filter: 'blur(7px)',
+                  zIndex: -1,
+                }}
+              />
+              <i
+                className={`fas ${icon}`}
+                style={{ color: 'white', fontSize: '1.6rem' }}
+              ></i>
+            </div>
+            <h2
+              className='fw-bold mb-2'
+              style={{
+                fontSize: '1.27rem',
+                color: statusColor,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              {statusText}
+            </h2>
+            <p
+              className='mb-0'
+              style={{
+                fontSize: '1.02rem',
+                color: '#64748b',
+                fontWeight: 500,
+                lineHeight: '1.5',
+                maxWidth: '420px',
+                margin: '0 auto',
+              }}
+            >
+              {detailText}
+            </p>
+          </div>
+          {/* Show action for rejected or committee rejected */}
+          {(isRejected ||
+            (isApproved &&
+              needsCommittee &&
+              isCommitteeApproved === false)) && (
+            <div
+              className='p-3 position-relative'
+              style={{
+                background: 'rgba(255,255,255,0.82)',
+                borderRadius: '13px',
+                border: `1px solid ${statusColor}20`,
+                boxShadow: `0 4px 12px ${statusColor}06`,
+              }}
+            >
+              <div className='d-flex align-items-center gap-2 mb-2'>
+                <div
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '9px',
+                    background: `linear-gradient(135deg,${statusColor},${statusColor})`,
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: `0 4px 10px ${statusColor}15`,
+                  }}
+                >
+                  <i className='fas fa-user-tie' style={{ fontSize: '1rem' }} />
+                </div>
+                <h3
+                  className='fw-bold mb-0'
+                  style={{
+                    color: '#92400e',
+                    fontSize: '1rem',
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  What to do next
+                </h3>
+              </div>
+              <div>
+                <p
+                  className='mb-2'
+                  style={{
+                    color: '#78350f',
+                    fontSize: '0.98rem',
+                    lineHeight: '1.5',
+                    fontWeight: 500,
+                  }}
+                >
+                  Please contact your assigned legal representative for further
+                  information and assistance with your application.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg);}
+          50% { transform: translateY(-7px) rotate(2deg);}
+        }
+        @keyframes statusPulse {
+          0%,100% {opacity: 1; transform: scale(1);}
+          50% {opacity: 0.82; transform: scale(1.045);}
+        }
+        @keyframes selectionGlow {
+          0% {opacity: 0.2;}
+          100% {opacity: 0.5;}
+        }
+        @keyframes iconFloat {
+          0%,100% {transform: translateY(0) rotate(0deg) scale(1);}
+          50% {transform: translateY(-5px) rotate(3deg) scale(1.012);}
+        }
+      `}</style>
+      </div>
+    );
+  };
+
   // Information Verification Component
   const InformationVerificationComponent = () => {
     const isVerified =
@@ -283,539 +650,371 @@ const RequiredDetailsPart = ({
     const solicitorName = application.solicitor?.name || 'Legal Representative';
 
     return (
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div
+        className='modern-main-card mb-4 position-relative overflow-hidden'
+        style={{
+          background: `
+          linear-gradient(135deg, rgba(255,255,255,0.1), rgba(248,250,252,0.05)),
+          radial-gradient(circle at 30% 10%, rgba(255,255,255,0.6), transparent 50%),
+          radial-gradient(circle at 70% 90%, ${
+            isVerified ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'
+          }, transparent 50%)
+        `,
+          border: '1px solid rgba(255,255,255,0.3)',
+          borderRadius: '24px',
+          boxShadow: `
+          0 20px 40px rgba(0,0,0,0.08),
+          0 8px 16px rgba(0,0,0,0.06),
+          inset 0 1px 0 rgba(255,255,255,0.4)
+        `,
+          backdropFilter: 'blur(20px)',
+          transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
+          transform: 'translateZ(0)',
+          maxWidth: '800px',
+          margin: '0 auto',
+        }}
+      >
+        {/* Animated Background */}
         <div
+          className='position-absolute w-100 h-100'
           style={{
-            textAlign: 'center',
-            marginBottom: '3rem',
-            padding: '2rem',
-            background: isVerified
-              ? 'linear-gradient(135deg, #10b98115, #059669108)'
-              : 'linear-gradient(135deg, #f59e0b15, #d9770608)',
-            borderRadius: '20px',
-            border: isVerified ? '2px solid #10b98130' : '2px solid #f59e0b30',
+            background: `
+            radial-gradient(circle at 20% 20%, ${
+              isVerified ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)'
+            } 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, ${
+              isVerified ? 'rgba(5,150,105,0.06)' : 'rgba(220,38,38,0.06)'
+            } 0%, transparent 50%)
+          `,
+            opacity: 0.3,
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        />
+
+        {/* Header */}
+        <div
+          className='px-3 py-2 d-flex align-items-center gap-2 position-relative'
+          style={{
+            background: `
+            linear-gradient(135deg, ${
+              isVerified ? '#10b981,#059669' : '#ef4444,#dc2626'
+            }),
+            linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.05))
+          `,
+            color: '#fff',
+            borderTopLeftRadius: '22px',
+            borderTopRightRadius: '22px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderBottom: '1px solid rgba(255,255,255,0.2)',
+            minHeight: 0, // Remove excess height
           }}
         >
           <div
+            className='d-flex align-items-center justify-content-center rounded-circle position-relative'
             style={{
-              width: '80px',
-              height: '80px',
-              margin: '0 auto 1.5rem',
-              background: isVerified
-                ? 'linear-gradient(135deg, #10b981, #059669)'
-                : 'linear-gradient(135deg, #f59e0b, #d97706)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: isVerified
-                ? '0 10px 40px rgba(16, 185, 129, 0.4)'
-                : '0 10px 40px rgba(245, 158, 11, 0.4)',
-              animation: 'statusPulse 3s ease-in-out infinite',
+              width: '36px',
+              height: '36px',
+              background: 'rgba(255,255,255,0.12)',
+              border: '2px solid rgba(255,255,255,0.18)',
+              backdropFilter: 'blur(10px)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              fontSize: '1.2rem',
             }}
           >
-            {isVerified ? (
-              <i
-                className='fas fa-shield-check'
-                style={{ color: 'white', fontSize: '2rem' }}
-              ></i>
-            ) : (
-              <i
-                className='fas fa-clock'
-                style={{ color: 'white', fontSize: '2rem' }}
-              ></i>
-            )}
+            <i
+              className={`fas ${
+                isVerified ? 'fa-shield-check' : 'fa-shield-exclamation'
+              }`}
+              style={{ fontSize: '1.1rem' }}
+            ></i>
+            <div
+              className='position-absolute rounded-circle'
+              style={{
+                top: '-6px',
+                left: '-6px',
+                right: '-6px',
+                bottom: '-6px',
+                background: 'rgba(255,255,255,0.1)',
+                filter: 'blur(5px)',
+                zIndex: -1,
+              }}
+            />
           </div>
 
-          <h2
+          <div className='flex-grow-1'>
+            <h5
+              className='fw-bold mb-1 text-white'
+              style={{ fontSize: '1.07rem', letterSpacing: '-0.01em' }}
+            >
+              Information Verification
+            </h5>
+            <div
+              className='px-2 py-1 rounded-pill fw-semibold text-white'
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                fontSize: '0.8rem',
+                border: '1px solid rgba(255,255,255,0.16)',
+                display: 'inline-block',
+                backdropFilter: 'blur(8px)',
+                letterSpacing: '0.01em',
+              }}
+            >
+              Legal Review Status
+            </div>
+          </div>
+          {/* Status Badge */}
+          <span
+            className='px-3 py-2 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
             style={{
-              margin: '0 0 1rem 0',
-              fontSize: '2rem',
-              fontWeight: '800',
-              color: isVerified ? '#059669' : '#d97706',
+              background: isVerified
+                ? 'linear-gradient(135deg,#22c55e,#16a34a)'
+                : 'linear-gradient(135deg,#f59e0b,#d97706)',
+              fontSize: '0.85rem',
+              border: '1px solid rgba(255,255,255,0.16)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 6px 12px rgba(0,0,0,0.09)',
+              cursor: 'default',
+              letterSpacing: '0.01em',
+              animation: isVerified
+                ? 'none'
+                : 'statusPulse 3s ease-in-out infinite',
             }}
           >
-            {isVerified ? 'Information Verified' : 'Awaiting Verification'}
-          </h2>
-
-          <p
-            style={{
-              margin: 0,
-              fontSize: '1.1rem',
-              color: '#64748b',
-              fontWeight: '500',
-              lineHeight: '1.6',
-            }}
-          >
-            {isVerified
-              ? `All application details have been thoroughly reviewed and verified by ${solicitorName}.`
-              : `Your application details are pending verification by your assigned legal representative.`}
-          </p>
+            <svg width='16' height='16' fill='currentColor' viewBox='0 0 20 20'>
+              {isVerified ? (
+                <path
+                  fillRule='evenodd'
+                  d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                  clipRule='evenodd'
+                />
+              ) : (
+                <path
+                  fillRule='evenodd'
+                  d='M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z'
+                  clipRule='evenodd'
+                />
+              )}
+            </svg>
+            {isVerified ? 'Verified' : 'Pending'}
+          </span>
         </div>
 
-        {!isVerified && (
+        {/* Content Area */}
+        <div className='px-3 pb-3'>
+          {/* Main Status Card */}
           <div
+            className='text-center p-3 mb-3 position-relative'
             style={{
-              background: 'linear-gradient(135deg, #fef3c7, #fde68a)',
-              borderRadius: '16px',
-              padding: '2rem',
-              border: '1px solid #f59e0b40',
-              marginBottom: '2rem',
+              background: 'rgba(255,255,255,0.7)',
+              borderRadius: '14px',
+              border: `1px solid ${
+                isVerified ? 'rgba(16,185,129,0.21)' : 'rgba(245,158,11,0.19)'
+              }`,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
             }}
           >
-            <h3
+            {/* Status glow */}
+            <div
+              className='position-absolute'
               style={{
-                color: '#92400e',
-                marginBottom: '1rem',
-                fontSize: '1.3rem',
-                fontWeight: '700',
+                top: '-2px',
+                left: '-2px',
+                right: '-2px',
+                bottom: '-2px',
+                background: `linear-gradient(135deg, ${
+                  isVerified ? 'rgba(16,185,129,0.13)' : 'rgba(245,158,11,0.15)'
+                }, ${
+                  isVerified ? 'rgba(16,185,129,0.05)' : 'rgba(245,158,11,0.05)'
+                })`,
+                borderRadius: '15px',
+                filter: 'blur(4px)',
+                zIndex: -1,
+                animation: 'selectionGlow 3s ease-in-out infinite alternate',
+              }}
+            />
+            {/* Large Status Icon */}
+            <div
+              className='mx-auto mb-3'
+              style={{
+                width: '54px',
+                height: '54px',
+                background: isVerified
+                  ? 'linear-gradient(135deg,#10b981,#059669)'
+                  : 'linear-gradient(135deg,#f59e0b,#d97706)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: isVerified
+                  ? '0 6px 14px rgba(16,185,129,0.23)'
+                  : '0 6px 14px rgba(245,158,11,0.24)',
+                animation: isVerified
+                  ? 'iconFloat 4s ease-in-out infinite'
+                  : 'statusPulse 3s ease-in-out infinite',
+                position: 'relative',
               }}
             >
-              <i className='fas fa-info-circle me-2'></i>
-              Next Steps
-            </h3>
+              <div
+                className='position-absolute'
+                style={{
+                  top: '-3px',
+                  left: '-3px',
+                  right: '-3px',
+                  bottom: '-3px',
+                  background: `radial-gradient(circle,${
+                    isVerified
+                      ? 'rgba(16,185,129,0.22)'
+                      : 'rgba(245,158,11,0.21)'
+                  },transparent 70%)`,
+                  borderRadius: '50%',
+                  filter: 'blur(7px)',
+                  zIndex: -1,
+                }}
+              />
+              <i
+                className={`fas ${isVerified ? 'fa-shield-check' : 'fa-clock'}`}
+                style={{ color: 'white', fontSize: '1.6rem' }}
+              ></i>
+            </div>
+            <h2
+              className='fw-bold mb-2'
+              style={{
+                fontSize: '1.27rem',
+                color: isVerified ? '#059669' : '#d97706',
+                letterSpacing: '-0.01em',
+              }}
+            >
+              {isVerified ? 'Information Verified' : 'Awaiting Verification'}
+            </h2>
             <p
+              className='mb-0'
               style={{
-                color: '#78350f',
-                fontSize: '1rem',
-                lineHeight: '1.6',
-                marginBottom: '1rem',
+                fontSize: '1.02rem',
+                color: '#64748b',
+                fontWeight: 500,
+                lineHeight: '1.5',
+                maxWidth: '420px',
+                margin: '0 auto',
               }}
             >
-              Your assigned legal representative will contact you to confirm all
-              information provided. To expedite this process, please ensure all
-              required details have been completed accurately.
-            </p>
-            <p
-              style={{
-                color: '#78350f',
-                fontSize: '1rem',
-                lineHeight: '1.6',
-                margin: 0,
-              }}
-            >
-              Once verification is complete, you will be able to proceed to the
-              documentation stage of your application.
+              {isVerified
+                ? `All application details have been thoroughly reviewed and verified by the agent.`
+                : `Your application details are pending verification by your assigned agent.`}
             </p>
           </div>
-        )}
+
+          {/* Next Steps Card - Only show if not verified */}
+          {!isVerified && (
+            <div
+              className='p-3 position-relative'
+              style={{
+                background: 'rgba(255,255,255,0.7)',
+                borderRadius: '13px',
+                border: '1px solid rgba(245,158,11,0.16)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.04)',
+              }}
+            >
+              {/* Info glow */}
+              <div
+                className='position-absolute'
+                style={{
+                  top: '-2px',
+                  left: '-2px',
+                  right: '-2px',
+                  bottom: '-2px',
+                  background:
+                    'linear-gradient(135deg,rgba(245,158,11,0.13),rgba(245,158,11,0.05))',
+                  borderRadius: '13px',
+                  filter: 'blur(4px)',
+                  zIndex: -1,
+                  animation: 'selectionGlow 3s ease-in-out infinite alternate',
+                }}
+              />
+              <div className='d-flex align-items-center gap-2 mb-2'>
+                <div
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '9px',
+                    background: 'linear-gradient(135deg,#f59e0b,#d97706)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 10px rgba(245,158,11,0.17)',
+                  }}
+                >
+                  <i
+                    className='fas fa-info-circle'
+                    style={{ fontSize: '1rem' }}
+                  ></i>
+                </div>
+                <h3
+                  className='fw-bold mb-0'
+                  style={{
+                    color: '#92400e',
+                    fontSize: '1rem',
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  Next Steps
+                </h3>
+              </div>
+              <div>
+                <p
+                  className='mb-2'
+                  style={{
+                    color: '#78350f',
+                    fontSize: '0.98rem',
+                    lineHeight: '1.5',
+                    fontWeight: 500,
+                  }}
+                >
+                  Your assigned agent will contact you to confirm all
+                  information provided. To expedite this process, please ensure
+                  all required details have been completed accurately. If all
+                  information is complete, you are also welcome to contact your
+                  assigned agent directly to help move things forward.
+                </p>
+                <p
+                  className='mb-0'
+                  style={{
+                    color: '#78350f',
+                    fontSize: '0.98rem',
+                    lineHeight: '1.5',
+                    fontWeight: 500,
+                  }}
+                >
+                  Once verification is complete, you will be able to proceed to
+                  the documentation stage of your application.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg);}
+          50% { transform: translateY(-7px) rotate(2deg);}
+        }
+        @keyframes statusPulse {
+          0%,100% {opacity: 1; transform: scale(1);}
+          50% {opacity: 0.82; transform: scale(1.045);}
+        }
+        @keyframes selectionGlow {
+          0% {opacity: 0.2;}
+          100% {opacity: 0.5;}
+        }
+        @keyframes iconFloat {
+          0%,100% {transform: translateY(0) rotate(0deg) scale(1);}
+          50% {transform: translateY(-5px) rotate(3deg) scale(1.012);}
+        }
+      `}</style>
       </div>
     );
   };
-
-  // Basic Details Section Component
-  const BasicDetailsSection = () => (
-    <div>
-      <form>
-        {/* Amount and Term Row */}
-        <div className='row g-4 mb-4'>
-          <div className='col-md-6'>
-            <label className='form-label fw-semibold text-slate-700 mb-2'>
-              <i className='fas fa-euro-sign me-2 text-success'></i>
-              Amount
-            </label>
-            <div
-              className='input-group'
-              style={{
-                borderRadius: '10px',
-                overflow: 'hidden',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-              }}
-            >
-              <input
-                type='text'
-                className={`form-control border-0 ${
-                  editMode.amount ? 'border-end border-danger border-2' : ''
-                }`}
-                style={{
-                  backgroundColor: editMode.amount ? '#fef2f2' : '#f8fafc',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  padding: '0.75rem 1rem',
-                }}
-                value={
-                  editMode.amount
-                    ? application.amount
-                    : ` ${formatMoney(application.amount, currency_sign)}`
-                }
-                onChange={(e) => handleChange(e, 'amount')}
-                readOnly={!editMode.amount}
-              />
-              <button
-                type='button'
-                className='btn'
-                style={{
-                  backgroundColor: editMode.amount ? '#ef4444' : '#1f2937',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0 1rem',
-                  transition: 'all 0.2s ease',
-                }}
-                onClick={() => {
-                  if (editMode.amount) submitChangesHandler();
-                  toggleEditMode('amount');
-                }}
-                disabled={
-                  application.approved ||
-                  application.is_rejected ||
-                  isApplicationLocked
-                }
-              >
-                {editMode.amount ? <FaSave size={16} /> : <FaEdit size={16} />}
-              </button>
-            </div>
-            {(application.amount === '' ||
-              isNaN(parseFloat(application.amount)) ||
-              parseFloat(application.amount) <= 0) && (
-              <div className='text-danger mt-2 small fw-medium'>
-                <i className='fas fa-exclamation-circle me-1'></i>
-                Please enter a valid amount greater than zero.
-              </div>
-            )}
-          </div>
-
-          <div className='col-md-6'>
-            <label className='form-label fw-semibold text-slate-700 mb-2'>
-              <i className='fas fa-calendar-alt me-2 text-blue-500'></i>
-              Initial Term
-            </label>
-            <div
-              className='input-group'
-              style={{
-                borderRadius: '10px',
-                overflow: 'hidden',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-              }}
-            >
-              <input
-                type='text'
-                className={`form-control border-0 ${
-                  editMode.term ? 'border-end border-danger border-2' : ''
-                }`}
-                style={{
-                  backgroundColor: '#f1f5f9',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  padding: '0.75rem 1rem',
-                }}
-                value={
-                  editMode.term
-                    ? application.term
-                    : `${application.term} months`
-                }
-                onChange={(e) => handleChange(e, 'term')}
-                readOnly={!editMode.term}
-              />
-              <button
-                type='button'
-                className='btn'
-                style={{
-                  backgroundColor: '#94a3b8',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0 1rem',
-                  cursor: 'not-allowed',
-                }}
-                disabled
-              >
-                <FaEdit size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div
-          className='my-4'
-          style={{
-            height: '1px',
-            background:
-              'linear-gradient(90deg, transparent, #e2e8f0, transparent)',
-          }}
-        ></div>
-
-        {/* Deceased Details Row */}
-        <div className='row g-4 mb-4'>
-          <div className='col-md-6'>
-            <label className='form-label fw-semibold text-slate-700 mb-2'>
-              <i className='fas fa-user me-2 text-purple-500'></i>
-              Deceased First Name
-            </label>
-            <div
-              className='input-group'
-              style={{
-                borderRadius: '10px',
-                overflow: 'hidden',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-              }}
-            >
-              <input
-                type='text'
-                className={`form-control border-0 ${
-                  editMode.deceased_first_name
-                    ? 'border-end border-danger border-2'
-                    : ''
-                }`}
-                style={{
-                  backgroundColor: editMode.deceased_first_name
-                    ? '#fef2f2'
-                    : '#f8fafc',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  padding: '0.75rem 1rem',
-                }}
-                value={application.deceased.first_name}
-                onChange={(e) =>
-                  handleNestedChange(e, 'deceased', 'first_name')
-                }
-                readOnly={!editMode.deceased_first_name}
-              />
-              <button
-                type='button'
-                className='btn'
-                style={{
-                  backgroundColor: editMode.deceased_first_name
-                    ? '#ef4444'
-                    : '#1f2937',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0 1rem',
-                  transition: 'all 0.2s ease',
-                }}
-                onClick={() => {
-                  if (editMode.deceased_first_name) submitChangesHandler();
-                  toggleEditMode('deceased_first_name');
-                }}
-                disabled={
-                  application.approved ||
-                  application.is_rejected ||
-                  isApplicationLocked
-                }
-              >
-                {editMode.deceased_first_name ? (
-                  <FaSave size={16} />
-                ) : (
-                  <FaEdit size={16} />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className='col-md-6'>
-            <label className='form-label fw-semibold text-slate-700 mb-2'>
-              <i className='fas fa-user me-2 text-purple-500'></i>
-              Deceased Last Name
-            </label>
-            <div
-              className='input-group'
-              style={{
-                borderRadius: '10px',
-                overflow: 'hidden',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-              }}
-            >
-              <input
-                type='text'
-                className={`form-control border-0 ${
-                  editMode.deceased_last_name
-                    ? 'border-end border-danger border-2'
-                    : ''
-                }`}
-                style={{
-                  backgroundColor: editMode.deceased_last_name
-                    ? '#fef2f2'
-                    : '#f8fafc',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  padding: '0.75rem 1rem',
-                }}
-                value={application.deceased.last_name}
-                onChange={(e) => handleNestedChange(e, 'deceased', 'last_name')}
-                readOnly={!editMode.deceased_last_name}
-              />
-              <button
-                type='button'
-                className='btn'
-                style={{
-                  backgroundColor: editMode.deceased_last_name
-                    ? '#ef4444'
-                    : '#1f2937',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0 1rem',
-                  transition: 'all 0.2s ease',
-                }}
-                onClick={() => {
-                  if (editMode.deceased_last_name) submitChangesHandler();
-                  toggleEditMode('deceased_last_name');
-                }}
-                disabled={
-                  application.approved ||
-                  application.is_rejected ||
-                  isApplicationLocked
-                }
-              >
-                {editMode.deceased_last_name ? (
-                  <FaSave size={16} />
-                ) : (
-                  <FaEdit size={16} />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Will Preparation and Dispute sections... */}
-        <div className='mb-4'>
-          <label className='form-label fw-semibold text-slate-700 mb-3'>
-            <i className='fas fa-gavel me-2 text-amber-500'></i>
-            Was this will professionally prepared by a solicitor?
-          </label>
-          <div
-            className='d-flex gap-4 p-3 rounded-3'
-            style={{ backgroundColor: '#f8fafc' }}
-          >
-            <div className='form-check'>
-              <input
-                className='form-check-input'
-                type='radio'
-                name='was_will_prepared_by_solicitor'
-                id='will_prepared_yes'
-                value={true}
-                checked={!!application.was_will_prepared_by_solicitor}
-                onChange={() => {
-                  setApplication({
-                    ...application,
-                    was_will_prepared_by_solicitor: true,
-                  });
-                  setTriggerChandleChange(!triggerHandleChange);
-                }}
-                disabled={
-                  application.approved ||
-                  application.is_rejected ||
-                  isApplicationLocked
-                }
-                style={{ transform: 'scale(1.2)' }}
-              />
-              <label
-                className='form-check-label fw-medium ms-2'
-                htmlFor='will_prepared_yes'
-                style={{ color: '#059669' }}
-              >
-                <i className='fas fa-check-circle me-1'></i>
-                Yes
-              </label>
-            </div>
-            <div className='form-check'>
-              <input
-                className='form-check-input'
-                type='radio'
-                name='was_will_prepared_by_solicitor'
-                id='will_prepared_no'
-                value={false}
-                checked={!application.was_will_prepared_by_solicitor}
-                onChange={() => {
-                  setApplication({
-                    ...application,
-                    was_will_prepared_by_solicitor: false,
-                  });
-                  setTriggerChandleChange(!triggerHandleChange);
-                }}
-                disabled={
-                  application.approved ||
-                  application.is_rejected ||
-                  isApplicationLocked
-                }
-                style={{ transform: 'scale(1.2)' }}
-              />
-              <label
-                className='form-check-label fw-medium ms-2'
-                htmlFor='will_prepared_no'
-                style={{ color: '#dc2626' }}
-              >
-                <i className='fas fa-times-circle me-1'></i>
-                No
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Dispute Details */}
-        <div className='mb-4'>
-          <label className='form-label fw-semibold text-slate-700 mb-2'>
-            <i className='fas fa-exclamation-triangle me-2 text-orange-500'></i>
-            Dispute Details
-          </label>
-          <div
-            className='input-group'
-            style={{
-              borderRadius: '10px',
-              overflow: 'hidden',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-            }}
-          >
-            <textarea
-              className={`form-control border-0 ${
-                editMode.dispute_details
-                  ? 'border-end border-danger border-2'
-                  : ''
-              }`}
-              style={{
-                backgroundColor: editMode.dispute_details
-                  ? '#fef2f2'
-                  : '#f8fafc',
-                fontSize: '1rem',
-                fontWeight: '400',
-                padding: '1rem',
-                minHeight: '120px',
-                resize: 'vertical',
-              }}
-              value={
-                application.dispute.details === 'No dispute'
-                  ? ''
-                  : application.dispute.details
-              }
-              onChange={(e) => handleNestedChange(e, 'dispute', 'details')}
-              readOnly={!editMode.dispute_details}
-              placeholder={
-                editMode.dispute_details
-                  ? "Describe any disputes or leave empty for 'No dispute'"
-                  : ''
-              }
-            />
-            <button
-              type='button'
-              className='btn align-self-stretch'
-              style={{
-                backgroundColor: editMode.dispute_details
-                  ? '#ef4444'
-                  : '#1f2937',
-                color: 'white',
-                border: 'none',
-                padding: '1rem',
-                transition: 'all 0.2s ease',
-              }}
-              onClick={() => {
-                if (editMode.dispute_details) submitChangesHandler();
-                toggleEditMode('dispute_details');
-              }}
-              disabled={
-                application.approved ||
-                application.is_rejected ||
-                isApplicationLocked
-              }
-            >
-              {editMode.dispute_details ? (
-                <FaSave size={16} />
-              ) : (
-                <FaEdit size={16} />
-              )}
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  );
 
   // Render the appropriate component based on active section
   const renderActiveComponent = () => {
@@ -861,7 +1060,20 @@ const RequiredDetailsPart = ({
         return <AdvancementInfo advancement={advancement} />;
 
       case 'basic_details':
-        return <BasicDetailsSection />;
+        return (
+          <BasicDetailsSection
+            application={application}
+            setApplication={setApplication}
+            editMode={editMode}
+            toggleEditMode={toggleEditMode}
+            handleChange={handleChange}
+            handleNestedChange={handleChange}
+            submitChangesHandler={submitChangesHandler}
+            isApplicationLocked={isApplicationLocked}
+            triggerHandleChange={triggerHandleChange}
+            setTriggerChandleChange={setTriggerChandleChange}
+          />
+        );
 
       case 'applicant_registration':
         return (
@@ -913,8 +1125,24 @@ const RequiredDetailsPart = ({
           />
         );
 
+      case 'final_review':
+        return <FinalReviewComponent />;
+
       default:
-        return <BasicDetailsSection />;
+        return (
+          <BasicDetailsSection
+            application={application}
+            setApplication={setApplication}
+            editMode={editMode}
+            toggleEditMode={toggleEditMode}
+            handleChange={handleChange}
+            handleNestedChange={handleChange}
+            submitChangesHandler={submitChangesHandler}
+            isApplicationLocked={isApplicationLocked}
+            triggerHandleChange={triggerHandleChange}
+            setTriggerChandleChange={setTriggerChandleChange}
+          />
+        );
     }
   };
 
@@ -922,7 +1150,7 @@ const RequiredDetailsPart = ({
     <div
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+        backgroundColor: '#1F2049 !important',
         position: 'relative',
       }}
     >
@@ -1026,193 +1254,215 @@ border-radius: 4px;
           style={{
             position: 'sticky',
             top: 0,
-            background: `
-          linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.25) 0%, 
-            rgba(255, 255, 255, 0.15) 50%, 
-            rgba(255, 255, 255, 0.05) 100%
-          ),
-          linear-gradient(135deg, 
-            ${currentStage.color}20 0%, 
-            ${currentStage.color}10 50%, 
-            ${currentStage.color}05 100%
-          )
-        `,
-            backdropFilter: 'blur(40px) saturate(180%)',
-            borderBottom: `1px solid rgba(255, 255, 255, 0.2)`,
             zIndex: 1000,
+            margin: '0 1rem 2rem 1rem',
+            borderRadius: '24px',
+            background: `
+      linear-gradient(135deg, rgba(255,255,255,0.27) 0%, rgba(245,245,245,0.18) 100%),
+      linear-gradient(120deg, ${currentStage.color}1A 0%, ${currentStage.color}0F 100%)
+    `,
+            backdropFilter: 'blur(38px) saturate(170%)',
+            borderBottom: '1.5px solid rgba(0,0,0,0.07)',
             boxShadow: `
-          0 8px 32px rgba(0, 0, 0, 0.12),
-          0 4px 16px rgba(0, 0, 0, 0.08),
-          inset 0 1px 0 rgba(255, 255, 255, 0.3)
-        `,
-            borderRadius: '0 0 24px 24px',
-            margin: '0 1rem',
-            marginBottom: '2rem',
+      0 12px 32px rgba(0,0,0,0.13),
+      0 1.5px 0px ${currentStage.color}40,
+      inset 0 0.5px 0px rgba(255,255,255,0.15)
+    `,
+            overflow: 'visible',
+            padding: '0',
           }}
         >
+          {/* Responsive Flex Layout */}
           <div
             style={{
-              padding: '2.5rem 3rem',
               display: 'flex',
-              alignItems: 'center',
-              gap: '2rem',
+              flexDirection: window.innerWidth < 700 ? 'column' : 'row',
+              alignItems: window.innerWidth < 700 ? 'stretch' : 'center',
+              gap: window.innerWidth < 700 ? '1.2rem' : '2.5rem',
+              padding:
+                window.innerWidth < 700
+                  ? '1.2rem 0.7rem 1.5rem 0.7rem'
+                  : '2.8rem 3rem 2.5rem 3rem',
+              minHeight: window.innerWidth < 700 ? 'auto' : '160px',
+              width: '100%',
               position: 'relative',
+              transition: 'all .22s cubic-bezier(.46,.03,.52,.96)',
             }}
           >
-            {/* Floating Icon with Glassmorphic Effect */}
+            {/* Floating Animated Glass Icon */}
             <div
               style={{
-                width: '80px',
-                height: '80px',
+                alignSelf: window.innerWidth < 700 ? 'center' : 'flex-start',
+                width: window.innerWidth < 700 ? 62 : 86,
+                height: window.innerWidth < 700 ? 62 : 86,
                 background: `
-              linear-gradient(135deg, 
-                ${currentStage.color}90 0%, 
-                ${currentStage.color}70 50%, 
-                ${currentStage.color}90 100%
-              )
-            `,
+          linear-gradient(135deg, ${currentStage.color}DD 0%, ${currentStage.color}90 100%)
+        `,
                 borderRadius: '24px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'white',
-                fontSize: '2rem',
                 boxShadow: `
-              0 20px 40px ${currentStage.color}30,
-              0 8px 16px ${currentStage.color}20,
-              0 0 0 1px rgba(255, 255, 255, 0.1),
-              inset 0 1px 0 rgba(255, 255, 255, 0.2)
-            `,
-                animation: 'iconFloat 4s ease-in-out infinite',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+          0 9px 32px ${currentStage.color}44,
+          0 1.5px 0px #fff2
+        `,
                 position: 'relative',
-                overflow: 'hidden',
+                animation: 'iconFloat 3.3s ease-in-out infinite',
+                border: `1.5px solid ${currentStage.color}3A`,
+                overflow: 'visible',
+                transition: 'all .2s',
               }}
             >
-              {/* Inner glow effect */}
+              {/* Inner glow and glass light */}
               <div
                 style={{
                   position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: `
-                radial-gradient(circle at 30% 30%, 
-                  rgba(255, 255, 255, 0.3) 0%, 
-                  transparent 60%
-                )
-              `,
-                  borderRadius: '24px',
+                  top: '-16%',
+                  left: '-12%',
+                  width: '68%',
+                  height: '68%',
+                  background: `radial-gradient(circle, rgba(255,255,255,0.19) 0%, transparent 90%)`,
+                  filter: 'blur(1px)',
+                  borderRadius: '50%',
+                  zIndex: 0,
                 }}
               />
               <i
                 className={currentStage.icon}
-                style={{ position: 'relative', zIndex: 1 }}
+                style={{
+                  position: 'relative',
+                  zIndex: 1,
+                  fontSize: window.innerWidth < 700 ? '1.5rem' : '2.3rem',
+                  color: '#fff',
+                  filter: 'drop-shadow(0 2px 8px #0003)',
+                }}
               ></i>
             </div>
 
-            {/* Title Section with High Contrast */}
-            <div style={{ flex: 1 }}>
+            {/* Titles and Status */}
+            <div
+              style={{
+                flex: 1,
+                minWidth: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: window.innerWidth < 700 ? 'center' : 'flex-start',
+                gap: window.innerWidth < 700 ? '0.4rem' : '0.6rem',
+                textAlign: window.innerWidth < 700 ? 'center' : 'left',
+              }}
+            >
               <div
                 style={{
                   display: 'flex',
+                  flexWrap: 'wrap',
                   alignItems: 'center',
-                  gap: '0.75rem',
-                  marginBottom: '0.75rem',
-                  fontSize: '0.9rem',
-                  fontWeight: '600',
+                  justifyContent:
+                    window.innerWidth < 700 ? 'center' : 'flex-start',
+                  gap: window.innerWidth < 700 ? '0.5rem' : '0.75rem',
+                  marginBottom: window.innerWidth < 700 ? '0.4rem' : '0.75rem',
                 }}
               >
                 <div
                   style={{
-                    padding: '0.4rem 1rem',
-                    background: 'rgba(15, 23, 42, 0.8)',
-                    borderRadius: '20px',
-                    color: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                    padding: '0.38rem 0.9rem',
+                    background: 'rgba(15,23,42,0.8)',
+                    borderRadius: '19px',
+                    color: 'rgba(255,255,255,0.94)',
+                    backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    fontSize: window.innerWidth < 700 ? '0.93rem' : '1.03rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.01em',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   Application #{application.id}
                 </div>
                 <div
                   style={{
-                    width: '4px',
-                    height: '4px',
+                    width: 4,
+                    height: 4,
                     borderRadius: '50%',
-                    background: 'rgba(15, 23, 42, 0.6)',
+                    background: 'rgba(15,23,42,0.4)',
                   }}
                 />
                 <div
                   style={{
-                    padding: '0.4rem 1rem',
+                    padding: '0.38rem 0.95rem',
                     background: `linear-gradient(135deg, ${currentStage.color}, ${currentStage.color}cc)`,
-                    borderRadius: '20px',
-                    color: 'white',
-                    fontWeight: '700',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: `0 4px 12px ${currentStage.color}40`,
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '19px',
+                    color: '#fff',
+                    fontWeight: 700,
+                    backdropFilter: 'blur(9px)',
+                    boxShadow: `0 2px 8px ${currentStage.color}30`,
+                    border: '1px solid rgba(255,255,255,0.18)',
+                    fontSize: window.innerWidth < 700 ? '0.95rem' : '1.06rem',
+                    letterSpacing: '0.01em',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {currentStage.title}
                 </div>
               </div>
-
               <h1
                 style={{
                   margin: 0,
-                  fontSize: '2.5rem',
-                  fontWeight: '900',
+                  fontSize: window.innerWidth < 700 ? '1.37rem' : '2.3rem',
+                  fontWeight: 900,
                   color: '#0f172a',
-                  letterSpacing: '-0.03em',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                  lineHeight: '1.1',
+                  letterSpacing: '-0.018em',
+                  textShadow: '0 2.5px 9px rgba(0,0,0,0.07)',
+                  lineHeight: 1.09,
+                  wordBreak: 'break-word',
+                  textWrap: 'balance',
+                  maxWidth: window.innerWidth < 700 ? '95vw' : 'unset',
+                  transition: 'font-size .18s',
                 }}
               >
                 {currentStage.title}
               </h1>
-
-              {/* Subtle subtitle */}
               <p
                 style={{
-                  margin: '0.5rem 0 0 0',
-                  fontSize: '1rem',
-                  color: 'rgba(15, 23, 42, 0.7)',
-                  fontWeight: '500',
+                  margin: '0.3rem 0 0 0',
+                  fontSize: window.innerWidth < 700 ? '0.95rem' : '1.06rem',
+                  color: 'rgba(15,23,42,0.74)',
+                  fontWeight: 500,
+                  textWrap: 'balance',
                 }}
               >
                 Manage and review your application details
               </p>
             </div>
 
-            {/* Modern Status Indicator */}
+            {/* Modern Status Indicator - Responsive */}
             <div
               style={{
-                padding: '1rem 1.5rem',
+                alignSelf: window.innerWidth < 700 ? 'center' : 'flex-end',
+                marginTop: window.innerWidth < 700 ? '1.1rem' : 0,
+                minWidth: 0,
+                padding:
+                  window.innerWidth < 700 ? '0.6rem 1.1rem' : '1rem 1.5rem',
                 background: `
-              linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.9) 0%, 
-                rgba(255, 255, 255, 0.7) 100%
-              )
-            `,
-                borderRadius: '16px',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
+          linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.76) 100%)
+        `,
+                borderRadius: '14px',
+                border: '1px solid rgba(255,255,255,0.23)',
                 color: '#0f172a',
-                fontWeight: '700',
-                fontSize: '0.9rem',
+                fontWeight: 700,
+                fontSize: window.innerWidth < 700 ? '0.95rem' : '1.07rem',
                 boxShadow: `
-              0 8px 24px rgba(0, 0, 0, 0.1),
-              0 4px 8px rgba(0, 0, 0, 0.05),
-              inset 0 1px 0 rgba(255, 255, 255, 0.5)
-            `,
-                backdropFilter: 'blur(20px)',
+          0 4px 10px rgba(0,0,0,0.07),
+          inset 0 1.5px 0 rgba(255,255,255,0.53)
+        `,
+                backdropFilter: 'blur(16px)',
                 textAlign: 'center',
-                minWidth: '140px',
+                minWidth: window.innerWidth < 700 ? 90 : 140,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '0.22rem',
               }}
             >
               <div
@@ -1220,29 +1470,28 @@ border-radius: 4px;
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '0.5rem',
-                  marginBottom: '0.3rem',
+                  gap: '0.45rem',
                 }}
               >
                 <div
                   style={{
-                    width: '8px',
-                    height: '8px',
+                    width: window.innerWidth < 700 ? 7 : 9,
+                    height: window.innerWidth < 700 ? 7 : 9,
                     borderRadius: '50%',
                     background: `linear-gradient(135deg, ${currentStage.color}, ${currentStage.color}cc)`,
-                    boxShadow: `0 0 12px ${currentStage.color}80`,
-                    animation: 'statusPulse 2s ease-in-out infinite',
+                    boxShadow: `0 0 8px ${currentStage.color}65`,
+                    animation: 'statusPulse 1.8s ease-in-out infinite',
                   }}
                 />
-                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>
+                <span style={{ fontSize: '0.84em', opacity: 0.78 }}>
                   VIEWING
                 </span>
               </div>
               <div
                 style={{
-                  fontSize: '0.85rem',
+                  fontSize: window.innerWidth < 700 ? '0.85em' : '0.95em',
                   color: currentStage.color,
-                  fontWeight: '800',
+                  fontWeight: 800,
                 }}
               >
                 Active Section
@@ -1250,59 +1499,34 @@ border-radius: 4px;
             </div>
           </div>
 
-          {/* Animated Progress Indicator */}
+          {/* Animated Accent Glow Bar */}
           <div
             style={{
+              height: window.innerWidth < 700 ? '3.5px' : '5px',
+              background: `linear-gradient(90deg, ${currentStage.color}, #fff3, ${currentStage.color}90, #fff3, ${currentStage.color})`,
+              boxShadow: `0 1.5px 8px ${currentStage.color}26`,
+              borderRadius: 30,
+              width: '94%',
+              margin:
+                window.innerWidth < 700
+                  ? '0 auto 0.15rem auto'
+                  : '0 auto 0.22rem auto',
+              animation: 'progressShimmer 3s linear infinite',
               position: 'relative',
-              height: '3px',
-              background: 'rgba(255, 255, 255, 0.2)',
               overflow: 'hidden',
             }}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                height: '100%',
-                width: '40%',
-                background: `linear-gradient(90deg, 
-              transparent, 
-              ${currentStage.color}80, 
-              ${currentStage.color}, 
-              ${currentStage.color}80, 
-              transparent
-            )`,
-                animation: 'progressSlide 3s ease-in-out infinite',
-              }}
-            />
-          </div>
-
-          {/* Bottom highlight line */}
-          <div
-            style={{
-              height: '1px',
-              background: `linear-gradient(90deg, 
-            transparent, 
-            rgba(255, 255, 255, 0.4), 
-            transparent
-          )`,
-            }}
-          />
+          ></div>
         </div>
 
         {/* Content Area */}
         <div
           style={{
-            padding: '2rem 0',
             minHeight: 'calc(100vh - 200px)',
           }}
         >
           <div
             style={{
               width: '100%',
-
-              padding: '0 1rem',
             }}
           >
             {/* Status Messages */}
@@ -1339,7 +1563,7 @@ border-radius: 4px;
             {/* Content Card */}
             <div
               style={{
-                background: 'rgba(255, 255, 255, 0.95)',
+                // background: 'rgba(255, 255, 255, 0.95)',
                 borderRadius: '24px',
                 boxShadow: `
               0 25px 50px -12px rgba(0, 0, 0, 0.25),
@@ -1365,7 +1589,7 @@ border-radius: 4px;
               {/* Component Content */}
               <div
                 style={{
-                  padding: '1rem',
+                  // padding: '1rem',
                   position: 'relative',
                   zIndex: 1,
                 }}

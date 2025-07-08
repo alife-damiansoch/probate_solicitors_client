@@ -1,6 +1,12 @@
 import Cookies from 'js-cookie';
 import React, { useState } from 'react';
-import { FaHome, FaPhone, FaUsers } from 'react-icons/fa';
+import {
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaHome,
+  FaPhone,
+  FaUsers,
+} from 'react-icons/fa';
 import {
   formatPhoneToInternational,
   validatePPS,
@@ -53,7 +59,7 @@ const validatePhoneField = (value, country) => {
   return { valid: result.success, message: result.success ? '' : result.error };
 };
 
-// Enhanced field component with validation
+// Enhanced field component with glassmorphism styling
 const Field = ({
   field,
   label,
@@ -74,31 +80,58 @@ const Field = ({
   return (
     <div className={`col-${cols} mb-2`}>
       <label
-        className='form-label fw-medium text-slate-600 mb-1'
-        style={{ fontSize: '0.8rem' }}
+        className='form-label fw-medium mb-1'
+        style={{
+          fontSize: '0.8rem',
+          color: 'rgba(255, 255, 255, 0.9)',
+          textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+        }}
       >
-        {label} {isRequired && <span className='text-danger'>*</span>}
+        {label} {isRequired && <span className='text-warning'>*</span>}
       </label>
       {options ? (
         <select
-          className='form-control form-control-sm rounded-3 border-0 shadow-sm'
+          className='form-control form-control-sm border-0'
           style={{
             height: '32px',
             fontSize: '0.85rem',
             background:
               hasError || validationError
-                ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
-                : 'linear-gradient(135deg, #ffffff, #f8fafc)',
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
+                : 'rgba(255, 255, 255, 0.15)',
             border:
               hasError || validationError
-                ? '1px solid #ef4444'
-                : '1px solid #e2e8f0',
+                ? '1px solid rgba(239, 68, 68, 0.4)'
+                : '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '12px',
+            backdropFilter: 'blur(10px)',
+            color: 'rgba(255, 255, 255, 0.9)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease',
           }}
           value={applicant[field] || ''}
           onChange={(e) => handleListChange(e, index, field)}
+          onFocus={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+            e.target.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+          }}
+          onBlur={(e) => {
+            e.target.style.background =
+              hasError || validationError
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
+                : 'rgba(255, 255, 255, 0.15)';
+            e.target.style.borderColor =
+              hasError || validationError
+                ? 'rgba(239, 68, 68, 0.4)'
+                : 'rgba(255, 255, 255, 0.2)';
+          }}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
+            <option
+              key={opt.value}
+              value={opt.value}
+              style={{ background: '#1F2049', color: '#ffffff' }}
+            >
               {opt.label}
             </option>
           ))}
@@ -106,30 +139,56 @@ const Field = ({
       ) : (
         <input
           type={type}
-          className='form-control form-control-sm rounded-3 border-0 shadow-sm'
+          className='form-control form-control-sm border-0'
           style={{
             height: '32px',
             fontSize: '0.85rem',
             background:
               hasError || validationError
-                ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
-                : 'linear-gradient(135deg, #ffffff, #f8fafc)',
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
+                : 'rgba(255, 255, 255, 0.15)',
             border:
               hasError || validationError
-                ? '1px solid #ef4444'
-                : '1px solid #e2e8f0',
+                ? '1px solid rgba(239, 68, 68, 0.4)'
+                : '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '12px',
+            backdropFilter: 'blur(10px)',
+            color: 'rgba(255, 255, 255, 0.9)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease',
           }}
           value={applicant[field] || ''}
           onChange={(e) => handleListChange(e, index, field)}
           placeholder={
             field === 'phone_number' ? phoneNrPlaceholder : `${label}`
           }
+          onFocus={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+            e.target.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+          }}
+          onBlur={(e) => {
+            e.target.style.background =
+              hasError || validationError
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
+                : 'rgba(255, 255, 255, 0.15)';
+            e.target.style.borderColor =
+              hasError || validationError
+                ? 'rgba(239, 68, 68, 0.4)'
+                : 'rgba(255, 255, 255, 0.2)';
+          }}
         />
       )}
 
       {/* Validation error message */}
       {validationError && (
-        <div className='text-danger mt-1' style={{ fontSize: '0.75rem' }}>
+        <div
+          className='mt-1'
+          style={{
+            fontSize: '0.75rem',
+            color: '#fbbf24',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+          }}
+        >
           <i className='fas fa-exclamation-circle me-1'></i>
           {validationError}
         </div>
@@ -286,255 +345,406 @@ export default function ApplicantsPart({
 
   return (
     <div className='mb-4'>
-      {/* Compact header */}
+      {/* Enhanced Header */}
       <div
-        className='d-flex align-items-center justify-content-between mb-3 p-3 rounded-4'
+        className='d-flex align-items-center justify-content-between mb-3 p-3 position-relative'
         style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+          borderRadius: '16px',
+          boxShadow: '0 8px 16px rgba(139, 92, 246, 0.3)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(10px)',
         }}
       >
         <div className='d-flex align-items-center text-white'>
-          <FaUsers size={18} className='me-2' />
-          <span className='fw-bold'>Applicant Information</span>
+          <div
+            className='rounded-circle d-flex align-items-center justify-content-center me-3'
+            style={{
+              width: '32px',
+              height: '32px',
+              background: 'rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+            }}
+          >
+            <FaUsers size={14} />
+          </div>
+          <span
+            className='fw-bold'
+            style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)' }}
+          >
+            Applicant Information
+          </span>
         </div>
         <div
           className='px-3 py-1 rounded-pill fw-semibold text-white'
           style={{
-            backgroundColor: 'rgba(255,255,255,0.2)',
+            background: 'rgba(255, 255, 255, 0.2)',
             fontSize: '0.8rem',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            backdropFilter: 'blur(10px)',
           }}
         >
           Single Applicant Required
         </div>
       </div>
 
-      {/* Single applicant card */}
+      {/* Enhanced Single applicant card */}
       <div
-        className='card border-0 shadow-lg rounded-4'
+        className='position-relative overflow-hidden'
         style={{
-          background: 'linear-gradient(135deg, #fafbff 0%, #f1f5f9 100%)',
-          border: '1px solid #e2e8f0',
+          background: `
+            linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(248, 250, 252, 0.08)),
+            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.15), transparent 50%),
+            radial-gradient(circle at 70% 90%, rgba(139, 92, 246, 0.1), transparent 50%)
+          `,
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '20px',
+          boxShadow: `
+            0 12px 24px rgba(0, 0, 0, 0.2),
+            0 4px 8px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2)
+          `,
+          backdropFilter: 'blur(20px)',
         }}
       >
-        <div className='card-body p-4'>
+        {/* Animated Background Pattern */}
+        <div
+          className='position-absolute w-100 h-100'
+          style={{
+            background: `
+              radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.03) 0%, transparent 50%)
+            `,
+            opacity: 0.6,
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        />
+
+        <div className='p-4 position-relative'>
           {/* Ultra-compact form */}
           <div className='row g-2'>
-            {/* Basic Info Row */}
+            {/* Basic Info Section */}
             <div className='col-12 mb-3'>
               <h6
-                className='fw-bold text-primary mb-2 d-flex align-items-center'
-                style={{ fontSize: '0.9rem' }}
+                className='fw-bold mb-3 d-flex align-items-center'
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                }}
               >
-                <FaUsers size={14} className='me-2' />
+                <div
+                  className='rounded-circle d-flex align-items-center justify-content-center me-2'
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                    color: 'white',
+                  }}
+                >
+                  <FaUsers size={10} />
+                </div>
                 Basic Information
               </h6>
-              <div className='row g-1'>
-                <Field
-                  field='title'
-                  label='Title'
-                  cols={2}
-                  applicant={applicant}
-                  index={0}
-                  options={TITLE_CHOICES}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='first_name'
-                  label='First Name'
-                  cols={3}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='last_name'
-                  label='Last Name'
-                  cols={3}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='pps_number'
-                  label={idNumberArray[0]}
-                  cols={2}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='date_of_birth'
-                  label='Date of Birth'
-                  type='date'
-                  cols={2}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
+              <div
+                className='p-3 rounded-3'
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                }}
+              >
+                <div className='row g-1'>
+                  <Field
+                    field='title'
+                    label='Title'
+                    cols={2}
+                    applicant={applicant}
+                    index={0}
+                    options={TITLE_CHOICES}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='first_name'
+                    label='First Name'
+                    cols={3}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='last_name'
+                    label='Last Name'
+                    cols={3}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='pps_number'
+                    label={idNumberArray[0]}
+                    cols={2}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='date_of_birth'
+                    label='Date of Birth'
+                    type='date'
+                    cols={2}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Contact Info Row */}
+            {/* Contact Info Section */}
             <div className='col-12 mb-3'>
               <h6
-                className='fw-bold text-success mb-2 d-flex align-items-center'
-                style={{ fontSize: '0.9rem' }}
+                className='fw-bold mb-3 d-flex align-items-center'
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                }}
               >
-                <FaPhone size={14} className='me-2' />
+                <div
+                  className='rounded-circle d-flex align-items-center justify-content-center me-2'
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                    color: 'white',
+                  }}
+                >
+                  <FaPhone size={10} />
+                </div>
                 Contact Information
               </h6>
-              <div className='row g-1'>
-                <Field
-                  field='email'
-                  label='Email Address'
-                  type='email'
-                  cols={6}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='phone_number'
-                  label={`Phone (${
-                    countrySolicitors === 'IE' ? '+353' : '+44'
-                  })`}
-                  type='tel'
-                  cols={6}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  phoneNrPlaceholder={phoneNrPlaceholder}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
+              <div
+                className='p-3 rounded-3'
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                }}
+              >
+                <div className='row g-1'>
+                  <Field
+                    field='email'
+                    label='Email Address'
+                    type='email'
+                    cols={6}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='phone_number'
+                    label={`Phone (${
+                      countrySolicitors === 'IE' ? '+353' : '+44'
+                    })`}
+                    type='tel'
+                    cols={6}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    phoneNrPlaceholder={phoneNrPlaceholder}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Address Info Row */}
+            {/* Address Info Section */}
             <div className='col-12'>
               <h6
-                className='fw-bold text-warning mb-2 d-flex align-items-center'
-                style={{ fontSize: '0.9rem' }}
+                className='fw-bold mb-3 d-flex align-items-center'
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                }}
               >
-                <FaHome size={14} className='me-2' />
+                <div
+                  className='rounded-circle d-flex align-items-center justify-content-center me-2'
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    color: 'white',
+                  }}
+                >
+                  <FaHome size={10} />
+                </div>
                 Address Information
               </h6>
-              <div className='row g-1'>
-                <Field
-                  field='address_line_1'
-                  label='Address Line 1'
-                  cols={6}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='address_line_2'
-                  label='Address Line 2 (Optional)'
-                  cols={6}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='city'
-                  label='City/Town'
-                  cols={3}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='county'
-                  label='County'
-                  cols={3}
-                  applicant={applicant}
-                  index={0}
-                  options={countyOptions}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-                <Field
-                  field='postal_code'
-                  label={countrySolicitors === 'IE' ? 'Eircode' : 'Postcode'}
-                  cols={3}
-                  applicant={applicant}
-                  index={0}
-                  handleListChange={handleListChange}
-                  countrySolicitors={countrySolicitors}
-                  validationErrors={validationErrors}
-                />
-
-                {/* Country field - readonly based on cookies */}
-                <div className='col-3 mb-2'>
-                  <label
-                    className='form-label fw-medium text-slate-600 mb-1'
-                    style={{ fontSize: '0.8rem' }}
-                  >
-                    Country <span className='text-danger'>*</span>
-                  </label>
-                  <input
-                    type='text'
-                    className='form-control form-control-sm rounded-3 border-0 shadow-sm'
-                    style={{
-                      height: '32px',
-                      fontSize: '0.85rem',
-                      background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
-                      border: '1px solid #bbf7d0',
-                      color: '#166534',
-                    }}
-                    value={countryName}
-                    readOnly
+              <div
+                className='p-3 rounded-3'
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(10px)',
+                }}
+              >
+                <div className='row g-1'>
+                  <Field
+                    field='address_line_1'
+                    label='Address Line 1'
+                    cols={6}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
                   />
+                  <Field
+                    field='address_line_2'
+                    label='Address Line 2 (Optional)'
+                    cols={6}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='city'
+                    label='City/Town'
+                    cols={3}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='county'
+                    label='County'
+                    cols={3}
+                    applicant={applicant}
+                    index={0}
+                    options={countyOptions}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+                  <Field
+                    field='postal_code'
+                    label={countrySolicitors === 'IE' ? 'Eircode' : 'Postcode'}
+                    cols={3}
+                    applicant={applicant}
+                    index={0}
+                    handleListChange={handleListChange}
+                    countrySolicitors={countrySolicitors}
+                    validationErrors={validationErrors}
+                  />
+
+                  {/* Enhanced Country field - readonly */}
+                  <div className='col-3 mb-2'>
+                    <label
+                      className='form-label fw-medium mb-1'
+                      style={{
+                        fontSize: '0.8rem',
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                      }}
+                    >
+                      Country <span className='text-warning'>*</span>
+                    </label>
+                    <input
+                      type='text'
+                      className='form-control form-control-sm border-0'
+                      style={{
+                        height: '32px',
+                        fontSize: '0.85rem',
+                        background:
+                          'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15))',
+                        border: '1px solid rgba(34, 197, 94, 0.3)',
+                        borderRadius: '12px',
+                        color: '#22c55e',
+                        backdropFilter: 'blur(10px)',
+                        fontWeight: '600',
+                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                      }}
+                      value={countryName}
+                      readOnly
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Completion Status */}
-          <div className='mt-3 text-center'>
+          {/* Enhanced Completion Status */}
+          <div className='mt-4 text-center'>
             <div
-              className='px-3 py-2 rounded-3'
+              className='px-4 py-3 rounded-3 d-inline-flex align-items-center gap-2'
               style={{
-                backgroundColor: isFormComplete
-                  ? 'rgba(34,197,94,0.1)'
-                  : 'rgba(239,68,68,0.1)',
-                color: isFormComplete ? '#22c55e' : '#ef4444',
+                background: isFormComplete
+                  ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15))'
+                  : 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.15))',
+                color: isFormComplete ? '#22c55e' : '#f59e0b',
                 fontSize: '0.85rem',
+                fontWeight: '600',
+                border: isFormComplete
+                  ? '1px solid rgba(34, 197, 94, 0.3)'
+                  : '1px solid rgba(245, 158, 11, 0.3)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: isFormComplete
+                  ? '0 4px 12px rgba(34, 197, 94, 0.2)'
+                  : '0 4px 12px rgba(245, 158, 11, 0.2)',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
               }}
             >
-              <i
-                className={`fas ${
-                  isFormComplete ? 'fa-check-circle' : 'fa-exclamation-circle'
-                } me-2`}
-              ></i>
-              {isFormComplete
-                ? 'Applicant information completed and validated!'
-                : hasValidationErrors
-                ? 'Please fix validation errors above'
-                : 'Please complete all required fields marked with *'}
+              {isFormComplete ? (
+                <>
+                  <FaCheckCircle size={14} />
+                  Applicant information completed and validated!
+                </>
+              ) : hasValidationErrors ? (
+                <>
+                  <FaExclamationCircle size={14} />
+                  Please fix validation errors above
+                </>
+              ) : (
+                <>
+                  <FaExclamationCircle size={14} />
+                  Please complete all required fields marked with *
+                </>
+              )}
             </div>
           </div>
         </div>
+
+        {/* CSS Animations */}
+        <style>{`
+          @keyframes float {
+            0%,
+            100% {
+              transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+              transform: translateY(-4px) rotate(1deg);
+            }
+          }
+        `}</style>
       </div>
     </div>
   );

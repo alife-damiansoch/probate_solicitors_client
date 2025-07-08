@@ -124,7 +124,7 @@ const Applications = () => {
   }
 
   return (
-    <div className='min-vh-100' style={{ backgroundColor: '#f8fafc' }}>
+    <div className='min-vh-100' style={{ backgroundColor: '#1F2049' }}>
       <div className='container-fluid px-4 py-4'>
         {/* Header Section */}
         <div

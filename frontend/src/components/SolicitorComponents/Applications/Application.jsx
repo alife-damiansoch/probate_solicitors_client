@@ -11,7 +11,8 @@ import SettledBadge from '../../GenericComponents/StageBadges.jsx/SettledBadge';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import {
-  FaChevronRight,
+  FaArrowRight,
+  FaCalendarAlt,
   FaClock,
   FaMoneyBillWave,
   FaUser,
@@ -32,27 +33,45 @@ const Application = ({ application }) => {
     navigate(`/applications/${formData.id}`);
   };
 
-  // Get status colors and themes
+  // Get enhanced status colors and themes
   const getStatusTheme = () => {
     if (rejectedInAnyStage)
       return {
-        gradient: 'linear-gradient(135deg, #fca5a5 0%, #ef4444 100%)',
+        primary: '#ef4444',
+        secondary: '#dc2626',
+        gradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        lightGradient:
+          'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
         accent: '#ef4444',
-        bg: '#fef2f2',
-        text: '#991b1b',
+        bg: 'rgba(239, 68, 68, 0.08)',
+        border: 'rgba(239, 68, 68, 0.2)',
+        text: '#dc2626',
+        glow: 'rgba(239, 68, 68, 0.3)',
       };
     if (approvedInAnyStage)
       return {
-        gradient: 'linear-gradient(135deg, #86efac 0%, #22c55e 100%)',
+        primary: '#22c55e',
+        secondary: '#16a34a',
+        gradient: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+        lightGradient:
+          'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)',
         accent: '#22c55e',
-        bg: '#f0fdf4',
+        bg: 'rgba(34, 197, 94, 0.08)',
+        border: 'rgba(34, 197, 94, 0.2)',
         text: '#166534',
+        glow: 'rgba(34, 197, 94, 0.3)',
       };
     return {
-      gradient: 'linear-gradient(135deg, #93c5fd 0%, #3b82f6 100%)',
+      primary: '#3b82f6',
+      secondary: '#2563eb',
+      gradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      lightGradient:
+        'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%)',
       accent: '#3b82f6',
-      bg: '#eff6ff',
+      bg: 'rgba(59, 130, 246, 0.08)',
+      border: 'rgba(59, 130, 246, 0.2)',
       text: '#1e40af',
+      glow: 'rgba(59, 130, 246, 0.3)',
     };
   };
 
@@ -62,165 +81,317 @@ const Application = ({ application }) => {
     <>
       {formData && (
         <div
-          className='position-relative my-3'
+          className='position-relative my-4'
           style={{
-            borderRadius: '20px',
-            background: '#ffffff',
-            boxShadow:
-              '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-            border: `3px solid ${theme.accent}`,
+            background: `
+              linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(248, 250, 252, 0.1)),
+              radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.2), transparent 50%),
+              ${theme.lightGradient}
+            `,
+            border: `1px solid ${theme.border}`,
+            borderRadius: '24px',
+            boxShadow: `
+              0 20px 40px rgba(0, 0, 0, 0.1),
+              0 8px 16px rgba(0, 0, 0, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3)
+            `,
+            backdropFilter: 'blur(20px)',
             overflow: 'hidden',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             cursor: 'pointer',
+            transform: 'translateZ(0)',
           }}
           onClick={applicationClickHandler}
-          onMouseOver={(e) => {
-            e.currentTarget.style.boxShadow =
-              '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-            e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)';
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)';
+            e.currentTarget.style.boxShadow = `
+              0 32px 64px rgba(0, 0, 0, 0.15),
+              0 16px 32px rgba(0, 0, 0, 0.1),
+              0 0 40px ${theme.glow},
+              inset 0 1px 0 rgba(255, 255, 255, 0.4)
+            `;
           }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.boxShadow =
-              '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+          onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            e.currentTarget.style.boxShadow = `
+              0 20px 40px rgba(0, 0, 0, 0.1),
+              0 8px 16px rgba(0, 0, 0, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3)
+            `;
           }}
         >
-          {/* Status Strip */}
+          {/* Animated Background Pattern */}
           <div
+            className='position-absolute w-100 h-100'
             style={{
-              height: '6px',
-              background: theme.gradient,
-              width: '100%',
+              background: `
+                radial-gradient(circle at 20% 20%, ${theme.accent}08 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, ${theme.accent}05 0%, transparent 50%)
+              `,
+              opacity: 0.6,
+              animation: 'float 6s ease-in-out infinite',
             }}
           />
 
-          {/* Status Badges */}
+          {/* Enhanced Status Strip */}
           <div
-            className='position-absolute'
-            style={{ top: '12px', right: '16px', zIndex: 3 }}
+            className='position-relative'
+            style={{
+              height: '8px',
+              background: theme.gradient,
+              width: '100%',
+              boxShadow: `0 4px 12px ${theme.glow}`,
+            }}
           >
-            {rejectedInAnyStage && <RejectedBadge />}
-            {approvedInAnyStage &&
-              application.loan !== null &&
-              application.loan.is_paid_out &&
-              !application.loan.is_settled && <PaidOutBadge />}
-            {approvedInAnyStage &&
-              application.loan !== null &&
-              application.loan.is_paid_out &&
-              application.loan.is_settled && <SettledBadge />}
-            {approvedInAnyStage &&
-              application.loan !== null &&
-              !application.loan.is_paid_out && <ApprovedBadge />}
-            {!approvedInAnyStage && !rejectedInAnyStage && <InProgressBadge />}
+            {/* Animated glow effect */}
+            <div
+              className='position-absolute w-100 h-100'
+              style={{
+                background: `linear-gradient(90deg, transparent, ${theme.accent}40, transparent)`,
+                animation: 'slideGlow 3s ease-in-out infinite',
+              }}
+            />
           </div>
 
-          {/* Main Content */}
-          <div className='p-4'>
+          {/* Enhanced Status Badges */}
+          <div
+            className='position-absolute'
+            style={{ top: '16px', right: '20px', zIndex: 3 }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                flexWrap: 'wrap',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {rejectedInAnyStage && <RejectedBadge />}
+              {approvedInAnyStage &&
+                application.loan !== null &&
+                application.loan.is_paid_out &&
+                !application.loan.is_settled && <PaidOutBadge />}
+              {approvedInAnyStage &&
+                application.loan !== null &&
+                application.loan.is_paid_out &&
+                application.loan.is_settled && <SettledBadge />}
+              {approvedInAnyStage &&
+                application.loan !== null &&
+                !application.loan.is_paid_out && <ApprovedBadge />}
+              {!approvedInAnyStage && !rejectedInAnyStage && (
+                <InProgressBadge />
+              )}
+            </div>
+          </div>
+
+          {/* Enhanced Main Content */}
+          <div className='p-4 position-relative'>
             {/* Header Row */}
-            <div className='row align-items-center mb-3'>
-              {/* Applicant Info */}
+            <div className='row align-items-center mb-4'>
+              {/* Enhanced Applicant Info */}
               <div className='col-lg-5 col-md-6'>
                 <div className='d-flex align-items-center'>
                   <div
-                    className='rounded-circle d-flex align-items-center justify-content-center me-3 position-relative'
+                    className='rounded-circle d-flex align-items-center justify-content-center me-4 position-relative'
                     style={{
-                      width: '48px',
-                      height: '48px',
+                      width: '64px',
+                      height: '64px',
                       background: theme.gradient,
                       color: 'white',
-                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                      boxShadow: `0 12px 24px ${theme.glow}`,
+                      border: '3px solid rgba(255, 255, 255, 0.2)',
+                      transition: 'all 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform =
+                        'scale(1.1) rotate(5deg)';
+                      e.currentTarget.style.boxShadow = `0 16px 32px ${theme.glow}`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+                      e.currentTarget.style.boxShadow = `0 12px 24px ${theme.glow}`;
                     }}
                   >
-                    <FaUser size={18} />
+                    <FaUser size={24} />
+
+                    {/* Enhanced ID Badge */}
                     <div
                       className='position-absolute rounded-circle d-flex align-items-center justify-content-center'
                       style={{
-                        width: '20px',
-                        height: '20px',
-                        backgroundColor: '#ffffff',
+                        width: '28px',
+                        height: '28px',
+                        background: 'rgba(255, 255, 255, 0.95)',
                         color: theme.accent,
-                        fontSize: '10px',
+                        fontSize: '11px',
                         fontWeight: 'bold',
-                        bottom: '-2px',
-                        right: '-2px',
-                        border: '2px solid white',
+                        bottom: '-4px',
+                        right: '-4px',
+                        border: '3px solid white',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                        backdropFilter: 'blur(10px)',
                       }}
                     >
                       {formData.id}
                     </div>
+
+                    {/* Subtle glow effect */}
+                    <div
+                      className='position-absolute rounded-circle'
+                      style={{
+                        top: '-8px',
+                        left: '-8px',
+                        right: '-8px',
+                        bottom: '-8px',
+                        background: theme.glow,
+                        filter: 'blur(12px)',
+                        zIndex: -1,
+                      }}
+                    />
                   </div>
+
                   <div>
                     <h6
-                      className='mb-0 fw-bold text-gray-900'
-                      style={{ fontSize: '1.1rem' }}
+                      className='mb-1 fw-bold'
+                      style={{
+                        fontSize: '1.3rem',
+                        color: 'rgba(255, 255, 255, 0.95)',
+                        textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                        letterSpacing: '-0.01em',
+                      }}
                     >
                       {application.applicants.length > 0
                         ? `${application.applicants[0].title} ${application.applicants[0].first_name} ${application.applicants[0].last_name}`
                         : 'No applicants added'}
                     </h6>
-                    <small className='text-gray-500 fw-medium'>
+                    <div
+                      className='px-2 py-1 rounded-pill d-inline-flex align-items-center gap-1'
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        fontSize: '0.8rem',
+                        fontWeight: '500',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        backdropFilter: 'blur(10px)',
+                      }}
+                    >
+                      <FaCalendarAlt size={10} />
                       Application #{formData.id}
-                    </small>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Financial Info */}
+              {/* Enhanced Financial Info */}
               <div className='col-lg-4 col-md-4'>
-                <div className='row g-2'>
+                <div className='row g-3'>
                   <div className='col-6'>
                     <div
-                      className='text-center p-2 rounded-xl'
+                      className='text-center p-3 position-relative'
                       style={{
-                        backgroundColor: `${theme.accent}10`,
-                        border: `1px solid ${theme.accent}30`,
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        border: `1px solid ${theme.border}`,
+                        borderRadius: '16px',
+                        backdropFilter: 'blur(15px)',
+                        transition: 'all 0.3s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background =
+                          'rgba(255, 255, 255, 0.15)';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background =
+                          'rgba(255, 255, 255, 0.1)';
+                        e.currentTarget.style.transform = 'translateY(0)';
                       }}
                     >
-                      <div className='d-flex align-items-center justify-content-center mb-1'>
-                        <FaMoneyBillWave
-                          className='me-1'
-                          size={12}
-                          style={{ color: theme.accent }}
-                        />
+                      <div className='d-flex align-items-center justify-content-center mb-2'>
+                        <div
+                          className='rounded-circle d-flex align-items-center justify-content-center me-2'
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            background: theme.gradient,
+                            color: 'white',
+                          }}
+                        >
+                          <FaMoneyBillWave size={10} />
+                        </div>
                         <span
                           className='small fw-semibold'
-                          style={{ color: theme.text, fontSize: '0.7rem' }}
+                          style={{
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: '0.7rem',
+                            letterSpacing: '0.05em',
+                          }}
                         >
                           AMOUNT
                         </span>
                       </div>
                       <div
                         className='fw-bold'
-                        style={{ color: theme.text, fontSize: '0.9rem' }}
+                        style={{
+                          color: 'rgba(255, 255, 255, 0.95)',
+                          fontSize: '1rem',
+                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                        }}
                       >
                         {formatMoney(formData.amount, currency_sign)}
                       </div>
                     </div>
                   </div>
+
                   <div className='col-6'>
                     <div
-                      className='text-center p-2 rounded-xl'
+                      className='text-center p-3 position-relative'
                       style={{
-                        backgroundColor: `${theme.accent}10`,
-                        border: `1px solid ${theme.accent}30`,
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        border: `1px solid ${theme.border}`,
+                        borderRadius: '16px',
+                        backdropFilter: 'blur(15px)',
+                        transition: 'all 0.3s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background =
+                          'rgba(255, 255, 255, 0.15)';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background =
+                          'rgba(255, 255, 255, 0.1)';
+                        e.currentTarget.style.transform = 'translateY(0)';
                       }}
                     >
-                      <div className='d-flex align-items-center justify-content-center mb-1'>
-                        <FaClock
-                          className='me-1'
-                          size={12}
-                          style={{ color: theme.accent }}
-                        />
+                      <div className='d-flex align-items-center justify-content-center mb-2'>
+                        <div
+                          className='rounded-circle d-flex align-items-center justify-content-center me-2'
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            background: theme.gradient,
+                            color: 'white',
+                          }}
+                        >
+                          <FaClock size={10} />
+                        </div>
                         <span
                           className='small fw-semibold'
-                          style={{ color: theme.text, fontSize: '0.7rem' }}
+                          style={{
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: '0.7rem',
+                            letterSpacing: '0.05em',
+                          }}
                         >
                           TERM
                         </span>
                       </div>
                       <div
                         className='fw-bold'
-                        style={{ color: theme.text, fontSize: '0.9rem' }}
+                        style={{
+                          color: 'rgba(255, 255, 255, 0.95)',
+                          fontSize: '1rem',
+                          textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                        }}
                       >
                         {formData.term}m
                       </div>
@@ -229,9 +400,9 @@ const Application = ({ application }) => {
                 </div>
               </div>
 
-              {/* Actions & Maturity */}
+              {/* Enhanced Actions & Maturity */}
               <div className='col-lg-3 col-md-2 text-end'>
-                <div className='d-flex flex-column align-items-end'>
+                <div className='d-flex flex-column align-items-end gap-2'>
                   {approvedInAnyStage &&
                     application.loan !== null &&
                     application.loan.is_paid_out &&
@@ -242,38 +413,72 @@ const Application = ({ application }) => {
                         />
                       </div>
                     )}
+
                   <div
-                    className='d-flex align-items-center px-3 py-1 rounded-pill'
+                    className='d-flex align-items-center px-4 py-2 position-relative'
                     style={{
-                      backgroundColor: `${theme.accent}15`,
-                      color: theme.accent,
-                      fontSize: '0.8rem',
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      color: 'rgba(255, 255, 255, 0.9)',
+                      fontSize: '0.9rem',
                       fontWeight: '600',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      backdropFilter: 'blur(10px)',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background =
+                        'rgba(255, 255, 255, 0.25)';
+                      e.currentTarget.style.transform = 'translateX(-4px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background =
+                        'rgba(255, 255, 255, 0.15)';
+                      e.currentTarget.style.transform = 'translateX(0)';
                     }}
                   >
-                    <span className='me-2'>View</span>
-                    <FaChevronRight size={10} />
+                    <span className='me-2'>View Details</span>
+                    <FaArrowRight size={12} />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Compact Stages */}
+            {/* Enhanced Compact Stages */}
             <div
-              className='rounded-xl p-2'
+              className='position-relative'
               style={{
-                backgroundColor: theme.bg,
-                border: `1px solid ${theme.accent}20`,
-                marginTop: '8px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                borderRadius: '20px',
+                border: `1px solid ${theme.border}`,
+                padding: '1.5rem',
+                backdropFilter: 'blur(15px)',
+                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
               }}
             >
+              {/* Subtle glow effect */}
+              <div
+                className='position-absolute'
+                style={{
+                  top: '-1px',
+                  left: '-1px',
+                  right: '-1px',
+                  bottom: '-1px',
+                  background: `linear-gradient(135deg, ${theme.accent}20, transparent)`,
+                  borderRadius: '20px',
+                  filter: 'blur(4px)',
+                  zIndex: -1,
+                }}
+              />
+
               <div
                 className='d-flex flex-wrap justify-content-center'
-                style={{ gap: '4px' }}
+                style={{ gap: '8px' }}
               >
                 {!rejectedInAnyStage && !approvedInAnyStage && (
                   <>
-                    <div style={{ transform: 'scale(0.8)' }}>
+                    <div style={{ transform: 'scale(0.85)' }}>
                       <Stage
                         stage='Applied'
                         completed={true}
@@ -283,7 +488,7 @@ const Application = ({ application }) => {
                         setApprovedInAnyStage={setApprovedInAnyStage}
                       />
                     </div>
-                    <div style={{ transform: 'scale(0.8)' }}>
+                    <div style={{ transform: 'scale(0.85)' }}>
                       <Stage
                         stage='Undertaking Ready'
                         completed={formData.undertaking_ready}
@@ -293,7 +498,7 @@ const Application = ({ application }) => {
                         setApprovedInAnyStage={setApprovedInAnyStage}
                       />
                     </div>
-                    <div style={{ transform: 'scale(0.8)' }}>
+                    <div style={{ transform: 'scale(0.85)' }}>
                       <Stage
                         stage='Agreement Ready'
                         completed={formData.loan_agreement_ready}
@@ -308,7 +513,7 @@ const Application = ({ application }) => {
 
                 {formData.approved === false &&
                 formData.is_rejected === false ? (
-                  <div style={{ transform: 'scale(0.8)' }}>
+                  <div style={{ transform: 'scale(0.85)' }}>
                     <Stage
                       key={`${formData.id}-${formData.loan?.is_committee_approved}`}
                       stage='Approved'
@@ -320,7 +525,7 @@ const Application = ({ application }) => {
                     />
                   </div>
                 ) : formData.is_rejected === true ? (
-                  <div style={{ transform: 'scale(0.8)', width: '100%' }}>
+                  <div style={{ transform: 'scale(0.85)', width: '100%' }}>
                     <Stage
                       key={`${formData.id}-${formData.loan?.is_committee_approved}`}
                       stage='Approved'
@@ -332,7 +537,7 @@ const Application = ({ application }) => {
                     />
                   </div>
                 ) : formData.approved === true && formData.loan !== null ? (
-                  <div style={{ transform: 'scale(0.8)' }}>
+                  <div style={{ transform: 'scale(0.85)' }}>
                     <Stage
                       key={`${formData.id}-${formData.loan?.is_committee_approved}`}
                       stage='Approved'
@@ -347,6 +552,40 @@ const Application = ({ application }) => {
               </div>
             </div>
           </div>
+
+          {/* CSS Animations */}
+          <style>{`
+            @keyframes float {
+              0%,
+              100% {
+                transform: translateY(0px) rotate(0deg);
+              }
+              50% {
+                transform: translateY(-8px) rotate(1deg);
+              }
+            }
+
+            @keyframes slideGlow {
+              0% {
+                transform: translateX(-100%);
+              }
+              50% {
+                transform: translateX(100%);
+              }
+              100% {
+                transform: translateX(100%);
+              }
+            }
+
+            @keyframes pulse {
+              0%, 100% {
+                opacity: 1;
+              }
+              50% {
+                opacity: 0.8;
+              }
+            }
+          `}</style>
         </div>
       )}
     </>

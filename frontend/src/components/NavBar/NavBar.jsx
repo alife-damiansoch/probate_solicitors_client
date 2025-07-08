@@ -1,3 +1,4 @@
+// Updated NavBar.js - Mobile Responsive
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { LuUserRoundCog } from 'react-icons/lu';
@@ -10,6 +11,7 @@ import NavLinkAnimated from '../GenericComponents/NavLinkAnimated';
 import AnimatedSection from '../GenericFunctions/AnimatedSection';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
 import AliBanner from './AliBanner/AliBanner';
+import './NavBar.css'; // Import external CSS
 
 const NavBar = () => {
   const dispatch = useDispatch();
@@ -45,47 +47,33 @@ const NavBar = () => {
   };
 
   const user = useSelector((state) => state.user.user);
-
   const viewUserProfileHandler = () => {
     navigate('/user_profile');
   };
 
-  // Determine the active link based on the current pathname
   const isActive = (path) => location.pathname === path;
 
   return (
     <>
-      <nav className='navbar navbar-expand-lg navbar-light bg-light border-0 mb-2 position-relative'>
+      <nav className='navbar navbar-expand-lg modern-navbar border-0 mb-2 position-relative'>
         <Link className='navbar-brand text-center mx-3' to='/'>
           <AnimatedSection
             as='div'
-            className='col text-center text-center mx-auto'
-            style={{ width: '80px' }}
+            className='col text-center mx-auto modern-logo-container'
           >
             <motion.img
               id='logo'
               src='/img/ALI logo.png'
               alt='ALI logo'
-              // initial={{ opacity: 0 }}
-              // animate={{ opacity: 1 }}
-              // whileHover={{
-              //   filter: 'invert(50%)',
-              //   cursor: 'pointer',
-              //   opacity: 0.5,
-              // }}
-              // transition={{ delay: 1, duration: 1 }}
-              onClick={() => {
-                navigate('');
-              }}
-              style={{
-                // filter: 'invert(100%)',
-                width: '100%',
-              }}
+              className='modern-logo'
+              onClick={() => navigate('')}
+              style={{ cursor: 'pointer' }}
             />
           </AnimatedSection>
         </Link>
+
         <button
-          className='navbar-toggler ms-auto'
+          className='navbar-toggler modern-toggler ms-auto'
           type='button'
           data-bs-toggle='collapse'
           data-bs-target='#navbarNav'
@@ -96,47 +84,14 @@ const NavBar = () => {
         >
           <span className='navbar-toggler-icon'></span>
         </button>
+
         <div
           className={`collapse navbar-collapse ${
-            !isNavbarCollapsed ? 'show' : ''
+            !isNavbarCollapsed ? 'show modern-collapse' : ''
           }`}
           id='navbarNav'
         >
           <ul className='navbar-nav mr-auto text-center d-flex align-items-center justify-content-center flex-wrap col-12 col-md-10'>
-            {/* IF STATIC ROUTES ARE BACK JUST UNCOMENT THE CODE UNDER */}
-            {/* <li className='nav-item mx-auto my-auto mb-2'>
-              <NavLinkAnimated
-                to='/'
-                label='Home'
-                isActive={isActive}
-                closeNavbar={closeNavbar}
-              />
-            </li>
-            <li className='nav-item mx-auto my-auto mb-2'>
-              <NavLinkAnimated
-                to='/understanding'
-                label='Understanding Probate'
-                isActive={isActive}
-                closeNavbar={closeNavbar}
-              />
-            </li>
-            <li className='nav-item mx-auto my-auto mb-2'>
-              <NavLinkAnimated
-                to='/howItWorks'
-                label='Advancement Process'
-                isActive={isActive}
-                closeNavbar={closeNavbar}
-              />
-            </li>
-            <li className='nav-item mx-auto my-auto mb-2'>
-              <NavLinkAnimated
-                to='/benefits'
-                label='Benefits'
-                isActive={isActive}
-                closeNavbar={closeNavbar}
-              />
-            </li> */}
-            {/* Line Break */}
             <div className='w-100 d-none d-lg-block'></div>
             {isLoggedIn ? (
               <li className='nav-item mx-auto my-auto mb-2'>
@@ -159,46 +114,49 @@ const NavBar = () => {
               </li>
             ) : null}
           </ul>
+
           <div className='col-12 col-md-2'>
             {isLoggedIn ? (
               <Link
-                className='btn btn-sm btn-outline-danger my-2 my-sm-0 ms-auto shadow mb-2 w-100'
+                className='btn modern-btn modern-btn-danger my-2 my-sm-0 ms-auto shadow mb-2 d-flex align-items-center justify-content-center'
                 onClick={() => {
                   handleLogout();
                   closeNavbar();
                 }}
               >
-                <RiLogoutCircleRLine size={20} className='me-3' />
+                <RiLogoutCircleRLine size={20} className='me-2' />
                 Logout
               </Link>
             ) : (
               <Link
-                className='btn btn-sm btn-outline-primary my-2 ms-auto shadow mb-2 w-100'
+                className='btn modern-btn my-2 ms-auto shadow mb-2 d-flex align-items-center justify-content-center'
                 to='/login'
                 onClick={closeNavbar}
               >
-                <RiLoginCircleLine size={20} className='me-3' />
+                <RiLoginCircleLine size={20} className='me-2' />
                 Login
               </Link>
             )}
+
             {user ? (
               <AnimatedSection as='div' className=''>
                 <div className=''>
                   <div
-                    className='btn btn-outline-success btn-sm text-center mt-2 shadow w-100 d-flex align-items-center justify-content-center '
+                    className='btn modern-btn modern-btn-success text-center mt-2 shadow d-flex align-items-center justify-content-center'
                     data-bs-toggle='tooltip'
                     data-bs-placement='bottom'
-                    title={user.email} // Tooltip shows full email if cut off
+                    title={user.email}
                     onClick={viewUserProfileHandler}
                     style={{
-                      maxWidth: '100%', // Ensure it doesn't exceed parent width
-                      overflow: 'hidden', // Prevent text overflow
-                      whiteSpace: 'nowrap', // Prevent wrapping
-                      textOverflow: 'ellipsis', // Show "..." if too long
+                      maxWidth: '100%',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      cursor: 'pointer',
                     }}
                   >
                     <LuUserRoundCog size={20} />
-                    <small className=' text-truncate ms-2'>PROFILE</small>
+                    <small className='text-truncate ms-2'>PROFILE</small>
                   </div>
                 </div>
               </AnimatedSection>
@@ -225,15 +183,11 @@ const NavBar = () => {
           <AnimatedSection>
             <motion.div
               id='hero-section'
-              style={{
-                width: '100%',
-                position: 'relative',
-                marginBottom: '-5px',
-                height: '300px',
-              }}
+              className='hero-container'
               onMouseEnter={() => setIsImageHovered(true)}
               onMouseLeave={() => setIsImageHovered(false)}
             >
+              <div className='hero-overlay'></div>
               <motion.img
                 id='hero-image'
                 src='/img/handshake.jpg'
@@ -241,8 +195,10 @@ const NavBar = () => {
                 style={{
                   width: '100%',
                   objectFit: 'cover',
-                  filter: isImageHovered ? 'grayscale(100%)' : 'none',
-                  transition: 'filter 0.3s ease',
+                  filter: isImageHovered
+                    ? 'grayscale(100%) brightness(0.7)'
+                    : 'brightness(0.8)',
+                  transition: 'filter 0.6s ease',
                   height: '100%',
                 }}
                 initial='hidden'
@@ -254,18 +210,9 @@ const NavBar = () => {
                 animate='visible'
                 className='row'
                 onClick={() => navigate('')}
+                style={{ cursor: 'pointer' }}
               >
-                <motion.p
-                  id='hero-text'
-                  style={{
-                    whiteSpace: 'nowrap',
-                    color: isImageHovered
-                      ? 'rgba(77, 3, 4, 1)'
-                      : 'rgba(255, 255, 255, 1)',
-                    transition: 'color 1s ease',
-                  }}
-                  className='my-auto mx-auto'
-                >
+                <motion.p id='hero-text' className='hero-text-modern'>
                   Probate Advancements
                 </motion.p>
               </motion.div>

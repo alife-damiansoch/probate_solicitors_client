@@ -1,9 +1,9 @@
 const FooterComponent = () => {
   return (
-    <footer className='bg-white text-dark py-4 border-top'>
-      <div className='container'>
+    <footer className='text-white py-4 border-top border-black'>
+      <div className='container-fluid'>
         <div className='row'>
-          <div className='col text-center text-md-left '>
+          <div className='col text-end '>
             <p className='mb-0'>
               &copy; {new Date().getFullYear()} ALI. All rights reserved.
             </p>

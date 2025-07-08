@@ -3,20 +3,19 @@ import { useEffect, useState } from 'react';
 import {
   FaCheckCircle,
   FaClock,
+  FaCloudUploadAlt,
   FaExclamationTriangle,
   FaFileAlt,
   FaPlus,
+  FaUpload,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { fetchData } from '../../../GenericFunctions/AxiosGenericFunctions.jsx';
 import DocumentsGrid from './DocumentUploadsParts/DocumentsGrid';
 import DocumentsHeader from './DocumentUploadsParts/DocumentsHeader';
 import { DocumentsWaitingState } from './DocumentUploadsParts/DocumentsWaitingState.jsx';
-import EmptyState from './DocumentUploadsParts/EmptyState';
 import RequiredDocumentsList from './DocumentUploadsParts/RequiredDocumentsList';
 import SigningModal from './DocumentUploadsParts/SigningModal';
-
-// Cutting-edge waiting component
 
 const DocumentsUpload = ({
   application,
@@ -112,18 +111,10 @@ const DocumentsUpload = ({
   const handleSigningComplete = () => {
     setShowSigningModal(false);
     setSelectedDocumentForSigning(null);
-    // Refresh all data
-    // fetchDocuments();
-    // fetchRequirements();
-    // fetchRequirementStatus();
     setRefresh(!refresh);
   };
 
   const handleDocumentUploaded = () => {
-    // Refresh all data when a document is uploaded
-    // fetchDocuments();
-    // fetchRequirements();
-    // fetchRequirementStatus();
     setRefresh(!refresh);
   };
 
@@ -203,6 +194,229 @@ const DocumentsUpload = ({
     );
   }
 
+  // No documents case
+  if (documents.length === 0 && requirements.length === 0) {
+    return (
+      <div
+        className='modern-main-card mb-4 position-relative overflow-hidden'
+        style={{
+          background: `
+            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
+            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
+            radial-gradient(circle at 70% 90%, rgba(59, 130, 246, 0.1), transparent 50%)
+          `,
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '24px',
+          boxShadow: `
+            0 20px 40px rgba(0, 0, 0, 0.08),
+            0 8px 16px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          `,
+          backdropFilter: 'blur(20px)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: 'translateZ(0)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
+          e.currentTarget.style.boxShadow = `
+            0 32px 64px rgba(0, 0, 0, 0.12),
+            0 16px 32px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6)
+          `;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = `
+            0 20px 40px rgba(0, 0, 0, 0.08),
+            0 8px 16px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          `;
+        }}
+      >
+        {/* Animated Background Pattern */}
+        <div
+          className='position-absolute w-100 h-100'
+          style={{
+            background: `
+              radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.06) 0%, transparent 50%)
+            `,
+            opacity: 0.3,
+            animation: 'float 6s ease-in-out infinite',
+          }}
+        />
+
+        {/* Premium Header */}
+        <div
+          className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+          style={{
+            background: `
+              linear-gradient(135deg, #3b82f6, #2563eb),
+              linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
+            `,
+            color: '#ffffff',
+            borderTopLeftRadius: '22px',
+            borderTopRightRadius: '22px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          }}
+        >
+          {/* Icon with Micro-animation */}
+          <div
+            className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+            style={{
+              width: '56px',
+              height: '56px',
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '2px solid rgba(255, 255, 255, 0.25)',
+              backdropFilter: 'blur(10px)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+            }}
+          >
+            <FaFileAlt size={20} />
+
+            {/* Subtle glow effect */}
+            <div
+              className='position-absolute rounded-circle'
+              style={{
+                top: '-10px',
+                left: '-10px',
+                right: '-10px',
+                bottom: '-10px',
+                background: 'rgba(255, 255, 255, 0.1)',
+                filter: 'blur(8px)',
+                zIndex: -1,
+              }}
+            />
+          </div>
+
+          <div className='flex-grow-1'>
+            <h5
+              className='fw-bold mb-2 text-white'
+              style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+            >
+              Document Management
+            </h5>
+            <div
+              className='px-3 py-2 rounded-pill fw-semibold text-white'
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                fontSize: '0.9rem',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                display: 'inline-block',
+                backdropFilter: 'blur(10px)',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Uploads & Requirements
+            </div>
+          </div>
+
+          {/* Status Badge */}
+          <span
+            className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+            style={{
+              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+              fontSize: '0.9rem',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.3s ease',
+              cursor: 'default',
+              letterSpacing: '0.02em',
+            }}
+          >
+            <svg width='18' height='18' fill='currentColor' viewBox='0 0 20 20'>
+              <path
+                fillRule='evenodd'
+                d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
+                clipRule='evenodd'
+              />
+            </svg>
+            Required
+          </span>
+        </div>
+
+        {/* Content */}
+        <div className='px-4 pb-4'>
+          <div
+            className='alert border-0 mb-4'
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05))',
+              borderRadius: '16px',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              backdropFilter: 'blur(10px)',
+              color: '#dc2626',
+              padding: '1.5rem',
+            }}
+          >
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1rem',
+                boxShadow: '0 8px 16px rgba(239, 68, 68, 0.3)',
+              }}
+            >
+              <FaExclamationTriangle />
+            </div>
+            <div className='text-center fw-semibold'>
+              No documents or requirements available for this application.
+            </div>
+          </div>
+
+          <div className='text-center'>
+            <button
+              className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
+              style={{
+                background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '16px',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+              }}
+              onClick={() => {
+                navigate(`/upload_new_document/${application.id}`);
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform =
+                  'translateY(-2px) scale(1.05)';
+                e.currentTarget.style.boxShadow =
+                  '0 15px 35px rgba(59, 130, 246, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow =
+                  '0 8px 20px rgba(59, 130, 246, 0.3)';
+              }}
+            >
+              <FaPlus size={14} />
+              Upload Document
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div
@@ -211,283 +425,629 @@ const DocumentsUpload = ({
         }`}
         id='documents'
         style={{
-          borderRadius: '20px',
-          boxShadow:
-            '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          background: `
+            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
+            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
+            radial-gradient(circle at 70% 90%, rgba(59, 130, 246, 0.1), transparent 50%)
+          `,
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '24px',
+          boxShadow: `
+            0 20px 40px rgba(0, 0, 0, 0.08),
+            0 8px 16px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          `,
+          backdropFilter: 'blur(20px)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: 'translateZ(0)',
           overflow: 'hidden',
-          background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
+          e.currentTarget.style.boxShadow = `
+            0 32px 64px rgba(0, 0, 0, 0.12),
+            0 16px 32px rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6)
+          `;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = `
+            0 20px 40px rgba(0, 0, 0, 0.08),
+            0 8px 16px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          `;
         }}
       >
-        <DocumentsHeader
-          application={application}
-          stats={enhancedStats}
-          requirementStatus={requirementStatus}
+        {/* Animated Background Pattern */}
+        <div
+          className='position-absolute w-100 h-100'
+          style={{
+            background: `
+              radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.06) 0%, transparent 50%)
+            `,
+            opacity: 0.3,
+            animation: 'float 6s ease-in-out infinite',
+          }}
         />
 
+        {/* Premium Header */}
+        <div
+          className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+          style={{
+            background: `
+              linear-gradient(135deg, #3b82f6, #2563eb),
+              linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
+            `,
+            color: '#ffffff',
+            borderTopLeftRadius: '22px',
+            borderTopRightRadius: '22px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          }}
+        >
+          {/* Icon with Micro-animation */}
+          <div
+            className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+            style={{
+              width: '56px',
+              height: '56px',
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '2px solid rgba(255, 255, 255, 0.25)',
+              backdropFilter: 'blur(10px)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+            }}
+          >
+            <FaFileAlt size={20} />
+
+            {/* Subtle glow effect */}
+            <div
+              className='position-absolute rounded-circle'
+              style={{
+                top: '-10px',
+                left: '-10px',
+                right: '-10px',
+                bottom: '-10px',
+                background: 'rgba(255, 255, 255, 0.1)',
+                filter: 'blur(8px)',
+                zIndex: -1,
+              }}
+            />
+          </div>
+
+          <div className='flex-grow-1'>
+            <h5
+              className='fw-bold mb-2 text-white'
+              style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+            >
+              Document Management
+            </h5>
+            <div
+              className='px-3 py-2 rounded-pill fw-semibold text-white'
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                fontSize: '0.9rem',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                display: 'inline-block',
+                backdropFilter: 'blur(10px)',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Uploads & Requirements
+            </div>
+          </div>
+
+          {/* Status Badge */}
+          <span
+            className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+            style={{
+              background:
+                documents.length > 0 || requirements.length > 0
+                  ? hasSignatureIssues || hasMissingRequirements
+                    ? 'linear-gradient(135deg, #f59e0b, #d97706)'
+                    : 'linear-gradient(135deg, #22c55e, #16a34a)'
+                  : 'linear-gradient(135deg, #ef4444, #dc2626)',
+              fontSize: '0.9rem',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.3s ease',
+              cursor: 'default',
+              letterSpacing: '0.02em',
+            }}
+          >
+            <svg width='18' height='18' fill='currentColor' viewBox='0 0 20 20'>
+              {documents.length > 0 || requirements.length > 0 ? (
+                hasSignatureIssues || hasMissingRequirements ? (
+                  <path
+                    fillRule='evenodd'
+                    d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
+                    clipRule='evenodd'
+                  />
+                ) : (
+                  <path
+                    fillRule='evenodd'
+                    d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                    clipRule='evenodd'
+                  />
+                )
+              ) : (
+                <path
+                  fillRule='evenodd'
+                  d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
+                  clipRule='evenodd'
+                />
+              )}
+            </svg>
+            {documents.length > 0 || requirements.length > 0
+              ? hasSignatureIssues || hasMissingRequirements
+                ? 'Attention'
+                : 'Complete'
+              : 'Required'}
+          </span>
+        </div>
+
         <div className='p-4'>
-          {/* Tab Navigation */}
+          <DocumentsHeader
+            application={application}
+            stats={enhancedStats}
+            requirementStatus={requirementStatus}
+          />
+
+          {/* Enhanced Tab Navigation */}
           <div className='mb-4 d-flex justify-content-center'>
-            <div className='d-flex gap-4'>
-              <button
-                onClick={() => setActiveTab('uploaded')}
-                style={{
-                  background:
-                    activeTab === 'uploaded'
-                      ? hasSignatureIssues
-                        ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
-                        : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
-                      : '#ffffff',
-                  border:
-                    activeTab === 'uploaded' ? 'none' : '2px solid #e5e7eb',
-                  borderRadius: '16px',
-                  padding: '20px 24px',
-                  color:
-                    activeTab === 'uploaded'
-                      ? '#ffffff'
-                      : hasSignatureIssues
-                      ? '#dc2626'
-                      : '#374151',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  boxShadow:
-                    activeTab === 'uploaded'
-                      ? '0 8px 25px rgba(59, 130, 246, 0.25)'
-                      : '0 2px 8px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  position: 'relative',
-                  minWidth: '220px',
-                  cursor: 'pointer',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  if (activeTab !== 'uploaded') {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow =
-                      '0 6px 20px rgba(0, 0, 0, 0.12)';
-                    e.currentTarget.style.borderColor = hasSignatureIssues
-                      ? '#dc2626'
-                      : '#3b82f6';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== 'uploaded') {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow =
-                      '0 2px 8px rgba(0, 0, 0, 0.08)';
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                  }
-                }}
-              >
-                <div
+            <div
+              className='p-2'
+              style={{
+                background: 'rgba(255, 255, 255, 0.5)',
+                borderRadius: '20px',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                backdropFilter: 'blur(20px)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+              }}
+            >
+              <div className='d-flex gap-2'>
+                <button
+                  onClick={() => setActiveTab('uploaded')}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    boxShadow: 'none',
+                    background:
+                      activeTab === 'uploaded'
+                        ? hasSignatureIssues
+                          ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
+                          : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+                        : 'transparent',
+                    border: 'none',
+                    borderRadius: '16px',
+                    padding: '16px 24px',
+                    color:
+                      activeTab === 'uploaded'
+                        ? '#ffffff'
+                        : hasSignatureIssues
+                        ? '#dc2626'
+                        : '#374151',
+                    fontWeight: '600',
+                    fontSize: '0.95rem',
+                    boxShadow:
+                      activeTab === 'uploaded'
+                        ? '0 8px 25px rgba(59, 130, 246, 0.25)'
+                        : 'none',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    position: 'relative',
+                    minWidth: '200px',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    backdropFilter:
+                      activeTab === 'uploaded' ? 'blur(10px)' : 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeTab !== 'uploaded') {
+                      e.currentTarget.style.background =
+                        'rgba(255, 255, 255, 0.7)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeTab !== 'uploaded') {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }
                   }}
                 >
                   <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       boxShadow: 'none',
                     }}
                   >
                     <FaFileAlt
-                      size={20}
-                      style={{ marginRight: '12px', boxShadow: 'none' }}
+                      size={18}
+                      style={{ marginRight: '10px', boxShadow: 'none' }}
                     />
                     <span style={{ boxShadow: 'none' }}>
                       Uploaded Documents
                     </span>
                   </div>
-                </div>
-                {hasSignatureIssues && activeTab !== 'uploaded' && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '-8px',
-                      right: '-8px',
-                      backgroundColor: '#dc2626',
-                      color: 'white',
-                      borderRadius: '50%',
-                      width: '20px',
-                      height: '20px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: 'none',
-                      border: 'none',
-                    }}
-                  >
-                    !
-                  </div>
-                )}
-              </button>
+                  {hasSignatureIssues && activeTab !== 'uploaded' && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '-6px',
+                        right: '-6px',
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '18px',
+                        height: '18px',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)',
+                        border: '2px solid white',
+                      }}
+                    >
+                      !
+                    </div>
+                  )}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('required')}
-                style={{
-                  background:
-                    activeTab === 'required'
-                      ? hasMissingRequirements
-                        ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
-                        : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
-                      : '#ffffff',
-                  border:
-                    activeTab === 'required' ? 'none' : '2px solid #e5e7eb',
-                  borderRadius: '16px',
-                  padding: '20px 24px',
-                  color:
-                    activeTab === 'required'
-                      ? '#ffffff'
-                      : hasMissingRequirements
-                      ? '#dc2626'
-                      : '#374151',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  boxShadow:
-                    activeTab === 'required'
-                      ? '0 8px 25px rgba(59, 130, 246, 0.25)'
-                      : '0 2px 8px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  position: 'relative',
-                  minWidth: '220px',
-                  cursor: 'pointer',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  if (activeTab !== 'required') {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow =
-                      '0 6px 20px rgba(0, 0, 0, 0.12)';
-                    e.currentTarget.style.borderColor = hasMissingRequirements
-                      ? '#dc2626'
-                      : '#3b82f6';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== 'required') {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow =
-                      '0 2px 8px rgba(0, 0, 0, 0.08)';
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                  }
-                }}
-              >
-                <div
+                <button
+                  onClick={() => setActiveTab('required')}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    boxShadow: 'none',
+                    background:
+                      activeTab === 'required'
+                        ? hasMissingRequirements
+                          ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
+                          : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+                        : 'transparent',
+                    border: 'none',
+                    borderRadius: '16px',
+                    padding: '16px 24px',
+                    color:
+                      activeTab === 'required'
+                        ? '#ffffff'
+                        : hasMissingRequirements
+                        ? '#dc2626'
+                        : '#374151',
+                    fontWeight: '600',
+                    fontSize: '0.95rem',
+                    boxShadow:
+                      activeTab === 'required'
+                        ? '0 8px 25px rgba(59, 130, 246, 0.25)'
+                        : 'none',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    position: 'relative',
+                    minWidth: '200px',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    backdropFilter:
+                      activeTab === 'required' ? 'blur(10px)' : 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeTab !== 'required') {
+                      e.currentTarget.style.background =
+                        'rgba(255, 255, 255, 0.7)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeTab !== 'required') {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }
                   }}
                 >
                   <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       boxShadow: 'none',
                     }}
                   >
                     <FaExclamationTriangle
-                      size={20}
-                      style={{ marginRight: '12px', boxShadow: 'none' }}
+                      size={18}
+                      style={{ marginRight: '10px', boxShadow: 'none' }}
                     />
                     <span style={{ boxShadow: 'none' }}>
                       Required Documents
                     </span>
                   </div>
-                </div>
-                {hasMissingRequirements && activeTab !== 'required' && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '-8px',
-                      right: '-8px',
-                      backgroundColor: '#dc2626',
-                      color: 'white',
-                      borderRadius: '50%',
-                      width: '20px',
-                      height: '20px',
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: 'none',
-                      border: 'none',
-                    }}
-                  >
-                    {missingRequirements}
-                  </div>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Tab Content */}
-          {activeTab === 'uploaded' ? (
-            documents.length > 0 ? (
-              <DocumentsGrid
-                documents={documents}
-                token={token}
-                onSignDocument={handleSignDocument}
-              />
-            ) : (
-              <EmptyState message='No documents uploaded yet' />
-            )
-          ) : (
-            <RequiredDocumentsList
-              requirements={requirements}
-              application={application}
-              token={token}
-              onDocumentUploaded={handleDocumentUploaded}
-            />
-          )}
-
-          {/* Action Buttons */}
-          <div className='mt-4 pt-4' style={{ borderTop: '1px solid #e2e8f0' }}>
-            <div className='d-flex flex-wrap gap-3 justify-content-between align-items-center'>
-              <div className='d-flex gap-3'>
-                <button
-                  className='btn px-4 py-2 fw-semibold'
-                  style={{
-                    background:
-                      'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 4px 15px rgba(8, 145, 178, 0.3)',
-                  }}
-                  onClick={() => {
-                    navigate(`/upload_new_document/${application.id}`);
-                  }}
-                  onMouseOver={(e) => {
-                    e.target.style.background =
-                      'linear-gradient(135deg, #0e7490 0%, #155e75 100%)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow =
-                      '0 8px 25px rgba(8, 145, 178, 0.4)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.background =
-                      'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow =
-                      '0 4px 15px rgba(8, 145, 178, 0.3)';
-                  }}
-                >
-                  <FaPlus className='me-2' size={14} />
-                  Upload Document
+                  {hasMissingRequirements && activeTab !== 'required' && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '-6px',
+                        right: '-6px',
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '18px',
+                        height: '18px',
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)',
+                        border: '2px solid white',
+                      }}
+                    >
+                      {missingRequirements}
+                    </div>
+                  )}
                 </button>
               </div>
             </div>
           </div>
+
+          {/* Enhanced Tab Content */}
+          <div
+            className='position-relative'
+            style={{
+              background: 'rgba(255, 255, 255, 0.7)',
+              borderRadius: '18px',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+              overflow: 'hidden',
+              minHeight: '400px',
+            }}
+          >
+            <div className='p-4'>
+              {activeTab === 'uploaded' ? (
+                documents.length > 0 ? (
+                  <DocumentsGrid
+                    documents={documents}
+                    token={token}
+                    onSignDocument={handleSignDocument}
+                  />
+                ) : (
+                  <div className='text-center py-5'>
+                    <div
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                        color: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 2rem',
+                        boxShadow: '0 20px 40px rgba(59, 130, 246, 0.3)',
+                        animation: 'float 3s ease-in-out infinite',
+                      }}
+                    >
+                      <FaCloudUploadAlt size={32} />
+                    </div>
+                    <h4
+                      className='fw-bold mb-3'
+                      style={{ color: '#1e293b', fontSize: '1.5rem' }}
+                    >
+                      No Documents Uploaded
+                    </h4>
+                    <p
+                      className='text-muted mb-4'
+                      style={{
+                        fontSize: '1.1rem',
+                        maxWidth: '400px',
+                        margin: '0 auto',
+                      }}
+                    >
+                      Upload your first document to get started with the
+                      application process.
+                    </p>
+                    <button
+                      className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
+                      style={{
+                        background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '16px',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                      }}
+                      onClick={() => {
+                        navigate(`/upload_new_document/${application.id}`);
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform =
+                          'translateY(-2px) scale(1.05)';
+                        e.currentTarget.style.boxShadow =
+                          '0 15px 35px rgba(59, 130, 246, 0.5)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform =
+                          'translateY(0) scale(1)';
+                        e.currentTarget.style.boxShadow =
+                          '0 8px 20px rgba(59, 130, 246, 0.3)';
+                      }}
+                    >
+                      <FaUpload size={16} />
+                      Upload Your First Document
+                    </button>
+                  </div>
+                )
+              ) : (
+                <RequiredDocumentsList
+                  requirements={requirements}
+                  application={application}
+                  token={token}
+                  onDocumentUploaded={handleDocumentUploaded}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Enhanced Action Buttons */}
+          <div
+            className='mt-4 pt-4'
+            style={{
+              borderTop: '1px solid rgba(226, 232, 240, 0.5)',
+              background: 'rgba(255, 255, 255, 0.3)',
+              borderRadius: '16px',
+              padding: '1.5rem',
+              backdropFilter: 'blur(10px)',
+            }}
+          >
+            <div className='d-flex flex-wrap gap-3 justify-content-between align-items-center'>
+              <div className='d-flex gap-3'>
+                <button
+                  className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.8)',
+                    color: '#0891b2',
+                    border: '2px solid rgba(8, 145, 178, 0.3)',
+                    borderRadius: '16px',
+                    transition: 'all 0.3s ease',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 4px 15px rgba(8, 145, 178, 0.1)',
+                  }}
+                  onClick={() => {
+                    navigate(`/upload_new_document/${application.id}`);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      'linear-gradient(135deg, #0891b2, #0e7490)';
+                    e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.transform =
+                      'translateY(-2px) scale(1.05)';
+                    e.currentTarget.style.boxShadow =
+                      '0 15px 35px rgba(8, 145, 178, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background =
+                      'rgba(255, 255, 255, 0.8)';
+                    e.currentTarget.style.color = '#0891b2';
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.boxShadow =
+                      '0 4px 15px rgba(8, 145, 178, 0.1)';
+                  }}
+                >
+                  <FaPlus size={14} />
+                  Upload New Document
+                </button>
+              </div>
+
+              {/* Stats Summary */}
+              <div className='d-flex gap-4 align-items-center'>
+                <div className='text-center'>
+                  <div
+                    className='fw-bold'
+                    style={{
+                      color: documents.length > 0 ? '#22c55e' : '#6b7280',
+                      fontSize: '1.2rem',
+                    }}
+                  >
+                    {documents.length}
+                  </div>
+                  <div
+                    className='small text-muted'
+                    style={{ fontSize: '0.8rem', fontWeight: '500' }}
+                  >
+                    Uploaded
+                  </div>
+                </div>
+                <div
+                  style={{
+                    width: '2px',
+                    height: '30px',
+                    background:
+                      'linear-gradient(to bottom, rgba(107, 114, 128, 0.3), transparent)',
+                  }}
+                />
+                <div className='text-center'>
+                  <div
+                    className='fw-bold'
+                    style={{
+                      color: missingRequirements > 0 ? '#ef4444' : '#22c55e',
+                      fontSize: '1.2rem',
+                    }}
+                  >
+                    {missingRequirements}
+                  </div>
+                  <div
+                    className='small text-muted'
+                    style={{ fontSize: '0.8rem', fontWeight: '500' }}
+                  >
+                    Missing
+                  </div>
+                </div>
+                <div
+                  style={{
+                    width: '2px',
+                    height: '30px',
+                    background:
+                      'linear-gradient(to bottom, rgba(107, 114, 128, 0.3), transparent)',
+                  }}
+                />
+                <div className='text-center'>
+                  <div
+                    className='fw-bold'
+                    style={{
+                      color: pendingDocs.length > 0 ? '#f59e0b' : '#22c55e',
+                      fontSize: '1.2rem',
+                    }}
+                  >
+                    {pendingDocs.length}
+                  </div>
+                  <div
+                    className='small text-muted'
+                    style={{ fontSize: '0.8rem', fontWeight: '500' }}
+                  >
+                    Pending Signature
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* CSS Animations */}
+        <style>{`
+          @keyframes float {
+            0%,
+            100% {
+              transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+              transform: translateY(-10px) rotate(2deg);
+            }
+          }
+
+          @keyframes selectionGlow {
+            0% {
+              opacity: 0.3;
+            }
+            100% {
+              opacity: 0.6;
+            }
+          }
+
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 1;
+            }
+            50% {
+              opacity: 0.7;
+            }
+          }
+        `}</style>
       </div>
 
       <SigningModal

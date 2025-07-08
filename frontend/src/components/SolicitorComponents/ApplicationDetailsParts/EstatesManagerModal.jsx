@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom'; // <-- Important for portal!
 import { API_URL } from '../../../baseUrls';
 import {
   deleteData,
@@ -119,7 +120,6 @@ const EstateManagerModal = ({
       console.error('Estate type is required for form submission');
       return;
     }
-
     const baseUrl = `${API_URL}/api/estates/${type}/`;
     const body = { ...data, application: applicationId };
 
@@ -144,11 +144,7 @@ const EstateManagerModal = ({
       console.error('Estate type and ID are required for deletion');
       return;
     }
-
-    if (!confirm('Are you sure you want to delete this estate?')) {
-      return;
-    }
-
+    if (!confirm('Are you sure you want to delete this estate?')) return;
     try {
       const deleteEndpoint = `${API_URL}/api/estates/${type}/${estate.id}/`;
       await deleteData(deleteEndpoint);
@@ -170,13 +166,10 @@ const EstateManagerModal = ({
       console.error('Estate type is required for saving');
       return;
     }
-
     setSavingStates((prev) => ({ ...prev, [type]: true }));
-
     try {
       const value = simpleValues[type];
       const existing = grouped[type]?.[0];
-
       if (existing?.id) {
         const updateEndpoint = `${API_URL}/api/estates/${type}/${existing.id}/`;
         await patchData(updateEndpoint, {
@@ -190,13 +183,11 @@ const EstateManagerModal = ({
           application: applicationId,
         });
       }
-
       setPendingChanges((prev) => {
         const newSet = new Set(prev);
         newSet.delete(type);
         return newSet;
       });
-
       refreshEstates();
     } catch (err) {
       console.error('Save error for', type, ':', err);
@@ -208,7 +199,6 @@ const EstateManagerModal = ({
 
   const handleSimpleDelete = async (type) => {
     const existing = grouped[type]?.[0];
-
     if (!existing?.id) {
       setSimpleValues((prev) => ({ ...prev, [type]: '' }));
       setPendingChanges((prev) => {
@@ -218,24 +208,18 @@ const EstateManagerModal = ({
       });
       return;
     }
-
-    if (!confirm(`Are you sure you want to delete ${estateLabels[type]}?`)) {
+    if (!confirm(`Are you sure you want to delete ${estateLabels[type]}?`))
       return;
-    }
-
     setSavingStates((prev) => ({ ...prev, [type]: true }));
-
     try {
       const deleteEndpoint = `${API_URL}/api/estates/${type}/${existing.id}/`;
       await deleteData(deleteEndpoint);
-
       setSimpleValues((prev) => ({ ...prev, [type]: '' }));
       setPendingChanges((prev) => {
         const newSet = new Set(prev);
         newSet.delete(type);
         return newSet;
       });
-
       refreshEstates();
     } catch (err) {
       console.error('Delete error for', type, ':', err);
@@ -376,7 +360,8 @@ const EstateManagerModal = ({
     );
   };
 
-  return (
+  // --- Modal JSX ---
+  const modalContent = (
     <div
       style={{
         position: 'fixed',
@@ -621,6 +606,9 @@ const EstateManagerModal = ({
       />
     </div>
   );
+
+  // Return with Portal!
+  return createPortal(modalContent, document.body);
 };
 
 export default EstateManagerModal;

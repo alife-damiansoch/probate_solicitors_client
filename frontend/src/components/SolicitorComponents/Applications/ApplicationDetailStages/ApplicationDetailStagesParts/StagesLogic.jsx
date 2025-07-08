@@ -60,6 +60,8 @@ export const getTimelineSteps = ({
       };
     }
 
+    console.log('ADVANCEMENT: ', advancement);
+
     switch (documentsAnalysis.status) {
       case 'waiting':
         return {
@@ -222,8 +224,8 @@ export const getTimelineSteps = ({
         ? 'Verified by legal representative'
         : 'Awaiting verification by legal representative',
       detailDescription: processingStatusComplete
-        ? 'All application details have been reviewed and verified by your assigned legal representative. You can now proceed to the next stage.'
-        : 'Your assigned legal representative will review all provided details for accuracy and completeness. Contact your legal representative to expedite this process.',
+        ? 'All application details have been reviewed and verified by your assigned agent. You can now proceed to the next stage.'
+        : 'Your assigned agent will review all provided details for accuracy and completeness. Contact your agent to expedite this process.',
       issueCount: processingStatusComplete ? 0 : estateValueComplete ? 1 : 0,
       actionText: processingStatusComplete
         ? null
@@ -258,34 +260,120 @@ export const getTimelineSteps = ({
       id: 'final_review',
       title: 'Final Review & Approval',
       sectionId: 'final_review',
-      icon: application.approved
-        ? 'checkCircle'
-        : application.is_rejected
+      icon: application.is_rejected
         ? 'x'
+        : application.approved
+        ? application.loan?.needs_committee_approval
+          ? application.loan?.is_committee_approved === true
+            ? application.loan?.is_paid_out
+              ? 'checkCircle'
+              : 'creditCard'
+            : application.loan?.is_committee_approved === false
+            ? 'x'
+            : 'users'
+          : application.loan?.is_paid_out
+          ? 'checkCircle'
+          : 'creditCard'
         : 'search',
-      completed: application.approved || application.is_rejected,
+      completed: (() => {
+        if (application.is_rejected) return true;
+        if (!application.approved) return false;
+        if (application.loan?.needs_committee_approval) {
+          if (
+            application.loan?.is_committee_approved === null ||
+            application.loan?.is_committee_approved === undefined
+          )
+            return false;
+          if (application.loan?.is_committee_approved === false) return true;
+          if (application.loan?.is_committee_approved === true) {
+            if (!application.loan?.is_paid_out) return false;
+            return true; // paid_out = completed, don't care about is_settled
+          }
+        } else {
+          if (!application.loan?.is_paid_out) return false;
+          return true; // paid_out = completed, don't care about is_settled
+        }
+        return false;
+      })(),
       actionRequired: false,
-      progress: application.approved
-        ? 100
-        : application.is_rejected
-        ? 100
-        : documentsConfig.completed
-        ? 90
-        : 80,
-      description: application.approved
-        ? 'Application approved'
-        : application.is_rejected
-        ? 'Application rejected'
-        : 'Under final review',
-      detailDescription: application.approved
-        ? 'Your application has been approved and is now being processed for final settlement.'
-        : application.is_rejected
-        ? 'Your application has been rejected. Contact your legal representative for details and next steps.'
-        : 'Your application is under final review by our processing team. You will be notified of the decision soon.',
-      issueCount: application.is_rejected ? 1 : 0,
-      actionText: application.is_rejected
-        ? 'Contact Legal Representative'
-        : null,
+      progress: (() => {
+        if (application.is_rejected) return 100;
+        if (!application.approved) return 80;
+        if (application.loan?.needs_committee_approval) {
+          if (
+            application.loan?.is_committee_approved === null ||
+            application.loan?.is_committee_approved === undefined
+          )
+            return 85;
+          if (application.loan?.is_committee_approved === false) return 100;
+          if (application.loan?.is_committee_approved === true) {
+            if (!application.loan?.is_paid_out) return 92;
+            return 100; // paid_out = 100, don't care about is_settled
+          }
+        } else {
+          if (!application.loan?.is_paid_out) return 92;
+          return 100; // paid_out = 100, don't care about is_settled
+        }
+        return 80;
+      })(),
+      description: (() => {
+        if (application.is_rejected) return 'Application rejected';
+        if (!application.approved) return 'Under final review';
+        if (application.loan?.needs_committee_approval) {
+          if (
+            application.loan?.is_committee_approved === null ||
+            application.loan?.is_committee_approved === undefined
+          )
+            return 'Awaiting committee approval';
+          if (application.loan?.is_committee_approved === false)
+            return 'Committee rejected';
+          if (application.loan?.is_committee_approved === true) {
+            if (!application.loan?.is_paid_out) return 'Awaiting payment';
+            return 'Advancement complete';
+          }
+        } else {
+          if (!application.loan?.is_paid_out) return 'Awaiting payment';
+          return 'Advancement complete';
+        }
+        return 'Under final review';
+      })(),
+      detailDescription: (() => {
+        if (application.is_rejected)
+          return 'Your application has been rejected. Contact your agent for details and next steps.';
+        if (!application.approved)
+          return 'Your application is under final review by our processing team. You will be notified of the decision soon.';
+        if (application.loan?.needs_committee_approval) {
+          if (
+            application.loan?.is_committee_approved === null ||
+            application.loan?.is_committee_approved === undefined
+          )
+            return 'Your application has been approved and is now pending committee review. You will be notified once a decision has been made.';
+          if (application.loan?.is_committee_approved === false)
+            return 'Your application was not approved by the committee. Please contact your agent for further details.';
+          if (application.loan?.is_committee_approved === true) {
+            if (!application.loan?.is_paid_out)
+              return 'Your application has passed all approvals and is now awaiting payment. Your assigned agent will contact you with further details.';
+            return 'Your application has been fully processed and payment has been issued. The advancement process is now complete. Once the probate process is finalised, please notify your agent so that settlement arrangements can be made. If you require any documentation or further assistance in the meantime, please contact your agent.';
+          }
+        } else {
+          if (!application.loan?.is_paid_out)
+            return 'Your application has been approved and is now awaiting payment. Your assigned agent will contact you with further details.';
+          return 'Your advancement has been fully processed and the application is now complete. If you require any documentation or further support, please contact your agent.';
+        }
+        return 'Your application is under final review by our processing team. You will be notified of the decision soon.';
+      })(),
+      issueCount:
+        application.is_rejected ||
+        (application.loan?.needs_committee_approval &&
+          application.loan?.is_committee_approved === false)
+          ? 1
+          : 0,
+      actionText:
+        application.is_rejected ||
+        (application.loan?.needs_committee_approval &&
+          application.loan?.is_committee_approved === false)
+          ? 'Contact Legal Representative'
+          : null,
     },
   ];
 
@@ -303,14 +391,8 @@ export const getTimelineSteps = ({
         ? `Advancement settled • ID: ${advancement.id}`
         : `Active advancement • ID: ${advancement.id}`,
       detailDescription: advancement.is_settled
-        ? `Settlement completed. Total amount: ${currency_sign}${(
-            advancement.amount_agreed || 0
-          ).toLocaleString()}`
-        : `Advancement approved and active. Current balance: ${currency_sign}${(
-            advancement.current_balance ||
-            advancement.amount_agreed ||
-            0
-          ).toLocaleString()}`,
+        ? `Settlement completed. Total amount: ${currency_sign}${(advancement?.loanbook_data?.total_due).toLocaleString()}`
+        : `Advancement approved and active. Current balance: ${currency_sign}${(advancement?.loanbook_data?.total_due).toLocaleString()}`,
       issueCount: 0,
       actionText: null,
     };
