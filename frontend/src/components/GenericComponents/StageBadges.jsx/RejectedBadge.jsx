@@ -1,11 +1,10 @@
+import { XCircle } from 'lucide-react';
 
-import { FaTimesCircle } from 'react-icons/fa';
-
-const RejectedBadge = () => {
+export const RejectedBadge = () => {
   return (
-    <div className='application-badge-container shadow'>
+    <div className='application-badge-container'>
       <div className='badge badge-danger'>
-        <FaTimesCircle className='me-2' />
+        <XCircle className='me-2' size={18} />
         Rejected
       </div>
     </div>

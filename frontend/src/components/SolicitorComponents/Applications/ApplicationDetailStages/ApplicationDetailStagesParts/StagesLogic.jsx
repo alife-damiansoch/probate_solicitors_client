@@ -255,7 +255,7 @@ export const getTimelineSteps = ({
       actionText: documentsConfig.actionText,
     },
 
-    // 7. Final Review & Approval
+    // 7. Final Review & Approval (Updated with Finance Check Stage)
     {
       id: 'final_review',
       title: 'Final Review & Approval',
@@ -265,14 +265,19 @@ export const getTimelineSteps = ({
         : application.approved
         ? application.loan?.needs_committee_approval
           ? application.loan?.is_committee_approved === true
-            ? application.loan?.is_paid_out
+            ? application.loan?.is_paid_out && application.loan?.paid_out_date
               ? 'checkCircle'
+              : application.loan?.is_paid_out &&
+                !application.loan?.paid_out_date
+              ? 'dollarSign' // Finance team reviewing
               : 'creditCard'
             : application.loan?.is_committee_approved === false
             ? 'x'
             : 'users'
-          : application.loan?.is_paid_out
+          : application.loan?.is_paid_out && application.loan?.paid_out_date
           ? 'checkCircle'
+          : application.loan?.is_paid_out && !application.loan?.paid_out_date
+          ? 'dollarSign' // Finance team reviewing
           : 'creditCard'
         : 'search',
       completed: (() => {
@@ -287,11 +292,18 @@ export const getTimelineSteps = ({
           if (application.loan?.is_committee_approved === false) return true;
           if (application.loan?.is_committee_approved === true) {
             if (!application.loan?.is_paid_out) return false;
-            return true; // paid_out = completed, don't care about is_settled
+            if (
+              application.loan?.is_paid_out &&
+              !application.loan?.paid_out_date
+            )
+              return false; // Finance check pending
+            return true; // Actually paid out
           }
         } else {
           if (!application.loan?.is_paid_out) return false;
-          return true; // paid_out = completed, don't care about is_settled
+          if (application.loan?.is_paid_out && !application.loan?.paid_out_date)
+            return false; // Finance check pending
+          return true; // Actually paid out
         }
         return false;
       })(),
@@ -308,11 +320,18 @@ export const getTimelineSteps = ({
           if (application.loan?.is_committee_approved === false) return 100;
           if (application.loan?.is_committee_approved === true) {
             if (!application.loan?.is_paid_out) return 92;
-            return 100; // paid_out = 100, don't care about is_settled
+            if (
+              application.loan?.is_paid_out &&
+              !application.loan?.paid_out_date
+            )
+              return 96; // Finance check
+            return 100; // Actually paid out
           }
         } else {
           if (!application.loan?.is_paid_out) return 92;
-          return 100; // paid_out = 100, don't care about is_settled
+          if (application.loan?.is_paid_out && !application.loan?.paid_out_date)
+            return 96; // Finance check
+          return 100; // Actually paid out
         }
         return 80;
       })(),
@@ -329,10 +348,17 @@ export const getTimelineSteps = ({
             return 'Committee rejected';
           if (application.loan?.is_committee_approved === true) {
             if (!application.loan?.is_paid_out) return 'Awaiting payment';
+            if (
+              application.loan?.is_paid_out &&
+              !application.loan?.paid_out_date
+            )
+              return 'Finance team final check';
             return 'Advancement complete';
           }
         } else {
           if (!application.loan?.is_paid_out) return 'Awaiting payment';
+          if (application.loan?.is_paid_out && !application.loan?.paid_out_date)
+            return 'Finance team final check';
           return 'Advancement complete';
         }
         return 'Under final review';
@@ -353,11 +379,18 @@ export const getTimelineSteps = ({
           if (application.loan?.is_committee_approved === true) {
             if (!application.loan?.is_paid_out)
               return 'Your application has passed all approvals and is now awaiting payment. Your assigned agent will contact you with further details.';
+            if (
+              application.loan?.is_paid_out &&
+              !application.loan?.paid_out_date
+            )
+              return 'Your application has been approved for payout and our finance team is conducting a final compliance check to ensure all requirements have been met. Payment will be processed once this review is complete.';
             return 'Your application has been fully processed and payment has been issued. The advancement process is now complete. Once the probate process is finalised, please notify your agent so that settlement arrangements can be made. If you require any documentation or further assistance in the meantime, please contact your agent.';
           }
         } else {
           if (!application.loan?.is_paid_out)
             return 'Your application has been approved and is now awaiting payment. Your assigned agent will contact you with further details.';
+          if (application.loan?.is_paid_out && !application.loan?.paid_out_date)
+            return 'Your application has been approved for payout and our finance team is conducting a final compliance check to ensure all requirements have been met. Payment will be processed once this review is complete.';
           return 'Your advancement has been fully processed and the application is now complete. If you require any documentation or further support, please contact your agent.';
         }
         return 'Your application is under final review by our processing team. You will be notified of the decision soon.';
@@ -392,7 +425,7 @@ export const getTimelineSteps = ({
         : `Active advancement • ID: ${advancement.id}`,
       detailDescription: advancement.is_settled
         ? `Settlement completed. Total amount: ${currency_sign}${(advancement?.loanbook_data?.total_due).toLocaleString()}`
-        : `Advancement approved and active. Current balance: ${currency_sign}${(advancement?.loanbook_data?.total_due).toLocaleString()}`,
+        : `Advancement approved and active. Current balance: ${currency_sign}${advancement?.loanbook_data?.total_due?.toLocaleString()}`,
       issueCount: 0,
       actionText: null,
     };

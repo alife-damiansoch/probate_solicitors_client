@@ -1,11 +1,11 @@
-import { FaCheckCircle } from 'react-icons/fa';
+import { EuroIcon } from 'lucide-react';
 
-const PaidOutBadge = () => {
+export const PaidOutBadge = () => {
   return (
-    <div className='application-badge-container shadow'>
-      <div className='badge badge-purple'>
-        <FaCheckCircle className='me-2' />
-        PaidOut
+    <div className='application-badge-container'>
+      <div className='badge badge-gold'>
+        <EuroIcon className='me-2' size={18} />
+        Paid Out
       </div>
     </div>
   );

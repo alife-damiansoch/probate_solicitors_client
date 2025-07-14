@@ -18,39 +18,246 @@ body{
 .badge {
   display: flex;
   align-items: center;
-  padding: 10px;
-  font-size: 1.2em;
-  font-weight: bold;
-  border-radius: 5px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 12px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: 0.02em;
+  gap: 8px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+.badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.badge:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 16px 64px rgba(0, 0, 0, 0.2),
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.badge:hover::before {
+  left: 100%;
+}
+
+.badge:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* DANGER - Bright Red for Rejected/Error states */
 .badge-danger {
-  background-color: rgba(255, 0, 0, 0.2);
-  color: red;
-  border: 2px solid red;
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.9) 0%,
+    rgba(185, 28, 28, 0.8) 50%,
+    rgba(153, 27, 27, 0.9) 100%
+  );
+  color: #ffffff;
+  border-color: #dc2626;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+.badge-danger:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 1) 0%,
+    rgba(185, 28, 28, 0.95) 50%,
+    rgba(153, 27, 27, 1) 100%
+  );
+  border-color: #f87171;
+  box-shadow: 
+    0 16px 64px rgba(220, 38, 38, 0.4),
+    0 8px 32px rgba(185, 28, 28, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* SUCCESS - Bright Green for Approved/Success states */
 .badge-success {
-  background-color: rgba(0, 255, 0, 0.2);
-  color: green;
-  border: 2px solid green;
+  background: linear-gradient(
+    135deg,
+    rgba(22, 163, 74, 0.9) 0%,
+    rgba(21, 128, 61, 0.8) 50%,
+    rgba(20, 83, 45, 0.9) 100%
+  );
+  color: #ffffff;
+  border-color: #16a34a;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+.badge-success:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 163, 74, 1) 0%,
+    rgba(21, 128, 61, 0.95) 50%,
+    rgba(20, 83, 45, 1) 100%
+  );
+  border-color: #4ade80;
+  box-shadow: 
+    0 16px 64px rgba(22, 163, 74, 0.4),
+    0 8px 32px rgba(21, 128, 61, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* WARNING - Bright Orange for Pending/Warning states */
 .badge-warning {
-  background-color: rgba(255, 165, 0, 0.2);
-  color: orange;
-  border: 2px solid orange;
+  background: linear-gradient(
+    135deg,
+    rgba(234, 88, 12, 0.9) 0%,
+    rgba(194, 65, 12, 0.8) 50%,
+    rgba(154, 52, 18, 0.9) 100%
+  );
+  color: #ffffff;
+  border-color: #ea580c;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+.badge-warning:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(234, 88, 12, 1) 0%,
+    rgba(194, 65, 12, 0.95) 50%,
+    rgba(154, 52, 18, 1) 100%
+  );
+  border-color: #fb923c;
+  box-shadow: 
+    0 16px 64px rgba(234, 88, 12, 0.4),
+    0 8px 32px rgba(194, 65, 12, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* PURPLE - Bright Purple for Review/Processing states */
 .badge-purple {
-  background-color: rgba(255, 111, 248, 0.2);
-  color: purple;
-  border: 2px solid purple;
+  background: linear-gradient(
+    135deg,
+    rgba(126, 34, 206, 0.9) 0%,
+    rgba(107, 33, 168, 0.8) 50%,
+    rgba(88, 28, 135, 0.9) 100%
+  );
+  color: #ffffff;
+  border-color: #7e22ce;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+.badge-purple:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(126, 34, 206, 1) 0%,
+    rgba(107, 33, 168, 0.95) 50%,
+    rgba(88, 28, 135, 1) 100%
+  );
+  border-color: #a855f7;
+  box-shadow: 
+    0 16px 64px rgba(126, 34, 206, 0.4),
+    0 8px 32px rgba(107, 33, 168, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* BLUE - Bright Blue for Settled/Completed states */
 .badge-blue {
-  background-color: rgba(117, 126, 245, 0.2);
-  color: blue;
-  border: 2px solid blue;
+  background: linear-gradient(
+    135deg,
+    rgba(29, 78, 216, 0.9) 0%,
+    rgba(30, 64, 175, 0.8) 50%,
+    rgba(30, 58, 138, 0.9) 100%
+  );
+  color: #ffffff;
+  border-color: #1d4ed8;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.badge-blue:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(29, 78, 216, 1) 0%,
+    rgba(30, 64, 175, 0.95) 50%,
+    rgba(30, 58, 138, 1) 100%
+  );
+  border-color: #3b82f6;
+  box-shadow: 
+    0 16px 64px rgba(29, 78, 216, 0.4),
+    0 8px 32px rgba(30, 64, 175, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* GOLD - Bright Gold for Paid Out states */
+.badge-gold {
+  background: linear-gradient(
+    135deg,
+    rgba(202, 138, 4, 0.9) 0%,
+    rgba(161, 98, 7, 0.8) 50%,
+    rgba(133, 77, 14, 0.9) 100%
+  );
+  color: #ffffff;
+  border-color: #ca8a04;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.badge-gold:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(202, 138, 4, 1) 0%,
+    rgba(161, 98, 7, 0.95) 50%,
+    rgba(133, 77, 14, 1) 100%
+  );
+  border-color: #fbbf24;
+  box-shadow: 
+    0 16px 64px rgba(202, 138, 4, 0.4),
+    0 8px 32px rgba(161, 98, 7, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Icon styling */
+.badge svg {
+  font-size: 1.1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.badge .me-2 {
+  margin-right: 8px !important;
+  font-size: 1.1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .badge {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .badge svg,
+  .badge .me-2 {
+    font-size: 1rem;
+  }
 }
 
 .input-icon-wrapper {

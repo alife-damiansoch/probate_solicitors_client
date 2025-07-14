@@ -1,11 +1,10 @@
+import { FileCheck } from 'lucide-react';
 
-import { FaCheckCircle } from 'react-icons/fa';
-
-const ApprovedBadge = () => {
+export const ApprovedBadge = () => {
   return (
-    <div className='application-badge-container shadow'>
+    <div className='application-badge-container'>
       <div className='badge badge-success'>
-        <FaCheckCircle className='me-2' />
+        <FileCheck className='me-2' size={18} />
         Approved
       </div>
     </div>

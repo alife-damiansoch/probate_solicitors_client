@@ -1,14 +1,14 @@
-import { FaCheckCircle } from 'react-icons/fa';
+import { CheckCircle } from 'lucide-react';
 
-const SettledBadge = () => {
+// SETTLED BADGE - Blue with checkmark (Final completion)
+export const SettledBadge = () => {
   return (
-    <div className='application-badge-container shadow'>
+    <div className='application-badge-container'>
       <div className='badge badge-blue'>
-        <FaCheckCircle className='me-2' />
+        <CheckCircle className='me-2' size={18} />
         Settled
       </div>
     </div>
   );
 };
-
 export default SettledBadge;

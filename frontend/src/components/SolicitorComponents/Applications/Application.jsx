@@ -17,6 +17,7 @@ import {
   FaMoneyBillWave,
   FaUser,
 } from 'react-icons/fa';
+import ProcessingBadge from '../../GenericComponents/StageBadges.jsx/ProcessingBadge';
 import { formatMoney } from '../../GenericFunctions/HelperGenericFunctions';
 
 const Application = ({ application }) => {
@@ -33,48 +34,112 @@ const Application = ({ application }) => {
     navigate(`/applications/${formData.id}`);
   };
 
+  console.log('AIILICATION', application);
+
   // Get enhanced status colors and themes
   const getStatusTheme = () => {
-    if (rejectedInAnyStage)
+    // REJECTED - Deep crimson with sophisticated depth
+    if (rejectedInAnyStage) {
       return {
-        primary: '#ef4444',
-        secondary: '#dc2626',
-        gradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        primary: '#dc2626',
+        secondary: '#991b1b',
+        gradient: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
         lightGradient:
-          'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
+          'linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(153, 27, 27, 0.06) 100%)',
         accent: '#ef4444',
-        bg: 'rgba(239, 68, 68, 0.08)',
-        border: 'rgba(239, 68, 68, 0.2)',
-        text: '#dc2626',
-        glow: 'rgba(239, 68, 68, 0.3)',
+        bg: 'rgba(220, 38, 38, 0.1)',
+        border: 'rgba(220, 38, 38, 0.25)',
+        text: '#991b1b',
+        glow: 'rgba(220, 38, 38, 0.35)',
+        meshGradient:
+          'radial-gradient(circle at 30% 20%, rgba(220, 38, 38, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(153, 27, 27, 0.12) 0%, transparent 60%)',
+        shadow: '0 8px 32px rgba(220, 38, 38, 0.2)',
+        hoverShadow: '0 16px 48px rgba(220, 38, 38, 0.3)',
       };
-    if (approvedInAnyStage)
+    }
+
+    // APPROVED - Sophisticated emerald with multiple states
+    if (approvedInAnyStage) {
+      // Check for different loan states and return appropriate green variants
+      if (application?.loan?.is_settled) {
+        // SETTLED - Deep teal-blue for completion
+        return {
+          primary: '#0891b2',
+          secondary: '#0e7490',
+          gradient: 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
+          lightGradient:
+            'linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(14, 116, 144, 0.06) 100%)',
+          accent: '#06b6d4',
+          bg: 'rgba(8, 145, 178, 0.1)',
+          border: 'rgba(8, 145, 178, 0.25)',
+          text: '#155e75',
+          glow: 'rgba(8, 145, 178, 0.35)',
+          meshGradient:
+            'radial-gradient(circle at 30% 20%, rgba(8, 145, 178, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(14, 116, 144, 0.12) 0%, transparent 60%)',
+          shadow: '0 8px 32px rgba(8, 145, 178, 0.2)',
+          hoverShadow: '0 16px 48px rgba(8, 145, 178, 0.3)',
+        };
+      }
+
+      if (application?.loan?.is_paid_out) {
+        // PAID OUT - Rich amber-gold
+        return {
+          primary: '#d97706',
+          secondary: '#b45309',
+          gradient: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+          lightGradient:
+            'linear-gradient(135deg, rgba(217, 119, 6, 0.12) 0%, rgba(180, 83, 9, 0.06) 100%)',
+          accent: '#f59e0b',
+          bg: 'rgba(217, 119, 6, 0.1)',
+          border: 'rgba(217, 119, 6, 0.25)',
+          text: '#92400e',
+          glow: 'rgba(217, 119, 6, 0.35)',
+          meshGradient:
+            'radial-gradient(circle at 30% 20%, rgba(217, 119, 6, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(180, 83, 9, 0.12) 0%, transparent 60%)',
+          shadow: '0 8px 32px rgba(217, 119, 6, 0.2)',
+          hoverShadow: '0 16px 48px rgba(217, 119, 6, 0.3)',
+        };
+      }
+
+      // APPROVED (default) - Fresh forest green
       return {
-        primary: '#22c55e',
-        secondary: '#16a34a',
-        gradient: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+        primary: '#16a34a',
+        secondary: '#15803d',
+        gradient: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
         lightGradient:
-          'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)',
+          'linear-gradient(135deg, rgba(22, 163, 74, 0.12) 0%, rgba(21, 128, 61, 0.06) 100%)',
         accent: '#22c55e',
-        bg: 'rgba(34, 197, 94, 0.08)',
-        border: 'rgba(34, 197, 94, 0.2)',
+        bg: 'rgba(22, 163, 74, 0.1)',
+        border: 'rgba(22, 163, 74, 0.25)',
         text: '#166534',
-        glow: 'rgba(34, 197, 94, 0.3)',
+        glow: 'rgba(22, 163, 74, 0.35)',
+        meshGradient:
+          'radial-gradient(circle at 30% 20%, rgba(22, 163, 74, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(21, 128, 61, 0.12) 0%, transparent 60%)',
+        shadow: '0 8px 32px rgba(22, 163, 74, 0.2)',
+        hoverShadow: '0 16px 48px rgba(22, 163, 74, 0.3)',
       };
+    }
+
+    // DEFAULT - IN PROGRESS - Warm terra cotta orange
     return {
-      primary: '#3b82f6',
-      secondary: '#2563eb',
-      gradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      primary: '#ea580c',
+      secondary: '#c2410c',
+      gradient: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
       lightGradient:
-        'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%)',
-      accent: '#3b82f6',
-      bg: 'rgba(59, 130, 246, 0.08)',
-      border: 'rgba(59, 130, 246, 0.2)',
-      text: '#1e40af',
-      glow: 'rgba(59, 130, 246, 0.3)',
+        'linear-gradient(135deg, rgba(234, 88, 12, 0.12) 0%, rgba(194, 65, 12, 0.06) 100%)',
+      accent: '#f97316',
+      bg: 'rgba(234, 88, 12, 0.1)',
+      border: 'rgba(234, 88, 12, 0.25)',
+      text: '#9a3412',
+      glow: 'rgba(234, 88, 12, 0.35)',
+      meshGradient:
+        'radial-gradient(circle at 30% 20%, rgba(234, 88, 12, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(194, 65, 12, 0.12) 0%, transparent 60%)',
+      shadow: '0 8px 32px rgba(234, 88, 12, 0.2)',
+      hoverShadow: '0 16px 48px rgba(234, 88, 12, 0.3)',
     };
   };
 
+  // Your usage stays exactly the same:
   const theme = getStatusTheme();
 
   return (
@@ -156,7 +221,7 @@ const Application = ({ application }) => {
           {/* Enhanced Status Badges */}
           <div
             className='position-absolute'
-            style={{ top: '16px', right: '20px', zIndex: 3 }}
+            style={{ top: '5px', right: '0px', zIndex: 3 }}
           >
             <div
               style={{
@@ -170,6 +235,12 @@ const Application = ({ application }) => {
               {approvedInAnyStage &&
                 application.loan !== null &&
                 application.loan.is_paid_out &&
+                !application.loan.paid_out_date &&
+                !application.loan.is_settled && <ProcessingBadge />}
+              {approvedInAnyStage &&
+                application.loan !== null &&
+                application.loan.is_paid_out &&
+                application.loan.paid_out_date &&
                 !application.loan.is_settled && <PaidOutBadge />}
               {approvedInAnyStage &&
                 application.loan !== null &&

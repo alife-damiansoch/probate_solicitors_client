@@ -281,6 +281,7 @@ const RequiredDetailsPart = ({
     const isCommitteeApproved = loan.is_committee_approved;
     const isPaidOut = loan.is_paid_out;
     const isSettled = loan.is_settled;
+    const paidOutDate = loan.paid_out_date;
 
     // Logic for icon, color, main status, and description
     let statusColor = '#64748b';
@@ -296,7 +297,7 @@ const RequiredDetailsPart = ({
       detailText =
         'Your application has been rejected. Contact your agent for details and next steps.';
     } else if (isApproved) {
-      // Order: committee → payout → settlement
+      // Order: committee → payout → finance check → settlement
       if (needsCommittee) {
         if (isCommitteeApproved === null || isCommitteeApproved === undefined) {
           statusColor = '#f59e0b';
@@ -317,6 +318,13 @@ const RequiredDetailsPart = ({
             statusText = 'Awaiting Payment';
             detailText =
               'Your application has passed all approvals and is now awaiting payment. Your assigned agent will contact you with further details.';
+          } else if (isPaidOut && !paidOutDate) {
+            // NEW: Finance team final check stage
+            statusColor = '#7c3aed';
+            icon = 'fa-calculator';
+            statusText = 'Finance Team Final Check';
+            detailText =
+              'Your application has been approved for payout and our finance team is conducting a final compliance check to ensure all requirements have been met. Payment will be processed once this review is complete.';
           } else if (!isSettled) {
             statusColor = '#6366f1';
             icon = 'fa-file-alt';
@@ -332,12 +340,20 @@ const RequiredDetailsPart = ({
           }
         }
       } else {
+        // Non-committee path
         if (!isPaidOut) {
           statusColor = '#2563eb';
           icon = 'fa-credit-card';
           statusText = 'Awaiting Payment';
           detailText =
             'Your application has been approved and is now awaiting payment. Your assigned agent will contact you with further details.';
+        } else if (isPaidOut && !paidOutDate) {
+          // NEW: Finance team final check stage
+          statusColor = '#7c3aed';
+          icon = 'fa-calculator';
+          statusText = 'Finance Team Final Check';
+          detailText =
+            'Your application has been approved for payout and our finance team is conducting a final compliance check to ensure all requirements have been met. Payment will be processed once this review is complete.';
         } else if (!isSettled) {
           statusColor = '#6366f1';
           icon = 'fa-file-alt';
@@ -358,7 +374,7 @@ const RequiredDetailsPart = ({
 
     return (
       <div
-        className='modern-main-card mb-4 position-relative overflow-hidden'
+        className='modern-main-card mb-4 position-relative overflow-hidden mt-4'
         style={{
           background: `
           linear-gradient(135deg, rgba(255,255,255,0.10), rgba(248,250,252,0.05)),
@@ -651,7 +667,7 @@ const RequiredDetailsPart = ({
 
     return (
       <div
-        className='modern-main-card mb-4 position-relative overflow-hidden'
+        className='modern-main-card mb-4 position-relative overflow-hidden mt-4'
         style={{
           background: `
           linear-gradient(135deg, rgba(255,255,255,0.1), rgba(248,250,252,0.05)),
@@ -813,6 +829,7 @@ const RequiredDetailsPart = ({
                 isVerified ? 'rgba(16,185,129,0.21)' : 'rgba(245,158,11,0.19)'
               }`,
               boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+              marginTop: '20px',
             }}
           >
             {/* Status glow */}
@@ -1441,7 +1458,7 @@ border-radius: 4px;
               style={{
                 alignSelf: window.innerWidth < 700 ? 'center' : 'flex-end',
                 marginTop: window.innerWidth < 700 ? '1.1rem' : 0,
-                minWidth: 0,
+                // minWidth: 0,
                 padding:
                   window.innerWidth < 700 ? '0.6rem 1.1rem' : '1rem 1.5rem',
                 background: `
