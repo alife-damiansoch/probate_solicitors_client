@@ -153,26 +153,27 @@ const SolicitorPart = ({
 
       {/* Premium Header */}
       <div
-        className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+        className='px-2 px-md-4 py-3 py-md-4 d-flex align-items-center gap-2 gap-md-3 position-relative'
         style={{
           background: `
-            linear-gradient(135deg, #8b5cf6, #7c3aed),
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
-          `,
+      linear-gradient(135deg, #8b5cf6, #7c3aed),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
+    `,
           color: '#ffffff',
           borderTopLeftRadius: '22px',
           borderTopRightRadius: '22px',
           backdropFilter: 'blur(10px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          minHeight: window.innerWidth < 768 ? '80px' : 'auto',
         }}
       >
-        {/* Icon with Micro-animation */}
+        {/* Icon with Micro-animation - Responsive sizing */}
         <div
-          className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+          className='d-flex align-items-center justify-content-center rounded-circle position-relative flex-shrink-0'
           style={{
-            width: '56px',
-            height: '56px',
+            width: window.innerWidth < 768 ? '40px' : '56px',
+            height: window.innerWidth < 768 ? '40px' : '56px',
             background: 'rgba(255, 255, 255, 0.15)',
             border: '2px solid rgba(255, 255, 255, 0.25)',
             backdropFilter: 'blur(10px)',
@@ -188,11 +189,11 @@ const SolicitorPart = ({
             e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
           }}
         >
-          <FaUserTie size={20} />
+          <FaUserTie size={window.innerWidth < 768 ? 16 : 20} />
 
           {/* Subtle glow effect */}
           <div
-            className='position-absolute rounded-circle'
+            className='position-absolute rounded-circle d-none d-md-block'
             style={{
               top: '-10px',
               left: '-10px',
@@ -205,61 +206,108 @@ const SolicitorPart = ({
           />
         </div>
 
-        <div className='flex-grow-1'>
+        {/* Content area - Responsive layout */}
+        <div className='flex-grow-1 min-w-0'>
           <h5
-            className='fw-bold mb-2 text-white'
-            style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+            className='fw-bold mb-1 mb-md-2 text-white'
+            style={{
+              fontSize: window.innerWidth < 768 ? '1.1rem' : '1.4rem',
+              letterSpacing: '-0.02em',
+              lineHeight: '1.2',
+            }}
           >
-            Legal Representation
+            <span className='d-none d-sm-inline'>Legal Representation</span>
+            <span className='d-inline d-sm-none'>Legal Rep</span>
           </h5>
           <div
-            className='px-3 py-2 rounded-pill fw-semibold text-white'
+            className='px-2 px-md-3 py-1 py-md-2 rounded-pill fw-semibold text-white'
             style={{
               background: 'rgba(255, 255, 255, 0.1)',
-              fontSize: '0.9rem',
+              fontSize: window.innerWidth < 768 ? '0.75rem' : '0.9rem',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               display: 'inline-block',
               backdropFilter: 'blur(10px)',
               letterSpacing: '0.02em',
             }}
           >
-            Assigned Solicitor
+            <span className='d-none d-sm-inline'>Assigned Solicitor</span>
+            <span className='d-inline d-sm-none'>Solicitor</span>
           </div>
         </div>
 
-        {/* Status Badge */}
-        <span
-          className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+        {/* Responsive Status Badge */}
+        <div className='flex-shrink-0'>
+          <span
+            className='px-2 px-md-4 py-2 py-md-3 rounded-pill text-white fw-bold d-flex align-items-center gap-1 gap-md-2'
+            style={{
+              background: assignedSolicitor
+                ? 'linear-gradient(135deg, #22c55e, #16a34a)'
+                : 'linear-gradient(135deg, #ef4444, #dc2626)',
+              fontSize: window.innerWidth < 768 ? '0.75rem' : '0.9rem',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              boxShadow:
+                window.innerWidth < 768
+                  ? '0 4px 12px rgba(0, 0, 0, 0.15)'
+                  : '0 8px 16px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.3s ease',
+              cursor: 'default',
+              letterSpacing: '0.02em',
+              minWidth: window.innerWidth < 768 ? '70px' : 'auto',
+              justifyContent: 'center',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <svg
+              width={window.innerWidth < 768 ? '14' : '18'}
+              height={window.innerWidth < 768 ? '14' : '18'}
+              fill='currentColor'
+              viewBox='0 0 20 20'
+              className='flex-shrink-0'
+            >
+              {assignedSolicitor ? (
+                <path
+                  fillRule='evenodd'
+                  d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                  clipRule='evenodd'
+                />
+              ) : (
+                <path
+                  fillRule='evenodd'
+                  d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
+                  clipRule='evenodd'
+                />
+              )}
+            </svg>
+            <span className='d-none d-sm-inline'>
+              {assignedSolicitor ? 'Assigned' : 'Required'}
+            </span>
+            <span className='d-inline d-sm-none'>
+              {assignedSolicitor ? 'OK' : '!'}
+            </span>
+          </span>
+        </div>
+
+        {/* Mobile-specific gradient overlay for better text contrast */}
+        <div
+          className='position-absolute top-0 start-0 w-100 h-100 d-block d-md-none'
           style={{
-            background: assignedSolicitor
-              ? 'linear-gradient(135deg, #22c55e, #16a34a)'
-              : 'linear-gradient(135deg, #ef4444, #dc2626)',
-            fontSize: '0.9rem',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease',
-            cursor: 'default',
-            letterSpacing: '0.02em',
+            background:
+              'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)',
+            borderTopLeftRadius: '22px',
+            borderTopRightRadius: '22px',
+            pointerEvents: 'none',
+            zIndex: 0,
           }}
-        >
-          <svg width='18' height='18' fill='currentColor' viewBox='0 0 20 20'>
-            {assignedSolicitor ? (
-              <path
-                fillRule='evenodd'
-                d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
-                clipRule='evenodd'
-              />
-            ) : (
-              <path
-                fillRule='evenodd'
-                d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
-                clipRule='evenodd'
-              />
-            )}
-          </svg>
-          {assignedSolicitor ? 'Assigned' : 'Required'}
-        </span>
+        />
+
+        {/* Ensure content is above overlay */}
+        <style jsx>{`
+          .position-relative > * {
+            position: relative;
+            z-index: 1;
+          }
+        `}</style>
       </div>
 
       {/* Content Area */}
