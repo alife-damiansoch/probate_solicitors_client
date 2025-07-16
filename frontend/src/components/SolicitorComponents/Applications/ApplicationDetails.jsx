@@ -1,4 +1,4 @@
-// Updated ApplicationDetails.js - Bootstrap Responsive
+// Updated ApplicationDetails.js - Bootstrap Responsive with Professional Tooltip
 import { useEffect, useState } from 'react';
 import { HiOutlineMenuAlt2, HiX } from 'react-icons/hi';
 import { useParams } from 'react-router-dom';
@@ -31,8 +31,30 @@ const ApplicationDetails = () => {
   // Mobile sidebar state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Tooltip state - check localStorage for tooltip visibility
+  const [showTooltip, setShowTooltip] = useState(() => {
+    try {
+      const tooltipDismissed = localStorage.getItem(
+        'mobile-stages-tooltip-dismissed'
+      );
+      return !tooltipDismissed;
+    } catch {
+      return true; // Default to showing tooltip if localStorage is not available
+    }
+  });
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+    // Hide tooltip when button is pressed and save to localStorage
+    if (showTooltip) {
+      setShowTooltip(false);
+      try {
+        localStorage.setItem('mobile-stages-tooltip-dismissed', 'true');
+      } catch {
+        // Handle localStorage errors gracefully
+        console.warn('Could not save tooltip state to localStorage');
+      }
+    }
   };
 
   const closeSidebar = () => {
@@ -158,6 +180,8 @@ const ApplicationDetails = () => {
       style={{
         backgroundColor: '#1F2049',
         marginLeft: window.innerWidth >= 1024 ? '340px' : '0',
+        paddingLeft: window.innerWidth < 1024 ? '8px' : '0',
+        paddingRight: window.innerWidth < 1024 ? '8px' : '0',
       }}
     >
       {/* Background Pattern */}
@@ -176,39 +200,115 @@ const ApplicationDetails = () => {
         }}
       />
 
-      {/* Mobile Stages Toggle Button */}
-      <button
-        className='btn d-lg-none stages-toggle-btn position-fixed'
-        onClick={toggleSidebar}
-        aria-label='Toggle stages sidebar'
+      {/* Mobile Stages Toggle Button with Tooltip */}
+      <div
+        className='d-lg-none position-fixed'
         style={{
           top: '50%',
           left: '16px',
           transform: 'translateY(-50%)',
           zIndex: 1050,
-          background:
-            'linear-gradient(145deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 50%, rgba(29, 78, 216, 0.9) 100%)',
-          border: '2px solid rgba(59, 130, 246, 0.3)',
-          color: 'white',
-          borderRadius: '50%',
-          width: '50px',
-          height: '50px',
-          boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)',
-          transition: 'all 0.3s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)';
-          e.currentTarget.style.boxShadow =
-            '0 6px 20px rgba(59, 130, 246, 0.6)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-          e.currentTarget.style.boxShadow =
-            '0 4px 15px rgba(59, 130, 246, 0.4)';
         }}
       >
-        {isSidebarOpen ? <HiX size={24} /> : <HiOutlineMenuAlt2 size={24} />}
-      </button>
+        {/* Professional Tooltip */}
+        {showTooltip && (
+          <div
+            className='position-absolute'
+            style={{
+              left: '60px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 1051,
+              animation: 'tooltipFadeIn 0.4s ease-out',
+            }}
+          >
+            <div
+              className='px-3 py-2 text-white rounded-2 shadow-lg'
+              style={{
+                background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                backdropFilter: 'blur(10px)',
+                fontSize: '0.85rem',
+                fontWeight: '500',
+                letterSpacing: '0.02em',
+                minWidth: '200px',
+                maxWidth: '280px',
+                boxShadow:
+                  '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(59, 130, 246, 0.2)',
+                position: 'relative',
+              }}
+            >
+              Click here to view application progress and next steps
+              {/* Tooltip Arrow */}
+              <div
+                className='position-absolute'
+                style={{
+                  left: '-6px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '12px',
+                  height: '12px',
+                  background:
+                    'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  borderRight: 'none',
+                  borderBottom: 'none',
+                  transform: 'translateY(-50%) rotate(45deg)',
+                }}
+              />
+              {/* Subtle glow effect */}
+              <div
+                className='position-absolute top-0 start-0 w-100 h-100 rounded-2'
+                style={{
+                  background:
+                    'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
+                  opacity: 0.6,
+                  pointerEvents: 'none',
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Toggle Button */}
+        <button
+          className='btn stages-toggle-btn'
+          onClick={toggleSidebar}
+          aria-label='Toggle stages sidebar'
+          style={{
+            background:
+              'linear-gradient(145deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 50%, rgba(29, 78, 216, 0.9) 100%)',
+            border: '2px solid rgba(59, 130, 246, 0.3)',
+            color: 'white',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            boxShadow: showTooltip
+              ? '0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4)'
+              : '0 4px 15px rgba(59, 130, 246, 0.4)',
+            transition: 'all 0.3s ease',
+            transform: showTooltip ? 'scale(1.05)' : 'scale(1)',
+            animation: showTooltip
+              ? 'buttonPulse 2s ease-in-out infinite'
+              : 'none',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)';
+            e.currentTarget.style.boxShadow =
+              '0 6px 20px rgba(59, 130, 246, 0.6)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = showTooltip
+              ? 'scale(1.05)'
+              : 'scale(1)';
+            e.currentTarget.style.boxShadow = showTooltip
+              ? '0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4)'
+              : '0 4px 15px rgba(59, 130, 246, 0.4)';
+          }}
+        >
+          {isSidebarOpen ? <HiX size={24} /> : <HiOutlineMenuAlt2 size={24} />}
+        </button>
+      </div>
 
       {/* Overlay for mobile */}
       <div
@@ -229,13 +329,15 @@ const ApplicationDetails = () => {
 
       {/* Fixed Progress Sidebar */}
       <div
-        className={`modern-stages-sidebar position-fixed h-100 ${
+        className={`modern-stages-sidebar position-fixed ${
           isSidebarOpen ? 'show' : ''
         }`}
         style={{
           left:
             window.innerWidth >= 1024 ? '0' : isSidebarOpen ? '0' : '-340px',
           top: 0,
+          bottom: 0,
+          height: '100vh',
           width: '340px',
           background:
             'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
@@ -247,25 +349,46 @@ const ApplicationDetails = () => {
           boxShadow:
             '8px 0 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(59, 130, 246, 0.1)',
           transition: 'left 0.3s ease-in-out',
+          WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(59, 130, 246, 0.3) transparent',
         }}
       >
-        <ModernApplicationProgress
-          application={application}
-          setHighlightedSectionId={setHighlightedSectionId}
-          estates={estates}
-          advancement={advancement}
-          refresh={refresh}
-          highlitedSectionId={highlitedSectionId}
-        />
+        <div
+          style={{
+            height: '100%',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <ModernApplicationProgress
+            application={application}
+            setHighlightedSectionId={setHighlightedSectionId}
+            estates={estates}
+            advancement={advancement}
+            refresh={refresh}
+            highlitedSectionId={highlitedSectionId}
+          />
+        </div>
       </div>
 
       {/* Navigation */}
-      <div className='p-2 p-md-3 m-0'>
+      <div
+        className='p-2 p-md-3'
+        style={{ margin: window.innerWidth < 1024 ? '0' : 'initial' }}
+      >
         <BackToApplicationsIcon backUrl={-1} />
       </div>
 
       {/* Main Content Container */}
-      <div className='container-fluid p-0 pb-5'>
+      <div
+        className='container-fluid'
+        style={{
+          padding: window.innerWidth < 1024 ? '0' : 'initial',
+          paddingBottom: '2rem',
+        }}
+      >
         <div className='row justify-content-center g-0'>
           <div className='col-12'>
             <div
@@ -278,6 +401,7 @@ const ApplicationDetails = () => {
                 boxShadow:
                   '0 10px 25px rgba(0, 0, 0, 0.08), 0 0 30px rgba(59, 130, 246, 0.05)',
                 zIndex: 1,
+                margin: window.innerWidth < 1024 ? '0' : 'initial',
               }}
             >
               {/* Compact Status Alert */}
@@ -285,7 +409,7 @@ const ApplicationDetails = () => {
                 application.approved ||
                 isApplicationLocked) && (
                 <div
-                  className={`d-flex flex-row align-items-center gap-2 gap-md-3 p-2 p-md-4 mx-1 mx-md-3 rounded-2 rounded-md-3 border-start border-3 border-md-4`}
+                  className={`d-flex flex-row align-items-center gap-2 gap-md-3 p-2 p-md-4 rounded-2 rounded-md-3 border-start border-3 border-md-4`}
                   style={{
                     background: application.is_rejected
                       ? 'linear-gradient(145deg, rgba(254, 242, 242, 0.95) 0%, rgba(254, 202, 202, 0.95) 50%, rgba(254, 242, 242, 0.95) 100%)'
@@ -299,6 +423,7 @@ const ApplicationDetails = () => {
                       : '#d97706',
                     backdropFilter: 'blur(15px)',
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+                    margin: window.innerWidth < 1024 ? '8px' : '16px 24px',
                   }}
                 >
                   <div
@@ -411,8 +536,16 @@ const ApplicationDetails = () => {
 
               {/* Application Details Section */}
               <div className='border-bottom-0'>
-                <div className='p-0'>
-                  <div className='m-0'>
+                <div
+                  style={{
+                    padding: window.innerWidth < 1024 ? '0' : 'initial',
+                  }}
+                >
+                  <div
+                    style={{
+                      margin: window.innerWidth < 1024 ? '0' : 'initial',
+                    }}
+                  >
                     <div
                       className='position-relative overflow-hidden'
                       style={{
@@ -434,8 +567,10 @@ const ApplicationDetails = () => {
                       />
 
                       <div
-                        className='p-1'
-                        style={{ backgroundColor: '#1F2049' }}
+                        style={{
+                          backgroundColor: '#1F2049',
+                          padding: window.innerWidth < 1024 ? '4px' : '8px',
+                        }}
                       >
                         {/* Delete Application Modal */}
                         {deleteAppId !== '' && (
@@ -467,6 +602,59 @@ const ApplicationDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes tooltipFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-50%) translateX(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+          }
+        }
+        
+        @keyframes buttonPulse {
+          0%, 100% {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4);
+          }
+          50% {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6);
+          }
+        }
+
+        /* Custom scrollbar for progress sidebar */
+        .modern-stages-sidebar::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .modern-stages-sidebar::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.3);
+          border-radius: 3px;
+        }
+        
+        .modern-stages-sidebar::-webkit-scrollbar-thumb {
+          background: rgba(59, 130, 246, 0.4);
+          border-radius: 3px;
+        }
+        
+        .modern-stages-sidebar::-webkit-scrollbar-thumb:hover {
+          background: rgba(59, 130, 246, 0.6);
+        }
+
+        /* Ensure proper touch scrolling on mobile */
+        @media (max-width: 1023px) {
+          .modern-stages-sidebar {
+            -webkit-overflow-scrolling: touch !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
