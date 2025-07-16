@@ -9,19 +9,18 @@
 //   },
 // });
 
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
   server: {
     port: 4000,
     open: true,
-     allowedHosts: ['ab96-79-97-102-189.ngrok-free.app'],
+    allowedHosts: ['ab96-79-97-102-189.ngrok-free.app'],
   },
   build: {
     cssCodeSplit: true,
     chunkSizeWarningLimit: 1000,
   },
 });
-
