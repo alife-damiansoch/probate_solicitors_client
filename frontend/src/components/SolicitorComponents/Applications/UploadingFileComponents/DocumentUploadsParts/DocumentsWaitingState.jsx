@@ -20,22 +20,23 @@ export const DocumentsWaitingState = ({ application }) => {
     return messages[animationStep];
   };
 
+  const getMobileStatusMessage = () => {
+    const messages = [
+      'Configuring documents...',
+      'Setting up requirements...',
+      'Preparing templates...',
+    ];
+    return messages[animationStep];
+  };
+
   return (
     <div
+      className='h-100 d-flex flex-column flex-md-row align-items-center justify-content-between position-relative overflow-hidden p-3 p-md-4 rounded-3 rounded-lg-4'
       style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
         background: 'linear-gradient(135deg, #0f172a, #1e293b, #334155)',
-        borderRadius: '24px',
         border: '1px solid rgba(59,130,246,0.2)',
-        overflow: 'hidden',
-        position: 'relative',
-        padding: '20px',
         boxShadow:
-          '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(59, 130, 246, 0.1)',
+          '0 10px 25px rgba(0, 0, 0, 0.15), 0 0 20px rgba(59, 130, 246, 0.1)',
       }}
     >
       <style>
@@ -54,21 +55,35 @@ export const DocumentsWaitingState = ({ application }) => {
             100% { background-position: 200% 0; }
           }
           @keyframes orbit {
-            0% { transform: translate(-50%, -50%) rotate(0deg) translateX(45px) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg) translateX(45px) rotate(-360deg); }
+            0% { transform: translate(-50%, -50%) rotate(0deg) translateX(35px) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) translateX(35px) rotate(-360deg); }
+          }
+          @keyframes orbitMobile {
+            0% { transform: translate(-50%, -50%) rotate(0deg) translateX(25px) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) translateX(25px) rotate(-360deg); }
           }
           @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.3); }
+            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.3); }
+          }
+          @keyframes glowMobile {
+            0%, 100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.3); }
+          }
+          @media (max-width: 768px) {
+            .orbit-animation { animation: orbitMobile 4s linear infinite !important; }
+            .orbit-animation-reverse { animation: orbitMobile 6s linear infinite reverse !important; }
+            .glow-animation { animation: glowMobile 3s ease-in-out infinite !important; }
           }
         `}
       </style>
 
       {/* Background Glow */}
       <div
+        className='position-absolute w-100 h-100'
         style={{
-          position: 'absolute',
-          inset: 0,
+          top: 0,
+          left: 0,
           background: `
             radial-gradient(circle at 20% 30%, rgba(59,130,246,0.1) 0%, transparent 50%),
             radial-gradient(circle at 80% 70%, rgba(16,185,129,0.1) 0%, transparent 50%),
@@ -80,43 +95,49 @@ export const DocumentsWaitingState = ({ application }) => {
 
       {/* Left Animated Ring */}
       <div
+        className='flex-shrink-0 d-flex align-items-center justify-content-center position-relative mb-3 mb-md-0 me-0 me-md-4'
         style={{
-          flex: '0 0 120px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          height: '100%',
+          width: '80px',
+          height: '80px',
         }}
       >
-        <div style={{ position: 'relative', width: 100, height: 100 }}>
+        <div
+          className='position-relative'
+          style={{ width: '70px', height: '70px' }}
+        >
           <div
+            className='position-absolute rounded-circle glow-animation'
             style={{
-              position: 'absolute',
-              inset: '-8px',
-              borderRadius: '50%',
+              top: '-6px',
+              left: '-6px',
+              right: '-6px',
+              bottom: '-6px',
               background:
                 'conic-gradient(from 0deg, #3b82f6, #10b981, #f59e0b, #3b82f6)',
-              animation: 'glow 3s ease-in-out infinite',
               opacity: 0.6,
             }}
           />
           <div
+            className='position-absolute w-100 h-100 rounded-circle d-flex align-items-center justify-content-center'
             style={{
-              position: 'absolute',
-              inset: 0,
-              borderRadius: '50%',
-              border: '3px solid rgba(59,130,246,0.3)',
+              border: '2px solid rgba(59,130,246,0.3)',
               background:
                 'linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.9))',
               backdropFilter: 'blur(20px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
           >
             <FaHourglassHalf
-              size={32}
+              size={24}
+              className='d-block d-md-none'
+              style={{
+                color: '#3b82f6',
+                animation: 'pulse 2s ease-in-out infinite',
+                filter: 'drop-shadow(0 0 10px rgba(59,130,246,0.6))',
+              }}
+            />
+            <FaHourglassHalf
+              size={28}
+              className='d-none d-md-block'
               style={{
                 color: '#3b82f6',
                 animation: 'pulse 2s ease-in-out infinite',
@@ -125,30 +146,26 @@ export const DocumentsWaitingState = ({ application }) => {
             />
           </div>
           <div
+            className='position-absolute rounded-circle orbit-animation'
             style={{
-              position: 'absolute',
               top: '50%',
               left: '50%',
-              width: '6px',
-              height: '6px',
+              width: '5px',
+              height: '5px',
               background: '#10b981',
-              borderRadius: '50%',
-              animation: 'orbit 4s linear infinite',
-              boxShadow: '0 0 8px #10b981',
+              boxShadow: '0 0 6px #10b981',
               transform: 'translate(-50%, -50%)',
             }}
           />
           <div
+            className='position-absolute rounded-circle orbit-animation-reverse'
             style={{
-              position: 'absolute',
               top: '50%',
               left: '50%',
-              width: '4px',
-              height: '4px',
+              width: '3px',
+              height: '3px',
               background: '#f59e0b',
-              borderRadius: '50%',
-              animation: 'orbit 6s linear infinite reverse',
-              boxShadow: '0 0 6px #f59e0b',
+              boxShadow: '0 0 4px #f59e0b',
               transform: 'translate(-50%, -50%)',
             }}
           />
@@ -156,42 +173,36 @@ export const DocumentsWaitingState = ({ application }) => {
       </div>
 
       {/* Right Content */}
-      <div
-        style={{
-          flex: '1',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          paddingLeft: '30px',
-          zIndex: 1,
-        }}
-      >
+      <div className='flex-grow-1 d-flex flex-column justify-content-center text-center text-md-start position-relative'>
         <h3
+          className='fw-bold mb-2 mb-md-3 fs-5 fs-md-4'
           style={{
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            marginBottom: '10px',
             background: 'linear-gradient(135deg, #ffffff, #e2e8f0, #3b82f6)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 30px rgba(255,255,255,0.1)',
+            textShadow: '0 0 20px rgba(255,255,255,0.1)',
           }}
         >
-          Waiting for Agent Setup
+          <span className='d-none d-sm-inline'>Waiting for Agent Setup</span>
+          <span className='d-inline d-sm-none'>Agent Setup</span>
         </h3>
 
-        <p style={{ color: '#94a3b8', fontWeight: 500, marginBottom: '16px' }}>
-          {getStatusMessage()}
+        <p
+          className='text-muted fw-medium mb-3 fs-6'
+          style={{ color: '#94a3b8' }}
+        >
+          <span className='d-none d-sm-inline'>{getStatusMessage()}</span>
+          <span className='d-inline d-sm-none'>{getMobileStatusMessage()}</span>
         </p>
 
-        <div style={{ display: 'flex', gap: 10, marginBottom: 15 }}>
+        <div className='d-flex gap-2 justify-content-center justify-content-md-start mb-3'>
           {[0, 1, 2].map((index) => (
             <div
               key={index}
+              className='rounded-circle'
               style={{
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
+                width: '10px',
+                height: '10px',
                 background:
                   animationStep === index
                     ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)'
@@ -199,7 +210,7 @@ export const DocumentsWaitingState = ({ application }) => {
                 transition: 'all 0.3s ease',
                 boxShadow:
                   animationStep === index
-                    ? '0 0 15px rgba(59,130,246,0.6)'
+                    ? '0 0 10px rgba(59,130,246,0.6)'
                     : 'none',
               }}
             />
@@ -207,90 +218,105 @@ export const DocumentsWaitingState = ({ application }) => {
         </div>
 
         <div
+          className='p-3 rounded-3 position-relative'
           style={{
             background:
               'linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.8))',
             border: '1px solid rgba(59,130,246,0.2)',
-            borderRadius: '14px',
-            padding: '12px 16px',
             backdropFilter: 'blur(10px)',
-            position: 'relative',
           }}
         >
           <div
+            className='position-absolute w-100'
             style={{
-              position: 'absolute',
               top: 0,
               left: 0,
-              right: 0,
-              height: 1,
+              height: '1px',
               background:
                 'linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent)',
               animation: 'shimmer 2s infinite',
             }}
           />
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <div className='d-flex gap-2 gap-md-3 align-items-center mb-2'>
             <div
+              className='d-flex justify-content-center align-items-center rounded-2 flex-shrink-0'
               style={{
-                width: 28,
-                height: 28,
+                width: '24px',
+                height: '24px',
                 background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-                borderRadius: 6,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                boxShadow: '0 0 12px rgba(59,130,246,0.4)',
+                boxShadow: '0 0 8px rgba(59,130,246,0.4)',
               }}
             >
-              <FaFileAlt size={14} color='white' />
+              <FaFileAlt
+                size={12}
+                color='white'
+                className='d-block d-md-none'
+              />
+              <FaFileAlt
+                size={14}
+                color='white'
+                className='d-none d-md-block'
+              />
             </div>
-            <div>
+            <div className='text-start'>
               <h6
-                style={{
-                  margin: 0,
-                  fontSize: '0.95rem',
-                  fontWeight: 600,
-                  color: 'white',
-                }}
+                className='mb-0 fw-semibold text-white'
+                style={{ fontSize: '0.85rem' }}
               >
                 Application #{application.id}
               </h6>
               <p
+                className='mb-0'
                 style={{
                   color: '#94a3b8',
-                  margin: 0,
-                  fontSize: '0.8rem',
+                  fontSize: '0.7rem',
                 }}
               >
-                Awaiting agent configuration
+                <span className='d-none d-sm-inline'>
+                  Awaiting agent configuration
+                </span>
+                <span className='d-inline d-sm-none'>Awaiting setup</span>
               </p>
             </div>
           </div>
           <ul
+            className='mb-0 ps-3'
             style={{
-              marginTop: 8,
-              paddingLeft: 20,
               color: '#64748b',
-              fontSize: '0.75rem',
-              marginBottom: 0,
+              fontSize: '0.7rem',
+              lineHeight: 1.3,
             }}
           >
-            <li>Agent reviewing your application details</li>
-            <li>Document requirements being configured</li>
-            <li>Templates and workflows being set up</li>
+            <li className='d-none d-md-list-item'>
+              Agent reviewing your application details
+            </li>
+            <li className='d-none d-md-list-item'>
+              Document requirements being configured
+            </li>
+            <li className='d-none d-md-list-item'>
+              Templates and workflows being set up
+            </li>
+            <li className='d-list-item d-md-none'>Reviewing application</li>
+            <li className='d-list-item d-md-none'>Configuring documents</li>
+            <li className='d-list-item d-md-none'>Setting up workflows</li>
           </ul>
         </div>
 
         <p
+          className='mt-2 mt-md-3 mb-0 fst-italic text-center text-md-start'
           style={{
-            marginTop: 12,
-            fontSize: '0.85rem',
+            fontSize: '0.75rem',
             color: '#64748b',
-            fontStyle: 'italic',
+            lineHeight: 1.4,
           }}
         >
-          Your assigned agent will configure the required documents. You'll be
-          notified once ready.
+          <span className='d-none d-sm-inline'>
+            Your assigned agent will configure the required documents. You'll be
+            notified once ready.
+          </span>
+          <span className='d-inline d-sm-none'>
+            Agent will configure documents. You'll be notified when ready.
+          </span>
         </p>
       </div>
     </div>

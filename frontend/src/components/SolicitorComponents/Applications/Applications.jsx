@@ -130,35 +130,65 @@ const Applications = () => {
         <div
           className='card border-0 mb-4'
           style={{
-            borderRadius: '16px',
+            borderRadius: window.innerWidth <= 768 ? '12px' : '16px',
             boxShadow:
               '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
             color: 'white',
             overflow: 'hidden',
+            margin: window.innerWidth <= 768 ? '0 8px 16px 8px' : undefined,
           }}
         >
-          <div className='card-body p-4'>
-            <div className='row align-items-center'>
-              <div className='col-md-8'>
-                <div className='d-flex align-items-center mb-2'>
+          <div
+            className='card-body'
+            style={{
+              padding: window.innerWidth <= 768 ? '16px 12px' : '24px',
+            }}
+          >
+            <div className='row align-items-center' style={{ margin: '0' }}>
+              <div
+                className='col-12 col-md-8'
+                style={{
+                  paddingLeft: window.innerWidth <= 768 ? '0' : undefined,
+                  paddingRight: window.innerWidth <= 768 ? '0' : undefined,
+                }}
+              >
+                <div
+                  className='d-flex align-items-center mb-2'
+                  style={{
+                    flexDirection: window.innerWidth <= 480 ? 'column' : 'row',
+                    textAlign: window.innerWidth <= 480 ? 'center' : 'left',
+                  }}
+                >
                   <div
-                    className='rounded-circle d-flex align-items-center justify-content-center me-3'
+                    className='rounded-circle d-flex align-items-center justify-content-center'
                     style={{
-                      width: '48px',
-                      height: '48px',
+                      width: window.innerWidth <= 768 ? '40px' : '48px',
+                      height: window.innerWidth <= 768 ? '40px' : '48px',
                       backgroundColor: 'rgba(255, 255, 255, 0.2)',
                       backdropFilter: 'blur(10px)',
+                      marginRight: window.innerWidth <= 480 ? '0' : '12px',
+                      marginBottom: window.innerWidth <= 480 ? '8px' : '0',
                     }}
                   >
-                    <FaFileAlt size={20} />
+                    <FaFileAlt size={window.innerWidth <= 768 ? 16 : 20} />
                   </div>
                   <div>
                     <h2
                       className='mb-0 fw-bold'
+                      style={{
+                        fontSize: window.innerWidth <= 768 ? '1.5rem' : '2rem',
+                        lineHeight: window.innerWidth <= 768 ? '1.3' : '1.2',
+                      }}
                       dangerouslySetInnerHTML={{ __html: pagerTitle }}
                     ></h2>
-                    <p className='mb-0 opacity-75'>
+                    <p
+                      className='mb-0 opacity-75'
+                      style={{
+                        fontSize: window.innerWidth <= 768 ? '0.85rem' : '1rem',
+                        marginTop: window.innerWidth <= 768 ? '2px' : '0',
+                      }}
+                    >
                       <span className='fw-semibold'>{totalItems}</span> total
                       applications
                     </p>
@@ -168,7 +198,10 @@ const Applications = () => {
                 {isFiltered && (
                   <button
                     className='btn btn-link text-white text-decoration-underline p-0 fw-medium opacity-75'
-                    style={{ fontSize: '0.9rem' }}
+                    style={{
+                      fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                      marginTop: window.innerWidth <= 480 ? '8px' : '0',
+                    }}
                     onClick={handleClearAllFilters}
                     onMouseOver={(e) => {
                       e.target.style.opacity = '1';
@@ -177,23 +210,41 @@ const Applications = () => {
                       e.target.style.opacity = '0.75';
                     }}
                   >
-                    <FaTimes className='me-1' size={12} />
+                    <FaTimes
+                      className='me-1'
+                      size={window.innerWidth <= 768 ? 10 : 12}
+                    />
                     Clear all filters
                   </button>
                 )}
               </div>
 
-              <div className='col-md-4 text-md-end mt-3 mt-md-0'>
+              <div
+                className='col-12 col-md-4'
+                style={{
+                  textAlign: window.innerWidth <= 768 ? 'center' : 'right',
+                  marginTop: window.innerWidth <= 768 ? '16px' : '0',
+                  paddingLeft: window.innerWidth <= 768 ? '0' : undefined,
+                  paddingRight: window.innerWidth <= 768 ? '0' : undefined,
+                }}
+              >
                 <button
-                  className='btn px-4 py-3 fw-semibold'
+                  className='btn fw-semibold'
                   style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.2)',
                     color: 'white',
                     border: '1px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '12px',
+                    borderRadius: window.innerWidth <= 768 ? '10px' : '12px',
                     transition: 'all 0.2s ease',
                     backdropFilter: 'blur(10px)',
-                    fontSize: '1rem',
+                    fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem',
+                    padding:
+                      window.innerWidth <= 768 ? '12px 20px' : '12px 16px',
+                    width: window.innerWidth <= 480 ? '100%' : 'auto',
+                    minWidth:
+                      window.innerWidth <= 768 && window.innerWidth > 480
+                        ? '140px'
+                        : 'auto',
                   }}
                   onClick={addApplicationHandler}
                   onMouseOver={(e) => {
@@ -205,7 +256,10 @@ const Applications = () => {
                     e.target.style.transform = 'translateY(0)';
                   }}
                 >
-                  <FaPlus className='me-2' size={16} />
+                  <FaPlus
+                    className='me-2'
+                    size={window.innerWidth <= 768 ? 14 : 16}
+                  />
                   Add Application
                 </button>
               </div>

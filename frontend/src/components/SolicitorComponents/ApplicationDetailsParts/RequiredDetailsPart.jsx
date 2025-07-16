@@ -1272,7 +1272,7 @@ border-radius: 4px;
             position: 'sticky',
             top: 0,
             zIndex: 1000,
-            margin: '0 1rem 2rem 1rem',
+            margin: '0 0rem 2rem 0rem',
             borderRadius: '24px',
             background: `
       linear-gradient(135deg, rgba(255,255,255,0.27) 0%, rgba(245,245,245,0.18) 100%),

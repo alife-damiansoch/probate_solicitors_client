@@ -139,7 +139,10 @@ function App() {
           <NavBar />
         </div>
         {isLoggedIn && (
-          <div className='container'>
+          <div
+            className='container-fluid p-0 '
+            style={{ maxWidth: '1200px', margin: '4px auto' }}
+          >
             <CookieConsent />
           </div>
         )}
@@ -162,7 +165,10 @@ function App() {
           <Route
             path='/'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <Home />
               </div>
             }
@@ -170,7 +176,10 @@ function App() {
           <Route
             path='/understanding'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <UnderstandingProbate />
               </div>
             }
@@ -178,7 +187,10 @@ function App() {
           <Route
             path='/howItWorks'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <HowItWorks />
               </div>
             }
@@ -186,7 +198,10 @@ function App() {
           <Route
             path='/benefits'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <Benefits />
               </div>
             }
@@ -199,7 +214,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <AddApplication />
                   </div>
                 }
@@ -212,7 +230,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <Applications />
                   </div>
                 }
@@ -225,7 +246,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container-fluid px-md-5'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <ApplicationDetails />
                   </div>
                 }
@@ -238,7 +262,7 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div className=' container-fluid p-0 mx-1 mx-md-0'>
                     <AdvancementDetailsConfirm />
                   </div>
                 }
@@ -253,7 +277,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <Solicitors />
                   </div>
                 }
@@ -266,7 +293,10 @@ function App() {
             path='/login'
             element={
               !isLoggedIn ? (
-                <div className='container'>
+                <div
+                  className='container-fluid p-0 '
+                  style={{ maxWidth: '1200px', margin: '4px auto' }}
+                >
                   {autoLoggedOutMessage && (
                     <div className=' alert alert-danger text-center'>
                       {renderErrors(autoLoggedOutMessage)}
@@ -282,7 +312,10 @@ function App() {
           <Route
             path='/register'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <RegisterComponent />
               </div>
             }
@@ -290,7 +323,10 @@ function App() {
           <Route
             path='/forgotPassword'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <ForgotPassword />
               </div>
             }
@@ -298,7 +334,10 @@ function App() {
           <Route
             path='/reset-password/:uidb64/:token'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <ResetPassword />
               </div>
             }
@@ -306,7 +345,10 @@ function App() {
           <Route
             path='/activate/:activation_token'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <ActivationPage />
               </div>
             }
@@ -314,7 +356,10 @@ function App() {
           <Route
             path='/verify-otp'
             element={
-              <div className='container'>
+              <div
+                className='container-fluid p-0 '
+                style={{ maxWidth: '1200px', margin: '4px auto' }}
+              >
                 <OtpVerification />
               </div>
             }
@@ -327,7 +372,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <UploadNewDocument />
                   </div>
                 }
@@ -340,7 +388,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <UploadNewDocumentSigned />
                   </div>
                 }
@@ -355,7 +406,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <UserProfile />
                   </div>
                 }
@@ -368,7 +422,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <UpdatePasswordComponent />
                   </div>
                 }
@@ -381,7 +438,10 @@ function App() {
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
                 component={
-                  <div className='container'>
+                  <div
+                    className='container-fluid p-0 '
+                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                  >
                     <FileManager />
                   </div>
                 }

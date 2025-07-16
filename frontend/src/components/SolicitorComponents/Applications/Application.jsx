@@ -34,9 +34,9 @@ const Application = ({ application }) => {
     navigate(`/applications/${formData.id}`);
   };
 
-  console.log('AIILICATION', application);
+  console.log('APPLICATION', application);
 
-  // Get enhanced status colors and themes
+  // Enhanced status colors with better differentiation
   const getStatusTheme = () => {
     // REJECTED - Deep crimson with sophisticated depth
     if (rejectedInAnyStage) {
@@ -45,108 +45,96 @@ const Application = ({ application }) => {
         secondary: '#991b1b',
         gradient: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
         lightGradient:
-          'linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(153, 27, 27, 0.06) 100%)',
+          'linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(153, 27, 27, 0.08) 100%)',
         accent: '#ef4444',
-        bg: 'rgba(220, 38, 38, 0.1)',
-        border: 'rgba(220, 38, 38, 0.25)',
+        bg: 'rgba(220, 38, 38, 0.12)',
+        border: 'rgba(220, 38, 38, 0.3)',
         text: '#991b1b',
-        glow: 'rgba(220, 38, 38, 0.35)',
-        meshGradient:
-          'radial-gradient(circle at 30% 20%, rgba(220, 38, 38, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(153, 27, 27, 0.12) 0%, transparent 60%)',
-        shadow: '0 8px 32px rgba(220, 38, 38, 0.2)',
-        hoverShadow: '0 16px 48px rgba(220, 38, 38, 0.3)',
+        glow: 'rgba(220, 38, 38, 0.4)',
+        statusLabel: 'Rejected',
+        statusIcon: '❌',
       };
     }
 
-    // APPROVED - Sophisticated emerald with multiple states
+    // APPROVED - Different states with distinct themes
     if (approvedInAnyStage) {
-      // Check for different loan states and return appropriate green variants
+      // SETTLED - Deep ocean blue for completion
       if (application?.loan?.is_settled) {
-        // SETTLED - Deep teal-blue for completion
         return {
-          primary: '#0891b2',
-          secondary: '#0e7490',
-          gradient: 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
+          primary: '#0ea5e9',
+          secondary: '#0284c7',
+          gradient: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
           lightGradient:
-            'linear-gradient(135deg, rgba(8, 145, 178, 0.12) 0%, rgba(14, 116, 144, 0.06) 100%)',
-          accent: '#06b6d4',
-          bg: 'rgba(8, 145, 178, 0.1)',
-          border: 'rgba(8, 145, 178, 0.25)',
-          text: '#155e75',
-          glow: 'rgba(8, 145, 178, 0.35)',
-          meshGradient:
-            'radial-gradient(circle at 30% 20%, rgba(8, 145, 178, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(14, 116, 144, 0.12) 0%, transparent 60%)',
-          shadow: '0 8px 32px rgba(8, 145, 178, 0.2)',
-          hoverShadow: '0 16px 48px rgba(8, 145, 178, 0.3)',
+            'linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(2, 132, 199, 0.08) 100%)',
+          accent: '#38bdf8',
+          bg: 'rgba(14, 165, 233, 0.12)',
+          border: 'rgba(14, 165, 233, 0.3)',
+          text: '#0369a1',
+          glow: 'rgba(14, 165, 233, 0.4)',
+          statusLabel: 'Settled',
+          statusIcon: '✅',
         };
       }
 
+      // PAID OUT - Rich gold-amber
       if (application?.loan?.is_paid_out) {
-        // PAID OUT - Rich amber-gold
         return {
-          primary: '#d97706',
-          secondary: '#b45309',
-          gradient: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+          primary: '#f59e0b',
+          secondary: '#d97706',
+          gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
           lightGradient:
-            'linear-gradient(135deg, rgba(217, 119, 6, 0.12) 0%, rgba(180, 83, 9, 0.06) 100%)',
-          accent: '#f59e0b',
-          bg: 'rgba(217, 119, 6, 0.1)',
-          border: 'rgba(217, 119, 6, 0.25)',
+            'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.08) 100%)',
+          accent: '#fbbf24',
+          bg: 'rgba(245, 158, 11, 0.12)',
+          border: 'rgba(245, 158, 11, 0.3)',
           text: '#92400e',
-          glow: 'rgba(217, 119, 6, 0.35)',
-          meshGradient:
-            'radial-gradient(circle at 30% 20%, rgba(217, 119, 6, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(180, 83, 9, 0.12) 0%, transparent 60%)',
-          shadow: '0 8px 32px rgba(217, 119, 6, 0.2)',
-          hoverShadow: '0 16px 48px rgba(217, 119, 6, 0.3)',
+          glow: 'rgba(245, 158, 11, 0.4)',
+          statusLabel: 'Paid Out',
+          statusIcon: '💰',
         };
       }
 
-      // APPROVED (default) - Fresh forest green
+      // APPROVED (default) - Fresh emerald green
       return {
-        primary: '#16a34a',
-        secondary: '#15803d',
-        gradient: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
+        primary: '#10b981',
+        secondary: '#059669',
+        gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
         lightGradient:
-          'linear-gradient(135deg, rgba(22, 163, 74, 0.12) 0%, rgba(21, 128, 61, 0.06) 100%)',
-        accent: '#22c55e',
-        bg: 'rgba(22, 163, 74, 0.1)',
-        border: 'rgba(22, 163, 74, 0.25)',
-        text: '#166534',
-        glow: 'rgba(22, 163, 74, 0.35)',
-        meshGradient:
-          'radial-gradient(circle at 30% 20%, rgba(22, 163, 74, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(21, 128, 61, 0.12) 0%, transparent 60%)',
-        shadow: '0 8px 32px rgba(22, 163, 74, 0.2)',
-        hoverShadow: '0 16px 48px rgba(22, 163, 74, 0.3)',
+          'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.08) 100%)',
+        accent: '#34d399',
+        bg: 'rgba(16, 185, 129, 0.12)',
+        border: 'rgba(16, 185, 129, 0.3)',
+        text: '#065f46',
+        glow: 'rgba(16, 185, 129, 0.4)',
+        statusLabel: 'Approved',
+        statusIcon: '✅',
       };
     }
 
-    // DEFAULT - IN PROGRESS - Warm terra cotta orange
+    // DEFAULT - IN PROGRESS - Vibrant purple
     return {
-      primary: '#ea580c',
-      secondary: '#c2410c',
-      gradient: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
+      primary: '#8b5cf6',
+      secondary: '#7c3aed',
+      gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
       lightGradient:
-        'linear-gradient(135deg, rgba(234, 88, 12, 0.12) 0%, rgba(194, 65, 12, 0.06) 100%)',
-      accent: '#f97316',
-      bg: 'rgba(234, 88, 12, 0.1)',
-      border: 'rgba(234, 88, 12, 0.25)',
-      text: '#9a3412',
-      glow: 'rgba(234, 88, 12, 0.35)',
-      meshGradient:
-        'radial-gradient(circle at 30% 20%, rgba(234, 88, 12, 0.15) 0%, transparent 60%), radial-gradient(circle at 70% 80%, rgba(194, 65, 12, 0.12) 0%, transparent 60%)',
-      shadow: '0 8px 32px rgba(234, 88, 12, 0.2)',
-      hoverShadow: '0 16px 48px rgba(234, 88, 12, 0.3)',
+        'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.08) 100%)',
+      accent: '#a78bfa',
+      bg: 'rgba(139, 92, 246, 0.12)',
+      border: 'rgba(139, 92, 246, 0.3)',
+      text: '#5b21b6',
+      glow: 'rgba(139, 92, 246, 0.4)',
+      statusLabel: 'In Progress',
+      statusIcon: '⏳',
     };
   };
 
-  // Your usage stays exactly the same:
   const theme = getStatusTheme();
 
   return (
     <>
       {formData && (
         <div
-          className='position-relative my-4'
+          className='position-relative my-3 my-md-4 mx-1 mx-md-0 overflow-hidden'
           style={{
             background: `
               linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(248, 250, 252, 0.1)),
@@ -154,38 +142,37 @@ const Application = ({ application }) => {
               ${theme.lightGradient}
             `,
             border: `1px solid ${theme.border}`,
-            borderRadius: '24px',
+            borderRadius: '16px',
             boxShadow: `
-              0 20px 40px rgba(0, 0, 0, 0.1),
-              0 8px 16px rgba(0, 0, 0, 0.06),
+              0 8px 20px rgba(0, 0, 0, 0.08),
+              0 4px 8px rgba(0, 0, 0, 0.04),
               inset 0 1px 0 rgba(255, 255, 255, 0.3)
             `,
             backdropFilter: 'blur(20px)',
-            overflow: 'hidden',
             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             cursor: 'pointer',
             transform: 'translateZ(0)',
           }}
           onClick={applicationClickHandler}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)';
+            e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
             e.currentTarget.style.boxShadow = `
-              0 32px 64px rgba(0, 0, 0, 0.15),
-              0 16px 32px rgba(0, 0, 0, 0.1),
-              0 0 40px ${theme.glow},
+              0 16px 32px rgba(0, 0, 0, 0.12),
+              0 8px 16px rgba(0, 0, 0, 0.08),
+              0 0 30px ${theme.glow},
               inset 0 1px 0 rgba(255, 255, 255, 0.4)
             `;
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0) scale(1)';
             e.currentTarget.style.boxShadow = `
-              0 20px 40px rgba(0, 0, 0, 0.1),
-              0 8px 16px rgba(0, 0, 0, 0.06),
+              0 8px 20px rgba(0, 0, 0, 0.08),
+              0 4px 8px rgba(0, 0, 0, 0.04),
               inset 0 1px 0 rgba(255, 255, 255, 0.3)
             `;
           }}
         >
-          {/* Animated Background Pattern */}
+          {/* Background Pattern */}
           <div
             className='position-absolute w-100 h-100'
             style={{
@@ -194,21 +181,19 @@ const Application = ({ application }) => {
                 radial-gradient(circle at 80% 80%, ${theme.accent}05 0%, transparent 50%)
               `,
               opacity: 0.6,
-              animation: 'float 6s ease-in-out infinite',
             }}
           />
 
-          {/* Enhanced Status Strip */}
+          {/* Status Strip */}
           <div
             className='position-relative'
             style={{
-              height: '8px',
+              height: '6px',
               background: theme.gradient,
               width: '100%',
-              boxShadow: `0 4px 12px ${theme.glow}`,
+              boxShadow: `0 2px 8px ${theme.glow}`,
             }}
           >
-            {/* Animated glow effect */}
             <div
               className='position-absolute w-100 h-100'
               style={{
@@ -218,113 +203,93 @@ const Application = ({ application }) => {
             />
           </div>
 
-          {/* Enhanced Status Badges */}
+          {/* Status Badges - Fixed positioning */}
           <div
-            className='position-absolute'
-            style={{ top: '5px', right: '0px', zIndex: 3 }}
+            className='position-absolute d-flex flex-wrap gap-1 gap-md-2 justify-content-end'
+            style={{
+              top: '16px',
+              right: '12px',
+              zIndex: 3,
+              maxWidth: '50%',
+            }}
           >
-            <div
-              style={{
-                display: 'flex',
-                gap: '8px',
-                flexWrap: 'wrap',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {rejectedInAnyStage && <RejectedBadge />}
-              {approvedInAnyStage &&
-                application.loan !== null &&
-                application.loan.is_paid_out &&
-                !application.loan.paid_out_date &&
-                !application.loan.is_settled && <ProcessingBadge />}
-              {approvedInAnyStage &&
-                application.loan !== null &&
-                application.loan.is_paid_out &&
-                application.loan.paid_out_date &&
-                !application.loan.is_settled && <PaidOutBadge />}
-              {approvedInAnyStage &&
-                application.loan !== null &&
-                application.loan.is_paid_out &&
-                application.loan.is_settled && <SettledBadge />}
-              {approvedInAnyStage &&
-                application.loan !== null &&
-                !application.loan.is_paid_out && <ApprovedBadge />}
-              {!approvedInAnyStage && !rejectedInAnyStage && (
-                <InProgressBadge />
-              )}
-            </div>
+            {rejectedInAnyStage && <RejectedBadge />}
+            {approvedInAnyStage &&
+              application.loan !== null &&
+              application.loan.is_paid_out &&
+              !application.loan.paid_out_date &&
+              !application.loan.is_settled && <ProcessingBadge />}
+            {approvedInAnyStage &&
+              application.loan !== null &&
+              application.loan.is_paid_out &&
+              application.loan.paid_out_date &&
+              !application.loan.is_settled && <PaidOutBadge />}
+            {approvedInAnyStage &&
+              application.loan !== null &&
+              application.loan.is_paid_out &&
+              application.loan.is_settled && <SettledBadge />}
+            {approvedInAnyStage &&
+              application.loan !== null &&
+              !application.loan.is_paid_out && <ApprovedBadge />}
+            {!approvedInAnyStage && !rejectedInAnyStage && <InProgressBadge />}
           </div>
 
-          {/* Enhanced Main Content */}
-          <div className='p-4 position-relative'>
+          {/* Main Content with proper spacing */}
+          <div
+            className='p-3  p-md-4 position-relative'
+            style={{ paddingTop: '50px' }}
+          >
             {/* Header Row */}
-            <div className='row align-items-center mb-4'>
-              {/* Enhanced Applicant Info */}
-              <div className='col-lg-5 col-md-6'>
-                <div className='d-flex align-items-center'>
+            <div className='row align-items-center mb-3 mb-md-4 g-2 g-md-3 pt-5'>
+              {/* Applicant Info */}
+              <div className='col-12 col-lg-5'>
+                <div className='d-flex align-items-center gap-3'>
                   <div
-                    className='rounded-circle d-flex align-items-center justify-content-center me-4 position-relative'
+                    className='rounded-circle d-flex align-items-center justify-content-center position-relative flex-shrink-0'
                     style={{
-                      width: '64px',
-                      height: '64px',
+                      width: '48px',
+                      height: '48px',
                       background: theme.gradient,
                       color: 'white',
-                      boxShadow: `0 12px 24px ${theme.glow}`,
-                      border: '3px solid rgba(255, 255, 255, 0.2)',
+                      boxShadow: `0 6px 12px ${theme.glow}`,
+                      border: '2px solid rgba(255, 255, 255, 0.2)',
                       transition: 'all 0.3s ease',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform =
                         'scale(1.1) rotate(5deg)';
-                      e.currentTarget.style.boxShadow = `0 16px 32px ${theme.glow}`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                      e.currentTarget.style.boxShadow = `0 12px 24px ${theme.glow}`;
                     }}
                   >
-                    <FaUser size={24} />
+                    <FaUser size={18} />
 
-                    {/* Enhanced ID Badge */}
+                    {/* ID Badge */}
                     <div
                       className='position-absolute rounded-circle d-flex align-items-center justify-content-center'
                       style={{
-                        width: '28px',
-                        height: '28px',
+                        width: '20px',
+                        height: '20px',
                         background: 'rgba(255, 255, 255, 0.95)',
                         color: theme.accent,
-                        fontSize: '11px',
+                        fontSize: '9px',
                         fontWeight: 'bold',
-                        bottom: '-4px',
-                        right: '-4px',
-                        border: '3px solid white',
-                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                        backdropFilter: 'blur(10px)',
+                        bottom: '-2px',
+                        right: '-2px',
+                        border: '2px solid white',
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                       }}
                     >
                       {formData.id}
                     </div>
-
-                    {/* Subtle glow effect */}
-                    <div
-                      className='position-absolute rounded-circle'
-                      style={{
-                        top: '-8px',
-                        left: '-8px',
-                        right: '-8px',
-                        bottom: '-8px',
-                        background: theme.glow,
-                        filter: 'blur(12px)',
-                        zIndex: -1,
-                      }}
-                    />
                   </div>
 
-                  <div>
+                  <div className='flex-grow-1 min-w-0'>
                     <h6
-                      className='mb-1 fw-bold'
+                      className='mb-1 fw-bold text-truncate'
                       style={{
-                        fontSize: '1.3rem',
+                        fontSize: '1.1rem',
                         color: 'rgba(255, 255, 255, 0.95)',
                         textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
                         letterSpacing: '-0.01em',
@@ -339,36 +304,39 @@ const Application = ({ application }) => {
                       style={{
                         background: 'rgba(255, 255, 255, 0.1)',
                         color: 'rgba(255, 255, 255, 0.8)',
-                        fontSize: '0.8rem',
+                        fontSize: '0.7rem',
                         fontWeight: '500',
                         border: '1px solid rgba(255, 255, 255, 0.2)',
                         backdropFilter: 'blur(10px)',
                       }}
                     >
-                      <FaCalendarAlt size={10} />
-                      Application #{formData.id}
+                      <FaCalendarAlt size={8} />
+                      <span className='d-none d-sm-inline'>
+                        Application #{formData.id}
+                      </span>
+                      <span className='d-inline d-sm-none'>#{formData.id}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Enhanced Financial Info */}
-              <div className='col-lg-4 col-md-4'>
-                <div className='row g-3'>
+              {/* Financial Info */}
+              <div className='col-12 col-md-6 col-lg-4'>
+                <div className='row g-2'>
                   <div className='col-6'>
                     <div
-                      className='text-center p-3 position-relative'
+                      className='text-center p-2 p-md-3 position-relative'
                       style={{
                         background: 'rgba(255, 255, 255, 0.1)',
                         border: `1px solid ${theme.border}`,
-                        borderRadius: '16px',
+                        borderRadius: '12px',
                         backdropFilter: 'blur(15px)',
                         transition: 'all 0.3s ease',
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.background =
                           'rgba(255, 255, 255, 0.15)';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background =
@@ -376,23 +344,23 @@ const Application = ({ application }) => {
                         e.currentTarget.style.transform = 'translateY(0)';
                       }}
                     >
-                      <div className='d-flex align-items-center justify-content-center mb-2'>
+                      <div className='d-flex align-items-center justify-content-center mb-1 mb-md-2'>
                         <div
-                          className='rounded-circle d-flex align-items-center justify-content-center me-2'
+                          className='rounded-circle d-flex align-items-center justify-content-center me-1 me-md-2 flex-shrink-0'
                           style={{
-                            width: '24px',
-                            height: '24px',
+                            width: '18px',
+                            height: '18px',
                             background: theme.gradient,
                             color: 'white',
                           }}
                         >
-                          <FaMoneyBillWave size={10} />
+                          <FaMoneyBillWave size={8} />
                         </div>
                         <span
                           className='small fw-semibold'
                           style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: '0.7rem',
+                            fontSize: '0.65rem',
                             letterSpacing: '0.05em',
                           }}
                         >
@@ -403,7 +371,7 @@ const Application = ({ application }) => {
                         className='fw-bold'
                         style={{
                           color: 'rgba(255, 255, 255, 0.95)',
-                          fontSize: '1rem',
+                          fontSize: '0.85rem',
                           textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
                         }}
                       >
@@ -414,18 +382,18 @@ const Application = ({ application }) => {
 
                   <div className='col-6'>
                     <div
-                      className='text-center p-3 position-relative'
+                      className='text-center p-2 p-md-3 position-relative'
                       style={{
                         background: 'rgba(255, 255, 255, 0.1)',
                         border: `1px solid ${theme.border}`,
-                        borderRadius: '16px',
+                        borderRadius: '12px',
                         backdropFilter: 'blur(15px)',
                         transition: 'all 0.3s ease',
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.background =
                           'rgba(255, 255, 255, 0.15)';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background =
@@ -433,23 +401,23 @@ const Application = ({ application }) => {
                         e.currentTarget.style.transform = 'translateY(0)';
                       }}
                     >
-                      <div className='d-flex align-items-center justify-content-center mb-2'>
+                      <div className='d-flex align-items-center justify-content-center mb-1 mb-md-2'>
                         <div
-                          className='rounded-circle d-flex align-items-center justify-content-center me-2'
+                          className='rounded-circle d-flex align-items-center justify-content-center me-1 me-md-2 flex-shrink-0'
                           style={{
-                            width: '24px',
-                            height: '24px',
+                            width: '18px',
+                            height: '18px',
                             background: theme.gradient,
                             color: 'white',
                           }}
                         >
-                          <FaClock size={10} />
+                          <FaClock size={8} />
                         </div>
                         <span
                           className='small fw-semibold'
                           style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: '0.7rem',
+                            fontSize: '0.65rem',
                             letterSpacing: '0.05em',
                           }}
                         >
@@ -460,7 +428,7 @@ const Application = ({ application }) => {
                         className='fw-bold'
                         style={{
                           color: 'rgba(255, 255, 255, 0.95)',
-                          fontSize: '1rem',
+                          fontSize: '0.85rem',
                           textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
                         }}
                       >
@@ -471,14 +439,14 @@ const Application = ({ application }) => {
                 </div>
               </div>
 
-              {/* Enhanced Actions & Maturity */}
-              <div className='col-lg-3 col-md-2 text-end'>
-                <div className='d-flex flex-column align-items-end gap-2'>
+              {/* Actions & Maturity */}
+              <div className='col-12 col-md-6 col-lg-3 text-center text-lg-end'>
+                <div className='d-flex flex-column align-items-center align-lg-end gap-2'>
                   {approvedInAnyStage &&
                     application.loan !== null &&
                     application.loan.is_paid_out &&
                     !application.loan.is_settled && (
-                      <div className='mb-2'>
+                      <div className='mb-1 mb-md-2'>
                         <ApplicationMaturity
                           maturityDate={application.loan.maturity_date}
                         />
@@ -486,13 +454,13 @@ const Application = ({ application }) => {
                     )}
 
                   <div
-                    className='d-flex align-items-center px-4 py-2 position-relative'
+                    className='d-flex align-items-center px-3 px-md-4 py-2 position-relative'
                     style={{
                       background: 'rgba(255, 255, 255, 0.15)',
                       color: 'rgba(255, 255, 255, 0.9)',
-                      fontSize: '0.9rem',
+                      fontSize: '0.8rem',
                       fontWeight: '600',
-                      borderRadius: '12px',
+                      borderRadius: '10px',
                       border: '1px solid rgba(255, 255, 255, 0.2)',
                       backdropFilter: 'blur(10px)',
                       transition: 'all 0.3s ease',
@@ -501,7 +469,7 @@ const Application = ({ application }) => {
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background =
                         'rgba(255, 255, 255, 0.25)';
-                      e.currentTarget.style.transform = 'translateX(-4px)';
+                      e.currentTarget.style.transform = 'translateX(-2px)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background =
@@ -509,47 +477,52 @@ const Application = ({ application }) => {
                       e.currentTarget.style.transform = 'translateX(0)';
                     }}
                   >
-                    <span className='me-2'>View Details</span>
-                    <FaArrowRight size={12} />
+                    <span className='me-2 d-none d-sm-inline'>
+                      View Details
+                    </span>
+                    <span className='me-2 d-inline d-sm-none'>View</span>
+                    <FaArrowRight size={10} />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Enhanced Compact Stages */}
+            {/* Status Label - Mobile Only */}
+            <div className='d-block d-lg-none mb-3'>
+              <div
+                className='d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill'
+                style={{
+                  background: theme.gradient,
+                  color: 'white',
+                  fontSize: '0.8rem',
+                  fontWeight: '600',
+                  boxShadow: `0 4px 8px ${theme.glow}`,
+                }}
+              >
+                <span>{theme.statusIcon}</span>
+                <span>{theme.statusLabel}</span>
+              </div>
+            </div>
+
+            {/* Stages Section */}
             <div
-              className='position-relative'
+              className='position-relative p-3 p-md-4'
               style={{
                 background: 'rgba(255, 255, 255, 0.08)',
-                borderRadius: '20px',
                 border: `1px solid ${theme.border}`,
-                padding: '1.5rem',
+                borderRadius: '16px',
                 backdropFilter: 'blur(15px)',
-                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
               }}
             >
-              {/* Subtle glow effect */}
-              <div
-                className='position-absolute'
-                style={{
-                  top: '-1px',
-                  left: '-1px',
-                  right: '-1px',
-                  bottom: '-1px',
-                  background: `linear-gradient(135deg, ${theme.accent}20, transparent)`,
-                  borderRadius: '20px',
-                  filter: 'blur(4px)',
-                  zIndex: -1,
-                }}
-              />
-
-              <div
-                className='d-flex flex-wrap justify-content-center'
-                style={{ gap: '8px' }}
-              >
+              <div className='d-flex flex-wrap justify-content-center gap-1 gap-md-2'>
+                {/* Show initial stages if not approved/rejected */}
                 {!rejectedInAnyStage && !approvedInAnyStage && (
                   <>
-                    <div style={{ transform: 'scale(0.85)' }}>
+                    <div
+                      style={{ transform: 'scale(0.8)' }}
+                      className='d-block d-md-none'
+                    >
                       <Stage
                         stage='Applied'
                         completed={true}
@@ -559,7 +532,24 @@ const Application = ({ application }) => {
                         setApprovedInAnyStage={setApprovedInAnyStage}
                       />
                     </div>
-                    <div style={{ transform: 'scale(0.85)' }}>
+                    <div
+                      style={{ transform: 'scale(0.85)' }}
+                      className='d-none d-md-block'
+                    >
+                      <Stage
+                        stage='Applied'
+                        completed={true}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+
+                    <div
+                      style={{ transform: 'scale(0.8)' }}
+                      className='d-block d-md-none'
+                    >
                       <Stage
                         stage='Undertaking Ready'
                         completed={formData.undertaking_ready}
@@ -569,7 +559,37 @@ const Application = ({ application }) => {
                         setApprovedInAnyStage={setApprovedInAnyStage}
                       />
                     </div>
-                    <div style={{ transform: 'scale(0.85)' }}>
+                    <div
+                      style={{ transform: 'scale(0.85)' }}
+                      className='d-none d-md-block'
+                    >
+                      <Stage
+                        stage='Undertaking Ready'
+                        completed={formData.undertaking_ready}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+
+                    <div
+                      style={{ transform: 'scale(0.8)' }}
+                      className='d-block d-md-none'
+                    >
+                      <Stage
+                        stage='Agreement Ready'
+                        completed={formData.loan_agreement_ready}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+                    <div
+                      style={{ transform: 'scale(0.85)' }}
+                      className='d-none d-md-block'
+                    >
                       <Stage
                         stage='Agreement Ready'
                         completed={formData.loan_agreement_ready}
@@ -582,43 +602,101 @@ const Application = ({ application }) => {
                   </>
                 )}
 
+                {/* Show Approved stage based on conditions */}
                 {formData.approved === false &&
                 formData.is_rejected === false ? (
-                  <div style={{ transform: 'scale(0.85)' }}>
-                    <Stage
-                      key={`${formData.id}-${formData.loan?.is_committee_approved}`}
-                      stage='Approved'
-                      completed={formData.approved}
-                      rejected={formData.is_rejected}
-                      advancement={formData.loan}
-                      setRejectedInAnyStage={setRejectedInAnyStage}
-                      setApprovedInAnyStage={setApprovedInAnyStage}
-                    />
-                  </div>
+                  <>
+                    <div
+                      style={{ transform: 'scale(0.8)' }}
+                      className='d-block d-md-none'
+                    >
+                      <Stage
+                        key={`${formData.id}-${formData.loan?.is_committee_approved}`}
+                        stage='Approved'
+                        completed={formData.approved}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+                    <div
+                      style={{ transform: 'scale(0.85)' }}
+                      className='d-none d-md-block'
+                    >
+                      <Stage
+                        key={`${formData.id}-${formData.loan?.is_committee_approved}`}
+                        stage='Approved'
+                        completed={formData.approved}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+                  </>
                 ) : formData.is_rejected === true ? (
-                  <div style={{ transform: 'scale(0.85)', width: '100%' }}>
-                    <Stage
-                      key={`${formData.id}-${formData.loan?.is_committee_approved}`}
-                      stage='Approved'
-                      completed={formData.approved}
-                      rejected={formData.is_rejected}
-                      advancement={formData.loan}
-                      setRejectedInAnyStage={setRejectedInAnyStage}
-                      setApprovedInAnyStage={setApprovedInAnyStage}
-                    />
-                  </div>
+                  <>
+                    <div
+                      style={{ transform: 'scale(0.8)', width: '100%' }}
+                      className='d-block d-md-none'
+                    >
+                      <Stage
+                        key={`${formData.id}-${formData.loan?.is_committee_approved}`}
+                        stage='Approved'
+                        completed={formData.approved}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+                    <div
+                      style={{ transform: 'scale(0.85)', width: '100%' }}
+                      className='d-none d-md-block'
+                    >
+                      <Stage
+                        key={`${formData.id}-${formData.loan?.is_committee_approved}`}
+                        stage='Approved'
+                        completed={formData.approved}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+                  </>
                 ) : formData.approved === true && formData.loan !== null ? (
-                  <div style={{ transform: 'scale(0.85)' }}>
-                    <Stage
-                      key={`${formData.id}-${formData.loan?.is_committee_approved}`}
-                      stage='Approved'
-                      completed={formData.approved}
-                      rejected={formData.is_rejected}
-                      advancement={formData.loan}
-                      setRejectedInAnyStage={setRejectedInAnyStage}
-                      setApprovedInAnyStage={setApprovedInAnyStage}
-                    />
-                  </div>
+                  <>
+                    <div
+                      style={{ transform: 'scale(0.8)' }}
+                      className='d-block d-md-none'
+                    >
+                      <Stage
+                        key={`${formData.id}-${formData.loan?.is_committee_approved}`}
+                        stage='Approved'
+                        completed={formData.approved}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+                    <div
+                      style={{ transform: 'scale(0.85)' }}
+                      className='d-none d-md-block'
+                    >
+                      <Stage
+                        key={`${formData.id}-${formData.loan?.is_committee_approved}`}
+                        stage='Approved'
+                        completed={formData.approved}
+                        rejected={formData.is_rejected}
+                        advancement={formData.loan}
+                        setRejectedInAnyStage={setRejectedInAnyStage}
+                        setApprovedInAnyStage={setApprovedInAnyStage}
+                      />
+                    </div>
+                  </>
                 ) : null}
               </div>
             </div>
@@ -626,16 +704,6 @@ const Application = ({ application }) => {
 
           {/* CSS Animations */}
           <style>{`
-            @keyframes float {
-              0%,
-              100% {
-                transform: translateY(0px) rotate(0deg);
-              }
-              50% {
-                transform: translateY(-8px) rotate(1deg);
-              }
-            }
-
             @keyframes slideGlow {
               0% {
                 transform: translateX(-100%);
@@ -655,6 +723,12 @@ const Application = ({ application }) => {
               50% {
                 opacity: 0.8;
               }
+            }
+
+            .text-truncate {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
           `}</style>
         </div>

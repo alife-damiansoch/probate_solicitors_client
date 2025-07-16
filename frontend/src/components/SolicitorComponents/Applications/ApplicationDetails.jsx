@@ -1,4 +1,4 @@
-// Updated ApplicationDetails.js - Mobile Responsive
+// Updated ApplicationDetails.js - Bootstrap Responsive
 import { useEffect, useState } from 'react';
 import { HiOutlineMenuAlt2, HiX } from 'react-icons/hi';
 import { useParams } from 'react-router-dom';
@@ -13,7 +13,7 @@ import RequiredDetailsPart from '../ApplicationDetailsParts/RequiredDetailsPart'
 
 // Import the new modern progress component
 import ModernApplicationProgress from './ApplicationDetailStages/ApplicationDetailStages';
-import './ApplicationDetails.css'; // Import external CSS
+import './ApplicationDetails.css'; // Import minimal CSS for animations only
 
 const ApplicationDetails = () => {
   const { id } = useParams();
@@ -144,7 +144,7 @@ const ApplicationDetails = () => {
 
   if (!application) {
     return (
-      <div className='modern-loading-container min-vh-100 d-flex justify-content-center align-items-center'>
+      <div className='min-vh-100 d-flex justify-content-center align-items-center modern-loading-container'>
         <LoadingComponent />
       </div>
     );
@@ -153,24 +153,102 @@ const ApplicationDetails = () => {
   console.log('Application Details:', application);
 
   return (
-    <div className='modern-application-container min-vh-100'>
+    <div
+      className='min-vh-100 position-relative modern-application-container'
+      style={{
+        backgroundColor: '#1F2049',
+        marginLeft: window.innerWidth >= 1024 ? '340px' : '0',
+      }}
+    >
+      {/* Background Pattern */}
+      <div
+        className='position-fixed w-100 h-100'
+        style={{
+          top: 0,
+          left: window.innerWidth >= 1024 ? '340px' : '0',
+          right: 0,
+          background: `
+            radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.05), transparent 40%), 
+            radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.05), transparent 40%)
+          `,
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
+
       {/* Mobile Stages Toggle Button */}
       <button
-        className='stages-toggle-btn d-lg-none'
+        className='btn d-lg-none stages-toggle-btn position-fixed'
         onClick={toggleSidebar}
         aria-label='Toggle stages sidebar'
+        style={{
+          top: '50%',
+          left: '16px',
+          transform: 'translateY(-50%)',
+          zIndex: 1050,
+          background:
+            'linear-gradient(145deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 50%, rgba(29, 78, 216, 0.9) 100%)',
+          border: '2px solid rgba(59, 130, 246, 0.3)',
+          color: 'white',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)',
+          transition: 'all 0.3s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)';
+          e.currentTarget.style.boxShadow =
+            '0 6px 20px rgba(59, 130, 246, 0.6)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+          e.currentTarget.style.boxShadow =
+            '0 4px 15px rgba(59, 130, 246, 0.4)';
+        }}
       >
         {isSidebarOpen ? <HiX size={24} /> : <HiOutlineMenuAlt2 size={24} />}
       </button>
 
       {/* Overlay for mobile */}
       <div
-        className={`stages-overlay d-lg-none ${isSidebarOpen ? 'show' : ''}`}
+        className={`d-lg-none position-fixed w-100 h-100 ${
+          isSidebarOpen ? 'stages-overlay show' : 'stages-overlay'
+        }`}
         onClick={closeSidebar}
+        style={{
+          top: 0,
+          left: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 1035,
+          opacity: isSidebarOpen ? 1 : 0,
+          visibility: isSidebarOpen ? 'visible' : 'hidden',
+          transition: 'all 0.3s ease',
+        }}
       />
 
       {/* Fixed Progress Sidebar */}
-      <div className={`modern-stages-sidebar ${isSidebarOpen ? 'show' : ''}`}>
+      <div
+        className={`modern-stages-sidebar position-fixed h-100 ${
+          isSidebarOpen ? 'show' : ''
+        }`}
+        style={{
+          left:
+            window.innerWidth >= 1024 ? '0' : isSidebarOpen ? '0' : '-340px',
+          top: 0,
+          width: '340px',
+          background:
+            'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
+          borderRight: '1px solid rgba(59, 130, 246, 0.3)',
+          zIndex: 1040,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          backdropFilter: 'blur(20px)',
+          boxShadow:
+            '8px 0 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(59, 130, 246, 0.1)',
+          transition: 'left 0.3s ease-in-out',
+        }}
+      >
         <ModernApplicationProgress
           application={application}
           setHighlightedSectionId={setHighlightedSectionId}
@@ -182,55 +260,93 @@ const ApplicationDetails = () => {
       </div>
 
       {/* Navigation */}
-      <div>
+      <div className='p-2 p-md-3 m-0'>
         <BackToApplicationsIcon backUrl={-1} />
       </div>
 
       {/* Main Content Container */}
-      <div className='container-fluid pb-5'>
-        <div className='row justify-content-center'>
-          <div className='col-12 col-xl-12'>
-            <div className='modern-main-card'>
+      <div className='container-fluid p-0 pb-5'>
+        <div className='row justify-content-center g-0'>
+          <div className='col-12'>
+            <div
+              className='position-relative overflow-hidden'
+              style={{
+                backgroundColor: '#1F2049',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(59, 130, 246, 0.1)',
+                borderRadius: '12px',
+                boxShadow:
+                  '0 10px 25px rgba(0, 0, 0, 0.08), 0 0 30px rgba(59, 130, 246, 0.05)',
+                zIndex: 1,
+              }}
+            >
               {/* Compact Status Alert */}
               {(application.is_rejected ||
                 application.approved ||
                 isApplicationLocked) && (
                 <div
-                  className={`modern-status-alert d-flex align-items-start gap-3 py-2 px-3 rounded ${
-                    application.is_rejected
-                      ? 'status-rejected'
-                      : application.approved
-                      ? 'status-approved'
-                      : 'status-locked'
-                  }`}
+                  className={`d-flex flex-row align-items-center gap-2 gap-md-3 p-2 p-md-4 mx-1 mx-md-3 rounded-2 rounded-md-3 border-start border-3 border-md-4`}
                   style={{
                     background: application.is_rejected
-                      ? 'rgba(220, 38, 38, 0.1)'
+                      ? 'linear-gradient(145deg, rgba(254, 242, 242, 0.95) 0%, rgba(254, 202, 202, 0.95) 50%, rgba(254, 242, 242, 0.95) 100%)'
                       : application.approved
-                      ? 'rgba(16, 185, 129, 0.1)'
-                      : 'rgba(234, 179, 8, 0.1)',
-                    borderLeft: `4px solid ${
-                      application.is_rejected
-                        ? '#dc2626'
-                        : application.approved
-                        ? '#059669'
-                        : '#d97706'
-                    }`,
+                      ? 'linear-gradient(145deg, rgba(240, 253, 244, 0.95) 0%, rgba(187, 247, 208, 0.95) 50%, rgba(240, 253, 244, 0.95) 100%)'
+                      : 'linear-gradient(145deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.95) 50%, rgba(254, 243, 199, 0.95) 100%)',
+                    borderLeftColor: application.is_rejected
+                      ? '#dc2626'
+                      : application.approved
+                      ? '#059669'
+                      : '#d97706',
+                    backdropFilter: 'blur(15px)',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
                   }}
                 >
-                  <div className='pt-1'>
+                  <div
+                    className='d-flex align-items-center justify-content-center rounded-2 text-white fw-bold flex-shrink-0'
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      background: application.is_rejected
+                        ? 'linear-gradient(145deg, #ef4444, #dc2626, #b91c1c)'
+                        : application.approved
+                        ? 'linear-gradient(145deg, #10b981, #059669, #047857)'
+                        : 'linear-gradient(145deg, #f59e0b, #d97706, #b45309)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                    }}
+                  >
+                    <svg
+                      width='16'
+                      height='16'
+                      fill='currentColor'
+                      viewBox='0 0 20 20'
+                      className='d-block d-md-none'
+                    >
+                      {application.is_rejected ? (
+                        <path
+                          fillRule='evenodd'
+                          d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
+                          clipRule='evenodd'
+                        />
+                      ) : application.approved ? (
+                        <path
+                          fillRule='evenodd'
+                          d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                          clipRule='evenodd'
+                        />
+                      ) : (
+                        <path
+                          fillRule='evenodd'
+                          d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
+                          clipRule='evenodd'
+                        />
+                      )}
+                    </svg>
                     <svg
                       width='20'
                       height='20'
                       fill='currentColor'
                       viewBox='0 0 20 20'
-                      style={{
-                        color: application.is_rejected
-                          ? '#dc2626'
-                          : application.approved
-                          ? '#059669'
-                          : '#d97706',
-                      }}
+                      className='d-none d-md-block'
                     >
                       {application.is_rejected ? (
                         <path
@@ -253,26 +369,41 @@ const ApplicationDetails = () => {
                       )}
                     </svg>
                   </div>
-                  <div className='flex-grow-1'>
+                  <div className='flex-grow-1 min-w-0'>
                     <div
+                      className='fw-semibold lh-1 mb-1'
                       style={{
-                        fontWeight: 600,
-                        fontSize: '1rem',
                         color: application.is_rejected
                           ? '#dc2626'
                           : application.approved
                           ? '#059669'
                           : '#d97706',
+                        fontSize: '0.9rem',
                       }}
                     >
                       {application.is_rejected
-                        ? 'Application Rejected'
+                        ? 'Rejected'
                         : application.approved
-                        ? 'Application Approved'
-                        : 'Application Locked'}
+                        ? 'Approved'
+                        : 'Locked'}
+                      <span className='d-none d-md-inline ms-1'>
+                        {application.is_rejected
+                          ? 'Application'
+                          : application.approved
+                          ? 'Application'
+                          : 'Application'}
+                      </span>
                     </div>
-                    <small className='text-muted'>
-                      Editing is disabled. Contact agent if you need help.
+                    <small
+                      className='text-muted d-block lh-1'
+                      style={{ fontSize: '0.75rem' }}
+                    >
+                      <span className='d-none d-sm-inline'>
+                        Editing is disabled. Contact agent if you need help.
+                      </span>
+                      <span className='d-inline d-sm-none'>
+                        Editing disabled
+                      </span>
                     </small>
                   </div>
                 </div>
@@ -282,9 +413,28 @@ const ApplicationDetails = () => {
               <div className='border-bottom-0'>
                 <div className='p-0'>
                   <div className='m-0'>
-                    <div className='modern-details-card'>
+                    <div
+                      className='position-relative overflow-hidden'
+                      style={{
+                        backdropFilter: 'blur(15px)',
+                        border: '1px solid rgba(59, 130, 246, 0.08)',
+                        borderRadius: '12px',
+                      }}
+                    >
+                      {/* Top border accent */}
                       <div
-                        className='card-body p-1'
+                        className='position-absolute w-100'
+                        style={{
+                          top: 0,
+                          left: 0,
+                          height: '2px',
+                          background:
+                            'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent)',
+                        }}
+                      />
+
+                      <div
+                        className='p-1'
                         style={{ backgroundColor: '#1F2049' }}
                       >
                         {/* Delete Application Modal */}

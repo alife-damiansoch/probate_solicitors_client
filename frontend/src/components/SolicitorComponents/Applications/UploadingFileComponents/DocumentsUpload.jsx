@@ -617,9 +617,10 @@ const DocumentsUpload = ({
                 boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
               }}
             >
-              <div className='d-flex gap-2'>
+              <div className='d-flex flex-column flex-sm-row gap-2 gap-sm-3 w-100'>
                 <button
                   onClick={() => setActiveTab('uploaded')}
+                  className='btn position-relative flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-semibold rounded-3 border-0 py-3 px-3 px-sm-4'
                   style={{
                     background:
                       activeTab === 'uploaded'
@@ -627,26 +628,19 @@ const DocumentsUpload = ({
                           ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
                           : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
                         : 'transparent',
-                    border: 'none',
-                    borderRadius: '16px',
-                    padding: '16px 24px',
                     color:
                       activeTab === 'uploaded'
                         ? '#ffffff'
                         : hasSignatureIssues
                         ? '#dc2626'
                         : '#374151',
-                    fontWeight: '600',
-                    fontSize: '0.95rem',
+                    fontSize: '0.85rem',
                     boxShadow:
                       activeTab === 'uploaded'
-                        ? '0 8px 25px rgba(59, 130, 246, 0.25)'
+                        ? '0 4px 15px rgba(59, 130, 246, 0.25)'
                         : 'none',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    position: 'relative',
-                    minWidth: '200px',
-                    cursor: 'pointer',
-                    outline: 'none',
+                    minHeight: '50px',
                     backdropFilter:
                       activeTab === 'uploaded' ? 'blur(10px)' : 'none',
                   }}
@@ -664,40 +658,28 @@ const DocumentsUpload = ({
                     }
                   }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: 'none',
-                    }}
-                  >
-                    <FaFileAlt
-                      size={18}
-                      style={{ marginRight: '10px', boxShadow: 'none' }}
-                    />
-                    <span style={{ boxShadow: 'none' }}>
-                      Uploaded Documents
-                    </span>
-                  </div>
+                  <FaFileAlt
+                    size={16}
+                    className='d-block d-sm-none flex-shrink-0'
+                  />
+                  <FaFileAlt
+                    size={18}
+                    className='d-none d-sm-block flex-shrink-0'
+                  />
+                  <span className='d-none d-sm-inline'>Uploaded Documents</span>
+                  <span className='d-inline d-sm-none'>Uploaded</span>
+
                   {hasSignatureIssues && activeTab !== 'uploaded' && (
                     <div
+                      className='position-absolute d-flex align-items-center justify-content-center rounded-circle text-white fw-bold border border-2 border-white'
                       style={{
-                        position: 'absolute',
                         top: '-6px',
                         right: '-6px',
                         backgroundColor: '#dc2626',
-                        color: 'white',
-                        borderRadius: '50%',
                         width: '18px',
                         height: '18px',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        fontSize: '10px',
                         boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)',
-                        border: '2px solid white',
                       }}
                     >
                       !
@@ -707,6 +689,7 @@ const DocumentsUpload = ({
 
                 <button
                   onClick={() => setActiveTab('required')}
+                  className='btn position-relative flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-semibold rounded-3 border-0 py-3 px-3 px-sm-4'
                   style={{
                     background:
                       activeTab === 'required'
@@ -714,26 +697,19 @@ const DocumentsUpload = ({
                           ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
                           : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
                         : 'transparent',
-                    border: 'none',
-                    borderRadius: '16px',
-                    padding: '16px 24px',
                     color:
                       activeTab === 'required'
                         ? '#ffffff'
                         : hasMissingRequirements
                         ? '#dc2626'
                         : '#374151',
-                    fontWeight: '600',
-                    fontSize: '0.95rem',
+                    fontSize: '0.85rem',
                     boxShadow:
                       activeTab === 'required'
-                        ? '0 8px 25px rgba(59, 130, 246, 0.25)'
+                        ? '0 4px 15px rgba(59, 130, 246, 0.25)'
                         : 'none',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    position: 'relative',
-                    minWidth: '200px',
-                    cursor: 'pointer',
-                    outline: 'none',
+                    minHeight: '50px',
                     backdropFilter:
                       activeTab === 'required' ? 'blur(10px)' : 'none',
                   }}
@@ -751,40 +727,28 @@ const DocumentsUpload = ({
                     }
                   }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: 'none',
-                    }}
-                  >
-                    <FaExclamationTriangle
-                      size={18}
-                      style={{ marginRight: '10px', boxShadow: 'none' }}
-                    />
-                    <span style={{ boxShadow: 'none' }}>
-                      Required Documents
-                    </span>
-                  </div>
+                  <FaExclamationTriangle
+                    size={16}
+                    className='d-block d-sm-none flex-shrink-0'
+                  />
+                  <FaExclamationTriangle
+                    size={18}
+                    className='d-none d-sm-block flex-shrink-0'
+                  />
+                  <span className='d-none d-sm-inline'>Required Documents</span>
+                  <span className='d-inline d-sm-none'>Required</span>
+
                   {hasMissingRequirements && activeTab !== 'required' && (
                     <div
+                      className='position-absolute d-flex align-items-center justify-content-center rounded-circle text-white fw-bold border border-2 border-white'
                       style={{
-                        position: 'absolute',
                         top: '-6px',
                         right: '-6px',
                         backgroundColor: '#dc2626',
-                        color: 'white',
-                        borderRadius: '50%',
                         width: '18px',
                         height: '18px',
-                        fontSize: '10px',
-                        fontWeight: 'bold',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        fontSize: '9px',
                         boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)',
-                        border: '2px solid white',
                       }}
                     >
                       {missingRequirements}

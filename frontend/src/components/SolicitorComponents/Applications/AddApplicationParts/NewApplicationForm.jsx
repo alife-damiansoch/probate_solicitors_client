@@ -97,7 +97,7 @@ export default function NewApplicationForm() {
 
   return (
     <div
-      className='min-vh-100 position-relative'
+      className='min-vh-100 position-relative pt-2 pt-md-4 pb-2 pb-md-4 px-2 px-md-0'
       style={{
         background: `
           #1F2049,
@@ -105,11 +105,9 @@ export default function NewApplicationForm() {
           radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12), transparent 50%)
         `,
         backdropFilter: 'blur(20px)',
-        paddingTop: '2rem',
-        paddingBottom: '2rem',
       }}
     >
-      {/* Animated Background Pattern */}
+      {/* Background Pattern */}
       <div
         className='position-absolute w-100 h-100'
         style={{
@@ -117,14 +115,13 @@ export default function NewApplicationForm() {
             radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
             radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.06) 0%, transparent 60%)
           `,
-          animation: 'float 8s ease-in-out infinite',
           zIndex: -1,
         }}
       />
 
-      <div className='container'>
+      <div>
         <div
-          className='modern-main-card mt-5 position-relative overflow-hidden'
+          className='modern-main-card mt-0 mt-lg-5 mb-2 mb-lg-5  position-relative overflow-hidden'
           style={{
             background: `
               linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(248, 250, 252, 0.1)),
@@ -132,7 +129,7 @@ export default function NewApplicationForm() {
               radial-gradient(circle at 70% 90%, rgba(59, 130, 246, 0.12), transparent 50%)
             `,
             border: '1px solid rgba(255, 255, 255, 0.25)',
-            borderRadius: '24px',
+            borderRadius: '12px',
             boxShadow: `
               0 20px 40px rgba(0, 0, 0, 0.3),
               0 8px 16px rgba(0, 0, 0, 0.2),
@@ -141,10 +138,9 @@ export default function NewApplicationForm() {
             backdropFilter: 'blur(20px)',
             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             transform: 'translateZ(0)',
-            marginBottom: '200px',
           }}
         >
-          {/* Animated Background Pattern */}
+          {/* Background Pattern */}
           <div
             className='position-absolute w-100 h-100'
             style={{
@@ -153,21 +149,20 @@ export default function NewApplicationForm() {
                 radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 50%)
               `,
               opacity: 0.6,
-              animation: 'float 6s ease-in-out infinite',
             }}
           />
 
           {/* Enhanced Header */}
           <div
-            className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+            className='d-flex flex-column flex-sm-row align-items-center text-center text-sm-start position-relative p-3 p-md-4 gap-3'
             style={{
               background: `
                 linear-gradient(135deg, #22c55e, #16a34a),
                 linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
               `,
               color: '#ffffff',
-              borderTopLeftRadius: '22px',
-              borderTopRightRadius: '22px',
+              borderTopLeftRadius: '10px',
+              borderTopRightRadius: '10px',
               backdropFilter: 'blur(10px)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
@@ -175,10 +170,10 @@ export default function NewApplicationForm() {
           >
             {/* Icon with Micro-animation */}
             <div
-              className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+              className='d-flex align-items-center justify-content-center rounded-circle position-relative flex-shrink-0'
               style={{
-                width: '56px',
-                height: '56px',
+                width: '48px',
+                height: '48px',
                 background: 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.25)',
                 backdropFilter: 'blur(10px)',
@@ -194,7 +189,8 @@ export default function NewApplicationForm() {
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
               }}
             >
-              <FaPlus size={20} />
+              <FaPlus size={16} className='d-block d-md-none' />
+              <FaPlus size={20} className='d-none d-md-block' />
 
               {/* Subtle glow effect */}
               <div
@@ -211,11 +207,10 @@ export default function NewApplicationForm() {
               />
             </div>
 
-            <div className='flex-grow-1 text-center'>
+            <div className='flex-grow-1'>
               <h1
-                className='fw-bold mb-0 text-white'
+                className='fw-bold mb-0 text-white fs-4 fs-md-2'
                 style={{
-                  fontSize: '2rem',
                   letterSpacing: '-0.02em',
                   textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
                 }}
@@ -226,7 +221,7 @@ export default function NewApplicationForm() {
           </div>
 
           {/* Enhanced Body */}
-          <div className='p-4 position-relative'>
+          <div className='p-3 p-md-4 position-relative'>
             <form onSubmit={submitHandler}>
               <ApplicationPart formData={formData} setFormData={setFormData} />
               <ApplicantsPart
@@ -237,13 +232,13 @@ export default function NewApplicationForm() {
               />
 
               {/* Enhanced Submit Section */}
-              <div className='row mt-4'>
+              <div className='row mt-3 mt-md-4 g-0'>
                 <div className='col-12'>
                   <div
-                    className='p-4'
+                    className='p-3 p-md-4'
                     style={{
                       background: 'rgba(255, 255, 255, 0.08)',
-                      borderRadius: '16px',
+                      borderRadius: '12px',
                       border: '1px solid rgba(255, 255, 255, 0.15)',
                       backdropFilter: 'blur(10px)',
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
@@ -251,7 +246,7 @@ export default function NewApplicationForm() {
                   >
                     <button
                       type='submit'
-                      className='btn btn-info my-2 w-100 d-flex align-items-center justify-content-center gap-2 fw-medium'
+                      className='btn btn-info w-100 d-flex align-items-center justify-content-center fw-medium py-3 py-md-2 fs-6 fs-md-5'
                       disabled={loading || !applicantValidation.isValid}
                       style={{
                         opacity:
@@ -260,9 +255,7 @@ export default function NewApplicationForm() {
                           loading || !applicantValidation.isValid
                             ? 'not-allowed'
                             : 'pointer',
-                        padding: '12px 24px',
-                        fontSize: '1.1rem',
-                        borderRadius: '12px',
+                        borderRadius: '10px',
                         border: 'none',
                         background:
                           loading || !applicantValidation.isValid
@@ -282,6 +275,7 @@ export default function NewApplicationForm() {
                             : applicantValidation.missingFields
                             ? '0 4px 15px rgba(245, 158, 11, 0.4)'
                             : '0 4px 15px rgba(34, 197, 94, 0.4)',
+                        gap: '8px',
                       }}
                       onMouseEnter={(e) => {
                         if (!loading && applicantValidation.isValid) {
@@ -312,17 +306,46 @@ export default function NewApplicationForm() {
                         <LoadingComponent message='Adding application...' />
                       ) : applicantValidation.hasErrors ? (
                         <>
-                          <FaExclamationTriangle size={16} />
-                          Fix Validation Errors
+                          <FaExclamationTriangle
+                            size={14}
+                            className='d-block d-md-none'
+                          />
+                          <FaExclamationTriangle
+                            size={16}
+                            className='d-none d-md-block'
+                          />
+                          <span className='d-none d-sm-inline'>
+                            Fix Validation Errors
+                          </span>
+                          <span className='d-inline d-sm-none'>Fix Errors</span>
                         </>
                       ) : applicantValidation.missingFields ? (
                         <>
-                          <FaInfoCircle size={16} />
-                          Complete Required Fields
+                          <FaInfoCircle
+                            size={14}
+                            className='d-block d-md-none'
+                          />
+                          <FaInfoCircle
+                            size={16}
+                            className='d-none d-md-block'
+                          />
+                          <span className='d-none d-sm-inline'>
+                            Complete Required Fields
+                          </span>
+                          <span className='d-inline d-sm-none'>
+                            Complete Fields
+                          </span>
                         </>
                       ) : (
                         <>
-                          <FaPlusCircle size={16} />
+                          <FaPlusCircle
+                            size={14}
+                            className='d-block d-md-none'
+                          />
+                          <FaPlusCircle
+                            size={16}
+                            className='d-none d-md-block'
+                          />
                           Create Application
                         </>
                       )}
@@ -331,19 +354,18 @@ export default function NewApplicationForm() {
                     {/* Enhanced Message Display */}
                     {message && (
                       <div
-                        className={`alert text-center mt-3 border-0 position-relative`}
+                        className={`alert text-center border-0 position-relative mt-3 mb-0 p-3 p-md-4`}
                         style={{
                           background: isError
                             ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
                             : 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(22, 163, 74, 0.1))',
                           color: isError ? '#dc2626' : '#16a34a',
-                          borderRadius: '12px',
+                          borderRadius: '10px',
                           border: isError
                             ? '1px solid rgba(239, 68, 68, 0.3)'
                             : '1px solid rgba(34, 197, 94, 0.3)',
                           backdropFilter: 'blur(10px)',
                           fontWeight: '500',
-                          padding: '1rem',
                           boxShadow: isError
                             ? '0 4px 12px rgba(239, 68, 68, 0.2)'
                             : '0 4px 12px rgba(34, 197, 94, 0.2)',
@@ -351,9 +373,10 @@ export default function NewApplicationForm() {
                         role='alert'
                       >
                         <div
+                          className='mx-auto mb-2'
                           style={{
-                            width: '32px',
-                            height: '32px',
+                            width: '28px',
+                            height: '28px',
                             borderRadius: '50%',
                             background: isError
                               ? 'linear-gradient(135deg, #ef4444, #dc2626)'
@@ -362,19 +385,38 @@ export default function NewApplicationForm() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            margin: '0 auto 0.5rem',
                             boxShadow: isError
                               ? '0 4px 8px rgba(239, 68, 68, 0.4)'
                               : '0 4px 8px rgba(34, 197, 94, 0.4)',
                           }}
                         >
                           {isError ? (
-                            <FaExclamationTriangle size={12} />
+                            <>
+                              <FaExclamationTriangle
+                                size={10}
+                                className='d-block d-md-none'
+                              />
+                              <FaExclamationTriangle
+                                size={12}
+                                className='d-none d-md-block'
+                              />
+                            </>
                           ) : (
-                            <FaPlusCircle size={12} />
+                            <>
+                              <FaPlusCircle
+                                size={10}
+                                className='d-block d-md-none'
+                              />
+                              <FaPlusCircle
+                                size={12}
+                                className='d-none d-md-block'
+                              />
+                            </>
                           )}
                         </div>
-                        {renderErrors(message)}
+                        <div className='fs-6 fs-md-5'>
+                          {renderErrors(message)}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -383,20 +425,11 @@ export default function NewApplicationForm() {
             </form>
           </div>
 
-          {/* CSS Animations */}
+          {/* CSS Styles */}
           <style>{`
-            @keyframes float {
-              0%,
-              100% {
-                transform: translateY(0px) rotate(0deg);
-              }
-              50% {
-                transform: translateY(-8px) rotate(1deg);
-              }
-            }
-
             .modern-main-card {
               transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+              border-radius: 12px !important;
             }
 
             .modern-main-card:hover {
@@ -404,6 +437,22 @@ export default function NewApplicationForm() {
               box-shadow: 0 32px 64px rgba(0, 0, 0, 0.4),
                 0 16px 32px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+
+            @media (max-width: 768px) {
+              .modern-main-card {
+                border-radius: 12px !important;
+              }
+              
+              .modern-main-card:hover {
+                transform: translateY(-2px) scale(1.005);
+              }
+            }
+
+            @media (min-width: 992px) {
+              .modern-main-card {
+                border-radius: 24px !important;
+              }
             }
           `}</style>
         </div>
