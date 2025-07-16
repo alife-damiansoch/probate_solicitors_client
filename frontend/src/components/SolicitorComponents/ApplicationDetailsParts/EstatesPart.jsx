@@ -1126,7 +1126,7 @@ const EstatesPart = ({
           {/* Manage Estates Button */}
           <div
             className={`text-center mb-${isMobile ? '3' : '5'}`}
-            style={{ paddingBottom: isMobile ? '60px' : '100px' }}
+            style={{ paddingBottom: isMobile ? '100px' : '100px' }}
           >
             <button
               className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
@@ -1153,13 +1153,12 @@ const EstatesPart = ({
               <span className='d-inline d-sm-none'>Manage</span>
             </button>
           </div>
-
-          <EstateSummarySticky
-            estates={estates}
-            formData={application}
-            currency_sign={currency_sign}
-          />
         </div>
+        <EstateSummarySticky
+          estates={estates}
+          formData={application}
+          currency_sign={currency_sign}
+        />
 
         {/* CSS Animations */}
         <style>{`
