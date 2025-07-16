@@ -45,6 +45,20 @@ const ApplicationDetails = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+
+    // Prevent body scroll when sidebar is open on mobile
+    if (window.innerWidth < 1024) {
+      if (!isSidebarOpen) {
+        document.body.classList.add('sidebar-open');
+        document.body.style.top = `-${window.scrollY}px`;
+      } else {
+        const scrollY = document.body.style.top;
+        document.body.classList.remove('sidebar-open');
+        document.body.style.top = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+
     // Hide tooltip when button is pressed and save to localStorage
     if (showTooltip) {
       setShowTooltip(false);
@@ -59,6 +73,14 @@ const ApplicationDetails = () => {
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
+
+    // Remove body scroll lock on mobile
+    if (window.innerWidth < 1024) {
+      const scrollY = document.body.style.top;
+      document.body.classList.remove('sidebar-open');
+      document.body.style.top = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
   };
 
   //checking if application is locked
@@ -329,35 +351,39 @@ const ApplicationDetails = () => {
 
       {/* Fixed Progress Sidebar */}
       <div
-        className={`modern-stages-sidebar position-fixed ${
-          isSidebarOpen ? 'show' : ''
-        }`}
+        className={`modern-stages-sidebar ${isSidebarOpen ? 'show' : ''}`}
         style={{
+          position: window.innerWidth >= 1024 ? 'fixed' : 'fixed',
           left:
             window.innerWidth >= 1024 ? '0' : isSidebarOpen ? '0' : '-340px',
           top: 0,
           bottom: 0,
-          height: '100vh',
+          height: window.innerWidth >= 1024 ? '100vh' : '100%',
+          maxHeight: '100vh',
           width: '340px',
           background:
             'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
           borderRight: '1px solid rgba(59, 130, 246, 0.3)',
           zIndex: 1040,
-          overflowY: 'auto',
+          overflowY: 'scroll',
           overflowX: 'hidden',
           backdropFilter: 'blur(20px)',
           boxShadow:
             '8px 0 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(59, 130, 246, 0.1)',
           transition: 'left 0.3s ease-in-out',
-          WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+          WebkitOverflowScrolling: 'touch',
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(59, 130, 246, 0.3) transparent',
+          // Mobile-specific fixes
+          transform: 'translateZ(0)', // Force hardware acceleration
+          willChange: 'transform', // Optimize for animations
+          touchAction: 'pan-y', // Allow vertical scrolling only
         }}
       >
         <div
           style={{
-            height: '100%',
-            overflow: 'hidden',
+            minHeight: '100%',
+            paddingBottom: window.innerWidth < 1024 ? '20px' : '0',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -646,12 +672,31 @@ const ApplicationDetails = () => {
           background: rgba(59, 130, 246, 0.6);
         }
 
-        /* Ensure proper touch scrolling on mobile */
+        /* Mobile scrolling fixes */
         @media (max-width: 1023px) {
           .modern-stages-sidebar {
-            -webkit-overflow-scrolling: touch !important;
-            overflow-y: auto !important;
+            position: fixed !important;
+            overflow-y: scroll !important;
             overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+            transform: translateZ(0) !important;
+            will-change: transform !important;
+            /* Prevent scroll chaining */
+            overscroll-behavior-y: contain !important;
+          }
+          
+          /* Fix for iOS Safari viewport issues */
+          .modern-stages-sidebar {
+            height: 100vh !important;
+            height: -webkit-fill-available !important;
+          }
+          
+          /* Prevent body scroll when sidebar is open */
+          body.sidebar-open {
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
           }
         }
       `}</style>
