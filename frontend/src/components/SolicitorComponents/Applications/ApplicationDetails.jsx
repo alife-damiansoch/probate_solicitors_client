@@ -38,7 +38,7 @@ const ApplicationDetails = () => {
       //   'mobile-stages-tooltip-dismissed'
       // );
       // return !tooltipDismissed;
-      return true;
+      return true; // Default to showing tooltip
     } catch {
       return true; // Default to showing tooltip if localStorage is not available
     }
@@ -180,12 +180,28 @@ const ApplicationDetails = () => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setIsSidebarOpen(false);
+        // Remove body scroll lock when switching to desktop
+        document.body.classList.remove('sidebar-open');
+        document.body.style.top = '';
       }
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Clean up body scroll lock when component unmounts or sidebar state changes
+  useEffect(() => {
+    if (!isSidebarOpen && window.innerWidth < 1024) {
+      // Ensure body scroll is restored when sidebar is closed
+      const scrollY = document.body.style.top;
+      document.body.classList.remove('sidebar-open');
+      document.body.style.top = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+  }, [isSidebarOpen]);
 
   if (!application) {
     return (
@@ -642,15 +658,18 @@ const ApplicationDetails = () => {
             transform: translateY(-50%) translateX(0);
           }
         }
-        
+
         @keyframes buttonPulse {
-          0%, 100% {
+          0%,
+          100% {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6),
+              0 0 30px rgba(59, 130, 246, 0.4);
           }
           50% {
             transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8),
+              0 0 40px rgba(59, 130, 246, 0.6);
           }
         }
 
@@ -658,17 +677,17 @@ const ApplicationDetails = () => {
         .modern-stages-sidebar::-webkit-scrollbar {
           width: 6px;
         }
-        
+
         .modern-stages-sidebar::-webkit-scrollbar-track {
           background: rgba(15, 23, 42, 0.3);
           border-radius: 3px;
         }
-        
+
         .modern-stages-sidebar::-webkit-scrollbar-thumb {
           background: rgba(59, 130, 246, 0.4);
           border-radius: 3px;
         }
-        
+
         .modern-stages-sidebar::-webkit-scrollbar-thumb:hover {
           background: rgba(59, 130, 246, 0.6);
         }
@@ -686,18 +705,19 @@ const ApplicationDetails = () => {
             /* Prevent scroll chaining */
             overscroll-behavior-y: contain !important;
           }
-          
+
           /* Fix for iOS Safari viewport issues */
           .modern-stages-sidebar {
             height: 100vh !important;
             height: -webkit-fill-available !important;
           }
-          
+
           /* Prevent body scroll when sidebar is open */
           body.sidebar-open {
             overflow: hidden !important;
             position: fixed !important;
             width: 100% !important;
+            top: 0 !important;
           }
         }
       `}</style>
