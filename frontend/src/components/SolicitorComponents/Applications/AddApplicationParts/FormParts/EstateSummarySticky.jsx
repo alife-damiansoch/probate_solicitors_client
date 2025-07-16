@@ -138,7 +138,7 @@ export default function EstateSummarySticky({
     return (
       <div className='mb-3'>
         <div
-          className='d-flex justify-content-between align-items-center p-2 border rounded cursor-pointer'
+          className='d-flex justify-content-between align-items-center p-2 border rounded'
           onClick={() => toggleDetails(sectionKey)}
           style={{ backgroundColor: '#f8f9fa', cursor: 'pointer' }}
         >
@@ -153,15 +153,15 @@ export default function EstateSummarySticky({
               {formatCurrency(total)}
             </span>
             {showDetails[sectionKey] ? (
-              <FaEyeSlash size={12} />
+              <FaEyeSlash size={14} className='ms-1' />
             ) : (
-              <FaEye size={12} />
+              <FaEye size={14} className='ms-1' />
             )}
           </div>
         </div>
 
         {showDetails[sectionKey] && (
-          <div className='mt-2 ps-3'>
+          <div className='mt-2 ps-2'>
             {estatesGroup.map((estate, index) => (
               <div
                 key={index}
@@ -169,7 +169,7 @@ export default function EstateSummarySticky({
               >
                 <span
                   className='text-truncate me-2'
-                  style={{ maxWidth: '200px' }}
+                  style={{ maxWidth: '160px' }}
                 >
                   {estate.group_label || estate.name || 'Unnamed'}
                 </span>
@@ -184,74 +184,20 @@ export default function EstateSummarySticky({
     );
   };
 
-  const getContainerHeight = () => {
-    switch (expandLevel) {
-      case 0:
-        return 'auto'; // Minimal
-      case 1:
-        return 'auto'; // Expanded
-      case 2:
-        return '70vh'; // Full breakdown with scrolling
-      default:
-        return 'auto';
-    }
-  };
-
-  const getButtonText = () => {
-    switch (expandLevel) {
-      case 0:
-        return 'Show More';
-      case 1:
-        return 'Show Less | Show Breakdown';
-      case 2:
-        return 'Hide Breakdown';
-      default:
-        return 'Show More';
-    }
-  };
-
-  const getButtonIcon = () => {
-    switch (expandLevel) {
-      case 0:
-        return <FaChevronUp />;
-      case 1:
-        return <FaExpand />;
-      case 2:
-        return <FaCompress />;
-      default:
-        return <FaChevronUp />;
-    }
-  };
-
-  const handleButtonClick = () => {
-    if (expandLevel === 1) {
-      // At level 1, we need two buttons: Show Less and Show Breakdown
-      return;
-    } else {
-      cycleExpandLevel();
-    }
-  };
-
+  // *** MAIN RETURN BLOCK ***
   return (
     <div
-      className='estate-summary-sticky'
+      className='estate-summary-sticky position-fixed start-0 end-0 bottom-0 bg-white border-top shadow'
       style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
         zIndex: 1050,
-        backgroundColor: 'white',
-        borderTop: '2px solid #dee2e6',
-        boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
-        maxHeight: getContainerHeight(),
+        maxHeight: expandLevel === 2 ? '70vh' : 'auto',
         overflow: expandLevel === 2 ? 'auto' : 'visible',
-        transition: 'all 0.3s ease-in-out',
+        transition: 'all 0.3s',
       }}
     >
-      <div className='container-fluid p-3'>
-        {/* Minimal View - Always Visible */}
-        <div className='d-flex justify-content-between align-items-center'>
+      <div className='container-fluid p-2 p-sm-3'>
+        {/* HEADER: PC/Desktop layout */}
+        <div className='d-none d-sm-flex justify-content-between align-items-center'>
           <div className='d-flex align-items-center'>
             <FaInfoCircle className='text-primary me-2' />
             <div>
@@ -267,7 +213,6 @@ export default function EstateSummarySticky({
               )}
             </div>
           </div>
-
           <div className='d-flex align-items-center'>
             <div
               className={`badge bg-${
@@ -289,16 +234,14 @@ export default function EstateSummarySticky({
                   onClick={() => setExpandLevel(0)}
                 >
                   <FaChevronDown />
-                  <span className='ms-1 d-none d-sm-inline'>Show Less</span>
+                  <span className='ms-1'>Show Less</span>
                 </button>
                 <button
                   className='btn btn-outline-primary btn-sm'
                   onClick={() => setExpandLevel(2)}
                 >
                   <FaExpand />
-                  <span className='ms-1 d-none d-sm-inline'>
-                    Show Breakdown
-                  </span>
+                  <span className='ms-1'>Show Breakdown</span>
                 </button>
               </div>
             ) : (
@@ -306,19 +249,86 @@ export default function EstateSummarySticky({
                 className='btn btn-outline-primary btn-sm'
                 onClick={cycleExpandLevel}
               >
-                {getButtonIcon()}
-                <span className='ms-2 d-none d-sm-inline'>
-                  {getButtonText()}
+                {expandLevel === 0 ? (
+                  <FaChevronUp />
+                ) : expandLevel === 1 ? (
+                  <FaExpand />
+                ) : (
+                  <FaCompress />
+                )}
+                <span className='ms-2'>
+                  {expandLevel === 0
+                    ? 'Show More'
+                    : expandLevel === 1
+                    ? 'Show Less | Show Breakdown'
+                    : 'Hide Breakdown'}
                 </span>
               </button>
             )}
           </div>
         </div>
 
+        {/* HEADER: MOBILE layout */}
+        <div className='d-sm-none'>
+          <div className='d-flex flex-column gap-2'>
+            <div className='d-flex justify-content-between align-items-center'>
+              <span>
+                <FaInfoCircle className='text-primary me-2 fs-5' />
+                <span className='fw-bold text-primary'>Max:</span>
+                <span className='fw-bold text-warning ms-2'>
+                  {formatCurrency(calculations.maximumAdvance)}
+                </span>
+              </span>
+              <button
+                className='btn btn-outline-primary btn-lg px-3 py-2'
+                style={{ fontSize: '17px' }}
+                onClick={cycleExpandLevel}
+              >
+                {expandLevel === 0 ? (
+                  <FaChevronUp className='fs-5' />
+                ) : expandLevel === 1 ? (
+                  <FaExpand className='fs-5' />
+                ) : (
+                  <FaCompress className='fs-5' />
+                )}
+                <span className='ms-2'>
+                  {expandLevel === 0
+                    ? 'Details'
+                    : expandLevel === 1
+                    ? 'Breakdown'
+                    : 'Hide'}
+                </span>
+              </button>
+            </div>
+            <div className='d-flex align-items-center justify-content-between'>
+              {requested > 0 && (
+                <span className='small text-muted'>
+                  Requested:{' '}
+                  <span className='fw-bold'>{formatCurrency(requested)}</span>
+                </span>
+              )}
+              <div
+                className={`badge bg-${
+                  status.type === 'danger'
+                    ? 'danger'
+                    : status.type === 'success'
+                    ? 'success'
+                    : status.type === 'warning'
+                    ? 'warning'
+                    : 'info'
+                }`}
+              >
+                {status.short}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Expanded View - Level 1 */}
         {expandLevel >= 1 && (
-          <div className='mt-3 pt-3 border-top'>
-            <div className='row g-3 mb-3'>
+          <div className='mt-2 pt-2 border-top'>
+            {/* PC - columns */}
+            <div className='row g-2 mb-3 d-none d-sm-flex'>
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
@@ -330,7 +340,6 @@ export default function EstateSummarySticky({
                   </div>
                 </div>
               </div>
-
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
@@ -342,7 +351,6 @@ export default function EstateSummarySticky({
                   </div>
                 </div>
               </div>
-
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
@@ -354,7 +362,6 @@ export default function EstateSummarySticky({
                   </div>
                 </div>
               </div>
-
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
@@ -367,7 +374,59 @@ export default function EstateSummarySticky({
                 </div>
               </div>
             </div>
-
+            {/* MOBILE - stacked cards */}
+            <div className='d-sm-none'>
+              <div className='row g-2'>
+                <div className='col-12'>
+                  <div
+                    className='text-center p-2 border rounded'
+                    style={{ backgroundColor: '#e8f5e8' }}
+                  >
+                    <div className='small text-muted mb-1'>Total Assets</div>
+                    <div className='fw-bold text-success'>
+                      {formatCurrency(calculations.totalAssets)}
+                    </div>
+                  </div>
+                </div>
+                <div className='col-12'>
+                  <div
+                    className='text-center p-2 border rounded'
+                    style={{ backgroundColor: '#ffe8e8' }}
+                  >
+                    <div className='small text-muted mb-1'>
+                      Total Liabilities
+                    </div>
+                    <div className='fw-bold text-danger'>
+                      {formatCurrency(calculations.totalLiabilities)}
+                    </div>
+                  </div>
+                </div>
+                <div className='col-12'>
+                  <div
+                    className='text-center p-2 border rounded'
+                    style={{ backgroundColor: '#e3f2fd' }}
+                  >
+                    <div className='small text-muted mb-1'>
+                      Net Irish Estate
+                    </div>
+                    <div className='fw-bold text-primary'>
+                      {formatCurrency(calculations.netIrishEstate)}
+                    </div>
+                  </div>
+                </div>
+                <div className='col-12'>
+                  <div
+                    className='text-center p-2 border rounded'
+                    style={{ backgroundColor: '#f3e5f5' }}
+                  >
+                    <div className='small text-muted mb-1'>Lendable Estate</div>
+                    <div className='fw-bold' style={{ color: '#800080' }}>
+                      {formatCurrency(calculations.lendableIrishEstate)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             {/* Status Message */}
             <div
               className={`alert alert-${
@@ -378,7 +437,7 @@ export default function EstateSummarySticky({
                   : status.type === 'warning'
                   ? 'warning'
                   : 'info'
-              } mb-0`}
+              } mb-0 mt-2`}
             >
               <div className='d-flex align-items-start'>
                 <FaInfoCircle className='me-2 mt-1' />
@@ -387,8 +446,7 @@ export default function EstateSummarySticky({
                   {status.type === 'danger' && (
                     <div className='mt-1 small'>
                       The maximum advance currently offered is{' '}
-                      <strong>50% of the Lendable Irish Estate</strong>.
-                      <br />
+                      <strong>50% of the Lendable Irish Estate</strong>.<br />
                       Please adjust the requested amount or estate details.
                     </div>
                   )}
@@ -414,9 +472,9 @@ export default function EstateSummarySticky({
               >
                 <FaCompress />
                 <span className='ms-1 d-none d-sm-inline'>Hide Breakdown</span>
+                <span className='ms-1 d-sm-none'>Hide</span>
               </button>
             </div>
-
             {renderEstateGroup(
               calculations.lendableAssets,
               'Lendable Assets',
@@ -432,7 +490,6 @@ export default function EstateSummarySticky({
               'Liabilities',
               'text-danger'
             )}
-
             {estates.length === 0 && (
               <div className='text-center text-muted py-4'>
                 <FaInfoCircle size={24} className='mb-2' />
@@ -442,8 +499,6 @@ export default function EstateSummarySticky({
                 </div>
               </div>
             )}
-
-            {/* Footer Note */}
             <div className='border-top pt-2 mt-3'>
               <small className='text-muted d-block'>
                 <sup>*</sup> Only lendable estate items are considered for

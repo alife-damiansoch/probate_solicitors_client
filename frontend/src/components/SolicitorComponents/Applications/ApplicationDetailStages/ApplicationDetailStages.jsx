@@ -183,13 +183,12 @@ const ApplicationDetailStages = ({
 
   return (
     <div
-      className='h-100 d-flex flex-column'
+      className=' d-flex flex-column'
       style={{
         background:
           'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
-        // Remove fixed positioning - let parent handle it
-        // Remove width, height constraints - let parent handle it
-        // Remove overflow settings - let parent handle it
+        paddingTop: '110px',
+        minWidth: '400px',
       }}
     >
       <style>

@@ -302,7 +302,7 @@ const SolicitorPart = ({
         />
 
         {/* Ensure content is above overlay */}
-        <style jsx>{`
+        <style>{`
           .position-relative > * {
             position: relative;
             z-index: 1;

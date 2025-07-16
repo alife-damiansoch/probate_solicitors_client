@@ -372,12 +372,12 @@ const ApplicationDetails = () => {
         style={{
           position: window.innerWidth >= 1024 ? 'fixed' : 'fixed',
           left:
-            window.innerWidth >= 1024 ? '0' : isSidebarOpen ? '0' : '-340px',
+            window.innerWidth >= 1024 ? '0' : isSidebarOpen ? '0' : '-400px',
           top: 0,
           bottom: 0,
           height: window.innerWidth >= 1024 ? '100vh' : '100%',
           maxHeight: '100vh',
-          width: '340px',
+          width: '400px',
           background:
             'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
           borderRight: '1px solid rgba(59, 130, 246, 0.3)',

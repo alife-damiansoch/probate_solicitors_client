@@ -21,6 +21,9 @@ const EstatesPart = ({
   const [loading, setLoading] = useState(true);
   const [showEstateModal, setShowEstateModal] = useState(false);
 
+  // Mobile detection
+  const isMobile = window.innerWidth < 768;
+
   console.log('Application:', application.id);
 
   // Fetch estates when application.estate_summary changes
@@ -61,35 +64,42 @@ const EstatesPart = ({
       if (relevantFields.length === 0) return null;
 
       return (
-        <div className='d-flex flex-wrap gap-3'>
-          {relevantFields.slice(0, 3).map(([key, val]) => (
-            <div key={key} className='d-flex align-items-center'>
+        <div
+          className={`d-flex flex-${isMobile ? 'column' : 'wrap'} gap-${
+            isMobile ? '2' : '3'
+          }`}
+        >
+          {relevantFields.map(([key, val]) => (
+            <div
+              key={key}
+              className={`d-flex ${
+                isMobile
+                  ? 'justify-content-between align-items-start'
+                  : 'align-items-center'
+              }`}
+            >
               <span
-                className='fw-medium text-slate-600 me-1'
-                style={{ fontSize: '0.8rem' }}
+                className='fw-medium text-slate-600 me-2'
+                style={{
+                  fontSize: isMobile ? '0.75rem' : '0.8rem',
+                  minWidth: isMobile ? '40%' : 'auto',
+                  flexShrink: 0,
+                }}
               >
                 {formatFieldName(key)}:
               </span>
-              <span className='text-slate-500' style={{ fontSize: '0.8rem' }}>
+              <span
+                className='text-slate-500 text-end'
+                style={{
+                  fontSize: isMobile ? '0.75rem' : '0.8rem',
+                  wordBreak: 'break-word',
+                  lineHeight: '1.3',
+                }}
+              >
                 {val}
               </span>
             </div>
           ))}
-          {relevantFields.length > 3 && (
-            <div className='d-flex align-items-center'>
-              <span
-                className='badge rounded-pill px-2 py-1'
-                style={{
-                  background: 'rgba(107, 114, 128, 0.1)',
-                  color: '#6b7280',
-                  fontSize: '0.7rem',
-                  border: '1px solid rgba(107, 114, 128, 0.2)',
-                }}
-              >
-                +{relevantFields.length - 3} more
-              </span>
-            </div>
-          )}
         </div>
       );
     }
@@ -107,38 +117,45 @@ const EstatesPart = ({
     if (fieldsToShow.length === 0) return null;
 
     return (
-      <div className='d-flex flex-wrap gap-3'>
-        {fieldsToShow.slice(0, 3).map((field) => {
+      <div
+        className={`d-flex flex-${isMobile ? 'column' : 'wrap'} gap-${
+          isMobile ? '2' : '3'
+        }`}
+      >
+        {fieldsToShow.map((field) => {
           const value = estate[field.name];
           return (
-            <div key={field.name} className='d-flex align-items-center'>
+            <div
+              key={field.name}
+              className={`d-flex ${
+                isMobile
+                  ? 'justify-content-between align-items-start'
+                  : 'align-items-center'
+              }`}
+            >
               <span
-                className='fw-medium text-slate-600 me-1'
-                style={{ fontSize: '0.8rem' }}
+                className='fw-medium text-slate-600 me-2'
+                style={{
+                  fontSize: isMobile ? '0.75rem' : '0.8rem',
+                  minWidth: isMobile ? '40%' : 'auto',
+                  flexShrink: 0,
+                }}
               >
                 {field.label}:
               </span>
-              <span className='text-slate-500' style={{ fontSize: '0.8rem' }}>
+              <span
+                className='text-slate-500 text-end'
+                style={{
+                  fontSize: isMobile ? '0.75rem' : '0.8rem',
+                  wordBreak: 'break-word',
+                  lineHeight: '1.3',
+                }}
+              >
                 {value}
               </span>
             </div>
           );
         })}
-        {fieldsToShow.length > 3 && (
-          <div className='d-flex align-items-center'>
-            <span
-              className='badge rounded-pill px-2 py-1'
-              style={{
-                background: 'rgba(107, 114, 128, 0.1)',
-                color: '#6b7280',
-                fontSize: '0.7rem',
-                border: '1px solid rgba(107, 114, 128, 0.2)',
-              }}
-            >
-              +{fieldsToShow.length - 3} more
-            </span>
-          </div>
-        )}
       </div>
     );
   };
@@ -154,15 +171,16 @@ const EstatesPart = ({
             radial-gradient(circle at 70% 90%, rgba(245, 158, 11, 0.1), transparent 50%)
           `,
           border: '1px solid rgba(255, 255, 255, 0.3)',
-          borderRadius: '24px',
+          borderRadius: isMobile ? '16px' : '24px',
           boxShadow: `
             0 20px 40px rgba(0, 0, 0, 0.08),
             0 8px 16px rgba(0, 0, 0, 0.06),
             inset 0 1px 0 rgba(255, 255, 255, 0.4)
           `,
           backdropFilter: 'blur(20px)',
-          padding: '3rem',
+          padding: isMobile ? '1.5rem' : '3rem',
           textAlign: 'center',
+          margin: isMobile ? '0 8px 16px 8px' : '0 0 16px 0',
         }}
       >
         <div
@@ -170,15 +188,18 @@ const EstatesPart = ({
           role='status'
           style={{
             color: '#f59e0b',
-            width: '3rem',
-            height: '3rem',
+            width: isMobile ? '2rem' : '3rem',
+            height: isMobile ? '2rem' : '3rem',
           }}
         >
           <span className='visually-hidden'>Loading...</span>
         </div>
         <div
           className='fw-bold'
-          style={{ color: '#1e293b', fontSize: '1.2rem' }}
+          style={{
+            color: '#1e293b',
+            fontSize: isMobile ? '1rem' : '1.2rem',
+          }}
         >
           Loading estates...
         </div>
@@ -198,7 +219,7 @@ const EstatesPart = ({
             radial-gradient(circle at 70% 90%, rgba(245, 158, 11, 0.1), transparent 50%)
           `,
             border: '1px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '24px',
+            borderRadius: isMobile ? '16px' : '24px',
             boxShadow: `
             0 20px 40px rgba(0, 0, 0, 0.08),
             0 8px 16px rgba(0, 0, 0, 0.06),
@@ -207,132 +228,99 @@ const EstatesPart = ({
             backdropFilter: 'blur(20px)',
             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             transform: 'translateZ(0)',
-            marginBottom: '200px', // Extra space for EstateSummarySticky
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
-            e.currentTarget.style.boxShadow = `
-            0 32px 64px rgba(0, 0, 0, 0.12),
-            0 16px 32px rgba(0, 0, 0, 0.08),
-            inset 0 1px 0 rgba(255, 255, 255, 0.6)
-          `;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            e.currentTarget.style.boxShadow = `
-            0 20px 40px rgba(0, 0, 0, 0.08),
-            0 8px 16px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4)
-          `;
+            marginBottom: isMobile ? '100px' : '200px',
+            margin: isMobile ? '0 8px 100px 8px' : '0 0 200px 0',
           }}
         >
-          {/* Animated Background Pattern */}
-          <div
-            className='position-absolute w-100 h-100'
-            style={{
-              background: `
-              radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.06) 0%, transparent 50%)
-            `,
-              opacity: 0.3,
-              animation: 'float 6s ease-in-out infinite',
-              pointerEvents: 'none',
-            }}
-          />
-
           {/* Premium Header */}
           <div
-            className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+            className={`px-${isMobile ? '3' : '4'} py-${
+              isMobile ? '3' : '4'
+            } d-flex align-items-center gap-${
+              isMobile ? '2' : '3'
+            } position-relative`}
             style={{
               background: `
               linear-gradient(135deg, #f59e0b, #d97706),
               linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
             `,
               color: '#ffffff',
-              borderTopLeftRadius: '22px',
-              borderTopRightRadius: '22px',
+              borderTopLeftRadius: isMobile ? '14px' : '22px',
+              borderTopRightRadius: isMobile ? '14px' : '22px',
               backdropFilter: 'blur(10px)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+              flexDirection: isMobile ? 'column' : 'row',
+              textAlign: isMobile ? 'center' : 'left',
             }}
           >
             {/* Icon with Micro-animation */}
             <div
-              className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+              className='d-flex align-items-center justify-content-center rounded-circle position-relative flex-shrink-0'
               style={{
-                width: '56px',
-                height: '56px',
+                width: isMobile ? '40px' : '56px',
+                height: isMobile ? '40px' : '56px',
                 background: 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.25)',
                 backdropFilter: 'blur(10px)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                marginBottom: isMobile ? '8px' : '0',
               }}
             >
-              <FaBuilding size={20} />
-
-              {/* Subtle glow effect */}
-              <div
-                className='position-absolute rounded-circle'
-                style={{
-                  top: '-10px',
-                  left: '-10px',
-                  right: '-10px',
-                  bottom: '-10px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  filter: 'blur(8px)',
-                  zIndex: -1,
-                }}
-              />
+              <FaBuilding size={isMobile ? 16 : 20} />
             </div>
 
-            <div className='flex-grow-1'>
+            <div className={`flex-grow-1 ${isMobile ? 'text-center' : ''}`}>
               <h5
                 className='fw-bold mb-2 text-white'
-                style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+                style={{
+                  fontSize: isMobile ? '1.1rem' : '1.4rem',
+                  letterSpacing: '-0.02em',
+                  marginBottom: isMobile ? '4px' : '8px',
+                }}
               >
-                Estate Assessment
+                <span className='d-none d-sm-inline'>Estate Assessment</span>
+                <span className='d-inline d-sm-none'>Estate</span>
               </h5>
               <div
                 className='px-3 py-2 rounded-pill fw-semibold text-white'
                 style={{
                   background: 'rgba(255, 255, 255, 0.1)',
-                  fontSize: '0.9rem',
+                  fontSize: isMobile ? '0.75rem' : '0.9rem',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   display: 'inline-block',
                   backdropFilter: 'blur(10px)',
                   letterSpacing: '0.02em',
                 }}
               >
-                Assets & Liabilities
+                <span className='d-none d-sm-inline'>Assets & Liabilities</span>
+                <span className='d-inline d-sm-none'>Assets</span>
               </div>
             </div>
 
             {/* Status Badge */}
             <span
-              className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+              className={`px-${isMobile ? '3' : '4'} py-${
+                isMobile ? '2' : '3'
+              } rounded-pill text-white fw-bold d-flex align-items-center gap-2 flex-shrink-0`}
               style={{
                 background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-                fontSize: '0.9rem',
+                fontSize: isMobile ? '0.75rem' : '0.9rem',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
                 backdropFilter: 'blur(10px)',
                 boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.3s ease',
                 cursor: 'default',
                 letterSpacing: '0.02em',
+                marginTop: isMobile ? '8px' : '0',
+                justifyContent: 'center',
+                minWidth: isMobile ? '80px' : 'auto',
               }}
             >
               <svg
-                width='18'
-                height='18'
+                width={isMobile ? '14' : '18'}
+                height={isMobile ? '14' : '18'}
                 fill='currentColor'
                 viewBox='0 0 20 20'
               >
@@ -342,28 +330,31 @@ const EstatesPart = ({
                   clipRule='evenodd'
                 />
               </svg>
-              Required
+              <span className='d-none d-sm-inline'>Required</span>
+              <span className='d-inline d-sm-none'>!</span>
             </span>
           </div>
 
           {/* Content */}
-          <div className='px-4 pb-4'>
+          <div
+            className={`px-${isMobile ? '3' : '4'} pb-${isMobile ? '3' : '4'}`}
+          >
             <div
               className='alert border-0 mb-4'
               style={{
                 background:
                   'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05))',
-                borderRadius: '16px',
+                borderRadius: isMobile ? '12px' : '16px',
                 border: '1px solid rgba(239, 68, 68, 0.2)',
                 backdropFilter: 'blur(10px)',
                 color: '#dc2626',
-                padding: '1.5rem',
+                padding: isMobile ? '1rem' : '1.5rem',
               }}
             >
               <div
                 style={{
-                  width: '40px',
-                  height: '40px',
+                  width: isMobile ? '32px' : '40px',
+                  height: isMobile ? '32px' : '40px',
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                   color: 'white',
@@ -374,10 +365,21 @@ const EstatesPart = ({
                   boxShadow: '0 8px 16px rgba(239, 68, 68, 0.3)',
                 }}
               >
-                <i className='fas fa-exclamation-triangle'></i>
+                <i
+                  className='fas fa-exclamation-triangle'
+                  style={{ fontSize: isMobile ? '12px' : '14px' }}
+                ></i>
               </div>
-              <div className='text-center fw-semibold'>
-                No estate information available for this application.
+              <div
+                className='text-center fw-semibold'
+                style={{ fontSize: isMobile ? '0.85rem' : '1rem' }}
+              >
+                <span className='d-none d-sm-inline'>
+                  No estate information available for this application.
+                </span>
+                <span className='d-inline d-sm-none'>
+                  No estate information available.
+                </span>
               </div>
             </div>
 
@@ -388,30 +390,23 @@ const EstatesPart = ({
                   background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '16px',
+                  borderRadius: isMobile ? '12px' : '16px',
                   transition: 'all 0.3s ease',
                   boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                  fontSize: isMobile ? '0.85rem' : '1rem',
+                  minHeight: isMobile ? '44px' : 'auto',
+                  padding: isMobile ? '12px 20px' : '12px 16px',
                 }}
                 onClick={() => setShowEstateModal(true)}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform =
-                    'translateY(-2px) scale(1.05)';
-                  e.currentTarget.style.boxShadow =
-                    '0 15px 35px rgba(59, 130, 246, 0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                  e.currentTarget.style.boxShadow =
-                    '0 8px 20px rgba(59, 130, 246, 0.3)';
-                }}
                 disabled={
                   application.approved ||
                   application.is_rejected ||
                   isApplicationLocked
                 }
               >
-                <FaPlus size={14} />
-                Manage Estates
+                <FaPlus size={isMobile ? 12 : 14} />
+                <span className='d-none d-sm-inline'>Manage Estates</span>
+                <span className='d-inline d-sm-none'>Add Estates</span>
               </button>
             </div>
           </div>
@@ -459,7 +454,7 @@ const EstatesPart = ({
           radial-gradient(circle at 70% 90%, rgba(245, 158, 11, 0.1), transparent 50%)
         `,
           border: '1px solid rgba(255, 255, 255, 0.3)',
-          borderRadius: '24px',
+          borderRadius: isMobile ? '16px' : '24px',
           boxShadow: `
           0 20px 40px rgba(0, 0, 0, 0.08),
           0 8px 16px rgba(0, 0, 0, 0.06),
@@ -468,133 +463,106 @@ const EstatesPart = ({
           backdropFilter: 'blur(20px)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           transform: 'translateZ(0)',
-          marginBottom: '200px', // Extra space for EstateSummarySticky
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
-          e.currentTarget.style.boxShadow = `
-          0 32px 64px rgba(0, 0, 0, 0.12),
-          0 16px 32px rgba(0, 0, 0, 0.08),
-          inset 0 1px 0 rgba(255, 255, 255, 0.6)
-        `;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          e.currentTarget.style.boxShadow = `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
-        `;
+          marginBottom: isMobile ? '100px' : '200px',
+          margin: isMobile ? '0 8px 100px 8px' : '0 0 200px 0',
         }}
       >
-        {/* Animated Background Pattern */}
-        <div
-          className='position-absolute w-100 h-100'
-          style={{
-            background: `
-            radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.06) 0%, transparent 50%)
-          `,
-            opacity: 0.3,
-            animation: 'float 6s ease-in-out infinite',
-          }}
-        />
-
         {/* Premium Header */}
         <div
-          className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+          className={`px-${isMobile ? '3' : '4'} py-${
+            isMobile ? '3' : '4'
+          } d-flex align-items-center gap-${
+            isMobile ? '2' : '3'
+          } position-relative`}
           style={{
             background: `
             linear-gradient(135deg, #f59e0b, #d97706),
             linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
           `,
             color: '#ffffff',
-            borderTopLeftRadius: '22px',
-            borderTopRightRadius: '22px',
+            borderTopLeftRadius: isMobile ? '14px' : '22px',
+            borderTopRightRadius: isMobile ? '14px' : '22px',
             backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+            flexDirection: isMobile ? 'column' : 'row',
+            textAlign: isMobile ? 'center' : 'left',
           }}
         >
           {/* Icon with Micro-animation */}
           <div
-            className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+            className='d-flex align-items-center justify-content-center rounded-circle position-relative flex-shrink-0'
             style={{
-              width: '56px',
-              height: '56px',
+              width: isMobile ? '40px' : '56px',
+              height: isMobile ? '40px' : '56px',
               background: 'rgba(255, 255, 255, 0.15)',
               border: '2px solid rgba(255, 255, 255, 0.25)',
               backdropFilter: 'blur(10px)',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+              marginBottom: isMobile ? '8px' : '0',
             }}
           >
-            <FaBuilding size={20} />
-
-            {/* Subtle glow effect */}
-            <div
-              className='position-absolute rounded-circle'
-              style={{
-                top: '-10px',
-                left: '-10px',
-                right: '-10px',
-                bottom: '-10px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                filter: 'blur(8px)',
-                zIndex: -1,
-              }}
-            />
+            <FaBuilding size={isMobile ? 16 : 20} />
           </div>
 
-          <div className='flex-grow-1'>
+          <div className={`flex-grow-1 ${isMobile ? 'text-center' : ''}`}>
             <h5
               className='fw-bold mb-2 text-white'
-              style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+              style={{
+                fontSize: isMobile ? '1.1rem' : '1.4rem',
+                letterSpacing: '-0.02em',
+                marginBottom: isMobile ? '4px' : '8px',
+              }}
             >
-              Estate Assessment
+              <span className='d-none d-sm-inline'>Estate Assessment</span>
+              <span className='d-inline d-sm-none'>Estate</span>
             </h5>
             <div
               className='px-3 py-2 rounded-pill fw-semibold text-white'
               style={{
                 background: 'rgba(255, 255, 255, 0.1)',
-                fontSize: '0.9rem',
+                fontSize: isMobile ? '0.75rem' : '0.9rem',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
                 display: 'inline-block',
                 backdropFilter: 'blur(10px)',
                 letterSpacing: '0.02em',
               }}
             >
-              Assets & Liabilities
+              <span className='d-none d-sm-inline'>Assets & Liabilities</span>
+              <span className='d-inline d-sm-none'>Assets</span>
             </div>
           </div>
 
           {/* Status Badge */}
           <span
-            className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+            className={`px-${isMobile ? '3' : '4'} py-${
+              isMobile ? '2' : '3'
+            } rounded-pill text-white fw-bold d-flex align-items-center gap-2 flex-shrink-0`}
             style={{
               background:
                 Object.keys(assetGroups).length > 0 ||
                 Object.keys(liabilityGroups).length > 0
                   ? 'linear-gradient(135deg, #22c55e, #16a34a)'
                   : 'linear-gradient(135deg, #ef4444, #dc2626)',
-              fontSize: '0.9rem',
+              fontSize: isMobile ? '0.75rem' : '0.9rem',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               backdropFilter: 'blur(10px)',
               boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
               transition: 'all 0.3s ease',
               cursor: 'default',
               letterSpacing: '0.02em',
+              marginTop: isMobile ? '8px' : '0',
+              justifyContent: 'center',
+              minWidth: isMobile ? '80px' : 'auto',
             }}
           >
-            <svg width='18' height='18' fill='currentColor' viewBox='0 0 20 20'>
+            <svg
+              width={isMobile ? '14' : '18'}
+              height={isMobile ? '14' : '18'}
+              fill='currentColor'
+              viewBox='0 0 20 20'
+            >
               {Object.keys(assetGroups).length > 0 ||
               Object.keys(liabilityGroups).length > 0 ? (
                 <path
@@ -611,86 +579,97 @@ const EstatesPart = ({
               )}
             </svg>
             {Object.keys(assetGroups).length > 0 ||
-            Object.keys(liabilityGroups).length > 0
-              ? 'Complete'
-              : 'Required'}
+            Object.keys(liabilityGroups).length > 0 ? (
+              <>
+                <span className='d-none d-sm-inline'>Complete</span>
+                <span className='d-inline d-sm-none'>✓</span>
+              </>
+            ) : (
+              <>
+                <span className='d-none d-sm-inline'>Required</span>
+                <span className='d-inline d-sm-none'>!</span>
+              </>
+            )}
           </span>
         </div>
 
         {/* Content Area */}
-        <div className='px-4 pb-4'>
+        <div
+          className={`px-${isMobile ? '2' : '4'} pb-${isMobile ? '3' : '4'}`}
+        >
           {/* Assets Section */}
           {Object.keys(assetGroups).length > 0 && (
             <>
               <div
-                className='p-4 mb-4 position-relative'
+                className={`p-${isMobile ? '3' : '4'} mb-${
+                  isMobile ? '3' : '4'
+                } position-relative`}
                 style={{
                   background: 'rgba(255, 255, 255, 0.7)',
-                  borderRadius: '18px',
+                  borderRadius: isMobile ? '12px' : '18px',
                   border: '1px solid rgba(59, 130, 246, 0.3)',
                   backdropFilter: 'blur(20px)',
                   boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
                 }}
               >
-                {/* Glow effect */}
                 <div
-                  className='position-absolute'
-                  style={{
-                    top: '-2px',
-                    left: '-2px',
-                    right: '-2px',
-                    bottom: '-2px',
-                    background:
-                      'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05))',
-                    borderRadius: '20px',
-                    filter: 'blur(6px)',
-                    zIndex: -1,
-                    animation:
-                      'selectionGlow 3s ease-in-out infinite alternate',
-                  }}
-                />
-
-                <div className='d-flex align-items-center mb-2'>
+                  className={`d-flex align-items-center mb-${
+                    isMobile ? '2' : '2'
+                  } ${isMobile ? 'flex-column text-center' : ''}`}
+                >
                   <div
                     style={{
-                      width: '40px',
-                      height: '40px',
+                      width: isMobile ? '32px' : '40px',
+                      height: isMobile ? '32px' : '40px',
                       borderRadius: '12px',
                       background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
                       color: 'white',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginRight: '1rem',
+                      marginRight: isMobile ? '0' : '1rem',
+                      marginBottom: isMobile ? '8px' : '0',
                       boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)',
                     }}
                   >
-                    <i className='fas fa-chart-line'></i>
+                    <i
+                      className='fas fa-chart-line'
+                      style={{ fontSize: isMobile ? '12px' : '14px' }}
+                    ></i>
                   </div>
                   <h6
                     className='mb-0 fw-bold'
-                    style={{ color: '#1e40af', fontSize: '1.2rem' }}
+                    style={{
+                      color: '#1e40af',
+                      fontSize: isMobile ? '1rem' : '1.2rem',
+                    }}
                   >
-                    ESTATE ASSETS
+                    <span className='d-none d-sm-inline'>ESTATE ASSETS</span>
+                    <span className='d-inline d-sm-none'>ASSETS</span>
                   </h6>
                 </div>
-                <p
-                  className='mb-0 small'
-                  style={{ color: '#1e3a8a', fontStyle: 'italic' }}
-                >
-                  Property, investments, debts owed to the deceased, and other
-                  valuable items comprising the gross estate
-                </p>
+                {!isMobile && (
+                  <p
+                    className='mb-0 small'
+                    style={{ color: '#1e3a8a', fontStyle: 'italic' }}
+                  >
+                    Property, investments, debts owed to the deceased, and other
+                    valuable items comprising the gross estate
+                  </p>
+                )}
               </div>
 
               {Object.entries(assetGroups).map(
                 ([estateName, groupedEstates], groupIndex) => (
-                  <div key={groupIndex} className='mb-4'>
+                  <div
+                    key={groupIndex}
+                    className={`mb-${isMobile ? '3' : '4'}`}
+                  >
                     <div
                       className='position-relative'
                       style={{
                         background: 'rgba(255, 255, 255, 0.7)',
-                        borderRadius: '18px',
+                        borderRadius: isMobile ? '12px' : '18px',
                         border: '1px solid rgba(255, 255, 255, 0.5)',
                         backdropFilter: 'blur(20px)',
                         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
@@ -698,7 +677,7 @@ const EstatesPart = ({
                       }}
                     >
                       <div
-                        className='p-3'
+                        className={`p-${isMobile ? '2' : '3'}`}
                         style={{
                           background:
                             'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05))',
@@ -707,13 +686,18 @@ const EstatesPart = ({
                       >
                         <h5
                           className='mb-0 fw-bold'
-                          style={{ color: '#3b82f6' }}
+                          style={{
+                            color: '#3b82f6',
+                            fontSize: isMobile ? '0.9rem' : '1.1rem',
+                          }}
                         >
-                          {estateName}
+                          {isMobile && estateName.length > 30
+                            ? `${estateName.substring(0, 30)}...`
+                            : estateName}
                         </h5>
                       </div>
                       <div
-                        className='p-3'
+                        className={`p-${isMobile ? '2' : '3'}`}
                         style={{ backgroundColor: 'transparent' }}
                       >
                         {groupedEstates.map((estate, index) => {
@@ -725,10 +709,18 @@ const EstatesPart = ({
                           return (
                             <div
                               key={index}
-                              className={`d-flex align-items-center justify-content-between 
-                          px-3 py-3 position-relative ${
-                            index < groupedEstates.length - 1 ? 'mb-3' : ''
-                          }`}
+                              className={`${
+                                isMobile
+                                  ? 'd-block'
+                                  : 'd-flex align-items-center justify-content-between'
+                              } 
+                          px-${isMobile ? '2' : '3'} py-${
+                                isMobile ? '2' : '3'
+                              } position-relative ${
+                                index < groupedEstates.length - 1
+                                  ? `mb-${isMobile ? '2' : '3'}`
+                                  : ''
+                              }`}
                               style={{
                                 background:
                                   estate.is_asset === false
@@ -739,28 +731,34 @@ const EstatesPart = ({
                                     ? '4px solid #ef4444'
                                     : '4px solid #06b6d4',
                                 borderRadius: '12px',
-                                minHeight: '70px',
+                                minHeight: isMobile ? '60px' : '70px',
                                 transition: 'all 0.3s ease',
                                 backdropFilter: 'blur(10px)',
                                 border: '1px solid rgba(255, 255, 255, 0.3)',
                               }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.transform =
-                                  'translateY(-2px) translateX(4px)';
-                                e.currentTarget.style.boxShadow =
-                                  '0 8px 16px rgba(0, 0, 0, 0.1)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.transform =
-                                  'translateY(0) translateX(0)';
-                                e.currentTarget.style.boxShadow = 'none';
-                              }}
                             >
-                              <div className='flex-grow-1 pe-3'>
-                                <div className='d-flex align-items-center flex-wrap gap-2 mb-2'>
+                              <div
+                                className={`${
+                                  isMobile ? 'mb-2' : 'flex-grow-1 pe-3'
+                                }`}
+                              >
+                                <div
+                                  className={`d-flex align-items-center flex-wrap gap-2 ${
+                                    isMobile ? 'mb-1' : 'mb-2'
+                                  }`}
+                                >
                                   {groupedEstates.length > 1 && (
-                                    <span className='fw-bold text-slate-700 small'>
-                                      {displayName}
+                                    <span
+                                      className='fw-bold text-slate-700 small'
+                                      style={{
+                                        fontSize: isMobile
+                                          ? '0.75rem'
+                                          : '0.85rem',
+                                      }}
+                                    >
+                                      {isMobile && displayName.length > 25
+                                        ? `${displayName.substring(0, 25)}...`
+                                        : displayName}
                                     </span>
                                   )}
                                   {estate.is_asset === false && (
@@ -769,14 +767,23 @@ const EstatesPart = ({
                                       style={{
                                         background: 'rgba(239, 68, 68, 0.2)',
                                         color: '#dc2626',
-                                        fontSize: '0.7rem',
+                                        fontSize: isMobile
+                                          ? '0.6rem'
+                                          : '0.7rem',
                                         border:
                                           '1px solid rgba(239, 68, 68, 0.3)',
                                       }}
                                       title='Liability'
                                     >
-                                      <FaFileInvoiceDollar size={10} />
-                                      Liability
+                                      <FaFileInvoiceDollar
+                                        size={isMobile ? 8 : 10}
+                                      />
+                                      <span className='d-none d-sm-inline'>
+                                        Liability
+                                      </span>
+                                      <span className='d-inline d-sm-none'>
+                                        Debt
+                                      </span>
                                     </span>
                                   )}
                                 </div>
@@ -784,13 +791,23 @@ const EstatesPart = ({
                               </div>
 
                               <div
-                                className='d-flex align-items-center'
-                                style={{ minWidth: '140px' }}
+                                className={`d-flex align-items-center ${
+                                  isMobile ? 'justify-content-between' : ''
+                                }`}
+                                style={{
+                                  minWidth: isMobile ? '100%' : '140px',
+                                }}
                               >
-                                <div className='text-end w-100'>
+                                <div
+                                  className={`${
+                                    isMobile ? 'flex-grow-1' : 'text-end w-100'
+                                  }`}
+                                >
                                   <div
                                     className='small text-muted mb-1'
-                                    style={{ fontSize: '0.75rem' }}
+                                    style={{
+                                      fontSize: isMobile ? '0.7rem' : '0.75rem',
+                                    }}
                                   >
                                     {estate.category === 'irish_debt'
                                       ? 'Amount Owed'
@@ -803,7 +820,7 @@ const EstatesPart = ({
                                         estate.is_asset === false
                                           ? '#ef4444'
                                           : '#059669',
-                                      fontSize: '1.1rem',
+                                      fontSize: isMobile ? '0.9rem' : '1.1rem',
                                     }}
                                   >
                                     {formatMoney(estate.value, currency_sign)}
@@ -825,75 +842,83 @@ const EstatesPart = ({
           {Object.keys(liabilityGroups).length > 0 && (
             <>
               <div
-                className='p-4 mb-4 position-relative'
+                className={`p-${isMobile ? '3' : '4'} mb-${
+                  isMobile ? '3' : '4'
+                } position-relative`}
                 style={{
                   background: 'rgba(255, 255, 255, 0.7)',
-                  borderRadius: '18px',
+                  borderRadius: isMobile ? '12px' : '18px',
                   border: '1px solid rgba(245, 158, 11, 0.3)',
                   backdropFilter: 'blur(20px)',
                   boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
-                  marginTop: Object.keys(assetGroups).length > 0 ? '2rem' : '0',
+                  marginTop:
+                    Object.keys(assetGroups).length > 0
+                      ? isMobile
+                        ? '1.5rem'
+                        : '2rem'
+                      : '0',
                 }}
               >
-                {/* Glow effect */}
                 <div
-                  className='position-absolute'
-                  style={{
-                    top: '-2px',
-                    left: '-2px',
-                    right: '-2px',
-                    bottom: '-2px',
-                    background:
-                      'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05))',
-                    borderRadius: '20px',
-                    filter: 'blur(6px)',
-                    zIndex: -1,
-                    animation:
-                      'selectionGlow 3s ease-in-out infinite alternate',
-                  }}
-                />
-
-                <div className='d-flex align-items-center mb-2'>
+                  className={`d-flex align-items-center mb-${
+                    isMobile ? '2' : '2'
+                  } ${isMobile ? 'flex-column text-center' : ''}`}
+                >
                   <div
                     style={{
-                      width: '40px',
-                      height: '40px',
+                      width: isMobile ? '32px' : '40px',
+                      height: isMobile ? '32px' : '40px',
                       borderRadius: '12px',
                       background: 'linear-gradient(135deg, #f59e0b, #d97706)',
                       color: 'white',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginRight: '1rem',
+                      marginRight: isMobile ? '0' : '1rem',
+                      marginBottom: isMobile ? '8px' : '0',
                       boxShadow: '0 8px 16px rgba(245, 158, 11, 0.3)',
                     }}
                   >
-                    <i className='fas fa-exclamation-triangle'></i>
+                    <i
+                      className='fas fa-exclamation-triangle'
+                      style={{ fontSize: isMobile ? '12px' : '14px' }}
+                    ></i>
                   </div>
                   <h6
                     className='mb-0 fw-bold'
-                    style={{ color: '#92400e', fontSize: '1.2rem' }}
+                    style={{
+                      color: '#92400e',
+                      fontSize: isMobile ? '1rem' : '1.2rem',
+                    }}
                   >
-                    ESTATE LIABILITIES
+                    <span className='d-none d-sm-inline'>
+                      ESTATE LIABILITIES
+                    </span>
+                    <span className='d-inline d-sm-none'>LIABILITIES</span>
                   </h6>
                 </div>
-                <p
-                  className='mb-0 small'
-                  style={{ color: '#92400e', fontStyle: 'italic' }}
-                >
-                  Debts, funeral expenses, and other obligations payable by the
-                  estate
-                </p>
+                {!isMobile && (
+                  <p
+                    className='mb-0 small'
+                    style={{ color: '#92400e', fontStyle: 'italic' }}
+                  >
+                    Debts, funeral expenses, and other obligations payable by
+                    the estate
+                  </p>
+                )}
               </div>
 
               {Object.entries(liabilityGroups).map(
                 ([estateName, groupedEstates], groupIndex) => (
-                  <div key={groupIndex} className='mb-4'>
+                  <div
+                    key={groupIndex}
+                    className={`mb-${isMobile ? '3' : '4'}`}
+                  >
                     <div
                       className='position-relative'
                       style={{
                         background: 'rgba(255, 255, 255, 0.7)',
-                        borderRadius: '18px',
+                        borderRadius: isMobile ? '12px' : '18px',
                         border: '1px solid rgba(255, 255, 255, 0.5)',
                         backdropFilter: 'blur(20px)',
                         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
@@ -901,7 +926,7 @@ const EstatesPart = ({
                       }}
                     >
                       <div
-                        className='p-3'
+                        className={`p-${isMobile ? '2' : '3'}`}
                         style={{
                           background:
                             'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05))',
@@ -910,13 +935,18 @@ const EstatesPart = ({
                       >
                         <h5
                           className='mb-0 fw-bold'
-                          style={{ color: '#f59e0b' }}
+                          style={{
+                            color: '#f59e0b',
+                            fontSize: isMobile ? '0.9rem' : '1.1rem',
+                          }}
                         >
-                          {estateName}
+                          {isMobile && estateName.length > 30
+                            ? `${estateName.substring(0, 30)}...`
+                            : estateName}
                         </h5>
                       </div>
                       <div
-                        className='p-3'
+                        className={`p-${isMobile ? '2' : '3'}`}
                         style={{ backgroundColor: 'transparent' }}
                       >
                         {groupedEstates.map((estate, index) => {
@@ -928,80 +958,160 @@ const EstatesPart = ({
                           return (
                             <div
                               key={index}
-                              className={`d-flex align-items-center justify-content-between 
-                          px-3 py-3 position-relative ${
-                            index < groupedEstates.length - 1 ? 'mb-3' : ''
-                          }`}
+                              className={`position-relative ${
+                                index < groupedEstates.length - 1
+                                  ? `mb-${isMobile ? '3' : '3'}`
+                                  : ''
+                              }`}
                               style={{
                                 background: 'rgba(239, 68, 68, 0.1)',
                                 borderLeft: '4px solid #ef4444',
                                 borderRadius: '12px',
-                                minHeight: '70px',
+                                minHeight: isMobile ? 'auto' : '70px',
                                 transition: 'all 0.3s ease',
                                 backdropFilter: 'blur(10px)',
                                 border: '1px solid rgba(255, 255, 255, 0.3)',
+                                padding: isMobile ? '16px' : '16px 24px',
                               }}
                               onMouseEnter={(e) => {
-                                e.currentTarget.style.transform =
-                                  'translateY(-2px) translateX(4px)';
-                                e.currentTarget.style.boxShadow =
-                                  '0 8px 16px rgba(0, 0, 0, 0.1)';
+                                if (!isMobile) {
+                                  e.currentTarget.style.transform =
+                                    'translateY(-2px) translateX(4px)';
+                                  e.currentTarget.style.boxShadow =
+                                    '0 8px 16px rgba(0, 0, 0, 0.1)';
+                                }
                               }}
                               onMouseLeave={(e) => {
-                                e.currentTarget.style.transform =
-                                  'translateY(0) translateX(0)';
-                                e.currentTarget.style.boxShadow = 'none';
+                                if (!isMobile) {
+                                  e.currentTarget.style.transform =
+                                    'translateY(0) translateX(0)';
+                                  e.currentTarget.style.boxShadow = 'none';
+                                }
                               }}
                             >
-                              <div className='flex-grow-1 pe-3'>
-                                <div className='d-flex align-items-center flex-wrap gap-2 mb-2'>
-                                  {groupedEstates.length > 1 && (
-                                    <span className='fw-bold text-slate-700 small'>
-                                      {displayName}
-                                    </span>
-                                  )}
-                                  <span
-                                    className='badge rounded-pill px-2 py-1 d-flex align-items-center gap-1'
-                                    style={{
-                                      background: 'rgba(239, 68, 68, 0.2)',
-                                      color: '#dc2626',
-                                      fontSize: '0.7rem',
-                                      border:
-                                        '1px solid rgba(239, 68, 68, 0.3)',
-                                    }}
-                                    title='Liability'
-                                  >
-                                    <FaFileInvoiceDollar size={10} />
-                                    Liability
-                                  </span>
-                                </div>
-                                <div>{renderEstateFields(estate)}</div>
-                              </div>
+                              {/* Mobile Layout */}
+                              {isMobile ? (
+                                <div className='d-flex flex-column'>
+                                  {/* Header Row */}
+                                  <div className='d-flex justify-content-between align-items-start mb-2'>
+                                    <div className='flex-grow-1'>
+                                      {groupedEstates.length > 1 && (
+                                        <div
+                                          className='fw-bold text-slate-700 mb-1'
+                                          style={{ fontSize: '0.85rem' }}
+                                        >
+                                          {displayName}
+                                        </div>
+                                      )}
+                                      <div className='d-flex flex-wrap gap-1'>
+                                        <span
+                                          className='badge rounded-pill px-2 py-1 d-flex align-items-center gap-1'
+                                          style={{
+                                            background:
+                                              'rgba(239, 68, 68, 0.2)',
+                                            color: '#dc2626',
+                                            fontSize: '0.65rem',
+                                            border:
+                                              '1px solid rgba(239, 68, 68, 0.3)',
+                                          }}
+                                          title='Liability'
+                                        >
+                                          <FaFileInvoiceDollar size={8} />
+                                          Liability
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className='text-end ms-2'>
+                                      <div
+                                        className='small text-muted mb-1'
+                                        style={{ fontSize: '0.7rem' }}
+                                      >
+                                        {estate.category === 'irish_debt'
+                                          ? 'Amount Owed'
+                                          : 'Value'}
+                                      </div>
+                                      <div
+                                        className='fw-bold'
+                                        style={{
+                                          color: '#ef4444',
+                                          fontSize: '1rem',
+                                        }}
+                                      >
+                                        {formatMoney(
+                                          estate.value,
+                                          currency_sign
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
 
-                              <div
-                                className='d-flex align-items-center'
-                                style={{ minWidth: '140px' }}
-                              >
-                                <div className='text-end w-100'>
+                                  {/* Details Section */}
                                   <div
-                                    className='small text-muted mb-1'
-                                    style={{ fontSize: '0.75rem' }}
-                                  >
-                                    {estate.category === 'irish_debt'
-                                      ? 'Amount Owed'
-                                      : 'Value'}
-                                  </div>
-                                  <div
-                                    className='fw-bold'
+                                    className='mt-2 pt-2 border-top border-1'
                                     style={{
-                                      color: '#ef4444',
-                                      fontSize: '1.1rem',
+                                      borderColor: 'rgba(148, 163, 184, 0.2)',
                                     }}
                                   >
-                                    {formatMoney(estate.value, currency_sign)}
+                                    {renderEstateFields(estate)}
                                   </div>
                                 </div>
-                              </div>
+                              ) : (
+                                /* Desktop Layout */
+                                <div className='d-flex align-items-center justify-content-between'>
+                                  <div className='flex-grow-1 pe-3'>
+                                    <div className='d-flex align-items-center flex-wrap gap-2 mb-2'>
+                                      {groupedEstates.length > 1 && (
+                                        <span className='fw-bold text-slate-700 small'>
+                                          {displayName}
+                                        </span>
+                                      )}
+                                      <span
+                                        className='badge rounded-pill px-2 py-1 d-flex align-items-center gap-1'
+                                        style={{
+                                          background: 'rgba(239, 68, 68, 0.2)',
+                                          color: '#dc2626',
+                                          fontSize: '0.7rem',
+                                          border:
+                                            '1px solid rgba(239, 68, 68, 0.3)',
+                                        }}
+                                        title='Liability'
+                                      >
+                                        <FaFileInvoiceDollar size={10} />
+                                        Liability
+                                      </span>
+                                    </div>
+                                    <div>{renderEstateFields(estate)}</div>
+                                  </div>
+
+                                  <div
+                                    className='d-flex align-items-center'
+                                    style={{ minWidth: '140px' }}
+                                  >
+                                    <div className='text-end w-100'>
+                                      <div
+                                        className='small text-muted mb-1'
+                                        style={{ fontSize: '0.75rem' }}
+                                      >
+                                        {estate.category === 'irish_debt'
+                                          ? 'Amount Owed'
+                                          : 'Value'}
+                                      </div>
+                                      <div
+                                        className='fw-bold'
+                                        style={{
+                                          color: '#ef4444',
+                                          fontSize: '1.1rem',
+                                        }}
+                                      >
+                                        {formatMoney(
+                                          estate.value,
+                                          currency_sign
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           );
                         })}
@@ -1014,41 +1124,33 @@ const EstatesPart = ({
           )}
 
           {/* Manage Estates Button */}
-          <div className='text-center mb-5' style={{ paddingBottom: '100px' }}>
+          <div
+            className={`text-center mb-${isMobile ? '3' : '5'}`}
+            style={{ paddingBottom: isMobile ? '60px' : '100px' }}
+          >
             <button
               className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
               style={{
                 background: 'rgba(255, 255, 255, 0.8)',
                 color: '#3b82f6',
                 border: '2px solid rgba(59, 130, 246, 0.3)',
-                borderRadius: '16px',
+                borderRadius: isMobile ? '12px' : '16px',
                 transition: 'all 0.3s ease',
                 backdropFilter: 'blur(10px)',
+                fontSize: isMobile ? '0.85rem' : '1rem',
+                minHeight: isMobile ? '44px' : 'auto',
+                padding: isMobile ? '12px 20px' : '12px 16px',
               }}
               onClick={() => setShowEstateModal(true)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background =
-                  'linear-gradient(135deg, #3b82f6, #2563eb)';
-                e.currentTarget.style.color = 'white';
-                e.currentTarget.style.transform =
-                  'translateY(-2px) scale(1.05)';
-                e.currentTarget.style.boxShadow =
-                  '0 15px 35px rgba(59, 130, 246, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.8)';
-                e.currentTarget.style.color = '#3b82f6';
-                e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
               disabled={
                 application.approved ||
                 application.is_rejected ||
                 isApplicationLocked
               }
             >
-              <FaCog size={14} />
-              Manage Estates
+              <FaCog size={isMobile ? 12 : 14} />
+              <span className='d-none d-sm-inline'>Manage Estates</span>
+              <span className='d-inline d-sm-none'>Manage</span>
             </button>
           </div>
 
@@ -1077,6 +1179,18 @@ const EstatesPart = ({
             }
             100% {
               opacity: 0.6;
+            }
+          }
+          
+          @media (max-width: 767px) {
+            .modern-main-card {
+              transform: none !important;
+              box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
+            }
+            
+            .modern-main-card:hover {
+              transform: none !important;
+              box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
             }
           }
         `}</style>
