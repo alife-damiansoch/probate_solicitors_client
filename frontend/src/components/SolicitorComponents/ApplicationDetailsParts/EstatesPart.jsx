@@ -1154,11 +1154,6 @@ const EstatesPart = ({
             </button>
           </div>
         </div>
-        <EstateSummarySticky
-          estates={estates}
-          formData={application}
-          currency_sign={currency_sign}
-        />
 
         {/* CSS Animations */}
         <style>{`
@@ -1194,6 +1189,11 @@ const EstatesPart = ({
           }
         `}</style>
       </div>
+      <EstateSummarySticky
+        estates={estates}
+        formData={application}
+        currency_sign={currency_sign}
+      />
       <EstateManagerModal
         show={showEstateModal}
         onClose={() => setShowEstateModal(false)}
