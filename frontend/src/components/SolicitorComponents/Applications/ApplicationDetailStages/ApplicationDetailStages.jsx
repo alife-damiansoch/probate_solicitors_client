@@ -183,21 +183,13 @@ const ApplicationDetailStages = ({
 
   return (
     <div
+      className='h-100 d-flex flex-column'
       style={{
-        position: 'fixed',
-        left: '0',
-        top: '150px',
-        width: '330px',
-        height: 'calc(100vh-150px)',
         background:
           'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
-        borderRight: '1px solid rgba(59, 130, 246, 0.3)',
-        zIndex: 1000,
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        backdropFilter: 'blur(20px)',
-        boxShadow:
-          '8px 0 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(59, 130, 246, 0.1)',
+        // Remove fixed positioning - let parent handle it
+        // Remove width, height constraints - let parent handle it
+        // Remove overflow settings - let parent handle it
       }}
     >
       <style>
@@ -249,31 +241,12 @@ const ApplicationDetailStages = ({
             to { transform: scaleX(1); }
           }
 
-          .scroll-container::-webkit-scrollbar {
-            width: 6px;
-          }
-          
-          .scroll-container::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 3px;
-          }
-          
-          .scroll-container::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
-            border-radius: 3px;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-          }
-          
-          .scroll-container::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #60a5fa, #2563eb);
-          }
+          /* Remove the custom scroll styles since parent handles scrolling */
         `}
       </style>
 
-      <div
-        className='scroll-container'
-        style={{ height: 'calc(100%-150px)', overflowY: 'auto' }}
-      >
+      {/* Header - Fixed at top */}
+      <div className='flex-shrink-0' style={{ padding: '20px 20px 10px 20px' }}>
         <StagesHeader
           application={application}
           overallProgress={overallProgress}
@@ -282,7 +255,13 @@ const ApplicationDetailStages = ({
           totalSteps={steps.length}
           nextActionStep={nextActionStep}
         />
+      </div>
 
+      {/* Scrollable Timeline Content */}
+      <div
+        className='flex-grow-1 overflow-hidden'
+        style={{ padding: '0 20px' }}
+      >
         <StagesTimeline
           steps={steps}
           hoveredStep={hoveredStep}
@@ -290,7 +269,10 @@ const ApplicationDetailStages = ({
           setHighlightedSectionId={setHighlightedSectionId}
           highlitedSectionId={highlitedSectionId}
         />
+      </div>
 
+      {/* Footer - Fixed at bottom */}
+      <div className='flex-shrink-0' style={{ padding: '10px 20px 20px 20px' }}>
         <StagesFooter
           nextActionStep={nextActionStep}
           completedSteps={completedSteps}

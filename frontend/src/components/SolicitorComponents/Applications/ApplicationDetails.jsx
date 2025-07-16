@@ -34,10 +34,11 @@ const ApplicationDetails = () => {
   // Tooltip state - check localStorage for tooltip visibility
   const [showTooltip, setShowTooltip] = useState(() => {
     try {
-      const tooltipDismissed = localStorage.getItem(
-        'mobile-stages-tooltip-dismissed'
-      );
-      return !tooltipDismissed;
+      // const tooltipDismissed = localStorage.getItem(
+      //   'mobile-stages-tooltip-dismissed'
+      // );
+      // return !tooltipDismissed;
+      return true;
     } catch {
       return true; // Default to showing tooltip if localStorage is not available
     }
