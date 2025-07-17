@@ -205,6 +205,7 @@ const ApplicationDetails = () => {
                 advancement={advancement}
                 refresh={refresh}
                 highlitedSectionId={highlitedSectionId}
+                isSidebarOpen={isSidebarOpen}
               />
             </div>
           </div>
@@ -216,7 +217,7 @@ const ApplicationDetails = () => {
               className='d-lg-none position-fixed'
               style={{
                 top: '50%',
-                left: '16px',
+                left: '-10px',
                 transform: 'translateY(-50%)',
                 zIndex: 1050,
               }}

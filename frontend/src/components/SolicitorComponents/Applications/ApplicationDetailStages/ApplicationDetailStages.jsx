@@ -12,6 +12,7 @@ const ApplicationDetailStages = ({
   setHighlightedSectionId,
   advancement, // Add advancement prop
   highlitedSectionId,
+  isSidebarOpen,
 }) => {
   const [hoveredStep, setHoveredStep] = useState(null);
   const [estates, setEstates] = useState([]);
