@@ -17,13 +17,156 @@ export const getTimelineSteps = ({
     parseFloat(application.value_of_the_estate_after_expenses) || 0;
   const documentsAnalysis = getDocumentsAnalysis();
 
-  // Check if any estate category has items
-  const hasEstateItems =
-    estates && typeof estates === 'object'
-      ? Object.values(estates).some(
-          (category) => Array.isArray(category) && category.length > 0
-        )
-      : false;
+  // Helper function to safely convert to number
+  const toNumber = (value) => {
+    const num = parseFloat(value);
+    return isNaN(num) ? 0 : num;
+  };
+
+  // Calculate estate totals and validate advance
+  const calculateEstateAndValidateAdvance = () => {
+    console.log('=== ESTATE CALCULATION DEBUG ===');
+    console.log('Raw estates data:', estates);
+    console.log('Estates type:', typeof estates);
+    console.log('Estates is array:', Array.isArray(estates));
+    console.log('Application amount:', application.amount);
+
+    // Handle different estate data structures
+    let estateArray = [];
+
+    if (Array.isArray(estates)) {
+      estateArray = estates;
+    } else if (estates && typeof estates === 'object') {
+      // If estates is an object with categories, flatten it
+      estateArray = Object.values(estates).flat();
+    }
+
+    console.log('Estate array after processing:', estateArray);
+    console.log('Estate array length:', estateArray.length);
+
+    if (!estateArray || estateArray.length === 0) {
+      console.log('No estates found, returning default values');
+      return {
+        totalAssets: 0,
+        totalLiabilities: 0,
+        totalLendableAssets: 0,
+        totalNonLendableAssets: 0,
+        netIrishEstate: 0,
+        lendableIrishEstate: 0,
+        maximumAdvance: 0,
+        applicationAmount: toNumber(application.amount),
+        requestedAdvance: toNumber(application.amount) / 2,
+        isAdvanceExceeded: false,
+        advanceExcessAmount: 0,
+        advanceUtilization: 0,
+      };
+    }
+
+    // Filter and log estate types
+    const assets = estateArray.filter((estate) => estate.is_asset === true);
+    const liabilities = estateArray.filter(
+      (estate) => estate.is_asset === false
+    );
+
+    console.log('Assets found:', assets.length, assets);
+    console.log('Liabilities found:', liabilities.length, liabilities);
+
+    // Categorize assets by lendable property
+    const lendableAssets = assets.filter((estate) => estate.lendable === true);
+    const nonLendableAssets = assets.filter(
+      (estate) => estate.lendable === false
+    );
+
+    console.log('Lendable assets:', lendableAssets.length, lendableAssets);
+    console.log(
+      'Non-lendable assets:',
+      nonLendableAssets.length,
+      nonLendableAssets
+    );
+
+    // Calculate totals with logging
+    const totalAssets = assets.reduce((sum, estate) => {
+      const value = toNumber(estate.value);
+      console.log(`Asset ${estate.id || 'unknown'}: ${value}`);
+      return sum + value;
+    }, 0);
+
+    const totalLiabilities = liabilities.reduce((sum, estate) => {
+      const value = toNumber(estate.value);
+      console.log(`Liability ${estate.id || 'unknown'}: ${value}`);
+      return sum + value;
+    }, 0);
+
+    const totalLendableAssets = lendableAssets.reduce((sum, estate) => {
+      const value = toNumber(estate.value);
+      console.log(`Lendable asset ${estate.id || 'unknown'}: ${value}`);
+      return sum + value;
+    }, 0);
+
+    const totalNonLendableAssets = nonLendableAssets.reduce((sum, estate) => {
+      const value = toNumber(estate.value);
+      console.log(`Non-lendable asset ${estate.id || 'unknown'}: ${value}`);
+      return sum + value;
+    }, 0);
+
+    const netIrishEstate = totalAssets - totalLiabilities;
+    const lendableIrishEstate = totalLendableAssets - totalLiabilities;
+    const maximumAdvance = Math.max(0, lendableIrishEstate * 0.5);
+
+    console.log('=== CALCULATION RESULTS ===');
+    console.log('Total Assets:', totalAssets);
+    console.log('Total Liabilities:', totalLiabilities);
+    console.log('Total Lendable Assets:', totalLendableAssets);
+    console.log('Net Irish Estate:', netIrishEstate);
+    console.log('Lendable Irish Estate:', lendableIrishEstate);
+    console.log('Maximum Advance (50%):', maximumAdvance);
+
+    // Get application amount and validate
+    const applicationAmount = toNumber(application.amount);
+    const requestedAdvance = applicationAmount;
+    const isAdvanceExceeded = requestedAdvance > maximumAdvance;
+    const advanceExcessAmount = Math.max(0, requestedAdvance - maximumAdvance);
+
+    console.log('=== ADVANCE VALIDATION ===');
+    console.log('Application Amount:', applicationAmount);
+    console.log('Requested Advance (50%):', requestedAdvance);
+    console.log('Maximum Advance:', maximumAdvance);
+    console.log('Is Advance Exceeded:', isAdvanceExceeded);
+    console.log('Excess Amount:', advanceExcessAmount);
+    console.log('=== END DEBUG ===');
+
+    return {
+      totalAssets,
+      totalLiabilities,
+      totalLendableAssets,
+      totalNonLendableAssets,
+      netIrishEstate,
+      lendableIrishEstate,
+      maximumAdvance,
+      applicationAmount,
+      requestedAdvance,
+      isAdvanceExceeded,
+      advanceExcessAmount,
+      advanceUtilization:
+        maximumAdvance > 0 ? (requestedAdvance / maximumAdvance) * 100 : 0,
+    };
+  };
+
+  const estateCalculations = calculateEstateAndValidateAdvance();
+
+  // Check if any estate category has items - updated logic
+  const hasEstateItems = (() => {
+    if (Array.isArray(estates)) {
+      return estates.length > 0;
+    } else if (estates && typeof estates === 'object') {
+      return Object.values(estates).some(
+        (category) => Array.isArray(category) && category.length > 0
+      );
+    }
+    return false;
+  })();
+
+  console.log('Has estate items:', hasEstateItems);
 
   const estateValueComplete = hasEstateItems;
   const solicitorAssigned = application.solicitor !== null;
@@ -60,7 +203,7 @@ export const getTimelineSteps = ({
       };
     }
 
-    console.log('APPLICATION: ', application);
+    console.log('ESTATES: ', estates);
 
     switch (documentsAnalysis.status) {
       case 'waiting':
@@ -120,6 +263,15 @@ export const getTimelineSteps = ({
   };
 
   const documentsConfig = getDocumentsStepConfig();
+
+  // Log final estate assessment status
+  console.log('=== ESTATE ASSESSMENT STATUS ===');
+  console.log('Estate Value Complete:', estateValueComplete);
+  console.log('Advance Exceeded:', estateCalculations.isAdvanceExceeded);
+  console.log(
+    'Should show error:',
+    estateValueComplete && estateCalculations.isAdvanceExceeded
+  );
 
   // Create base steps
   const baseSteps = [
@@ -188,27 +340,65 @@ export const getTimelineSteps = ({
       actionText: solicitorAssigned ? null : 'Contact Support for Assignment',
     },
 
-    // 4. Estate Valuation & Assessment
+    // 4. Estate Valuation & Assessment (Modified with advance validation)
     {
       id: 'estate_assessment',
       title: 'Estate Assessment',
       sectionId: 'estate_assessment',
       icon: 'home',
-      completed: estateValueComplete,
-      actionRequired: !estateValueComplete && solicitorAssigned,
-      progress: estateValueComplete ? 100 : solicitorAssigned ? 40 : 0,
-      description: estateValueComplete
-        ? `Estate value: ${currency_sign}${
-            estateValue > 0 ? estateValue.toLocaleString() : 'Assessed'
-          }`
-        : estatesLoading
-        ? 'Loading estate information...'
-        : 'Estate valuation required',
-      detailDescription: estateValueComplete
-        ? `${getEstateItemsCount()} estate items catalogued • Comprehensive valuation complete`
-        : 'Provide comprehensive estate valuation including all assets, properties, and personal items for accurate processing.',
-      issueCount: estateValueComplete ? 0 : solicitorAssigned ? 1 : 0,
-      actionText: estateValueComplete ? null : 'Complete Estate Valuation',
+      completed: estateValueComplete && !estateCalculations.isAdvanceExceeded,
+      actionRequired:
+        (!estateValueComplete || estateCalculations.isAdvanceExceeded) &&
+        solicitorAssigned,
+      progress: (() => {
+        if (!estateValueComplete) {
+          return solicitorAssigned ? 40 : 0;
+        }
+        if (estateCalculations.isAdvanceExceeded) {
+          return 80; // Complete but has error
+        }
+        return 100; // Complete and valid
+      })(),
+      description: (() => {
+        if (!estateValueComplete) {
+          return estatesLoading
+            ? 'Loading estate information...'
+            : 'Estate valuation required';
+        }
+        if (estateCalculations.isAdvanceExceeded) {
+          return `Advance limit exceeded by ${currency_sign}${estateCalculations.advanceExcessAmount.toLocaleString()}`;
+        }
+        return `Estate value: ${currency_sign}${
+          estateValue > 0 ? estateValue.toLocaleString() : 'Assessed'
+        }`;
+      })(),
+      detailDescription: (() => {
+        if (!estateValueComplete) {
+          return 'Provide comprehensive estate valuation including all assets, properties, and personal items for accurate processing.';
+        }
+        if (estateCalculations.isAdvanceExceeded) {
+          return `Requested advance (${currency_sign}${estateCalculations.requestedAdvance.toLocaleString()}) exceeds maximum allowable advance (${currency_sign}${estateCalculations.maximumAdvance.toLocaleString()}). Please adjust the estate valuation to include additional lendable assets or reduce the requested amount to proceed.`;
+        }
+        return `${getEstateItemsCount()} estate items catalogued • Comprehensive valuation complete • Maximum advance available: ${currency_sign}${estateCalculations.maximumAdvance.toLocaleString()}`;
+      })(),
+      issueCount: (() => {
+        if (!estateValueComplete) {
+          return solicitorAssigned ? 1 : 0;
+        }
+        if (estateCalculations.isAdvanceExceeded) {
+          return 1;
+        }
+        return 0;
+      })(),
+      actionText: (() => {
+        if (!estateValueComplete) {
+          return 'Complete Estate Valuation';
+        }
+        if (estateCalculations.isAdvanceExceeded) {
+          return 'Adjust Estate Valuation or Application Amount';
+        }
+        return null;
+      })(),
     },
 
     // 5. Information Verification
@@ -218,15 +408,26 @@ export const getTimelineSteps = ({
       sectionId: 'information_verification',
       icon: 'check',
       completed: processingStatusComplete,
-      actionRequired: !processingStatusComplete && estateValueComplete,
-      progress: processingStatusComplete ? 100 : estateValueComplete ? 70 : 0,
+      actionRequired:
+        !processingStatusComplete &&
+        estateValueComplete &&
+        !estateCalculations.isAdvanceExceeded,
+      progress: processingStatusComplete
+        ? 100
+        : estateValueComplete && !estateCalculations.isAdvanceExceeded
+        ? 70
+        : 0,
       description: processingStatusComplete
         ? 'Verified by legal representative'
         : 'Awaiting verification by legal representative',
       detailDescription: processingStatusComplete
         ? 'All application details have been reviewed and verified by your assigned agent. You can now proceed to the next stage.'
         : 'Your assigned agent will review all provided details for accuracy and completeness. Contact your agent to expedite this process.',
-      issueCount: processingStatusComplete ? 0 : estateValueComplete ? 1 : 0,
+      issueCount: processingStatusComplete
+        ? 0
+        : estateValueComplete && !estateCalculations.isAdvanceExceeded
+        ? 1
+        : 0,
       actionText: processingStatusComplete
         ? null
         : 'Contact Representative for Review',
