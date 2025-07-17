@@ -183,7 +183,6 @@ const ApplicationDetailStages = ({
       style={{
         background:
           'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
-        width: '400px',
         minHeight: '100vh',
         paddingTop: '100px',
       }}

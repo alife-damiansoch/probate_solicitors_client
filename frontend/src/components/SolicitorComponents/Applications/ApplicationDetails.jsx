@@ -1,4 +1,4 @@
-// Updated ApplicationDetails.js - Fully Responsive with Bootstrap
+// Updated ApplicationDetails.js - Earlier Mobile Breakpoint
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -183,12 +183,13 @@ const ApplicationDetails = () => {
       {/* Bootstrap Container with Responsive Layout */}
       <div className='container-fluid p-0'>
         <div className='row g-0'>
-          {/* Progress Sidebar - Hidden on mobile, shown on desktop */}
-          <div className='col-lg-3  d-none d-lg-block'>
+          {/* Progress Sidebar - Hidden on mobile/tablet, shown on desktop */}
+          {/* Changed from col-lg-3 to col-xl-3 (1200px breakpoint) */}
+          <div className='col-12 col-xl-4 d-none d-xl-block'>
             <div
               className='position-fixed top-0 bottom-0 overflow-auto'
               style={{
-                width: '400px',
+                maxWidth: '400px',
                 background:
                   'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
                 borderRight: '1px solid rgba(59, 130, 246, 0.3)',
@@ -211,10 +212,12 @@ const ApplicationDetails = () => {
           </div>
 
           {/* Main Content Area */}
-          <div className='col-12 col-lg-7 p-0 m-0'>
-            {/* Mobile Toggle Button - Only visible on mobile */}
+          {/* Changed from col-lg-9 to col-xl-9 */}
+          <div className='col-12 col-xl-8 p-0 m-0'>
+            {/* Mobile Toggle Button - Now visible on tablets too */}
+            {/* Changed from d-lg-none to d-xl-none */}
             <div
-              className='d-lg-none position-fixed'
+              className='d-xl-none position-fixed'
               style={{
                 top: '50%',
                 left: '-10px',
@@ -363,7 +366,7 @@ const ApplicationDetails = () => {
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (
               <div
-                className='position-fixed w-100 h-100 top-0 start-0 d-lg-none'
+                className='position-fixed w-100 h-100 top-0 start-0 d-xl-none'
                 style={{
                   background: 'rgba(0, 0, 0, 0.5)',
                   zIndex: 1035,
@@ -377,7 +380,7 @@ const ApplicationDetails = () => {
 
             {/* Mobile Sidebar */}
             <div
-              className={`position-fixed top-0 bottom-0 d-lg-none ${
+              className={`position-fixed top-0 bottom-0 d-xl-none ${
                 isSidebarOpen ? 'mobile-sidebar-show' : ''
               }`}
               style={{
@@ -633,24 +636,24 @@ const ApplicationDetails = () => {
         }
 
         /* Custom scrollbar for progress sidebar */
-        .col-lg-5::-webkit-scrollbar,
+        .col-xl-3::-webkit-scrollbar,
         .position-fixed::-webkit-scrollbar {
           width: 6px;
         }
 
-        .col-lg-5::-webkit-scrollbar-track,
+        .col-xl-3::-webkit-scrollbar-track,
         .position-fixed::-webkit-scrollbar-track {
           background: rgba(15, 23, 42, 0.3);
           border-radius: 3px;
         }
 
-        .col-lg-5::-webkit-scrollbar-thumb,
+        .col-xl-3::-webkit-scrollbar-thumb,
         .position-fixed::-webkit-scrollbar-thumb {
           background: rgba(59, 130, 246, 0.4);
           border-radius: 3px;
         }
 
-        .col-lg-5::-webkit-scrollbar-thumb:hover,
+        .col-xl-3::-webkit-scrollbar-thumb:hover,
         .position-fixed::-webkit-scrollbar-thumb:hover {
           background: rgba(59, 130, 246, 0.6);
         }

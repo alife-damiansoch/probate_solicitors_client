@@ -1,4 +1,4 @@
-/* ApplicationDetails.css - Responsive with Bootstrap Integration */
+/* ApplicationDetails.css - Updated with XL Breakpoint */
 
 /* =============================================================================
    LOADING SHIMMER ANIMATION
@@ -33,39 +33,41 @@
 }
 
 /* =============================================================================
-   RESPONSIVE SIDEBAR STYLING
+   RESPONSIVE SIDEBAR STYLING - XL BREAKPOINT (1200px)
    ============================================================================= */
 
-/* Desktop sidebar - always visible */
-@media (min-width: 992px) {
+/* Desktop sidebar - only visible on XL screens (1200px+) */
+@media (min-width: 1200px) {
   .modern-stages-sidebar {
     position: fixed !important;
     top: 0;
     left: 0;
-    width: 400px;
     height: 100vh;
     z-index: 1040;
     transform: translateX(0);
     transition: none;
+    min-width: 300px;
+    max-width: 100%;
   }
   
   .main-content-area {
-    margin-left: 400px;
+    margin-left: 0;
   }
 }
 
-/* Mobile sidebar - hidden by default, slides in when opened */
-@media (max-width: 991.98px) {
+/* Mobile/Tablet sidebar - hidden by default on screens below 1200px */
+@media (max-width: 1199.98px) {
   .modern-stages-sidebar {
     position: fixed !important;
     top: 0;
     left: 0;
-    width: 400px;
     height: 100vh;
     z-index: 1040;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
     will-change: transform;
+    min-width: 280px;
+    max-width: 90vw;
   }
   
   .modern-stages-sidebar.show {
@@ -78,7 +80,7 @@
 }
 
 /* =============================================================================
-   STAGES TOGGLE BUTTON
+   STAGES TOGGLE BUTTON - XL BREAKPOINT
    ============================================================================= */
 
 .stages-toggle-btn {
@@ -104,15 +106,15 @@
   transform: translateY(-50%) scale(0.98);
 }
 
-/* Hide toggle button on desktop */
-@media (min-width: 992px) {
+/* Hide toggle button on XL screens (1200px+) */
+@media (min-width: 1200px) {
   .stages-toggle-btn {
     display: none !important;
   }
 }
 
 /* =============================================================================
-   OVERLAY STYLES
+   OVERLAY STYLES - XL BREAKPOINT
    ============================================================================= */
 
 .stages-overlay {
@@ -133,19 +135,21 @@
   visibility: visible;
 }
 
-/* Only show overlay on mobile */
-@media (min-width: 992px) {
+/* Only show overlay on mobile/tablet (below 1200px) */
+@media (min-width: 1200px) {
   .stages-overlay {
     display: none !important;
   }
 }
 
 /* =============================================================================
-   TOOLTIP ANIMATIONS
+   TOOLTIP ANIMATIONS - FLEXIBLE WIDTH
    ============================================================================= */
 
 .tooltip-animation {
   animation: tooltipFadeIn 0.4s ease-out;
+  max-width: 300px;
+  width: auto;
 }
 
 .tooltip-arrow {
@@ -160,32 +164,36 @@
 }
 
 /* =============================================================================
-   CONTENT AREA RESPONSIVE ADJUSTMENTS
+   CONTENT AREA RESPONSIVE ADJUSTMENTS - XL BREAKPOINT
    ============================================================================= */
 
 .modern-application-container {
   min-height: 100vh;
   background-color: #1F2049;
   position: relative;
+  width: 100%;
 }
 
 .application-content {
   transition: margin-left 0.3s ease;
+  width: 100%;
 }
 
-/* Desktop content positioning */
-@media (min-width: 992px) {
+/* Desktop content positioning - XL screens */
+@media (min-width: 1200px) {
   .application-content {
-    margin-left: 400px;
+    margin-left: 0;
+    width: 100%;
   }
 }
 
-/* Mobile content positioning */
-@media (max-width: 991.98px) {
+/* Mobile/Tablet content positioning - below XL */
+@media (max-width: 1199.98px) {
   .application-content {
     margin-left: 0;
     padding-left: 8px;
     padding-right: 8px;
+    width: 100%;
   }
 }
 
@@ -219,11 +227,11 @@
 }
 
 /* =============================================================================
-   MOBILE OPTIMIZATIONS
+   MOBILE OPTIMIZATIONS - UPDATED FOR XL BREAKPOINT
    ============================================================================= */
 
-/* Improve touch scrolling on mobile */
-@media (max-width: 991.98px) {
+/* Improve touch scrolling on mobile/tablet */
+@media (max-width: 1199.98px) {
   .stages-sidebar-content {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
@@ -296,7 +304,7 @@
 }
 
 /* =============================================================================
-   UTILITIES
+   UTILITIES - FLEXIBLE WIDTH SUPPORT
    ============================================================================= */
 
 .bg-primary {
@@ -334,3 +342,38 @@
 .stages-sidebar-content {
   contain: layout style paint;
 }
+
+/* =============================================================================
+   FLEXIBLE WIDTH UTILITIES
+   ============================================================================= */
+
+/* Ensure components can flex */
+.w-100 { width: 100% !important; }
+.w-auto { width: auto !important; }
+.mw-100 { max-width: 100% !important; }
+.min-w-0 { min-width: 0 !important; }
+
+/* Flexbox utilities for width management */
+.flex-1 { flex: 1 1 0% !important; }
+.flex-auto { flex: 1 1 auto !important; }
+.flex-none { flex: none !important; }
+
+/* =============================================================================
+   RESPONSIVE BREAKPOINT SUMMARY
+   ============================================================================= */
+
+/*
+  BREAKPOINT CHANGES MADE:
+  
+  OLD: lg (992px) - Desktop sidebar visible, mobile button hidden
+  NEW: xl (1200px) - Desktop sidebar visible, mobile button hidden
+  
+  This means:
+  - Mobile phones: Mobile sidebar (< 1200px)
+  - Tablets: Mobile sidebar (< 1200px) 
+  - Small laptops: Mobile sidebar (< 1200px)
+  - Large desktops: Desktop sidebar (≥ 1200px)
+  
+  All devices below 1200px will now show the mobile toggle button
+  and use the slide-out sidebar instead of the fixed sidebar.
+*/
