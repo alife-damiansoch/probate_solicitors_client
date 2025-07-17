@@ -16,14 +16,11 @@ const BasicDetailsSection = ({
   setTriggerChandleChange,
 }) => {
   const currency_sign = Cookies.get('currency_sign');
-
-  if (!application) {
-    return <LoadingComponent />;
-  }
+  if (!application) return <LoadingComponent />;
 
   return (
     <div
-      className='modern-main-card mb-4 position-relative overflow-hidden'
+      className='mb-4 position-relative overflow-hidden'
       style={{
         background: `
           linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
@@ -41,39 +38,10 @@ const BasicDetailsSection = ({
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
         transform: 'translateZ(0)',
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
-        e.currentTarget.style.boxShadow = `
-          0 32px 64px rgba(0, 0, 0, 0.12),
-          0 16px 32px rgba(0, 0, 0, 0.08),
-          inset 0 1px 0 rgba(255, 255, 255, 0.6)
-        `;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0) scale(1)';
-        e.currentTarget.style.boxShadow = `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
-        `;
-      }}
     >
-      {/* Animated Background Pattern */}
+      {/* Header */}
       <div
-        className='position-absolute w-100 h-100'
-        style={{
-          background: `
-            radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%)
-          `,
-          opacity: 0.3,
-          animation: 'float 6s ease-in-out infinite',
-        }}
-      />
-
-      {/* Premium Header */}
-      <div
-        className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+        className='px-4 py-4 d-flex flex-column flex-lg-row align-items-center gap-3 position-relative'
         style={{
           background: `
             linear-gradient(135deg, #3b82f6, #2563eb),
@@ -87,9 +55,9 @@ const BasicDetailsSection = ({
           borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
         }}
       >
-        {/* Icon with Micro-animation */}
+        {/* Icon */}
         <div
-          className='d-flex align-items-center justify-content-center rounded-circle position-relative'
+          className='d-flex align-items-center justify-content-center rounded-circle position-relative mb-3 mb-lg-0'
           style={{
             width: '56px',
             height: '56px',
@@ -98,19 +66,11 @@ const BasicDetailsSection = ({
             backdropFilter: 'blur(10px)',
             transition: 'all 0.3s ease',
             cursor: 'pointer',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+            animation: 'iconFloat 3.5s ease-in-out infinite',
           }}
         >
           <i className='fas fa-edit' style={{ fontSize: '1.5rem' }}></i>
-
-          {/* Subtle glow effect */}
+          {/* Glow */}
           <div
             className='position-absolute rounded-circle'
             style={{
@@ -124,8 +84,7 @@ const BasicDetailsSection = ({
             }}
           />
         </div>
-
-        <div className='flex-grow-1'>
+        <div className='flex-grow-1 text-center text-lg-start'>
           <h5
             className='fw-bold mb-2 text-white'
             style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
@@ -148,12 +107,12 @@ const BasicDetailsSection = ({
         </div>
       </div>
 
-      {/* Content Area */}
+      {/* Content */}
       <div className='px-4 pb-4'>
         <form>
           {/* Amount and Term Row */}
           <div className='row g-4 mb-4'>
-            <div className='col-md-6'>
+            <div className='col-12 col-xxl-6'>
               <label className='form-label fw-semibold text-slate-700 mb-2'>
                 <i className='fas fa-euro-sign me-2 text-success'></i>
                 Amount
@@ -162,7 +121,7 @@ const BasicDetailsSection = ({
                 className='input-group input-group-sm position-relative'
                 style={{
                   borderRadius: '16px',
-                  overflow: 'hidden',
+                  overflow: 'visible',
                   background: 'rgba(255, 255, 255, 0.7)',
                   border: editMode.amount
                     ? '2px solid #22c55e'
@@ -173,22 +132,7 @@ const BasicDetailsSection = ({
                     : '0 8px 24px rgba(0, 0, 0, 0.06)',
                   transition: 'all 0.3s ease',
                 }}
-                onMouseEnter={(e) => {
-                  if (!editMode.amount) {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow =
-                      '0 16px 40px rgba(0, 0, 0, 0.1)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!editMode.amount) {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow =
-                      '0 8px 24px rgba(0, 0, 0, 0.06)';
-                  }
-                }}
               >
-                {/* Glow effect for editing */}
                 {editMode.amount && (
                   <div
                     className='position-absolute'
@@ -207,7 +151,6 @@ const BasicDetailsSection = ({
                     }}
                   />
                 )}
-
                 <input
                   type='text'
                   className='form-control border-0'
@@ -236,6 +179,7 @@ const BasicDetailsSection = ({
                     border: 'none',
                     padding: '0 1rem',
                     transition: 'all 0.2s ease',
+                    borderRadius: '16px',
                   }}
                   onClick={() => {
                     if (editMode.amount) submitChangesHandler();
@@ -253,8 +197,6 @@ const BasicDetailsSection = ({
                     <FaEdit size={16} />
                   )}
                 </button>
-
-                {/* Editing Badge */}
                 {editMode.amount && (
                   <div
                     className='position-absolute'
@@ -293,8 +235,7 @@ const BasicDetailsSection = ({
                 </div>
               )}
             </div>
-
-            <div className='col-md-6'>
+            <div className='col-12 col-xxl-6'>
               <label className='form-label fw-semibold text-slate-700 mb-2'>
                 <i className='fas fa-calendar-alt me-2 text-blue-500'></i>
                 Initial Term
@@ -303,7 +244,7 @@ const BasicDetailsSection = ({
                 className='input-group input-group-sm'
                 style={{
                   borderRadius: '16px',
-                  overflow: 'hidden',
+                  overflow: 'visible',
                   background: 'rgba(255, 255, 255, 0.5)',
                   border: '1px solid rgba(255, 255, 255, 0.5)',
                   backdropFilter: 'blur(20px)',
@@ -333,6 +274,7 @@ const BasicDetailsSection = ({
                     border: 'none',
                     padding: '0 1rem',
                     cursor: 'not-allowed',
+                    borderRadius: '16px',
                   }}
                   disabled
                 >
@@ -342,11 +284,8 @@ const BasicDetailsSection = ({
             </div>
           </div>
 
-          {/* Enhanced Divider */}
-          <div
-            className='my-4 d-flex align-items-center position-relative'
-            style={{ margin: '2rem 0' }}
-          >
+          {/* Divider */}
+          <div className='my-4 d-flex align-items-center position-relative'>
             <div
               style={{
                 flex: 1,
@@ -382,7 +321,7 @@ const BasicDetailsSection = ({
 
           {/* Deceased Details Row */}
           <div className='row g-4 mb-4'>
-            <div className='col-md-6'>
+            <div className='col-12 col-xxl-6'>
               <label className='form-label fw-semibold text-slate-700 mb-2'>
                 <i className='fas fa-user me-2 text-purple-500'></i>
                 Deceased First Name
@@ -391,7 +330,7 @@ const BasicDetailsSection = ({
                 className='input-group input-group-sm position-relative'
                 style={{
                   borderRadius: '16px',
-                  overflow: 'hidden',
+                  overflow: 'visible',
                   background: 'rgba(255, 255, 255, 0.7)',
                   border: editMode.deceased_first_name
                     ? '2px solid #8b5cf6'
@@ -401,20 +340,6 @@ const BasicDetailsSection = ({
                     ? '0 15px 35px rgba(139, 92, 246, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
                     : '0 8px 24px rgba(0, 0, 0, 0.06)',
                   transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={(e) => {
-                  if (!editMode.deceased_first_name) {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow =
-                      '0 16px 40px rgba(0, 0, 0, 0.1)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!editMode.deceased_first_name) {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow =
-                      '0 8px 24px rgba(0, 0, 0, 0.06)';
-                  }
                 }}
               >
                 {editMode.deceased_first_name && (
@@ -435,7 +360,6 @@ const BasicDetailsSection = ({
                     }}
                   />
                 )}
-
                 <input
                   type='text'
                   className='form-control border-0'
@@ -463,6 +387,7 @@ const BasicDetailsSection = ({
                     border: 'none',
                     padding: '0 1rem',
                     transition: 'all 0.2s ease',
+                    borderRadius: '16px',
                   }}
                   onClick={() => {
                     if (editMode.deceased_first_name) submitChangesHandler();
@@ -480,7 +405,6 @@ const BasicDetailsSection = ({
                     <FaEdit size={16} />
                   )}
                 </button>
-
                 {editMode.deceased_first_name && (
                   <div
                     className='position-absolute'
@@ -502,8 +426,7 @@ const BasicDetailsSection = ({
                 )}
               </div>
             </div>
-
-            <div className='col-md-6'>
+            <div className='col-12 col-xxl-6'>
               <label className='form-label fw-semibold text-slate-700 mb-2'>
                 <i className='fas fa-user me-2 text-purple-500'></i>
                 Deceased Last Name
@@ -512,7 +435,7 @@ const BasicDetailsSection = ({
                 className='input-group input-group-sm position-relative'
                 style={{
                   borderRadius: '16px',
-                  overflow: 'hidden',
+                  overflow: 'visible',
                   background: 'rgba(255, 255, 255, 0.7)',
                   border: editMode.deceased_last_name
                     ? '2px solid #8b5cf6'
@@ -522,20 +445,6 @@ const BasicDetailsSection = ({
                     ? '0 15px 35px rgba(139, 92, 246, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
                     : '0 8px 24px rgba(0, 0, 0, 0.06)',
                   transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={(e) => {
-                  if (!editMode.deceased_last_name) {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow =
-                      '0 16px 40px rgba(0, 0, 0, 0.1)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!editMode.deceased_last_name) {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow =
-                      '0 8px 24px rgba(0, 0, 0, 0.06)';
-                  }
                 }}
               >
                 {editMode.deceased_last_name && (
@@ -556,7 +465,6 @@ const BasicDetailsSection = ({
                     }}
                   />
                 )}
-
                 <input
                   type='text'
                   className='form-control border-0'
@@ -584,6 +492,7 @@ const BasicDetailsSection = ({
                     border: 'none',
                     padding: '0 1rem',
                     transition: 'all 0.2s ease',
+                    borderRadius: '16px',
                   }}
                   onClick={() => {
                     if (editMode.deceased_last_name) submitChangesHandler();
@@ -601,7 +510,6 @@ const BasicDetailsSection = ({
                     <FaEdit size={16} />
                   )}
                 </button>
-
                 {editMode.deceased_last_name && (
                   <div
                     className='position-absolute'
@@ -632,7 +540,7 @@ const BasicDetailsSection = ({
               Was this will professionally prepared by a solicitor?
             </label>
             <div
-              className='d-flex gap-4 p-4'
+              className='d-flex gap-4 p-4 flex-column flex-md-row'
               style={{
                 background: 'rgba(255, 255, 255, 0.7)',
                 borderRadius: '18px',
@@ -642,9 +550,8 @@ const BasicDetailsSection = ({
               }}
             >
               <div
-                className='form-check position-relative'
+                className='form-check position-relative flex-fill'
                 style={{
-                  flex: 1,
                   padding: '1rem 1.5rem',
                   borderRadius: '14px',
                   background: !!application.was_will_prepared_by_solicitor
@@ -661,21 +568,6 @@ const BasicDetailsSection = ({
                   boxShadow: !!application.was_will_prepared_by_solicitor
                     ? '0 8px 16px rgba(34, 197, 94, 0.30)'
                     : '0 4px 8px rgba(0, 0, 0, 0.05)',
-                }}
-                onMouseEnter={(e) => {
-                  if (!application.was_will_prepared_by_solicitor) {
-                    e.currentTarget.style.transform =
-                      'scale(1.01) translateY(-1px)';
-                    e.currentTarget.style.background =
-                      'rgba(255, 255, 255, 0.8)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!application.was_will_prepared_by_solicitor) {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background =
-                      'rgba(255, 255, 255, 0.5)';
-                  }
                 }}
               >
                 {!!application.was_will_prepared_by_solicitor && (
@@ -696,7 +588,6 @@ const BasicDetailsSection = ({
                     }}
                   />
                 )}
-
                 <input
                   className='form-check-input position-absolute'
                   type='radio'
@@ -741,11 +632,9 @@ const BasicDetailsSection = ({
                   Yes
                 </label>
               </div>
-
               <div
-                className='form-check position-relative'
+                className='form-check position-relative flex-fill'
                 style={{
-                  flex: 1,
                   padding: '1rem 1.5rem',
                   borderRadius: '14px',
                   background: !application.was_will_prepared_by_solicitor
@@ -762,21 +651,6 @@ const BasicDetailsSection = ({
                   boxShadow: !application.was_will_prepared_by_solicitor
                     ? '0 8px 16px rgba(239, 68, 68, 0.30)'
                     : '0 4px 8px rgba(0, 0, 0, 0.05)',
-                }}
-                onMouseEnter={(e) => {
-                  if (application.was_will_prepared_by_solicitor) {
-                    e.currentTarget.style.transform =
-                      'scale(1.01) translateY(-1px)';
-                    e.currentTarget.style.background =
-                      'rgba(255, 255, 255, 0.8)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (application.was_will_prepared_by_solicitor) {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.background =
-                      'rgba(255, 255, 255, 0.5)';
-                  }
                 }}
               >
                 {!application.was_will_prepared_by_solicitor && (
@@ -797,7 +671,6 @@ const BasicDetailsSection = ({
                     }}
                   />
                 )}
-
                 <input
                   className='form-check-input position-absolute'
                   type='radio'
@@ -855,7 +728,7 @@ const BasicDetailsSection = ({
               className='input-group position-relative'
               style={{
                 borderRadius: '16px',
-                overflow: 'hidden',
+                overflow: 'visible',
                 background: 'rgba(255, 255, 255, 0.7)',
                 border: editMode.dispute_details
                   ? '2px solid #f97316'
@@ -865,20 +738,6 @@ const BasicDetailsSection = ({
                   ? '0 15px 35px rgba(249, 115, 22, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
                   : '0 8px 24px rgba(0, 0, 0, 0.06)',
                 transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                if (!editMode.dispute_details) {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow =
-                    '0 16px 40px rgba(0, 0, 0, 0.1)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!editMode.dispute_details) {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow =
-                    '0 8px 24px rgba(0, 0, 0, 0.06)';
-                }
               }}
             >
               {editMode.dispute_details && (
@@ -899,7 +758,6 @@ const BasicDetailsSection = ({
                   }}
                 />
               )}
-
               <textarea
                 className='form-control border-0'
                 style={{
@@ -937,6 +795,7 @@ const BasicDetailsSection = ({
                   border: 'none',
                   padding: '1rem',
                   transition: 'all 0.2s ease',
+                  borderRadius: '16px',
                 }}
                 onClick={() => {
                   if (editMode.dispute_details) submitChangesHandler();
@@ -954,7 +813,6 @@ const BasicDetailsSection = ({
                   <FaEdit size={16} />
                 )}
               </button>
-
               {editMode.dispute_details && (
                 <div
                   className='position-absolute'
@@ -982,41 +840,20 @@ const BasicDetailsSection = ({
       {/* CSS Animations */}
       <style>{`
         @keyframes float {
-          0%, 100% { 
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% { 
-            transform: translateY(-10px) rotate(2deg);
-          }
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-10px) rotate(2deg); }
         }
-        
         @keyframes editingPulse {
-          0%, 100% { 
-            opacity: 1; 
-            transform: scale(1); 
-          }
-          50% { 
-            opacity: 0.8; 
-            transform: scale(1.05); 
-          }
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.05); }
         }
-        
         @keyframes selectionGlow {
           0% { opacity: 0.3; }
           100% { opacity: 0.6; }
         }
-
         @keyframes iconFloat {
           0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
           50% { transform: translateY(-8px) rotate(5deg) scale(1.02); }
-        }
-        
-        .space-y-3 > * + * {
-          margin-top: 0.75rem;
-        }
-        
-        .rounded-lg {
-          border-radius: 12px;
         }
       `}</style>
     </div>

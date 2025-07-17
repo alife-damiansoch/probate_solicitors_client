@@ -65,11 +65,10 @@ const RegisterComponent = () => {
         setShowForm(false);
         return response.data;
       } else {
-        console.log(response.data);
         setErrors(response.data);
       }
     } catch (error) {
-      console.error('Error registering user:', error);
+      setErrors(error.response?.data || { general: ['An error occurred'] });
       throw error;
     }
   };
@@ -84,11 +83,9 @@ const RegisterComponent = () => {
       return;
     }
     try {
-      const response = await registerUser(formData);
-      console.log('Registration successful:', response);
+      await registerUser(formData);
     } catch (error) {
-      console.error('Registration error:', error.response.data);
-      setErrors(error.response.data || { general: ['An error occurred'] });
+      setErrors(error.response?.data || { general: ['An error occurred'] });
       window.scrollTo(0, document.body.scrollHeight);
       setIsRegistering(false);
     }
@@ -124,125 +121,128 @@ const RegisterComponent = () => {
 
   if (!showForm) {
     return (
-      <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+      <div
+        className='min-vh-100 py-4'
+        style={{
+          background: 'linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)',
+        }}
+      >
         <div className='container'>
           <div className='row justify-content-center'>
-            <div className='col-lg-6 col-md-8'>
+            <div className='col-12 col-md-9 col-lg-7 col-xl-6'>
               <div
-                className='card border-0'
+                className='card border-0 shadow-lg'
                 style={{
-                  borderRadius: '12px',
+                  borderRadius: 22,
+                  background: 'rgba(255,255,255,0.97)',
                   boxShadow:
-                    '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                  backgroundColor: 'white',
+                    '0 8px 32px rgba(16,185,129,0.10), 0 2px 8px rgba(239,68,68,0.07)',
+                  backdropFilter: 'blur(12px)',
+                  overflow: 'hidden',
                 }}
               >
                 {/* Success Header */}
                 <div
                   className='card-header border-0 py-4 text-center'
                   style={{
-                    backgroundColor: '#f0fdf4',
-                    borderBottom: '1px solid #dcfce7',
-                    borderRadius: '12px 12px 0 0',
+                    background:
+                      'linear-gradient(135deg,#10b981 55%,#3b82f6 100%)',
+                    borderBottom: 'none',
+                    borderTopLeftRadius: 22,
+                    borderTopRightRadius: 22,
+                    color: '#fff',
+                    boxShadow: '0 8px 24px rgba(16,185,129,0.08)',
                   }}
                 >
                   <div
                     className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
                     style={{
-                      width: '80px',
-                      height: '80px',
-                      backgroundColor: '#10b981',
-                      color: 'white',
+                      width: 72,
+                      height: 72,
+                      background: 'rgba(255,255,255,0.14)',
+                      color: '#fff',
+                      boxShadow: '0 4px 16px rgba(16,185,129,0.10)',
                     }}
                   >
                     <FaCheckCircle size={32} />
                   </div>
-                  <h3 className='mb-1 fw-bold text-green-800'>
-                    Registration Successful!
-                  </h3>
-                  <p className='mb-0 text-green-600'>
+                  <h3 className='mb-1 fw-bold'>Registration Successful!</h3>
+                  <div className='mb-0 small' style={{ opacity: 0.94 }}>
                     Your account has been created successfully
-                  </p>
+                  </div>
                 </div>
 
                 {/* Success Body */}
                 <div className='card-body p-4'>
                   <div className='text-center mb-4'>
-                    <h5 className='fw-bold text-slate-800 mb-3'>
+                    <h5 className='fw-bold mb-3' style={{ color: '#0f172a' }}>
                       What's Next?
                     </h5>
                     <div className='text-start'>
-                      <div className='d-flex align-items-start mb-3'>
+                      {[1, 2, 3].map((step) => (
                         <div
-                          className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
-                          style={{
-                            width: '32px',
-                            height: '32px',
-                            backgroundColor: '#3b82f6',
-                            color: 'white',
-                            fontSize: '14px',
-                          }}
+                          className='d-flex align-items-start mb-3'
+                          key={step}
                         >
-                          1
+                          <div
+                            className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
+                            style={{
+                              width: 32,
+                              height: 32,
+                              background: '#3b82f6',
+                              color: 'white',
+                              fontSize: 15,
+                              fontWeight: 700,
+                            }}
+                          >
+                            {step}
+                          </div>
+                          <div>
+                            {step === 1 && (
+                              <>
+                                <div
+                                  className='mb-1 fw-medium'
+                                  style={{ color: '#1e293b' }}
+                                >
+                                  Check Your Email
+                                </div>
+                                <small className='text-muted'>
+                                  We've sent an activation link to your email
+                                  address.
+                                </small>
+                              </>
+                            )}
+                            {step === 2 && (
+                              <>
+                                <div
+                                  className='mb-1 fw-medium'
+                                  style={{ color: '#1e293b' }}
+                                >
+                                  Click the Activation Link
+                                </div>
+                                <small className='text-muted'>
+                                  Click the link in the email to activate your
+                                  account.
+                                </small>
+                              </>
+                            )}
+                            {step === 3 && (
+                              <>
+                                <div
+                                  className='mb-1 fw-medium'
+                                  style={{ color: '#1e293b' }}
+                                >
+                                  Start Using Your Account
+                                </div>
+                                <small className='text-muted'>
+                                  Once activated, you can sign in and start
+                                  managing your applications.
+                                </small>
+                              </>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          <p className='mb-1 fw-medium text-slate-700'>
-                            Check Your Email
-                          </p>
-                          <small className='text-slate-500'>
-                            We've sent an activation link to your email address.
-                            Please check your inbox.
-                          </small>
-                        </div>
-                      </div>
-
-                      <div className='d-flex align-items-start mb-3'>
-                        <div
-                          className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
-                          style={{
-                            width: '32px',
-                            height: '32px',
-                            backgroundColor: '#3b82f6',
-                            color: 'white',
-                            fontSize: '14px',
-                          }}
-                        >
-                          2
-                        </div>
-                        <div>
-                          <p className='mb-1 fw-medium text-slate-700'>
-                            Click the Activation Link
-                          </p>
-                          <small className='text-slate-500'>
-                            Click the link in the email to activate your
-                            account.
-                          </small>
-                        </div>
-                      </div>
-
-                      <div className='d-flex align-items-start mb-3'>
-                        <div
-                          className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
-                          style={{
-                            width: '32px',
-                            height: '32px',
-                            backgroundColor: '#3b82f6',
-                            color: 'white',
-                            fontSize: '14px',
-                          }}
-                        >
-                          3
-                        </div>
-                        <div>
-                          <p className='mb-1 fw-medium text-slate-700'>
-                            Start Using Your Account
-                          </p>
-                          <small className='text-slate-500'>
-                            Once activated, you can sign in and start managing
-                            your applications.
-                          </small>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
@@ -250,20 +250,24 @@ const RegisterComponent = () => {
                   <div
                     className='p-3 rounded mb-4'
                     style={{
-                      backgroundColor: '#fef3c7',
-                      border: '1px solid #fbbf24',
+                      background: 'rgba(253,224,71,0.10)',
+                      border: '1.5px solid #fde047',
                     }}
                   >
                     <div className='d-flex align-items-center mb-2'>
                       <FaCheckCircle
-                        className='me-2 text-amber-600'
+                        className='me-2'
+                        style={{ color: '#f59e42' }}
                         size={16}
                       />
-                      <strong className='text-amber-800'>
+                      <strong style={{ color: '#d97706' }}>
                         Important Notice
                       </strong>
                     </div>
-                    <ul className='mb-0 text-amber-800 small'>
+                    <ul
+                      className='mb-0'
+                      style={{ color: '#d97706', fontSize: '0.97rem' }}
+                    >
                       <li>
                         Check your spam/junk folder if you don't see the email
                       </li>
@@ -287,73 +291,83 @@ const RegisterComponent = () => {
   }
 
   return (
-    <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+    <div
+      className='min-vh-100 py-4'
+      style={{
+        background: 'linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)',
+      }}
+    >
       <div className='container'>
         {/* Header Section */}
         <div className='d-flex align-items-center mb-4'>
           <button
-            className='btn d-flex align-items-center px-3 py-2'
+            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
             style={{
-              backgroundColor: 'white',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
+              background: 'rgba(255,255,255,0.93)',
+              border: '1.5px solid #e2e8f0',
+              borderRadius: '12px',
               color: '#64748b',
-              fontSize: '0.9rem',
-              transition: 'all 0.2s ease',
+              fontWeight: 500,
+              fontSize: '1rem',
+              boxShadow: '0 2px 10px rgba(16,185,129,0.07)',
+              transition: 'all 0.2s',
+              backdropFilter: 'blur(10px)',
             }}
             onClick={() => navigate(-1)}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f1f5f9';
-              e.target.style.borderColor = '#cbd5e1';
+              e.target.style.background = 'rgba(240,255,249,0.98)';
+              e.target.style.borderColor = '#a7f3d0';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'white';
+              e.target.style.background = 'rgba(255,255,255,0.93)';
               e.target.style.borderColor = '#e2e8f0';
             }}
           >
-            <FaArrowLeft className='me-2' size={14} />
+            <FaArrowLeft className='me-2' size={16} />
             Back
           </button>
         </div>
-
         {/* Main Registration Card */}
         <div className='row justify-content-center'>
-          <div className='col-lg-8 col-xl-7'>
+          <div className='col-12 col-lg-9 col-xl-7'>
             <div
-              className='card border-0'
+              className='card border-0 shadow-lg'
               style={{
-                borderRadius: '12px',
+                borderRadius: 22,
+                background: 'rgba(255,255,255,0.97)',
                 boxShadow:
-                  '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                backgroundColor: 'white',
+                  '0 8px 32px rgba(16,185,129,0.10), 0 2px 8px rgba(59,130,246,0.07)',
+                backdropFilter: 'blur(12px)',
+                overflow: 'hidden',
               }}
             >
               {/* Card Header */}
               <div
-                className='card-header border-0 py-4'
+                className='card-header border-0 py-4 text-center'
                 style={{
-                  backgroundColor: 'white',
-                  borderBottom: '1px solid #f1f5f9',
+                  background:
+                    'linear-gradient(135deg,#10b981 60%,#3b82f6 100%)',
+                  borderBottom: 'none',
+                  borderTopLeftRadius: 22,
+                  borderTopRightRadius: 22,
+                  color: '#fff',
+                  boxShadow: '0 8px 24px rgba(16,185,129,0.08)',
                 }}
               >
-                <div className='text-center'>
-                  <div
-                    className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
-                    style={{
-                      width: '60px',
-                      height: '60px',
-                      backgroundColor: '#10b981',
-                      color: 'white',
-                    }}
-                  >
-                    <FaUserPlus size={24} />
-                  </div>
-                  <h4 className='mb-1 fw-bold text-slate-800'>
-                    Create Your Account
-                  </h4>
-                  <p className='mb-0 text-slate-500 small'>
-                    Register your law firm to get started
-                  </p>
+                <div
+                  className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
+                  style={{
+                    width: 60,
+                    height: 60,
+                    background: 'rgba(255,255,255,0.13)',
+                    color: '#fff',
+                  }}
+                >
+                  <FaUserPlus size={26} />
+                </div>
+                <h3 className='mb-1 fw-bold'>Create Your Account</h3>
+                <div className='mb-0 small' style={{ opacity: 0.94 }}>
+                  Register your law firm to get started
                 </div>
               </div>
 
@@ -363,10 +377,10 @@ const RegisterComponent = () => {
                   <div
                     className='alert border-0'
                     style={{
-                      backgroundColor: '#fef2f2',
+                      background: 'rgba(239,68,68,0.09)',
                       color: '#dc2626',
-                      borderRadius: '8px',
-                      fontSize: '0.9rem',
+                      borderRadius: 12,
+                      fontSize: '1rem',
                     }}
                   >
                     {renderErrors(errors)}
@@ -378,349 +392,317 @@ const RegisterComponent = () => {
               <div className='card-body px-4 pb-4'>
                 <form onSubmit={handleSubmit}>
                   <div className='row'>
-                    {/* Left Column - Account & Firm Info */}
-                    <div className='col-md-6'>
-                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
-                        <FaBuilding className='me-2 text-slate-400' size={14} />
+                    {/* Left Column */}
+                    <div className='col-md-6 mb-4 mb-md-0'>
+                      <h6
+                        className='fw-bold mb-3 d-flex align-items-center'
+                        style={{ color: '#134e4a' }}
+                      >
+                        <FaBuilding className='me-2 text-success' size={16} />
                         Account & Firm Information
                       </h6>
-
                       {/* Email */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label
+                          className='form-label fw-medium mb-1 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           Firm Email Address *
                         </label>
                         <input
                           type='email'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #a7f3d0',
+                            fontSize: '1.03rem',
+                            transition: 'border-color 0.2s',
                           }}
                           name='email'
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#10b981')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                         <small className='text-info'>
                           This will be used for authentication and login
                           purposes
                         </small>
                       </div>
-
                       {/* Firm Name */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label
+                          className='form-label fw-medium mb-1 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           Law Firm Name *
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #a7f3d0',
+                            fontSize: '1.03rem',
+                            transition: 'border-color 0.2s',
                           }}
                           name='name'
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#10b981')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                       </div>
-
                       {/* Password */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-2 small'>
+                        <label
+                          className='form-label fw-medium mb-2 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           Password *
                         </label>
                         <div className='position-relative'>
                           <input
                             type={showPassword ? 'text' : 'password'}
-                            className='form-control form-control-sm'
+                            className='form-control'
                             style={{
-                              borderRadius: '6px',
-                              border: '1px solid #d1d5db',
-                              fontSize: '0.9rem',
-                              paddingRight: '40px',
-                              transition: 'border-color 0.2s ease',
+                              borderRadius: 10,
+                              border: '1.5px solid #a7f3d0',
+                              fontSize: '1.03rem',
+                              paddingRight: 40,
+                              transition: 'border-color 0.2s',
                             }}
                             name='password'
                             value={formData.password}
                             onChange={handleChange}
                             required
-                            onFocus={(e) =>
-                              (e.target.style.borderColor = '#10b981')
-                            }
-                            onBlur={(e) =>
-                              (e.target.style.borderColor = '#d1d5db')
-                            }
                           />
                           <button
                             type='button'
                             className='btn btn-sm position-absolute'
                             style={{
-                              right: '8px',
+                              right: 8,
                               top: '50%',
                               transform: 'translateY(-50%)',
                               border: 'none',
                               background: 'none',
                               color: '#64748b',
-                              padding: '0',
-                              width: '24px',
-                              height: '24px',
+                              padding: 0,
+                              width: 28,
+                              height: 28,
                             }}
                             onClick={() => setShowPassword(!showPassword)}
+                            tabIndex={-1}
                           >
                             {showPassword ? (
-                              <FaEyeSlash size={14} />
+                              <FaEyeSlash size={16} />
                             ) : (
-                              <FaEye size={14} />
+                              <FaEye size={16} />
                             )}
                           </button>
                         </div>
                       </div>
-
                       {/* Confirm Password */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-2 small'>
+                        <label
+                          className='form-label fw-medium mb-2 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           Confirm Password *
                         </label>
                         <div className='position-relative'>
                           <input
                             type={showConfirmPassword ? 'text' : 'password'}
-                            className='form-control form-control-sm'
+                            className='form-control'
                             style={{
-                              borderRadius: '6px',
-                              border: '1px solid #d1d5db',
-                              fontSize: '0.9rem',
-                              paddingRight: '40px',
-                              transition: 'border-color 0.2s ease',
+                              borderRadius: 10,
+                              border: '1.5px solid #a7f3d0',
+                              fontSize: '1.03rem',
+                              paddingRight: 40,
+                              transition: 'border-color 0.2s',
                             }}
                             name='confirmPassword'
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             required
-                            onFocus={(e) =>
-                              (e.target.style.borderColor = '#10b981')
-                            }
-                            onBlur={(e) =>
-                              (e.target.style.borderColor = '#d1d5db')
-                            }
                           />
                           <button
                             type='button'
                             className='btn btn-sm position-absolute'
                             style={{
-                              right: '8px',
+                              right: 8,
                               top: '50%',
                               transform: 'translateY(-50%)',
                               border: 'none',
                               background: 'none',
                               color: '#64748b',
-                              padding: '0',
-                              width: '24px',
-                              height: '24px',
+                              padding: 0,
+                              width: 28,
+                              height: 28,
                             }}
                             onClick={() =>
                               setShowConfirmPassword(!showConfirmPassword)
                             }
+                            tabIndex={-1}
                           >
                             {showConfirmPassword ? (
-                              <FaEyeSlash size={14} />
+                              <FaEyeSlash size={16} />
                             ) : (
-                              <FaEye size={14} />
+                              <FaEye size={16} />
                             )}
                           </button>
                         </div>
                       </div>
-
                       {/* Phone */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label
+                          className='form-label fw-medium mb-1 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           Phone Number *
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #a7f3d0',
+                            fontSize: '1.03rem',
+                            transition: 'border-color 0.2s',
                           }}
                           name='phone_number'
                           value={formData.phone_number}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#10b981')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                         <small className='text-info'>
                           Format: <strong>{phone_nr_placeholder}</strong>
                         </small>
                       </div>
                     </div>
-
-                    {/* Right Column - Address */}
+                    {/* Right Column */}
                     <div className='col-md-6'>
-                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
+                      <h6
+                        className='fw-bold mb-3 d-flex align-items-center'
+                        style={{ color: '#134e4a' }}
+                      >
                         <FaMapMarkerAlt
-                          className='me-2 text-slate-400'
-                          size={14}
+                          className='me-2 text-success'
+                          size={16}
                         />
                         Firm Address
                       </h6>
-
                       {/* Address Line 1 */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label
+                          className='form-label fw-medium mb-1 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           Address Line 1 *
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #3b82f6',
+                            fontSize: '1.03rem',
+                            transition: 'border-color 0.2s',
                           }}
                           name='address.line1'
                           value={formData.address.line1}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#3b82f6')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                       </div>
-
                       {/* Address Line 2 */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label
+                          className='form-label fw-medium mb-1 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           Address Line 2
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #3b82f6',
+                            fontSize: '1.03rem',
+                            transition: 'border-color 0.2s',
                           }}
                           name='address.line2'
                           value={formData.address.line2}
                           onChange={handleChange}
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#3b82f6')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                       </div>
-
                       {/* Town and County Row */}
                       <div className='row'>
                         <div className='col-7 mb-3'>
-                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          <label
+                            className='form-label fw-medium mb-1 small'
+                            style={{ color: '#0f172a' }}
+                          >
                             Town/City *
                           </label>
                           <input
                             type='text'
-                            className='form-control form-control-sm'
+                            className='form-control'
                             style={{
-                              borderRadius: '6px',
-                              border: '1px solid #d1d5db',
-                              fontSize: '0.9rem',
-                              transition: 'border-color 0.2s ease',
+                              borderRadius: 10,
+                              border: '1.5px solid #3b82f6',
+                              fontSize: '1.03rem',
+                              transition: 'border-color 0.2s',
                             }}
                             name='address.town_city'
                             value={formData.address.town_city}
                             onChange={handleChange}
                             required
-                            onFocus={(e) =>
-                              (e.target.style.borderColor = '#3b82f6')
-                            }
-                            onBlur={(e) =>
-                              (e.target.style.borderColor = '#d1d5db')
-                            }
                           />
                         </div>
                         <div className='col-5 mb-3'>
-                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                          <label
+                            className='form-label fw-medium mb-1 small'
+                            style={{ color: '#0f172a' }}
+                          >
                             County *
                           </label>
                           <input
                             type='text'
-                            className='form-control form-control-sm'
+                            className='form-control'
                             style={{
-                              borderRadius: '6px',
-                              border: '1px solid #d1d5db',
-                              fontSize: '0.9rem',
-                              transition: 'border-color 0.2s ease',
+                              borderRadius: 10,
+                              border: '1.5px solid #3b82f6',
+                              fontSize: '1.03rem',
+                              transition: 'border-color 0.2s',
                             }}
                             name='address.county'
                             value={formData.address.county}
                             onChange={handleChange}
                             required
-                            onFocus={(e) =>
-                              (e.target.style.borderColor = '#3b82f6')
-                            }
-                            onBlur={(e) =>
-                              (e.target.style.borderColor = '#d1d5db')
-                            }
                           />
                         </div>
                       </div>
-
                       {/* Postcode */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label
+                          className='form-label fw-medium mb-1 small'
+                          style={{ color: '#0f172a' }}
+                        >
                           {postcode_placeholders[0]} *
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #3b82f6',
+                            fontSize: '1.03rem',
+                            transition: 'border-color 0.2s',
                           }}
                           name='address.eircode'
                           value={formData.address.eircode}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#3b82f6')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                         <small className='text-muted'>
                           Format: {postcode_placeholders[1]} (e.g.,{' '}
@@ -733,7 +715,7 @@ const RegisterComponent = () => {
                   {/* Submit Button */}
                   <div
                     className='text-center mt-4 pt-3'
-                    style={{ borderTop: '1px solid #f1f5f9' }}
+                    style={{ borderTop: '1px solid #e5e7eb' }}
                   >
                     {isRegistering ? (
                       <LoadingComponent message='Creating your account...' />
@@ -742,22 +724,25 @@ const RegisterComponent = () => {
                         type='submit'
                         className='btn px-5 py-2 fw-medium w-100'
                         style={{
-                          backgroundColor: '#10b981',
+                          background:
+                            'linear-gradient(90deg, #10b981, #3b82f6 90%)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '8px',
-                          fontSize: '0.95rem',
-                          transition: 'all 0.2s ease',
-                          maxWidth: '300px',
+                          borderRadius: 10,
+                          fontSize: '1.05rem',
+                          transition: 'all 0.2s',
+                          maxWidth: 340,
                         }}
                         onMouseOver={(e) => {
-                          e.target.style.backgroundColor = '#059669';
+                          e.target.style.background =
+                            'linear-gradient(90deg, #059669, #2563eb 90%)';
                         }}
                         onMouseOut={(e) => {
-                          e.target.style.backgroundColor = '#10b981';
+                          e.target.style.background =
+                            'linear-gradient(90deg, #10b981, #3b82f6 90%)';
                         }}
                       >
-                        <FaUserPlus className='me-2' size={14} />
+                        <FaUserPlus className='me-2' size={16} />
                         Create Account
                       </button>
                     )}
@@ -768,6 +753,11 @@ const RegisterComponent = () => {
           </div>
         </div>
       </div>
+      <style>{`
+        .glassy-btn:active {
+          box-shadow: 0 2px 12px rgba(16,185,129,0.13);
+        }
+      `}</style>
     </div>
   );
 };

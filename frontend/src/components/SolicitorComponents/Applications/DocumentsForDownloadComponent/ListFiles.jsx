@@ -1,11 +1,9 @@
-
-import {
-  fetchData,
-  // deleteData,
-  downloadFileAxios,
-} from '../../../GenericFunctions/AxiosGenericFunctions'; // Import your generic axios functions
+import { useEffect, useState } from 'react';
 import { LiaFileDownloadSolid } from 'react-icons/lia';
-import {useEffect, useState} from "react";
+import {
+  downloadFileAxios,
+  fetchData,
+} from '../../../GenericFunctions/AxiosGenericFunctions';
 
 const ListFiles = ({ refresh }) => {
   const [files, setFiles] = useState([]);
@@ -14,6 +12,7 @@ const ListFiles = ({ refresh }) => {
 
   useEffect(() => {
     fetchFiles();
+    // eslint-disable-next-line
   }, [refresh]);
 
   const fetchFiles = async () => {
@@ -21,39 +20,16 @@ const ListFiles = ({ refresh }) => {
       const response = await fetchData(null, '/api/downloadableFiles/list/');
       if (response && response.status === 200) {
         setFiles(response.data);
-        // setStatusMessage('Files loaded successfully.');
         setStatusType('success');
       } else {
         setStatusMessage('Failed to load files.');
         setStatusType('danger');
       }
     } catch (error) {
-      console.error('Error fetching files:', error);
       setStatusMessage('Error fetching files.');
       setStatusType('danger');
     }
   };
-
-  // const deleteFile = async (filename) => {
-  //   try {
-  //     const response = await deleteData(
-  //       `/api/downloadableFiles/delete/${filename}/`
-  //     );
-  //     if (response && response.status === 200) {
-  //       setStatusMessage(response.data.success);
-  //       setStatusType('success');
-  //       fetchFiles(); // Refresh the file list after deletion
-  //       setRefresh(!refresh);
-  //     } else {
-  //       setStatusMessage(response.data.error || 'Failed to delete file.');
-  //       setStatusType('danger');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error deleting file:', error);
-  //     setStatusMessage('Failed to delete file.');
-  //     setStatusType('danger');
-  //   }
-  // };
 
   // Handle file download
   const downloadFile = async (filename) => {
@@ -69,64 +45,158 @@ const ListFiles = ({ refresh }) => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', filename); // Set filename
+        link.setAttribute('download', filename);
         document.body.appendChild(link);
-        link.click(); // Trigger the download
+        link.click();
         link.remove();
         window.URL.revokeObjectURL(url);
-        setStatusMessage(`File ${filename} downloaded successfully.`);
+        setStatusMessage(`File "${filename}" downloaded successfully.`);
         setStatusType('success');
       } else {
         setStatusMessage('Failed to download file.');
         setStatusType('danger');
       }
     } catch (error) {
-      console.error('Error downloading file:', error);
       setStatusMessage('Error downloading file.');
       setStatusType('danger');
     }
   };
 
   return (
-    <div className='container my-4'>
-      <h3 className='mb-4'>Available Files</h3>
+    <div className='w-100'>
+      {/* Status Message */}
       {statusMessage && (
-        <div className={`alert alert-${statusType}`} role='alert'>
-          {statusMessage}
+        <div
+          className={`alert border-0 d-flex align-items-center gap-3 ${
+            statusType === 'success'
+              ? 'alert-success'
+              : statusType === 'danger'
+              ? 'alert-danger'
+              : ''
+          }`}
+          style={{
+            borderRadius: 18,
+            boxShadow: '0 2px 12px rgba(0,0,0,0.09)',
+            fontWeight: 500,
+          }}
+          role='alert'
+        >
+          <i
+            className={`fas ${
+              statusType === 'success'
+                ? 'fa-check-circle'
+                : 'fa-exclamation-triangle'
+            }`}
+            style={{
+              color: statusType === 'success' ? '#22c55e' : '#ef4444',
+              fontSize: 20,
+            }}
+          />
+          <span>{statusMessage}</span>
         </div>
       )}
+
+      {/* Files Table or Card List */}
       {files.length > 0 ? (
-        <table className='table table-bordered table-sm table-striped table-responsive'>
-          <thead>
-            <tr>
-              <th className='col-10'>Filename</th>
-              <th className='col-2'>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {files.map((file, index) => (
-              <tr key={index}>
-                <td className=' align-middle'>{file}</td>
-                <td className=' text-center'>
-                  <button
-                    className='btn btn-sm btn-outline-success border-0 me-2'
-                    onClick={() => downloadFile(file)}
-                  >
-                    <LiaFileDownloadSolid size={30} />
-                  </button>
-                  {/* <button
-                    className='btn btn-sm btn-danger'
-                    onClick={() => deleteFile(file)}
-                  >
-                    Delete
-                  </button> */}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className='row g-4'>
+          {files.map((file, idx) => (
+            <div
+              className='col-12 col-sm-6 col-lg-4'
+              key={idx}
+              style={{ minWidth: 240 }}
+            >
+              <div
+                className='p-4 d-flex flex-column align-items-center justify-content-between h-100'
+                style={{
+                  background: 'rgba(255,255,255,0.81)',
+                  borderRadius: 18,
+                  border: '1px solid rgba(102,126,234,0.09)',
+                  boxShadow:
+                    '0 4px 16px rgba(102,126,234,0.09), 0 1px 6px rgba(0,0,0,0.06)',
+                  transition: 'all 0.24s cubic-bezier(0.4,0,0.2,1)',
+                  backdropFilter: 'blur(8px)',
+                  minHeight: 150,
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* Glassy File Icon */}
+                <div
+                  className='d-flex align-items-center justify-content-center mb-3'
+                  style={{
+                    width: 46,
+                    height: 46,
+                    background: 'linear-gradient(135deg,#667eea,#764ba2)',
+                    borderRadius: '50%',
+                    boxShadow: '0 4px 16px rgba(102,126,234,0.18)',
+                  }}
+                >
+                  <LiaFileDownloadSolid size={28} color='#fff' />
+                </div>
+                <div
+                  className='w-100 text-center mb-2'
+                  style={{
+                    wordBreak: 'break-all',
+                    fontWeight: 600,
+                    fontSize: '1.06rem',
+                    color: '#1e293b',
+                  }}
+                  title={file}
+                >
+                  {file}
+                </div>
+                <button
+                  className='btn btn-sm rounded-pill fw-bold px-4 mt-2 d-flex align-items-center justify-content-center gap-2'
+                  style={{
+                    background: 'linear-gradient(135deg,#667eea,#764ba2)',
+                    color: '#fff',
+                    border: 'none',
+                    boxShadow: '0 4px 18px rgba(102,126,234,0.13)',
+                    fontSize: '1rem',
+                    transition: 'all 0.2s',
+                  }}
+                  onClick={() => downloadFile(file)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform =
+                      'translateY(-1px) scale(1.05)';
+                    e.currentTarget.style.boxShadow =
+                      '0 8px 24px rgba(102,126,234,0.16)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.boxShadow =
+                      '0 4px 18px rgba(102,126,234,0.13)';
+                  }}
+                >
+                  <LiaFileDownloadSolid size={22} />
+                  Download
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
-        <p>No files available.</p>
+        <div className='py-5 text-center'>
+          <div
+            className='mx-auto d-flex align-items-center justify-content-center mb-3'
+            style={{
+              width: 70,
+              height: 70,
+              background: 'linear-gradient(135deg, #e0e7ef, #e0e7ff)',
+              color: '#667eea',
+              borderRadius: '50%',
+              boxShadow: '0 8px 18px rgba(102,126,234,0.08)',
+            }}
+          >
+            <LiaFileDownloadSolid size={34} />
+          </div>
+          <h5 className='fw-bold mb-2' style={{ color: '#1e293b' }}>
+            No documents available
+          </h5>
+          <p className='text-muted'>
+            There are currently no standard files available for download.
+          </p>
+        </div>
       )}
     </div>
   );

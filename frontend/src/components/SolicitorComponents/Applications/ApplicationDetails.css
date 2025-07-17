@@ -1,4 +1,4 @@
-/* ApplicationDetails.css - Minimal CSS for Animations Only */
+/* ApplicationDetails.css - Responsive with Bootstrap Integration */
 
 /* =============================================================================
    LOADING SHIMMER ANIMATION
@@ -30,6 +30,211 @@
 
 .icon-locked {
   animation: warningPulse 2s infinite;
+}
+
+/* =============================================================================
+   RESPONSIVE SIDEBAR STYLING
+   ============================================================================= */
+
+/* Desktop sidebar - always visible */
+@media (min-width: 992px) {
+  .modern-stages-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 400px;
+    height: 100vh;
+    z-index: 1040;
+    transform: translateX(0);
+    transition: none;
+  }
+  
+  .main-content-area {
+    margin-left: 400px;
+  }
+}
+
+/* Mobile sidebar - hidden by default, slides in when opened */
+@media (max-width: 991.98px) {
+  .modern-stages-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 400px;
+    height: 100vh;
+    z-index: 1040;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+  }
+  
+  .modern-stages-sidebar.show {
+    transform: translateX(0);
+  }
+  
+  .main-content-area {
+    margin-left: 0;
+  }
+}
+
+/* =============================================================================
+   STAGES TOGGLE BUTTON
+   ============================================================================= */
+
+.stages-toggle-btn {
+  position: fixed;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  z-index: 1050;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.stages-toggle-btn:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+.stages-toggle-btn:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+/* Hide toggle button on desktop */
+@media (min-width: 992px) {
+  .stages-toggle-btn {
+    display: none !important;
+  }
+}
+
+/* =============================================================================
+   OVERLAY STYLES
+   ============================================================================= */
+
+.stages-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1035;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.stages-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Only show overlay on mobile */
+@media (min-width: 992px) {
+  .stages-overlay {
+    display: none !important;
+  }
+}
+
+/* =============================================================================
+   TOOLTIP ANIMATIONS
+   ============================================================================= */
+
+.tooltip-animation {
+  animation: tooltipFadeIn 0.4s ease-out;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  border-right: none;
+  border-bottom: none;
+}
+
+/* =============================================================================
+   CONTENT AREA RESPONSIVE ADJUSTMENTS
+   ============================================================================= */
+
+.modern-application-container {
+  min-height: 100vh;
+  background-color: #1F2049;
+  position: relative;
+}
+
+.application-content {
+  transition: margin-left 0.3s ease;
+}
+
+/* Desktop content positioning */
+@media (min-width: 992px) {
+  .application-content {
+    margin-left: 400px;
+  }
+}
+
+/* Mobile content positioning */
+@media (max-width: 991.98px) {
+  .application-content {
+    margin-left: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+/* =============================================================================
+   SCROLLBAR CUSTOMIZATION
+   ============================================================================= */
+
+/* Custom scrollbar for stages sidebar */
+.stages-sidebar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.stages-sidebar-content::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: 3px;
+}
+
+.stages-sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4);
+  border-radius: 3px;
+}
+
+.stages-sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.6);
+}
+
+/* Firefox scrollbar */
+.stages-sidebar-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.4) rgba(15, 23, 42, 0.3);
+}
+
+/* =============================================================================
+   MOBILE OPTIMIZATIONS
+   ============================================================================= */
+
+/* Improve touch scrolling on mobile */
+@media (max-width: 991.98px) {
+  .stages-sidebar-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Prevent body scroll when sidebar is open */
+  body.sidebar-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
 }
 
 /* =============================================================================
@@ -66,4 +271,66 @@
   50% { 
     box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6), 0 0 40px rgba(245, 158, 11, 0.4);
   }
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+/* =============================================================================
+   UTILITIES
+   ============================================================================= */
+
+.bg-primary {
+  background-color: #1F2049 !important;
+}
+
+/* Ensure proper z-index layering */
+.z-1 { z-index: 1; }
+.z-2 { z-index: 2; }
+.z-3 { z-index: 3; }
+
+/* Custom margin utilities */
+.ms-auto { margin-left: auto; }
+.me-auto { margin-right: auto; }
+
+/* Custom padding utilities for fine-tuning */
+.p-2-5 { padding: 0.625rem; }
+.p-3-5 { padding: 0.875rem; }
+.px-2-5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+.py-2-5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+
+/* =============================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================================================= */
+
+/* GPU acceleration for animations */
+.stages-toggle-btn,
+.modern-stages-sidebar,
+.stages-overlay {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Optimize repaints */
+.stages-sidebar-content {
+  contain: layout style paint;
 }

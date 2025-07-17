@@ -1,24 +1,22 @@
-
-import { signup, clearAuthError } from '../../store/authSlice';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import renderErrors from '../GenericFunctions/HelperGenericFunctions';
-import { fetchData, postData } from '../GenericFunctions/AxiosGenericFunctions';
-import QrCodeDisplay from './QrCodeDisplay';
+import { clearAuthError, signup } from '../../store/authSlice';
 import LoadingComponent from '../GenericComponents/LoadingComponent';
+import { fetchData, postData } from '../GenericFunctions/AxiosGenericFunctions';
+import renderErrors from '../GenericFunctions/HelperGenericFunctions';
+import QrCodeDisplay from './QrCodeDisplay';
 import VerificationForm from './VerificationForm';
-import {useEffect, useState} from "react";
 
 const VerifyOtp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [otp, setOtp] = useState(Array(6).fill(''));
   const [qrCode, setQrCode] = useState(null);
-  const [manualKey, setManualKey] = useState(null); // For the manual key
+  const [manualKey, setManualKey] = useState(null); // For manual key
   const [isCooldown, setIsCooldown] = useState(false);
   const [timer, setTimer] = useState(0);
   const [step, setStep] = useState('emailValidation');
 
-  // const inputRefs = useRef([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +31,6 @@ const VerifyOtp = () => {
   const [errors, setErrors] = useState(null);
 
   useEffect(() => {
-    // Clear authError when the component is rendered
     dispatch(clearAuthError());
   }, [dispatch]);
 
@@ -77,22 +74,17 @@ const VerifyOtp = () => {
     setErrors(null);
     const enteredOtp = otp.join('');
     if (enteredOtp.length === 6) {
-      console.log('OTP submitted:', enteredOtp);
-
       const resultAction = await dispatch(signup({ email, password, otp }));
 
       if (signup.fulfilled.match(resultAction)) {
         setIsLoading(false);
         navigate('/applications');
       } else if (signup.rejected.match(resultAction)) {
-        console.error('Login error:', resultAction.payload);
         setErrors(resultAction.payload);
         setIsLoading(false);
       }
     }
   };
-
-  // const isSubmitDisabled = otp.some((digit) => digit === '');
 
   const handleSwitchMethod = async (refreshCurrent = false) => {
     setQrCode(null);
@@ -100,35 +92,20 @@ const VerifyOtp = () => {
     try {
       setIsLoading(true);
       setErrors(null);
-
-      // Determine the method to be sent in the API call
-
       let methodToSend;
-
       if (refreshCurrent) {
-        // If refreshCurrent is true, keep the current method
         methodToSend = authMethod;
       } else {
-        // Otherwise, toggle between 'otp' and 'authenticator'
         methodToSend = authMethod === 'otp' ? 'authenticator' : 'otp';
       }
-
-      console.log(methodToSend);
       setAuthMethod(methodToSend);
-
       const response = await postData(
         'token',
         '/api/user/update-auth-method/',
-        {
-          email,
-          preferred_auth_method: methodToSend,
-        }
+        { email, preferred_auth_method: methodToSend }
       );
-
       if (response.status === 200) {
         const { auth_method, qr_code, manual_key } = response.data;
-
-        // Handle QR code and manual key for authenticator method
         if (qr_code && auth_method === 'authenticator') {
           setQrCode(qr_code);
           setManualKey(manual_key);
@@ -151,162 +128,187 @@ const VerifyOtp = () => {
     const response = await postData(
       'verify',
       '/api/user/verify-authenticator-code/',
-      {
-        email: email,
-        code: authCode,
-      }
+      { email: email, code: authCode }
     );
-    console.log(response);
-
     if (response.status === 200) {
       alert('Authenticator successfully activated!');
-      setQrCode(null); // Close QR code display
-      setAuthMethod('authenticator'); // Update preferred method
+      setQrCode(null);
+      setAuthMethod('authenticator');
     } else {
       setErrors(response.data);
     }
   };
 
-  // this useffect is used to set timed on refresh validation code, just to stop misusing it
   useEffect(() => {
     let countdownInterval;
-
     if (isCooldown && timer > 0) {
       countdownInterval = setInterval(() => {
         setTimer((prev) => prev - 1);
       }, 1000);
     }
-
     if (timer === 0) {
       clearInterval(countdownInterval);
       setIsCooldown(false);
     }
-
     return () => clearInterval(countdownInterval);
   }, [isCooldown, timer]);
 
   const handleClick = () => {
     if (!isCooldown) {
-      handleSwitchMethod(true); // Trigger the resend functionality
-      setIsCooldown(true); // Start cooldown
-      setTimer(120); // Set timer to 2 minutes (120 seconds)
+      handleSwitchMethod(true);
+      setIsCooldown(true);
+      setTimer(120);
     }
   };
 
-  // Redirect to login if state is missing
   useEffect(() => {
     if (!email || !password) {
-      navigate('/login'); // Redirect to a safe page
+      navigate('/login');
     }
   }, [email, password, navigate]);
 
-  if (!email || !password) {
-    return null; // Prevent rendering until redirect happens
-  }
-
-  if (isLoading) {
-    return <LoadingComponent />;
-  }
+  if (!email || !password) return null;
+  if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className='d-flex justify-content-center align-items-center bg-light my-5'>
-      <div className='card shadow-sm p-4 my-5'>
-        {qrCode ? (
-          <QrCodeDisplay
-            qrCode={qrCode}
-            manualKey={manualKey}
-            onDone={() => {
-              setQrCode(null);
-              handleSwitchMethod();
-            }}
-            onVerify={handleVerifyCode}
-            email={email}
-            step={step}
-            setStep={setStep}
-          />
-        ) : (
-          <div className='card-body' style={{ maxWidth: '500px' }}>
-            <h3 className='card-title text-center mb-4'>
-              Enter Verification Code
-            </h3>
-            <p
-              className='text-center'
+    <div
+      className='min-vh-100 d-flex align-items-center justify-content-center'
+      style={{
+        background: 'linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)',
+        minHeight: '100vh',
+      }}
+    >
+      <div className='container py-5'>
+        <div className='row justify-content-center'>
+          <div className='col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5'>
+            <div
+              className='card border-0 shadow-lg p-0'
               style={{
-                // Slightly larger text for better visibility
-                color: '#343a40', // Neutral dark gray for a professional look
+                borderRadius: 22,
+                background: 'rgba(255,255,255,0.98)',
+                boxShadow:
+                  '0 8px 32px rgba(16,185,129,0.10), 0 2px 8px rgba(59,130,246,0.07)',
+                backdropFilter: 'blur(14px)',
+                overflow: 'hidden',
               }}
             >
-              {authMethod === 'otp'
-                ? 'Enter the verification code sent to your email.'
-                : 'Enter the code generated by your authenticator app.'}
-            </p>
-
-            <VerificationForm
-              otp={otp}
-              setOtp={setOtp}
-              isLoading={isLoading}
-              handleSubmit={handleSubmit}
-            />
-
-            <div className='card-footer my-2 text-center'>
-              <sub className='text-info'>
-                {authMethod === 'otp' ? (
-                  <>
-                    A security code has been sent to your firm&#39;s default email
-                    address: <br />
-                    <strong>{email}</strong>. <br />
-                  </>
+              <div
+                className='card-header border-0 py-4 text-center'
+                style={{
+                  background:
+                    'linear-gradient(135deg,#3b82f6 60%,#10b981 100%)',
+                  borderBottom: 'none',
+                  borderTopLeftRadius: 22,
+                  borderTopRightRadius: 22,
+                  color: '#fff',
+                  boxShadow: '0 8px 24px rgba(16,185,129,0.08)',
+                }}
+              >
+                <h3 className='fw-bold mb-0'>Verify Your Account</h3>
+                <div className='small' style={{ opacity: 0.96 }}>
+                  {authMethod === 'otp'
+                    ? 'Enter the 6-digit code sent to your email'
+                    : 'Enter the code from your authenticator app'}
+                </div>
+              </div>
+              {/* QR or Verification */}
+              <div className='card-body px-4 pt-4 pb-2'>
+                {qrCode ? (
+                  <QrCodeDisplay
+                    qrCode={qrCode}
+                    manualKey={manualKey}
+                    onDone={() => {
+                      setQrCode(null);
+                      handleSwitchMethod();
+                    }}
+                    onVerify={handleVerifyCode}
+                    email={email}
+                    step={step}
+                    setStep={setStep}
+                  />
                 ) : (
                   <>
-                    Open your authenticator app to retrieve the verification
-                    code associated with your account. <br />
+                    <VerificationForm
+                      otp={otp}
+                      setOtp={setOtp}
+                      isLoading={isLoading}
+                      handleSubmit={handleSubmit}
+                    />
+                    <div className='my-2 text-center small text-muted'>
+                      {authMethod === 'otp' ? (
+                        <>
+                          A security code was sent to:
+                          <br />
+                          <span className='fw-bold'>{email}</span>
+                        </>
+                      ) : (
+                        <>Open your authenticator app to retrieve your code.</>
+                      )}
+                    </div>
+                    <div className='text-center my-3'>
+                      <button
+                        type='button'
+                        className='btn btn-link px-0 fw-medium'
+                        style={{
+                          color: '#3b82f6',
+                          fontSize: '0.98rem',
+                        }}
+                        onClick={() => handleSwitchMethod(false)}
+                        disabled={isLoading}
+                      >
+                        Use{' '}
+                        {authMethod === 'otp'
+                          ? 'Authenticator App'
+                          : 'Email Verification'}
+                      </button>
+                    </div>
                   </>
                 )}
-              </sub>
-            </div>
-            <div className=' text-end'>
-              <button
-                type='button'
-                className='btn btn-link text-end w-100 mt-3'
-                onClick={() => handleSwitchMethod(false)}
-                disabled={isLoading}
-              >
-                Use{' '}
-                {authMethod === 'otp'
-                  ? 'Authenticator App'
-                  : 'Email Verification'}
-              </button>
+              </div>
+              {/* Resend and Cooldown */}
+              {(!qrCode || step === 'emailValidation') && (
+                <div className='px-4 pb-3'>
+                  <div className='d-flex flex-column flex-sm-row align-items-center justify-content-between'>
+                    <button
+                      className='btn btn-link text-info p-0'
+                      style={{
+                        textDecoration: 'underline',
+                        fontSize: '0.97rem',
+                        fontWeight: 500,
+                        letterSpacing: '0.01em',
+                      }}
+                      onClick={handleClick}
+                      disabled={isCooldown}
+                    >
+                      Resend validation code
+                    </button>
+                    {isCooldown && (
+                      <sub className='text-muted text-end ms-sm-2 mt-2 mt-sm-0'>
+                        You can resend in {timer} sec
+                      </sub>
+                    )}
+                  </div>
+                </div>
+              )}
+              {/* Error Display */}
+              {errors && (
+                <div className='mx-4 mb-3'>
+                  <div
+                    className='alert border-0'
+                    style={{
+                      background: 'rgba(239,68,68,0.09)',
+                      color: '#dc2626',
+                      borderRadius: 12,
+                      fontSize: '1rem',
+                    }}
+                  >
+                    {renderErrors(errors)}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        )}
-        {(!qrCode || step === 'emailValidation') && (
-          <>
-            <div className='text-end '>
-              <button
-                className='btn  bg-body text-info'
-                onClick={() => {
-                  handleClick();
-                }}
-                disabled={isCooldown}
-              >
-                <span className=' text-decoration-underline'>
-                  Resend validation code
-                </span>
-              </button>
-            </div>
-            {isCooldown && (
-              <sub className='text-muted text-end'>
-                You can resend the validation code in {timer} seconds.
-              </sub>
-            )}
-          </>
-        )}
-
-        {errors && (
-          <div className='alert alert-danger text-center'>
-            {renderErrors(errors)}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

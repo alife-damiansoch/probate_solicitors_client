@@ -1272,267 +1272,209 @@ border-radius: 4px;
             position: 'sticky',
             top: 0,
             zIndex: 1000,
-            margin: '0 0rem 2rem 0rem',
-            borderRadius: '24px',
+            borderRadius: 22,
             background: `
-      linear-gradient(135deg, rgba(255,255,255,0.27) 0%, rgba(245,245,245,0.18) 100%),
-      linear-gradient(120deg, ${currentStage.color}1A 0%, ${currentStage.color}0F 100%)
+      linear-gradient(120deg, ${currentStage.color}24 0%, #fff6 100%),
+      linear-gradient(135deg, rgba(255,255,255,0.18) 10%, rgba(240,240,240,0.08) 90%)
     `,
-            backdropFilter: 'blur(38px) saturate(170%)',
-            borderBottom: '1.5px solid rgba(0,0,0,0.07)',
             boxShadow: `
-      0 12px 32px rgba(0,0,0,0.13),
-      0 1.5px 0px ${currentStage.color}40,
-      inset 0 0.5px 0px rgba(255,255,255,0.15)
+      0 6px 24px 2px rgba(0,0,0,0.10),
+      0 2px 0px ${currentStage.color}22,
+      inset 0 1px 0px #fff5
     `,
+            backdropFilter: 'blur(22px) saturate(170%)',
+            padding: '0.4rem 0 1.2rem 0',
+            marginBottom: 22,
             overflow: 'visible',
-            padding: '0',
           }}
+          className='mx-auto'
         >
-          {/* Responsive Flex Layout */}
+          {/* Responsive layout */}
           <div
-            style={{
-              display: 'flex',
-              flexDirection: window.innerWidth < 700 ? 'column' : 'row',
-              alignItems: window.innerWidth < 700 ? 'stretch' : 'center',
-              gap: window.innerWidth < 700 ? '1.2rem' : '2.5rem',
-              padding:
-                window.innerWidth < 700
-                  ? '1.2rem 0.7rem 1.5rem 0.7rem'
-                  : '2.8rem 3rem 2.5rem 3rem',
-              minHeight: window.innerWidth < 700 ? 'auto' : '160px',
-              width: '100%',
-              position: 'relative',
-              transition: 'all .22s cubic-bezier(.46,.03,.52,.96)',
-            }}
+            className='d-flex flex-column flex-md-row align-items-center justify-content-between px-3 px-md-5 py-2 py-md-3'
+            style={{ gap: 0 }}
           >
-            {/* Floating Animated Glass Icon */}
+            {/* ICON - always left or on top */}
             <div
-              style={{
-                alignSelf: window.innerWidth < 700 ? 'center' : 'flex-start',
-                width: window.innerWidth < 700 ? 62 : 86,
-                height: window.innerWidth < 700 ? 62 : 86,
-                background: `
-          linear-gradient(135deg, ${currentStage.color}DD 0%, ${currentStage.color}90 100%)
-        `,
-                borderRadius: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: `
-          0 9px 32px ${currentStage.color}44,
-          0 1.5px 0px #fff2
-        `,
-                position: 'relative',
-                animation: 'iconFloat 3.3s ease-in-out infinite',
-                border: `1.5px solid ${currentStage.color}3A`,
-                overflow: 'visible',
-                transition: 'all .2s',
-              }}
-            >
-              {/* Inner glow and glass light */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-16%',
-                  left: '-12%',
-                  width: '68%',
-                  height: '68%',
-                  background: `radial-gradient(circle, rgba(255,255,255,0.19) 0%, transparent 90%)`,
-                  filter: 'blur(1px)',
-                  borderRadius: '50%',
-                  zIndex: 0,
-                }}
-              />
-              <i
-                className={currentStage.icon}
-                style={{
-                  position: 'relative',
-                  zIndex: 1,
-                  fontSize: window.innerWidth < 700 ? '1.5rem' : '2.3rem',
-                  color: '#fff',
-                  filter: 'drop-shadow(0 2px 8px #0003)',
-                }}
-              ></i>
-            </div>
-
-            {/* Titles and Status */}
-            <div
-              style={{
-                flex: 1,
-                minWidth: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: window.innerWidth < 700 ? 'center' : 'flex-start',
-                gap: window.innerWidth < 700 ? '0.4rem' : '0.6rem',
-                textAlign: window.innerWidth < 700 ? 'center' : 'left',
-              }}
+              className='d-flex justify-content-center align-items-center mb-3 mb-md-0 me-md-4'
+              style={{ minWidth: 80 }}
             >
               <div
                 style={{
+                  width: 60,
+                  height: 60,
+                  background: `linear-gradient(135deg, ${currentStage.color}F0 40%, ${currentStage.color}99 100%)`,
+                  borderRadius: 20,
                   display: 'flex',
-                  flexWrap: 'wrap',
                   alignItems: 'center',
-                  justifyContent:
-                    window.innerWidth < 700 ? 'center' : 'flex-start',
-                  gap: window.innerWidth < 700 ? '0.5rem' : '0.75rem',
-                  marginBottom: window.innerWidth < 700 ? '0.4rem' : '0.75rem',
+                  justifyContent: 'center',
+                  boxShadow: `0 9px 28px ${currentStage.color}2c, 0 1.5px 0px #fff3`,
+                  border: `2px solid ${currentStage.color}38`,
+                  filter: 'drop-shadow(0 4px 18px rgba(0,0,0,.07))',
+                  transition: 'all .25s cubic-bezier(.44,.13,.52,.93)',
                 }}
               >
+                {/* Icon Glow */}
                 <div
                   style={{
-                    padding: '0.38rem 0.9rem',
-                    background: 'rgba(15,23,42,0.8)',
-                    borderRadius: '19px',
-                    color: 'rgba(255,255,255,0.94)',
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    fontSize: window.innerWidth < 700 ? '0.93rem' : '1.03rem',
-                    fontWeight: 600,
+                    position: 'absolute',
+                    top: '-10%',
+                    left: '-8%',
+                    width: '60%',
+                    height: '60%',
+                    background:
+                      'radial-gradient(circle, rgba(255,255,255,0.14) 0%, transparent 85%)',
+                    filter: 'blur(1px)',
+                    borderRadius: '50%',
+                    zIndex: 0,
+                  }}
+                />
+                <i
+                  className={currentStage.icon}
+                  style={{
+                    zIndex: 1,
+                    fontSize: 30,
+                    color: '#fff',
+                    filter: 'drop-shadow(0 2px 10px #0002)',
+                    position: 'relative',
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className='flex-fill text-center text-md-start'>
+              <div className='d-flex justify-content-center justify-content-md-start align-items-center gap-2 mb-2 flex-wrap'>
+                <div
+                  style={{
+                    padding: '0.25rem 0.95rem',
+                    background: 'rgba(16,20,38,0.86)',
+                    borderRadius: '15px',
+                    color: '#fff',
+                    fontSize: 14.2,
+                    fontWeight: 700,
+                    border: '1.5px solid rgba(255,255,255,0.13)',
                     letterSpacing: '0.01em',
-                    whiteSpace: 'nowrap',
                   }}
                 >
                   Application #{application.id}
                 </div>
                 <div
                   style={{
-                    width: 4,
-                    height: 4,
+                    width: 5,
+                    height: 5,
                     borderRadius: '50%',
-                    background: 'rgba(15,23,42,0.4)',
+                    background: 'rgba(16,20,38,0.32)',
                   }}
                 />
                 <div
                   style={{
-                    padding: '0.38rem 0.95rem',
-                    background: `linear-gradient(135deg, ${currentStage.color}, ${currentStage.color}cc)`,
-                    borderRadius: '19px',
+                    padding: '0.25rem 1.05rem',
+                    background: `linear-gradient(135deg, ${currentStage.color}, ${currentStage.color}bb)`,
+                    borderRadius: '15px',
                     color: '#fff',
-                    fontWeight: 700,
-                    backdropFilter: 'blur(9px)',
-                    boxShadow: `0 2px 8px ${currentStage.color}30`,
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    fontSize: window.innerWidth < 700 ? '0.95rem' : '1.06rem',
+                    fontWeight: 800,
+                    border: '1.5px solid rgba(255,255,255,0.22)',
+                    fontSize: 14.2,
                     letterSpacing: '0.01em',
-                    whiteSpace: 'nowrap',
                   }}
                 >
                   {currentStage.title}
                 </div>
               </div>
-              <h1
+              <div
                 style={{
-                  margin: 0,
-                  fontSize: window.innerWidth < 700 ? '1.37rem' : '2.3rem',
+                  fontSize: 19.5,
                   fontWeight: 900,
                   color: '#0f172a',
                   letterSpacing: '-0.018em',
-                  textShadow: '0 2.5px 9px rgba(0,0,0,0.07)',
-                  lineHeight: 1.09,
-                  wordBreak: 'break-word',
+                  marginBottom: 2,
                   textWrap: 'balance',
-                  maxWidth: window.innerWidth < 700 ? '95vw' : 'unset',
-                  transition: 'font-size .18s',
+                  textShadow: '0 2.5px 9px rgba(0,0,0,0.07)',
                 }}
               >
                 {currentStage.title}
-              </h1>
-              <p
+              </div>
+              <div
                 style={{
-                  margin: '0.3rem 0 0 0',
-                  fontSize: window.innerWidth < 700 ? '0.95rem' : '1.06rem',
+                  fontSize: 14.7,
                   color: 'rgba(15,23,42,0.74)',
                   fontWeight: 500,
-                  textWrap: 'balance',
                 }}
               >
                 Manage and review your application details
-              </p>
+              </div>
             </div>
 
-            {/* Modern Status Indicator - Responsive */}
+            {/* Status Indicator */}
             <div
-              style={{
-                alignSelf: window.innerWidth < 700 ? 'center' : 'flex-end',
-                marginTop: window.innerWidth < 700 ? '1.1rem' : 0,
-                // minWidth: 0,
-                padding:
-                  window.innerWidth < 700 ? '0.6rem 1.1rem' : '1rem 1.5rem',
-                background: `
-          linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.76) 100%)
-        `,
-                borderRadius: '14px',
-                border: '1px solid rgba(255,255,255,0.23)',
-                color: '#0f172a',
-                fontWeight: 700,
-                fontSize: window.innerWidth < 700 ? '0.95rem' : '1.07rem',
-                boxShadow: `
-          0 4px 10px rgba(0,0,0,0.07),
-          inset 0 1.5px 0 rgba(255,255,255,0.53)
-        `,
-                backdropFilter: 'blur(16px)',
-                textAlign: 'center',
-                minWidth: window.innerWidth < 700 ? 90 : 140,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '0.22rem',
-              }}
+              className='d-flex flex-column align-items-center align-items-md-end mt-4 mt-md-0 ms-md-4'
+              style={{ minWidth: 110 }}
             >
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.45rem',
+                  padding: '0.42rem 1.1rem',
+                  background:
+                    'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(245,245,245,0.82) 100%)',
+                  borderRadius: 11,
+                  border: '1.5px solid rgba(255,255,255,0.23)',
+                  color: '#0f172a',
+                  fontWeight: 700,
+                  fontSize: 14.3,
+                  boxShadow: `
+            0 3px 14px rgba(0,0,0,0.08),
+            inset 0 1.2px 0 rgba(255,255,255,0.49)
+          `,
+                  textAlign: 'center',
+                  minWidth: 88,
+                  backdropFilter: 'blur(7px)',
                 }}
               >
+                <div className='d-flex align-items-center justify-content-center gap-2 mb-1'>
+                  <div
+                    style={{
+                      width: 9,
+                      height: 9,
+                      borderRadius: '50%',
+                      background: `linear-gradient(135deg, ${currentStage.color}, ${currentStage.color}bb)`,
+                      boxShadow: `0 0 9px ${currentStage.color}35`,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: '0.98em',
+                      opacity: 0.8,
+                      fontWeight: 700,
+                    }}
+                  >
+                    VIEWING
+                  </span>
+                </div>
                 <div
                   style={{
-                    width: window.innerWidth < 700 ? 7 : 9,
-                    height: window.innerWidth < 700 ? 7 : 9,
-                    borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${currentStage.color}, ${currentStage.color}cc)`,
-                    boxShadow: `0 0 8px ${currentStage.color}65`,
-                    animation: 'statusPulse 1.8s ease-in-out infinite',
+                    fontSize: 13,
+                    color: currentStage.color,
+                    fontWeight: 900,
+                    letterSpacing: '.01em',
                   }}
-                />
-                <span style={{ fontSize: '0.84em', opacity: 0.78 }}>
-                  VIEWING
-                </span>
-              </div>
-              <div
-                style={{
-                  fontSize: window.innerWidth < 700 ? '0.85em' : '0.95em',
-                  color: currentStage.color,
-                  fontWeight: 800,
-                }}
-              >
-                Active Section
+                >
+                  Active Section
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Animated Accent Glow Bar */}
+          {/* Accent Bar */}
           <div
             style={{
-              height: window.innerWidth < 700 ? '3.5px' : '5px',
+              height: 4,
               background: `linear-gradient(90deg, ${currentStage.color}, #fff3, ${currentStage.color}90, #fff3, ${currentStage.color})`,
-              boxShadow: `0 1.5px 8px ${currentStage.color}26`,
+              boxShadow: `0 1.5px 8px ${currentStage.color}18`,
               borderRadius: 30,
-              width: '94%',
-              margin:
-                window.innerWidth < 700
-                  ? '0 auto 0.15rem auto'
-                  : '0 auto 0.22rem auto',
-              animation: 'progressShimmer 3s linear infinite',
-              position: 'relative',
-              overflow: 'hidden',
+              width: '93%',
+              margin: '0.38rem auto 0.13rem auto',
+              transition: 'all .19s',
             }}
-          ></div>
+          />
         </div>
 
         {/* Content Area */}

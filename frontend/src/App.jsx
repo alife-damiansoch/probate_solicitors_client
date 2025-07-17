@@ -248,7 +248,7 @@ function App() {
                 component={
                   <div
                     className='container-fluid p-0 '
-                    style={{ maxWidth: '1200px', margin: '4px auto' }}
+                    style={{ maxWidth: '90vw', margin: '4px auto' }}
                   >
                     <ApplicationDetails />
                   </div>

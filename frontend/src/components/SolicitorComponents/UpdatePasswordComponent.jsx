@@ -27,21 +27,13 @@ const UpdatePasswordComponent = () => {
   const token = useSelector((state) => state.auth.token.access);
   const navigate = useNavigate();
 
-  const handleOldPasswordChange = (e) => {
-    setOldPassword(e.target.value);
-  };
-
-  const handleNewPasswordChange = (e) => {
-    setNewPassword(e.target.value);
-  };
-
-  const handleConfirmNewPasswordChange = (e) => {
+  const handleOldPasswordChange = (e) => setOldPassword(e.target.value);
+  const handleNewPasswordChange = (e) => setNewPassword(e.target.value);
+  const handleConfirmNewPasswordChange = (e) =>
     setConfirmNewPassword(e.target.value);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (newPassword !== confirmNewPassword) {
       setErrors({ password: 'New passwords do not match' });
       return;
@@ -51,11 +43,7 @@ const UpdatePasswordComponent = () => {
       const res = await patchData(
         `/api/user/update_password/`,
         { old_password: oldPassword, new_password: newPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.status === 200) {
         setOldPassword('');
@@ -65,82 +53,96 @@ const UpdatePasswordComponent = () => {
         alert('Password updated successfully!');
         setRedirect(true);
       } else {
-        console.log(res);
         setErrors(res.data);
         setIsSending(false);
       }
     } catch (err) {
-      console.error('Error updating password:', err);
-      setErrors(err.response.data || { error: 'An error occurred' });
+      setErrors(err.response?.data || { error: 'An error occurred' });
       setIsSending(false);
     }
   };
 
   return (
-    <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+    <div
+      className='min-vh-100 py-4'
+      style={{
+        background: 'linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)',
+        minHeight: '100vh',
+      }}
+    >
       <div className='container'>
         {/* Header Section */}
-        <div className='d-flex align-items-center mb-4'>
+        <div className='d-flex align-items-center mb-4 gap-2'>
           <button
-            className='btn d-flex align-items-center px-3 py-2'
+            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
             style={{
-              backgroundColor: 'white',
+              background: 'rgba(255,255,255,0.92)',
               border: '1px solid #e2e8f0',
-              borderRadius: '8px',
+              borderRadius: '12px',
               color: '#64748b',
-              fontSize: '0.9rem',
-              transition: 'all 0.2s ease',
+              fontWeight: 500,
+              fontSize: '1rem',
+              boxShadow: '0 2px 10px rgba(59,130,246,0.07)',
+              transition: 'all 0.2s',
+              backdropFilter: 'blur(10px)',
             }}
             onClick={() => navigate(-1)}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f1f5f9';
+              e.target.style.background = 'rgba(240,240,255,0.98)';
               e.target.style.borderColor = '#cbd5e1';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'white';
+              e.target.style.background = 'rgba(255,255,255,0.92)';
               e.target.style.borderColor = '#e2e8f0';
             }}
           >
-            <FaArrowLeft className='me-2' size={14} />
+            <FaArrowLeft className='me-2' size={16} />
             Back
           </button>
         </div>
 
         {/* Main Card */}
         <div className='row justify-content-center'>
-          <div className='col-lg-5 col-md-7'>
+          <div className='col-12 col-md-8 col-lg-6 col-xl-5'>
             <div
-              className='card border-0'
+              className='card border-0 shadow-lg'
               style={{
-                borderRadius: '12px',
+                borderRadius: 22,
+                background: 'rgba(255,255,255,0.98)',
                 boxShadow:
-                  '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                backgroundColor: 'white',
+                  '0 8px 32px rgba(59,130,246,0.10), 0 2px 8px rgba(239,68,68,0.09)',
+                backdropFilter: 'blur(14px)',
+                overflow: 'hidden',
               }}
             >
               {/* Card Header */}
               <div
                 className='card-header border-0 py-4 text-center'
                 style={{
-                  backgroundColor: 'white',
-                  borderBottom: '1px solid #f1f5f9',
+                  background: 'linear-gradient(135deg,#ef4444,#fdba74)',
+                  borderBottom: 'none',
+                  borderTopLeftRadius: 22,
+                  borderTopRightRadius: 22,
+                  color: '#fff',
+                  boxShadow: '0 8px 24px rgba(239,68,68,0.10)',
                 }}
               >
                 <div
                   className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
                   style={{
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: '#ef4444',
-                    color: 'white',
+                    width: 64,
+                    height: 64,
+                    background: 'rgba(255,255,255,0.20)',
+                    color: '#fff',
+                    boxShadow: '0 4px 16px rgba(239,68,68,0.10)',
                   }}
                 >
-                  <FaShieldAlt size={24} />
+                  <FaShieldAlt size={26} />
                 </div>
-                <h4 className='mb-1 fw-bold text-slate-800'>Update Password</h4>
-                <p className='mb-0 text-slate-500 small'>
+                <h3 className='mb-1 fw-bold'>Update Password</h3>
+                <div className='mb-0 small' style={{ opacity: 0.94 }}>
                   Change your account password securely
-                </p>
+                </div>
               </div>
 
               {/* Error Display */}
@@ -149,10 +151,10 @@ const UpdatePasswordComponent = () => {
                   <div
                     className='alert border-0'
                     style={{
-                      backgroundColor: '#fef2f2',
+                      background: 'rgba(239,68,68,0.07)',
                       color: '#dc2626',
-                      borderRadius: '8px',
-                      fontSize: '0.9rem',
+                      borderRadius: 12,
+                      fontSize: '1rem',
                     }}
                   >
                     {renderErrors(errors)}
@@ -165,51 +167,47 @@ const UpdatePasswordComponent = () => {
                 <form onSubmit={handleSubmit}>
                   {/* Old Password */}
                   <div className='mb-3'>
-                    <label className='form-label fw-medium text-slate-600 mb-2 small'>
-                      <FaLock className='me-2 text-slate-400' size={12} />
+                    <label className='form-label fw-medium mb-2'>
+                      <FaLock className='me-2 text-danger' size={13} />
                       Current Password
                     </label>
                     <div className='position-relative'>
                       <input
                         type={showOldPassword ? 'text' : 'password'}
-                        className='form-control form-control-sm'
+                        className='form-control'
                         style={{
-                          borderRadius: '6px',
-                          border: '1px solid #d1d5db',
-                          fontSize: '0.9rem',
-                          paddingRight: '40px',
-                          transition: 'border-color 0.2s ease',
+                          borderRadius: 10,
+                          border: '1.5px solid #fda4af',
+                          fontSize: '1.02rem',
+                          paddingRight: 40,
                         }}
                         id='oldPassword'
                         name='oldPassword'
                         value={oldPassword}
                         onChange={handleOldPasswordChange}
                         required
-                        onFocus={(e) =>
-                          (e.target.style.borderColor = '#ef4444')
-                        }
-                        onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
                       />
                       <button
                         type='button'
                         className='btn btn-sm position-absolute'
                         style={{
-                          right: '8px',
+                          right: 8,
                           top: '50%',
                           transform: 'translateY(-50%)',
                           border: 'none',
                           background: 'none',
                           color: '#64748b',
-                          padding: '0',
-                          width: '24px',
-                          height: '24px',
+                          padding: 0,
+                          width: 28,
+                          height: 28,
                         }}
                         onClick={() => setShowOldPassword(!showOldPassword)}
+                        tabIndex={-1}
                       >
                         {showOldPassword ? (
-                          <FaEyeSlash size={14} />
+                          <FaEyeSlash size={15} />
                         ) : (
-                          <FaEye size={14} />
+                          <FaEye size={15} />
                         )}
                       </button>
                     </div>
@@ -217,51 +215,47 @@ const UpdatePasswordComponent = () => {
 
                   {/* New Password */}
                   <div className='mb-3'>
-                    <label className='form-label fw-medium text-slate-600 mb-2 small'>
-                      <FaLock className='me-2 text-slate-400' size={12} />
+                    <label className='form-label fw-medium mb-2'>
+                      <FaLock className='me-2 text-success' size={13} />
                       New Password
                     </label>
                     <div className='position-relative'>
                       <input
                         type={showNewPassword ? 'text' : 'password'}
-                        className='form-control form-control-sm'
+                        className='form-control'
                         style={{
-                          borderRadius: '6px',
-                          border: '1px solid #d1d5db',
-                          fontSize: '0.9rem',
-                          paddingRight: '40px',
-                          transition: 'border-color 0.2s ease',
+                          borderRadius: 10,
+                          border: '1.5px solid #a7f3d0',
+                          fontSize: '1.02rem',
+                          paddingRight: 40,
                         }}
                         id='newPassword'
                         name='newPassword'
                         value={newPassword}
                         onChange={handleNewPasswordChange}
                         required
-                        onFocus={(e) =>
-                          (e.target.style.borderColor = '#10b981')
-                        }
-                        onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
                       />
                       <button
                         type='button'
                         className='btn btn-sm position-absolute'
                         style={{
-                          right: '8px',
+                          right: 8,
                           top: '50%',
                           transform: 'translateY(-50%)',
                           border: 'none',
                           background: 'none',
                           color: '#64748b',
-                          padding: '0',
-                          width: '24px',
-                          height: '24px',
+                          padding: 0,
+                          width: 28,
+                          height: 28,
                         }}
                         onClick={() => setShowNewPassword(!showNewPassword)}
+                        tabIndex={-1}
                       >
                         {showNewPassword ? (
-                          <FaEyeSlash size={14} />
+                          <FaEyeSlash size={15} />
                         ) : (
-                          <FaEye size={14} />
+                          <FaEye size={15} />
                         )}
                       </button>
                     </div>
@@ -269,53 +263,49 @@ const UpdatePasswordComponent = () => {
 
                   {/* Confirm New Password */}
                   <div className='mb-4'>
-                    <label className='form-label fw-medium text-slate-600 mb-2 small'>
-                      <FaLock className='me-2 text-slate-400' size={12} />
+                    <label className='form-label fw-medium mb-2'>
+                      <FaLock className='me-2 text-success' size={13} />
                       Confirm New Password
                     </label>
                     <div className='position-relative'>
                       <input
                         type={showConfirmPassword ? 'text' : 'password'}
-                        className='form-control form-control-sm'
+                        className='form-control'
                         style={{
-                          borderRadius: '6px',
-                          border: '1px solid #d1d5db',
-                          fontSize: '0.9rem',
-                          paddingRight: '40px',
-                          transition: 'border-color 0.2s ease',
+                          borderRadius: 10,
+                          border: '1.5px solid #a7f3d0',
+                          fontSize: '1.02rem',
+                          paddingRight: 40,
                         }}
                         id='confirmNewPassword'
                         name='confirmNewPassword'
                         value={confirmNewPassword}
                         onChange={handleConfirmNewPasswordChange}
                         required
-                        onFocus={(e) =>
-                          (e.target.style.borderColor = '#10b981')
-                        }
-                        onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
                       />
                       <button
                         type='button'
                         className='btn btn-sm position-absolute'
                         style={{
-                          right: '8px',
+                          right: 8,
                           top: '50%',
                           transform: 'translateY(-50%)',
                           border: 'none',
                           background: 'none',
                           color: '#64748b',
-                          padding: '0',
-                          width: '24px',
-                          height: '24px',
+                          padding: 0,
+                          width: 28,
+                          height: 28,
                         }}
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
+                        tabIndex={-1}
                       >
                         {showConfirmPassword ? (
-                          <FaEyeSlash size={14} />
+                          <FaEyeSlash size={15} />
                         ) : (
-                          <FaEye size={14} />
+                          <FaEye size={15} />
                         )}
                       </button>
                     </div>
@@ -325,18 +315,17 @@ const UpdatePasswordComponent = () => {
                   <div
                     className='mb-4 p-3 rounded'
                     style={{
-                      backgroundColor: '#f0f9ff',
+                      background: 'rgba(59,130,246,0.07)',
                       border: '1px solid #bae6fd',
+                      fontSize: '0.96rem',
                     }}
                   >
-                    <small className='text-info'>
-                      <strong>Password Requirements:</strong>
-                      <br />
-                      • At least 8 characters long
-                      <br />
-                      • Mix of uppercase and lowercase letters
-                      <br />• Include numbers and special characters
-                    </small>
+                    <strong>Password Requirements:</strong>
+                    <ul className='mb-0 ps-3'>
+                      <li>At least 8 characters</li>
+                      <li>Upper & lower case letters</li>
+                      <li>Include numbers and special characters</li>
+                    </ul>
                   </div>
 
                   {/* Submit Button */}
@@ -348,22 +337,26 @@ const UpdatePasswordComponent = () => {
                         type='submit'
                         className='btn px-4 py-2 fw-medium w-100'
                         style={{
-                          backgroundColor: '#ef4444',
+                          background:
+                            'linear-gradient(90deg, #ef4444, #fdba74)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '8px',
-                          fontSize: '0.95rem',
-                          transition: 'all 0.2s ease',
+                          borderRadius: '10px',
+                          fontSize: '1.07rem',
+                          boxShadow: '0 4px 14px rgba(239,68,68,0.12)',
+                          transition: 'all 0.2s',
                         }}
                         disabled={isSending}
                         onMouseOver={(e) => {
-                          e.target.style.backgroundColor = '#dc2626';
+                          e.target.style.background =
+                            'linear-gradient(90deg, #dc2626, #b91c1c)';
                         }}
                         onMouseOut={(e) => {
-                          e.target.style.backgroundColor = '#ef4444';
+                          e.target.style.background =
+                            'linear-gradient(90deg, #ef4444, #fdba74)';
                         }}
                       >
-                        <FaShieldAlt className='me-2' size={14} />
+                        <FaShieldAlt className='me-2' size={15} />
                         Update Password
                       </button>
                     )}
@@ -385,6 +378,13 @@ const UpdatePasswordComponent = () => {
           </div>
         </div>
       </div>
+
+      {/* Animations */}
+      <style>{`
+        .glassy-btn:active {
+          box-shadow: 0 2px 12px rgba(239,68,68,0.14);
+        }
+      `}</style>
     </div>
   );
 };

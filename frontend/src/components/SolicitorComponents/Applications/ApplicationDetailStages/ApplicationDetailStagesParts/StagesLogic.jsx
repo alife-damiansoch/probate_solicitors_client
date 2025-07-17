@@ -60,7 +60,7 @@ export const getTimelineSteps = ({
       };
     }
 
-    console.log('ADVANCEMENT: ', advancement);
+    console.log('APPLICATION: ', application);
 
     switch (documentsAnalysis.status) {
       case 'waiting':

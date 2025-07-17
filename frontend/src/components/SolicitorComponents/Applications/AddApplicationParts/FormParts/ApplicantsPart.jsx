@@ -74,66 +74,84 @@ const Field = ({
   phoneNrPlaceholder,
   countrySolicitors,
   validationErrors,
+  isOptional = false,
 }) => {
-  const isRequired = requiredFields.includes(field);
+  const isRequired = !isOptional && requiredFields.includes(field);
   const hasError = isEmpty(applicant[field]) && isRequired;
   const validationError = validationErrors[field];
+
+  const inputStyle = {
+    height: '48px',
+    fontSize: '0.9rem',
+    background:
+      hasError || validationError
+        ? 'linear-gradient(145deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 50%, rgba(185, 28, 28, 0.1) 100%)'
+        : 'linear-gradient(145deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 50%, rgba(29, 78, 216, 0.08) 100%)',
+    border:
+      hasError || validationError
+        ? '1px solid rgba(239, 68, 68, 0.4)'
+        : '1px solid rgba(59, 130, 246, 0.3)',
+    borderRadius: '12px',
+    backdropFilter: 'blur(20px)',
+    color: 'rgba(255, 255, 255, 0.9)',
+    boxShadow:
+      hasError || validationError
+        ? '0 4px 15px rgba(239, 68, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        : '0 4px 15px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    padding: '0 16px',
+    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+  };
+
+  const handleFocus = (e) => {
+    e.target.style.background =
+      'linear-gradient(145deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 50%, rgba(29, 78, 216, 0.1) 100%)';
+    e.target.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+    e.target.style.transform = 'translateY(-2px)';
+    e.target.style.boxShadow =
+      '0 8px 25px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
+  };
+
+  const handleBlur = (e) => {
+    e.target.style.background =
+      hasError || validationError
+        ? 'linear-gradient(145deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 50%, rgba(185, 28, 28, 0.1) 100%)'
+        : 'linear-gradient(145deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 50%, rgba(29, 78, 216, 0.08) 100%)';
+    e.target.style.borderColor =
+      hasError || validationError
+        ? 'rgba(239, 68, 68, 0.4)'
+        : 'rgba(59, 130, 246, 0.3)';
+    e.target.style.transform = 'translateY(0)';
+    e.target.style.boxShadow =
+      hasError || validationError
+        ? '0 4px 15px rgba(239, 68, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        : '0 4px 15px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
+  };
 
   return (
     <div
       className={`col-${mobileCol} col-md-${tabletCol} col-lg-${desktopCol} mb-3`}
     >
       <label
-        className='form-label fw-medium mb-2'
+        className='form-label fw-bold mb-2'
         style={{
           fontSize: '0.8rem',
           color: 'rgba(255, 255, 255, 0.9)',
-          textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+          letterSpacing: '0.3px',
         }}
       >
         {label} {isRequired && <span className='text-warning'>*</span>}
       </label>
+
       {options ? (
         <select
           className='form-control border-0'
-          style={{
-            height: '48px',
-            fontSize: '0.9rem',
-            background:
-              hasError || validationError
-                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
-                : 'rgba(255, 255, 255, 0.15)',
-            border:
-              hasError || validationError
-                ? '1px solid rgba(239, 68, 68, 0.4)'
-                : '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '12px',
-            backdropFilter: 'blur(10px)',
-            color: 'rgba(255, 255, 255, 0.9)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease',
-            padding: '0 12px',
-          }}
+          style={inputStyle}
           value={applicant[field] || ''}
           onChange={(e) => handleListChange(e, index, field)}
-          onFocus={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-            e.target.style.borderColor = 'rgba(59, 130, 246, 0.5)';
-            e.target.style.transform = 'translateY(-1px)';
-            e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
-          }}
-          onBlur={(e) => {
-            e.target.style.background =
-              hasError || validationError
-                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
-                : 'rgba(255, 255, 255, 0.15)';
-            e.target.style.borderColor =
-              hasError || validationError
-                ? 'rgba(239, 68, 68, 0.4)'
-                : 'rgba(255, 255, 255, 0.2)';
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-          }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         >
           {options.map((opt) => (
             <option
@@ -149,24 +167,7 @@ const Field = ({
         <input
           type={type}
           className='form-control border-0'
-          style={{
-            height: '48px',
-            fontSize: '0.9rem',
-            background:
-              hasError || validationError
-                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
-                : 'rgba(255, 255, 255, 0.15)',
-            border:
-              hasError || validationError
-                ? '1px solid rgba(239, 68, 68, 0.4)'
-                : '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '12px',
-            backdropFilter: 'blur(10px)',
-            color: 'rgba(255, 255, 255, 0.9)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease',
-            padding: '0 12px',
-          }}
+          style={inputStyle}
           value={applicant[field] || ''}
           onChange={(e) => handleListChange(e, index, field)}
           placeholder={
@@ -174,41 +175,27 @@ const Field = ({
               ? phoneNrPlaceholder
               : `Enter ${label.toLowerCase()}`
           }
-          onFocus={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-            e.target.style.borderColor = 'rgba(59, 130, 246, 0.5)';
-            e.target.style.transform = 'translateY(-1px)';
-            e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
-          }}
-          onBlur={(e) => {
-            e.target.style.background =
-              hasError || validationError
-                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1))'
-                : 'rgba(255, 255, 255, 0.15)';
-            e.target.style.borderColor =
-              hasError || validationError
-                ? 'rgba(239, 68, 68, 0.4)'
-                : 'rgba(255, 255, 255, 0.2)';
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-          }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
       )}
 
-      {/* Validation error message */}
       {validationError && (
         <div
-          className='mt-2 p-2 rounded-2'
+          className='mt-2 p-2 rounded-2 d-flex align-items-center'
           style={{
             fontSize: '0.75rem',
             color: '#fbbf24',
-            background: 'rgba(245, 158, 11, 0.1)',
-            border: '1px solid rgba(245, 158, 11, 0.2)',
+            background:
+              'linear-gradient(145deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1))',
+            border: '1px solid rgba(245, 158, 11, 0.3)',
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+            fontWeight: '600',
+            backdropFilter: 'blur(10px)',
           }}
         >
-          <FaExclamationCircle className='me-1' size={12} />
-          {validationError}
+          <FaExclamationCircle className='me-2 flex-shrink-0' size={12} />
+          <span>{validationError}</span>
         </div>
       )}
     </div>
@@ -353,43 +340,83 @@ export default function ApplicantsPart({
 
   return (
     <div className='mb-4'>
+      <style jsx>{`
+        input::placeholder,
+        textarea::placeholder,
+        select::placeholder {
+          color: rgba(203, 213, 225, 0.8) !important;
+          opacity: 1 !important;
+          font-weight: 500 !important;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        input:focus::placeholder,
+        textarea:focus::placeholder,
+        select:focus::placeholder {
+          color: rgba(148, 163, 184, 0.9) !important;
+          opacity: 1 !important;
+        }
+      `}</style>
+
       {/* Enhanced Header */}
       <div
-        className='d-flex flex-column flex-sm-row align-items-center justify-content-between mb-3 p-3 p-md-4 position-relative gap-3 text-center text-sm-start rounded-4'
+        className='d-flex flex-column flex-sm-row align-items-center justify-content-between mb-4 p-3 p-md-4 position-relative gap-3 text-center text-sm-start'
         style={{
-          background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-          boxShadow: '0 8px 16px rgba(139, 92, 246, 0.3)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          backdropFilter: 'blur(10px)',
+          background: `
+            linear-gradient(145deg, rgba(139, 92, 246, 0.9) 0%, rgba(124, 58, 237, 0.9) 50%, rgba(109, 40, 217, 0.9) 100%),
+            linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
+          `,
+          boxShadow:
+            '0 8px 25px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
+          border: '1px solid rgba(139, 92, 246, 0.4)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '20px',
+          overflow: 'hidden',
         }}
       >
-        <div className='d-flex align-items-center text-white'>
+        <div className='d-flex align-items-center text-white position-relative'>
           <div
-            className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
+            className='rounded-circle d-flex align-items-center justify-content-center me-3'
             style={{
               width: '40px',
               height: '40px',
-              background: 'rgba(255, 255, 255, 0.2)',
-              backdropFilter: 'blur(10px)',
+              background:
+                'linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
+              backdropFilter: 'blur(15px)',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
+              boxShadow:
+                '0 4px 15px rgba(139, 92, 246, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
             }}
           >
-            <FaUsers size={16} />
+            <FaUsers
+              size={16}
+              style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))' }}
+            />
           </div>
           <span
-            className='fw-bold fs-6'
-            style={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)' }}
+            className='fw-bold'
+            style={{
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
+              background: 'linear-gradient(145deg, #ffffff, #e2e8f0)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
           >
             <span className='d-none d-sm-inline'>Applicant Information</span>
             <span className='d-inline d-sm-none'>Applicant Info</span>
           </span>
         </div>
         <div
-          className='px-3 py-2 rounded-pill fw-semibold text-white'
+          className='px-3 py-2 rounded-pill fw-bold text-white position-relative'
           style={{
-            background: 'rgba(255, 255, 255, 0.2)',
+            background:
+              'linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
             fontSize: '0.75rem',
             border: '1px solid rgba(255, 255, 255, 0.3)',
-            backdropFilter: 'blur(10px)',
+            backdropFilter: 'blur(15px)',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+            letterSpacing: '0.3px',
           }}
         >
           <span className='d-none d-sm-inline'>Single Applicant Required</span>
@@ -399,52 +426,65 @@ export default function ApplicantsPart({
 
       {/* Enhanced applicant card */}
       <div
-        className='position-relative overflow-hidden rounded-4'
+        className='position-relative overflow-hidden'
         style={{
           background: `
-            linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(248, 250, 252, 0.08)),
-            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.15), transparent 50%),
-            radial-gradient(circle at 70% 90%, rgba(139, 92, 246, 0.1), transparent 50%)
+            linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 25%, rgba(30, 41, 59, 0.95) 50%, rgba(51, 65, 85, 0.95) 75%, rgba(30, 41, 59, 0.95) 100%),
+            radial-gradient(circle at 30% 10%, rgba(139, 92, 246, 0.15), transparent 50%),
+            radial-gradient(circle at 70% 90%, rgba(124, 58, 237, 0.12), transparent 50%)
           `,
-          border: '1px solid rgba(255, 255, 255, 0.2)',
+          border: '1px solid rgba(139, 92, 246, 0.3)',
+          borderRadius: '24px',
           boxShadow: `
-            0 8px 16px rgba(0, 0, 0, 0.15),
-            0 4px 8px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2)
+            0 12px 30px rgba(0, 0, 0, 0.3),
+            0 4px 12px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1)
           `,
           backdropFilter: 'blur(20px)',
         }}
       >
         <div className='p-3 p-md-4 position-relative'>
           {/* Basic Info Section */}
-          <div className='mb-4'>
+          <div className='mb-5'>
             <h6
               className='fw-bold mb-3 d-flex align-items-center'
               style={{
-                fontSize: '0.9rem',
+                fontSize: '1rem',
                 color: 'rgba(255, 255, 255, 0.9)',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                letterSpacing: '0.3px',
               }}
             >
               <div
-                className='rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0'
+                className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
                 style={{
-                  width: '24px',
-                  height: '24px',
-                  background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                  width: '32px',
+                  height: '32px',
+                  background: 'linear-gradient(145deg, #8b5cf6, #7c3aed)',
                   color: 'white',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow:
+                    '0 4px 15px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
                 }}
               >
-                <FaUsers size={10} />
+                <FaUsers
+                  size={12}
+                  style={{
+                    filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))',
+                  }}
+                />
               </div>
               Basic Information
             </h6>
             <div
-              className='p-3 p-md-4 rounded-3'
+              className='p-4 rounded-3'
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                backdropFilter: 'blur(10px)',
+                background:
+                  'linear-gradient(145deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.08))',
+                border: '1px solid rgba(139, 92, 246, 0.2)',
+                backdropFilter: 'blur(15px)',
+                boxShadow:
+                  '0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
               }}
             >
               <div className='row g-3'>
@@ -515,34 +555,46 @@ export default function ApplicantsPart({
           </div>
 
           {/* Contact Info Section */}
-          <div className='mb-4'>
+          <div className='mb-5'>
             <h6
               className='fw-bold mb-3 d-flex align-items-center'
               style={{
-                fontSize: '0.9rem',
+                fontSize: '1rem',
                 color: 'rgba(255, 255, 255, 0.9)',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                letterSpacing: '0.3px',
               }}
             >
               <div
-                className='rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0'
+                className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
                 style={{
-                  width: '24px',
-                  height: '24px',
-                  background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                  width: '32px',
+                  height: '32px',
+                  background: 'linear-gradient(145deg, #22c55e, #16a34a)',
                   color: 'white',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow:
+                    '0 4px 15px rgba(34, 197, 94, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
                 }}
               >
-                <FaPhone size={10} />
+                <FaPhone
+                  size={12}
+                  style={{
+                    filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))',
+                  }}
+                />
               </div>
               Contact Information
             </h6>
             <div
-              className='p-3 p-md-4 rounded-3'
+              className='p-4 rounded-3'
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                backdropFilter: 'blur(10px)',
+                background:
+                  'linear-gradient(145deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.08))',
+                border: '1px solid rgba(34, 197, 94, 0.2)',
+                backdropFilter: 'blur(15px)',
+                boxShadow:
+                  '0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
               }}
             >
               <div className='row g-3'>
@@ -580,34 +632,46 @@ export default function ApplicantsPart({
           </div>
 
           {/* Address Info Section */}
-          <div className='mb-4'>
+          <div className='mb-5'>
             <h6
               className='fw-bold mb-3 d-flex align-items-center'
               style={{
-                fontSize: '0.9rem',
+                fontSize: '1rem',
                 color: 'rgba(255, 255, 255, 0.9)',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                letterSpacing: '0.3px',
               }}
             >
               <div
-                className='rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0'
+                className='rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0'
                 style={{
-                  width: '24px',
-                  height: '24px',
-                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                  width: '32px',
+                  height: '32px',
+                  background: 'linear-gradient(145deg, #f59e0b, #d97706)',
                   color: 'white',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow:
+                    '0 4px 15px rgba(245, 158, 11, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
                 }}
               >
-                <FaHome size={10} />
+                <FaHome
+                  size={12}
+                  style={{
+                    filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))',
+                  }}
+                />
               </div>
               Address Information
             </h6>
             <div
-              className='p-3 p-md-4 rounded-3'
+              className='p-4 rounded-3'
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                backdropFilter: 'blur(10px)',
+                background:
+                  'linear-gradient(145deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.08))',
+                border: '1px solid rgba(245, 158, 11, 0.2)',
+                backdropFilter: 'blur(15px)',
+                boxShadow:
+                  '0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
               }}
             >
               <div className='row g-3'>
@@ -634,6 +698,7 @@ export default function ApplicantsPart({
                   handleListChange={handleListChange}
                   countrySolicitors={countrySolicitors}
                   validationErrors={validationErrors}
+                  isOptional={true}
                 />
                 <Field
                   field='city'
@@ -673,14 +738,15 @@ export default function ApplicantsPart({
                   validationErrors={validationErrors}
                 />
 
-                {/* Country field - readonly */}
+                {/* Country field - readonly with enhanced styling */}
                 <div className='col-6 col-md-4 col-lg-3 mb-3'>
                   <label
-                    className='form-label fw-medium mb-2'
+                    className='form-label fw-bold mb-2'
                     style={{
                       fontSize: '0.8rem',
                       color: 'rgba(255, 255, 255, 0.9)',
-                      textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                      letterSpacing: '0.3px',
                     }}
                   >
                     Country <span className='text-warning'>*</span>
@@ -692,14 +758,17 @@ export default function ApplicantsPart({
                       height: '48px',
                       fontSize: '0.9rem',
                       background:
-                        'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15))',
-                      border: '1px solid rgba(34, 197, 94, 0.3)',
+                        'linear-gradient(145deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.15) 50%, rgba(16, 185, 129, 0.1) 100%)',
+                      border: '1px solid rgba(34, 197, 94, 0.4)',
                       borderRadius: '12px',
                       color: '#22c55e',
-                      backdropFilter: 'blur(10px)',
-                      fontWeight: '600',
-                      textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
-                      padding: '0 12px',
+                      backdropFilter: 'blur(20px)',
+                      fontWeight: '700',
+                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                      padding: '0 16px',
+                      boxShadow:
+                        '0 4px 15px rgba(34, 197, 94, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                      letterSpacing: '0.3px',
                     }}
                     value={countryName}
                     readOnly
@@ -709,31 +778,42 @@ export default function ApplicantsPart({
             </div>
           </div>
 
-          {/* Completion Status */}
+          {/* Enhanced Completion Status */}
           <div className='text-center'>
             <div
-              className='px-4 py-3 rounded-3 d-inline-flex align-items-center gap-2'
+              className='px-4 py-3 rounded-3 d-inline-flex align-items-center gap-3'
               style={{
                 background: isFormComplete
-                  ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15))'
-                  : 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.15))',
-                color: isFormComplete ? '#22c55e' : '#f59e0b',
-                fontSize: '0.85rem',
-                fontWeight: '600',
+                  ? 'linear-gradient(145deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 50%, rgba(29, 78, 216, 0.1) 100%)'
+                  : hasValidationErrors
+                  ? 'linear-gradient(145deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 50%, rgba(185, 28, 28, 0.1) 100%)'
+                  : 'linear-gradient(145deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.15) 50%, rgba(180, 83, 9, 0.1) 100%)',
+                color: isFormComplete
+                  ? '#60a5fa'
+                  : hasValidationErrors
+                  ? '#fca5a5'
+                  : '#fbbf24',
+                fontSize: '0.9rem',
+                fontWeight: '700',
                 border: isFormComplete
-                  ? '1px solid rgba(34, 197, 94, 0.3)'
-                  : '1px solid rgba(245, 158, 11, 0.3)',
-                backdropFilter: 'blur(10px)',
+                  ? '1px solid rgba(59, 130, 246, 0.4)'
+                  : hasValidationErrors
+                  ? '1px solid rgba(239, 68, 68, 0.4)'
+                  : '1px solid rgba(245, 158, 11, 0.4)',
+                backdropFilter: 'blur(20px)',
                 boxShadow: isFormComplete
-                  ? '0 4px 12px rgba(34, 197, 94, 0.2)'
-                  : '0 4px 12px rgba(245, 158, 11, 0.2)',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                  ? '0 6px 20px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  : hasValidationErrors
+                  ? '0 6px 20px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  : '0 6px 20px rgba(245, 158, 11, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                letterSpacing: '0.3px',
                 maxWidth: '100%',
               }}
             >
               {isFormComplete ? (
                 <>
-                  <FaCheckCircle size={14} />
+                  <FaCheckCircle size={16} />
                   <span className='d-none d-sm-inline'>
                     Applicant information completed and validated!
                   </span>
@@ -743,7 +823,7 @@ export default function ApplicantsPart({
                 </>
               ) : hasValidationErrors ? (
                 <>
-                  <FaExclamationCircle size={14} />
+                  <FaExclamationCircle size={16} />
                   <span className='d-none d-sm-inline'>
                     Please fix validation errors above
                   </span>
@@ -751,7 +831,7 @@ export default function ApplicantsPart({
                 </>
               ) : (
                 <>
-                  <FaExclamationCircle size={14} />
+                  <FaExclamationCircle size={16} />
                   <span className='d-none d-sm-inline'>
                     Please complete all required fields marked with *
                   </span>

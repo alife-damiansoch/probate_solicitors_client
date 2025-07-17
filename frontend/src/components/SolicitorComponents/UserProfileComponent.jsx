@@ -8,9 +8,8 @@ import {
   FaUser,
 } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from '../../store/userSlice';
-
 import { useNavigate } from 'react-router-dom';
+import { fetchUser } from '../../store/userSlice';
 import LoadingComponent from '../GenericComponents/LoadingComponent';
 import { patchData } from '../GenericFunctions/AxiosGenericFunctions';
 import renderErrors from '../GenericFunctions/HelperGenericFunctions';
@@ -24,7 +23,6 @@ const UserProfile = () => {
     Cookies.get('postcode_placeholders')
   );
   const phone_nr_placeholder = Cookies.get('phone_nr_placeholder');
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -93,8 +91,7 @@ const UserProfile = () => {
         dispatch(fetchUser());
       }
     } catch (err) {
-      console.error('Error updating profile:', err);
-      setErrors(err.response.data || { error: 'An error occurred' });
+      setErrors(err.response?.data || { error: 'An error occurred' });
     } finally {
       setIsUpdatingProfile(false);
     }
@@ -104,7 +101,7 @@ const UserProfile = () => {
     return (
       <div
         className='min-vh-100 d-flex align-items-center justify-content-center'
-        style={{ backgroundColor: '#f8fafc' }}
+        style={{ background: '#f8fafc' }}
       >
         <LoadingComponent message='Loading user data...' />
       </div>
@@ -112,93 +109,113 @@ const UserProfile = () => {
   }
 
   return (
-    <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+    <div
+      className='min-vh-100 py-4'
+      style={{
+        background: `linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)`,
+        minHeight: '100vh',
+      }}
+    >
       <div className='container'>
         {/* Header Section */}
-        <div className='d-flex align-items-center justify-content-between mb-4'>
+        <div className='d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2'>
           <button
-            className='btn d-flex align-items-center px-3 py-2'
+            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
             style={{
-              backgroundColor: 'white',
+              background: 'rgba(255,255,255,0.85)',
               border: '1px solid #e2e8f0',
-              borderRadius: '8px',
+              borderRadius: '12px',
               color: '#64748b',
-              fontSize: '0.9rem',
+              fontWeight: 500,
+              fontSize: '1rem',
+              boxShadow: '0 2px 10px rgba(59,130,246,0.07)',
               transition: 'all 0.2s ease',
+              backdropFilter: 'blur(10px)',
             }}
             onClick={() => navigate(-1)}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f1f5f9';
+              e.target.style.background = 'rgba(240,240,255,0.98)';
               e.target.style.borderColor = '#cbd5e1';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'white';
+              e.target.style.background = 'rgba(255,255,255,0.85)';
               e.target.style.borderColor = '#e2e8f0';
             }}
           >
-            <FaArrowLeft className='me-2' size={14} />
+            <FaArrowLeft className='me-2' size={15} />
             Back
           </button>
 
           <button
-            className='btn d-flex align-items-center px-3 py-2'
+            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
             style={{
-              backgroundColor: '#ef4444',
+              background: 'linear-gradient(90deg, #ef4444, #dc2626)',
               border: 'none',
-              borderRadius: '8px',
+              borderRadius: '12px',
               color: 'white',
-              fontSize: '0.9rem',
+              fontWeight: 500,
+              fontSize: '1rem',
+              boxShadow: '0 2px 10px rgba(239,68,68,0.14)',
               transition: 'all 0.2s ease',
             }}
             onClick={() => navigate('/update_password')}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#dc2626';
+              e.target.style.background =
+                'linear-gradient(90deg, #dc2626, #b91c1c)';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#ef4444';
+              e.target.style.background =
+                'linear-gradient(90deg, #ef4444, #dc2626)';
             }}
           >
-            <FaLock className='me-2' size={12} />
+            <FaLock className='me-2' size={14} />
             Change Password
           </button>
         </div>
 
-        {/* Main Profile Card */}
+        {/* Profile Card */}
         <div className='row justify-content-center'>
-          <div className='col-lg-8 col-xl-7'>
+          <div className='col-12 col-lg-10 col-xl-8'>
             <div
-              className='card border-0'
+              className='card border-0 shadow-lg'
               style={{
-                borderRadius: '12px',
+                borderRadius: 22,
+                background: 'rgba(255,255,255,0.92)',
                 boxShadow:
-                  '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                backgroundColor: 'white',
+                  '0 8px 32px rgba(59,130,246,0.10), 0 2px 8px rgba(102,126,234,0.07)',
+                backdropFilter: 'blur(14px)',
+                overflow: 'hidden',
               }}
             >
               {/* Card Header */}
               <div
                 className='card-header border-0 py-4'
                 style={{
-                  backgroundColor: 'white',
-                  borderBottom: '1px solid #f1f5f9',
+                  background: 'linear-gradient(135deg,#667eea,#764ba2)',
+                  borderBottom: 'none',
+                  borderTopLeftRadius: 22,
+                  borderTopRightRadius: 22,
+                  color: '#fff',
+                  boxShadow: '0 8px 24px rgba(59,130,246,0.12)',
                 }}
               >
                 <div className='text-center'>
                   <div
                     className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
                     style={{
-                      width: '60px',
-                      height: '60px',
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
+                      width: 64,
+                      height: 64,
+                      background: 'rgba(255,255,255,0.16)',
+                      color: '#fff',
+                      boxShadow: '0 4px 16px rgba(59,130,246,0.09)',
                     }}
                   >
-                    <FaUser size={24} />
+                    <FaUser size={26} />
                   </div>
-                  <h4 className='mb-1 fw-bold text-slate-800'>User Profile</h4>
-                  <p className='mb-0 text-slate-500 small'>
+                  <h3 className='mb-1 fw-bold'>User Profile</h3>
+                  <div className='mb-0 small' style={{ opacity: 0.95 }}>
                     Manage your account information
-                  </p>
+                  </div>
                 </div>
               </div>
 
@@ -208,10 +225,10 @@ const UserProfile = () => {
                   <div
                     className='alert border-0'
                     style={{
-                      backgroundColor: '#fef2f2',
+                      background: 'rgba(239,68,68,0.07)',
                       color: '#dc2626',
-                      borderRadius: '8px',
-                      fontSize: '0.9rem',
+                      borderRadius: 12,
+                      fontSize: '1rem',
                     }}
                   >
                     {renderErrors(errors)}
@@ -220,40 +237,33 @@ const UserProfile = () => {
               )}
 
               {/* Form Body */}
-              <div className='card-body px-4 pb-4'>
+              <div className='card-body px-4 px-md-5 pb-4'>
                 <form onSubmit={handleSubmit}>
-                  <div className='row'>
+                  <div className='row gy-4'>
                     {/* Left Column - Personal Info */}
-                    <div className='col-md-6'>
-                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
-                        <FaUser className='me-2 text-slate-400' size={14} />
+                    <div className='col-12 col-md-6'>
+                      <h6 className='fw-bold mb-3 text-primary d-flex align-items-center'>
+                        <FaUser className='me-2' size={16} />
                         Personal Information
                       </h6>
 
                       {/* Email */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
-                          Email Address *
+                        <label className='form-label fw-medium mb-1'>
+                          Email Address <span className='text-danger'>*</span>
                         </label>
                         <input
                           type='email'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #c7d1ee',
+                            fontSize: '1.02rem',
                           }}
                           name='email'
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#3b82f6')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                         <small className='text-muted'>
                           Login email will be updated
@@ -262,54 +272,40 @@ const UserProfile = () => {
 
                       {/* Name */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
-                          Firm Name *
+                        <label className='form-label fw-medium mb-1'>
+                          Firm Name <span className='text-danger'>*</span>
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #c7d1ee',
+                            fontSize: '1.02rem',
                           }}
                           name='name'
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#3b82f6')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                       </div>
 
                       {/* Phone */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label className='form-label fw-medium mb-1'>
                           Phone Number
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #c7d1ee',
+                            fontSize: '1.02rem',
                           }}
                           name='phone_number'
                           value={formData.phone_number}
                           onChange={handleChange}
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#3b82f6')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                         <small className='text-info'>
                           Format: <strong>{phone_nr_placeholder}</strong>
@@ -318,145 +314,108 @@ const UserProfile = () => {
                     </div>
 
                     {/* Right Column - Address */}
-                    <div className='col-md-6'>
-                      <h6 className='fw-bold text-slate-700 mb-3 d-flex align-items-center'>
-                        <FaMapMarkerAlt
-                          className='me-2 text-slate-400'
-                          size={14}
-                        />
+                    <div className='col-12 col-md-6'>
+                      <h6 className='fw-bold mb-3 text-success d-flex align-items-center'>
+                        <FaMapMarkerAlt className='me-2' size={16} />
                         Address Information
                       </h6>
 
                       {/* Address Line 1 */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
-                          Address Line 1 *
+                        <label className='form-label fw-medium mb-1'>
+                          Address Line 1 <span className='text-danger'>*</span>
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #badbcc',
+                            fontSize: '1.02rem',
                           }}
                           name='address.line1'
                           value={formData.address.line1}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#10b981')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                       </div>
 
                       {/* Address Line 2 */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <label className='form-label fw-medium mb-1'>
                           Address Line 2
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #badbcc',
+                            fontSize: '1.02rem',
                           }}
                           name='address.line2'
                           value={formData.address.line2}
                           onChange={handleChange}
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#10b981')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                       </div>
 
-                      {/* Town and County Row */}
+                      {/* Town/County Row */}
                       <div className='row'>
-                        <div className='col-7 mb-3'>
-                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
-                            Town/City *
+                        <div className='col-12 col-sm-7 mb-3'>
+                          <label className='form-label fw-medium mb-1'>
+                            Town/City <span className='text-danger'>*</span>
                           </label>
                           <input
                             type='text'
-                            className='form-control form-control-sm'
+                            className='form-control'
                             style={{
-                              borderRadius: '6px',
-                              border: '1px solid #d1d5db',
-                              fontSize: '0.9rem',
-                              transition: 'border-color 0.2s ease',
+                              borderRadius: 10,
+                              border: '1.5px solid #badbcc',
+                              fontSize: '1.02rem',
                             }}
                             name='address.town_city'
                             value={formData.address.town_city}
                             onChange={handleChange}
                             required
-                            onFocus={(e) =>
-                              (e.target.style.borderColor = '#10b981')
-                            }
-                            onBlur={(e) =>
-                              (e.target.style.borderColor = '#d1d5db')
-                            }
                           />
                         </div>
-                        <div className='col-5 mb-3'>
-                          <label className='form-label fw-medium text-slate-600 mb-1 small'>
+                        <div className='col-12 col-sm-5 mb-3'>
+                          <label className='form-label fw-medium mb-1'>
                             County
                           </label>
                           <input
                             type='text'
-                            className='form-control form-control-sm'
+                            className='form-control'
                             style={{
-                              borderRadius: '6px',
-                              border: '1px solid #d1d5db',
-                              fontSize: '0.9rem',
-                              transition: 'border-color 0.2s ease',
+                              borderRadius: 10,
+                              border: '1.5px solid #badbcc',
+                              fontSize: '1.02rem',
                             }}
                             name='address.county'
                             value={formData.address.county}
                             onChange={handleChange}
-                            onFocus={(e) =>
-                              (e.target.style.borderColor = '#10b981')
-                            }
-                            onBlur={(e) =>
-                              (e.target.style.borderColor = '#d1d5db')
-                            }
                           />
                         </div>
                       </div>
 
                       {/* Postcode */}
                       <div className='mb-3'>
-                        <label className='form-label fw-medium text-slate-600 mb-1 small'>
-                          {postcode_placeholders[0]} *
+                        <label className='form-label fw-medium mb-1'>
+                          {postcode_placeholders[0]}{' '}
+                          <span className='text-danger'>*</span>
                         </label>
                         <input
                           type='text'
-                          className='form-control form-control-sm'
+                          className='form-control'
                           style={{
-                            borderRadius: '6px',
-                            border: '1px solid #d1d5db',
-                            fontSize: '0.9rem',
-                            transition: 'border-color 0.2s ease',
+                            borderRadius: 10,
+                            border: '1.5px solid #badbcc',
+                            fontSize: '1.02rem',
                           }}
                           name='address.eircode'
                           value={formData.address.eircode}
                           onChange={handleChange}
                           required
-                          onFocus={(e) =>
-                            (e.target.style.borderColor = '#10b981')
-                          }
-                          onBlur={(e) =>
-                            (e.target.style.borderColor = '#d1d5db')
-                          }
                         />
                         <small className='text-muted'>
                           Format: {postcode_placeholders[1]} (e.g.,{' '}
@@ -469,7 +428,9 @@ const UserProfile = () => {
                   {/* Submit Button */}
                   <div
                     className='text-center mt-4 pt-3'
-                    style={{ borderTop: '1px solid #f1f5f9' }}
+                    style={{
+                      borderTop: '1px solid #f3f4f6',
+                    }}
                   >
                     {isUpdatingProfile ? (
                       <LoadingComponent message='Updating profile...' />
@@ -478,22 +439,26 @@ const UserProfile = () => {
                         type='submit'
                         className='btn px-4 py-2 fw-medium'
                         style={{
-                          backgroundColor: '#3b82f6',
+                          background:
+                            'linear-gradient(90deg, #667eea, #764ba2)',
                           color: 'white',
                           border: 'none',
-                          borderRadius: '8px',
-                          fontSize: '0.95rem',
-                          transition: 'all 0.2s ease',
-                          minWidth: '160px',
+                          borderRadius: '10px',
+                          fontSize: '1.07rem',
+                          minWidth: '170px',
+                          boxShadow: '0 4px 14px rgba(59,130,246,0.12)',
+                          transition: 'all 0.2s',
                         }}
                         onMouseOver={(e) => {
-                          e.target.style.backgroundColor = '#2563eb';
+                          e.target.style.background =
+                            'linear-gradient(90deg, #2563eb, #4f46e5)';
                         }}
                         onMouseOut={(e) => {
-                          e.target.style.backgroundColor = '#3b82f6';
+                          e.target.style.background =
+                            'linear-gradient(90deg, #667eea, #764ba2)';
                         }}
                       >
-                        <FaEdit className='me-2' size={14} />
+                        <FaEdit className='me-2' size={15} />
                         Update Profile
                       </button>
                     )}
@@ -504,6 +469,13 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Animations */}
+      <style>{`
+        .glassy-btn:active {
+          box-shadow: 0 2px 12px rgba(102,126,234,0.12);
+        }
+      `}</style>
     </div>
   );
 };

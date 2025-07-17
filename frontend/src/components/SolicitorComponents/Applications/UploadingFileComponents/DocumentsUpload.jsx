@@ -474,7 +474,7 @@ const DocumentsUpload = ({
 
         {/* Premium Header */}
         <div
-          className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
+          className='px-1 py-4 d-flex align-items-center gap-3 position-relative'
           style={{
             background: `
               linear-gradient(135deg, #3b82f6, #2563eb),
@@ -598,166 +598,209 @@ const DocumentsUpload = ({
           </span>
         </div>
 
-        <div className='p-4'>
+        <div className='p-1 p-xl-4'>
           <DocumentsHeader
             application={application}
             stats={enhancedStats}
             requirementStatus={requirementStatus}
           />
 
-          {/* Enhanced Tab Navigation */}
-          <div className='mb-4 d-flex justify-content-center'>
+          {/* Modern App-style Tabs */}
+          <div className='my-4 d-flex justify-content-center'>
             <div
-              className='p-2'
+              className='py-3 px-1 px-md-3 position-relative'
               style={{
-                background: 'rgba(255, 255, 255, 0.5)',
-                borderRadius: '20px',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                backdropFilter: 'blur(20px)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                background: 'rgba(255,255,255,0.24)',
+                borderRadius: '30px',
+                border: '1px solid rgba(120,144,156,0.16)',
+                boxShadow: '0 6px 32px rgba(36, 41, 46, 0.08)',
+                maxWidth: 700,
+                margin: '0 auto',
+                transition: 'box-shadow 0.25s',
+                backdropFilter: 'blur(18px)',
+                zIndex: 2,
               }}
             >
-              <div className='d-flex flex-column flex-sm-row gap-2 gap-sm-3 w-100'>
+              <div className='d-flex flex-row gap-3 flex-wrap flex-sm-nowrap align-items-center justify-content-center'>
+                {/* Uploaded Tab */}
                 <button
                   onClick={() => setActiveTab('uploaded')}
-                  className='btn position-relative flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-semibold rounded-3 border-0 py-3 px-3 px-sm-4'
+                  className={`modern-tab-btn ${
+                    activeTab === 'uploaded' ? 'active' : ''
+                  } position-relative d-flex align-items-center gap-2 px-4 px-sm-5 py-3 rounded-pill fw-bold border-0 shadow-none`}
                   style={{
                     background:
                       activeTab === 'uploaded'
                         ? hasSignatureIssues
-                          ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
-                          : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
-                        : 'transparent',
+                          ? 'linear-gradient(110deg,#dc2626 10%,#b91c1c 100%)'
+                          : 'linear-gradient(110deg,#3b82f6 10%,#2563eb 100%)'
+                        : 'rgba(255,255,255,0.07)',
                     color:
                       activeTab === 'uploaded'
-                        ? '#ffffff'
+                        ? '#fff'
                         : hasSignatureIssues
                         ? '#dc2626'
                         : '#374151',
-                    fontSize: '0.85rem',
+                    fontSize: '1.05rem',
                     boxShadow:
                       activeTab === 'uploaded'
-                        ? '0 4px 15px rgba(59, 130, 246, 0.25)'
-                        : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    minHeight: '50px',
-                    backdropFilter:
-                      activeTab === 'uploaded' ? 'blur(10px)' : 'none',
+                        ? '0 8px 32px 0 rgba(59,130,246,.18)'
+                        : '0 3px 8px 0 rgba(36,41,46,0.04)',
+                    border:
+                      activeTab === 'uploaded'
+                        ? '2.5px solid #2563eb'
+                        : '2.5px solid transparent',
+                    outline: 'none',
+                    zIndex: activeTab === 'uploaded' ? 10 : 2,
+                    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
+                    transform:
+                      activeTab === 'uploaded'
+                        ? 'translateY(-3px) scale(1.07)'
+                        : 'scale(1)',
+                    minWidth: 130,
                   }}
                   onMouseEnter={(e) => {
                     if (activeTab !== 'uploaded') {
-                      e.currentTarget.style.background =
-                        'rgba(255, 255, 255, 0.7)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow =
+                        '0 4px 18px rgba(36,41,46,0.10)';
+                      e.currentTarget.style.transform = 'scale(1.03)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (activeTab !== 'uploaded') {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow =
+                        '0 3px 8px 0 rgba(36,41,46,0.04)';
+                      e.currentTarget.style.transform = 'scale(1)';
                     }
                   }}
                 >
-                  <FaFileAlt
-                    size={16}
-                    className='d-block d-sm-none flex-shrink-0'
-                  />
-                  <FaFileAlt
-                    size={18}
-                    className='d-none d-sm-block flex-shrink-0'
-                  />
+                  <FaFileAlt size={20} className='d-block flex-shrink-0' />
                   <span className='d-none d-sm-inline'>Uploaded Documents</span>
                   <span className='d-inline d-sm-none'>Uploaded</span>
-
                   {hasSignatureIssues && activeTab !== 'uploaded' && (
-                    <div
-                      className='position-absolute d-flex align-items-center justify-content-center rounded-circle text-white fw-bold border border-2 border-white'
+                    <span
+                      className='tab-badge position-absolute'
                       style={{
-                        top: '-6px',
-                        right: '-6px',
-                        backgroundColor: '#dc2626',
-                        width: '18px',
-                        height: '18px',
-                        fontSize: '10px',
-                        boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)',
+                        top: 6,
+                        right: 14,
+                        background: '#dc2626',
+                        color: 'white',
+                        width: 20,
+                        height: 20,
+                        fontSize: 12,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '2.5px solid #fff',
+                        boxShadow: '0 2px 8px rgba(220,38,38,0.12)',
+                        fontWeight: 700,
+                        zIndex: 12,
                       }}
                     >
                       !
-                    </div>
+                    </span>
                   )}
                 </button>
 
+                {/* Required Tab */}
                 <button
                   onClick={() => setActiveTab('required')}
-                  className='btn position-relative flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-semibold rounded-3 border-0 py-3 px-3 px-sm-4'
+                  className={`modern-tab-btn ${
+                    activeTab === 'required' ? 'active' : ''
+                  } position-relative d-flex align-items-center gap-2 px-4 px-sm-5 py-3 rounded-pill fw-bold border-0 shadow-none`}
                   style={{
                     background:
                       activeTab === 'required'
                         ? hasMissingRequirements
-                          ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
-                          : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
-                        : 'transparent',
+                          ? 'linear-gradient(110deg,#dc2626 10%,#b91c1c 100%)'
+                          : 'linear-gradient(110deg,#3b82f6 10%,#2563eb 100%)'
+                        : 'rgba(255,255,255,0.07)',
                     color:
                       activeTab === 'required'
-                        ? '#ffffff'
+                        ? '#fff'
                         : hasMissingRequirements
                         ? '#dc2626'
                         : '#374151',
-                    fontSize: '0.85rem',
+                    fontSize: '1.05rem',
                     boxShadow:
                       activeTab === 'required'
-                        ? '0 4px 15px rgba(59, 130, 246, 0.25)'
-                        : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    minHeight: '50px',
-                    backdropFilter:
-                      activeTab === 'required' ? 'blur(10px)' : 'none',
+                        ? '0 8px 32px 0 rgba(59,130,246,.18)'
+                        : '0 3px 8px 0 rgba(36,41,46,0.04)',
+                    border:
+                      activeTab === 'required'
+                        ? '2.5px solid #2563eb'
+                        : '2.5px solid transparent',
+                    outline: 'none',
+                    zIndex: activeTab === 'required' ? 10 : 2,
+                    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
+                    transform:
+                      activeTab === 'required'
+                        ? 'translateY(-3px) scale(1.07)'
+                        : 'scale(1)',
+                    minWidth: 130,
                   }}
                   onMouseEnter={(e) => {
                     if (activeTab !== 'required') {
-                      e.currentTarget.style.background =
-                        'rgba(255, 255, 255, 0.7)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow =
+                        '0 4px 18px rgba(36,41,46,0.10)';
+                      e.currentTarget.style.transform = 'scale(1.03)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (activeTab !== 'required') {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow =
+                        '0 3px 8px 0 rgba(36,41,46,0.04)';
+                      e.currentTarget.style.transform = 'scale(1)';
                     }
                   }}
                 >
                   <FaExclamationTriangle
-                    size={16}
-                    className='d-block d-sm-none flex-shrink-0'
-                  />
-                  <FaExclamationTriangle
-                    size={18}
-                    className='d-none d-sm-block flex-shrink-0'
+                    size={20}
+                    className='d-block flex-shrink-0'
                   />
                   <span className='d-none d-sm-inline'>Required Documents</span>
                   <span className='d-inline d-sm-none'>Required</span>
-
                   {hasMissingRequirements && activeTab !== 'required' && (
-                    <div
-                      className='position-absolute d-flex align-items-center justify-content-center rounded-circle text-white fw-bold border border-2 border-white'
+                    <span
+                      className='tab-badge position-absolute'
                       style={{
-                        top: '-6px',
-                        right: '-6px',
-                        backgroundColor: '#dc2626',
-                        width: '18px',
-                        height: '18px',
-                        fontSize: '9px',
-                        boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)',
+                        top: 6,
+                        right: 14,
+                        background: '#dc2626',
+                        color: 'white',
+                        width: 20,
+                        height: 20,
+                        fontSize: 12,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '2.5px solid #fff',
+                        boxShadow: '0 2px 8px rgba(220,38,38,0.12)',
+                        fontWeight: 700,
+                        zIndex: 12,
                       }}
                     >
                       {missingRequirements}
-                    </div>
+                    </span>
                   )}
                 </button>
               </div>
             </div>
           </div>
+
+          {/* Tab Custom Styles */}
+          <style>{`
+            .modern-tab-btn {
+              cursor: pointer;
+              user-select: none;
+              letter-spacing: 0.01em;
+            }
+            .modern-tab-btn:active {
+              filter: brightness(0.97);
+            }
+          `}</style>
 
           {/* Enhanced Tab Content */}
           <div
@@ -769,10 +812,10 @@ const DocumentsUpload = ({
               backdropFilter: 'blur(20px)',
               boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
               overflow: 'hidden',
-              minHeight: '400px',
+              minHeight: '600px',
             }}
           >
-            <div className='p-4'>
+            <div className='p-0 p-lx-2'>
               {activeTab === 'uploaded' ? (
                 documents.length > 0 ? (
                   <DocumentsGrid

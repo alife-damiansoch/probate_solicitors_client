@@ -34,7 +34,7 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
 
   return (
     <div
-      className='p-4'
+      className='p-0 p-xl-4'
       style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         color: 'white',

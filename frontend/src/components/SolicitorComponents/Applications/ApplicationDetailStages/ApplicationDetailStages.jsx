@@ -2,7 +2,6 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { fetchData } from '../../../GenericFunctions/AxiosGenericFunctions';
 
-import StagesFooter from './ApplicationDetailStagesParts/StagesFooter';
 import StagesHeader from './ApplicationDetailStagesParts/StagesHeader';
 import { getTimelineSteps } from './ApplicationDetailStagesParts/StagesLogic';
 import StagesTimeline from './ApplicationDetailStagesParts/StagesTimeline';
@@ -10,10 +9,6 @@ import StagesTimeline from './ApplicationDetailStagesParts/StagesTimeline';
 const ApplicationDetailStages = ({
   application,
   refresh,
-  setRefresh,
-  currentRequirements,
-  allStagesCompleted,
-  setAllStagesCompleted,
   setHighlightedSectionId,
   advancement, // Add advancement prop
   highlitedSectionId,
@@ -183,12 +178,13 @@ const ApplicationDetailStages = ({
 
   return (
     <div
-      className=' d-flex flex-column'
+      className='h-100 d-flex flex-column'
       style={{
         background:
           'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
-        paddingTop: '110px',
-        minWidth: '400px',
+        width: '400px',
+        minHeight: '100vh',
+        paddingTop: '100px',
       }}
     >
       <style>
@@ -240,12 +236,29 @@ const ApplicationDetailStages = ({
             to { transform: scaleX(1); }
           }
 
-          /* Remove the custom scroll styles since parent handles scrolling */
+          /* Custom scrollbar styling */
+          .stages-container::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          .stages-container::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 3px;
+          }
+
+          .stages-container::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.4);
+            border-radius: 3px;
+          }
+
+          .stages-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.6);
+          }
         `}
       </style>
 
-      {/* Header - Fixed at top */}
-      <div className='flex-shrink-0' style={{ padding: '20px 20px 10px 20px' }}>
+      {/* Header - Fixed at top with responsive padding */}
+      <div className='flex-shrink-0 p-3 pt-5'>
         <StagesHeader
           application={application}
           overallProgress={overallProgress}
@@ -258,8 +271,11 @@ const ApplicationDetailStages = ({
 
       {/* Scrollable Timeline Content */}
       <div
-        className='flex-grow-1 overflow-hidden'
-        style={{ padding: '0 20px' }}
+        className='flex-grow-1 overflow-auto px-3 stages-container'
+        style={{
+          scrollBehavior: 'smooth',
+          overflowX: 'hidden',
+        }}
       >
         <StagesTimeline
           steps={steps}
@@ -270,15 +286,15 @@ const ApplicationDetailStages = ({
         />
       </div>
 
-      {/* Footer - Fixed at bottom */}
-      <div className='flex-shrink-0' style={{ padding: '10px 20px 20px 20px' }}>
+      {/* Footer - Fixed at bottom with responsive padding */}
+      {/* <div className='flex-shrink-0 p-3 pb-4'>
         <StagesFooter
           nextActionStep={nextActionStep}
           completedSteps={completedSteps}
           totalSteps={steps.length}
           application={application}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

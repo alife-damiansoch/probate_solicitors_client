@@ -26,7 +26,6 @@ const LoginComponent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Clear authError when the component is rendered
     dispatch(clearAuthError());
   }, [dispatch]);
 
@@ -40,8 +39,6 @@ const LoginComponent = () => {
         email,
         password,
       });
-
-      console.log(response);
 
       if (response.status === 200) {
         const { otp_required, authenticator_required } = response.data;
@@ -61,70 +58,86 @@ const LoginComponent = () => {
   };
 
   return (
-    <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+    <div
+      className='min-vh-100 py-4'
+      style={{
+        background: 'linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)',
+        minHeight: '100vh',
+      }}
+    >
       <div className='container'>
         {/* Header Section */}
-        <div className='d-flex align-items-center mb-4'>
+        <div className='d-flex align-items-center mb-4 gap-2'>
           <button
-            className='btn d-flex align-items-center px-3 py-2'
+            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
             style={{
-              backgroundColor: 'white',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
+              background: 'rgba(255,255,255,0.93)',
+              border: '1.5px solid #e2e8f0',
+              borderRadius: '12px',
               color: '#64748b',
-              fontSize: '0.9rem',
-              transition: 'all 0.2s ease',
+              fontWeight: 500,
+              fontSize: '1rem',
+              boxShadow: '0 2px 10px rgba(59,130,246,0.07)',
+              transition: 'all 0.2s',
+              backdropFilter: 'blur(10px)',
             }}
             onClick={() => navigate(-1)}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f1f5f9';
+              e.target.style.background = 'rgba(240,240,255,0.98)';
               e.target.style.borderColor = '#cbd5e1';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'white';
+              e.target.style.background = 'rgba(255,255,255,0.93)';
               e.target.style.borderColor = '#e2e8f0';
             }}
           >
-            <FaArrowLeft className='me-2' size={14} />
+            <FaArrowLeft className='me-2' size={16} />
             Back
           </button>
         </div>
 
         {/* Main Login Card */}
         <div className='row justify-content-center'>
-          <div className='col-lg-4 col-md-6'>
+          <div className='col-12 col-md-7 col-lg-5 col-xl-4'>
             <div
-              className='card border-0'
+              className='card border-0 shadow-lg'
               style={{
-                borderRadius: '12px',
+                borderRadius: 22,
+                background: 'rgba(255,255,255,0.98)',
                 boxShadow:
-                  '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-                backgroundColor: 'white',
+                  '0 8px 32px rgba(59,130,246,0.10), 0 2px 8px rgba(239,68,68,0.07)',
+                backdropFilter: 'blur(12px)',
+                overflow: 'hidden',
               }}
             >
               {/* Card Header */}
               <div
                 className='card-header border-0 py-4 text-center'
                 style={{
-                  backgroundColor: 'white',
-                  borderBottom: '1px solid #f1f5f9',
+                  background: 'linear-gradient(135deg,#3b82f6,#2563eb 80%)',
+                  borderBottom: 'none',
+                  borderTopLeftRadius: 22,
+                  borderTopRightRadius: 22,
+                  color: '#fff',
+                  boxShadow: '0 8px 24px rgba(59,130,246,0.08)',
                 }}
               >
                 <div
                   className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
                   style={{
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: '#3b82f6',
-                    color: 'white',
+                    width: 64,
+                    height: 64,
+                    background: 'rgba(255,255,255,0.14)',
+                    color: '#fff',
+                    boxShadow: '0 4px 16px rgba(59,130,246,0.12)',
                   }}
                 >
-                  <FaUser size={24} />
+                  <FaUser size={26} />
                 </div>
-                <h4 className='mb-1 fw-bold text-slate-800'>Welcome Back</h4>
-                <p className='mb-0 text-slate-500 small'>
+                <h3 className='mb-1 fw-bold'>Welcome Back</h3>
+                <div className='mb-0 small' style={{ opacity: 0.94 }}>
                   Sign in to your account
-                </p>
+                </div>
               </div>
 
               {/* Error Display */}
@@ -133,10 +146,10 @@ const LoginComponent = () => {
                   <div
                     className='alert border-0'
                     style={{
-                      backgroundColor: '#fef2f2',
+                      background: 'rgba(239,68,68,0.07)',
                       color: '#dc2626',
-                      borderRadius: '8px',
-                      fontSize: '0.9rem',
+                      borderRadius: 12,
+                      fontSize: '1rem',
                     }}
                   >
                     {renderErrors(authError || errors)}
@@ -149,96 +162,92 @@ const LoginComponent = () => {
                 <form onSubmit={handleSubmit}>
                   {/* Email Field */}
                   <div className='mb-3'>
-                    <label className='form-label fw-medium text-slate-600 mb-2 small'>
-                      <FaUser className='me-2 text-slate-400' size={12} />
+                    <label className='form-label fw-medium mb-2'>
+                      <FaUser className='me-2 text-primary' size={13} />
                       Email Address
                     </label>
                     <input
                       type='email'
-                      className='form-control form-control-sm'
+                      className='form-control'
                       style={{
-                        borderRadius: '6px',
-                        border: '1px solid #d1d5db',
-                        fontSize: '0.9rem',
-                        transition: 'border-color 0.2s ease',
+                        borderRadius: 10,
+                        border: '1.5px solid #a5b4fc',
+                        fontSize: '1.04rem',
+                        transition: 'border-color 0.2s',
+                        boxShadow: '0 2px 12px rgba(59,130,246,0.02)',
                       }}
                       id='email'
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      onFocus={(e) => (e.target.style.borderColor = '#3b82f6')}
-                      onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
                       placeholder='Enter your email'
                     />
                   </div>
 
                   {/* Password Field */}
-                  <div className='mb-3'>
-                    <label className='form-label fw-medium text-slate-600 mb-2 small'>
-                      <FaLock className='me-2 text-slate-400' size={12} />
+                  <div className='mb-2'>
+                    <label className='form-label fw-medium mb-2'>
+                      <FaLock className='me-2 text-primary' size={13} />
                       Password
                     </label>
                     <div className='position-relative'>
                       <input
                         type={showPassword ? 'text' : 'password'}
-                        className='form-control form-control-sm'
+                        className='form-control'
                         style={{
-                          borderRadius: '6px',
-                          border: '1px solid #d1d5db',
-                          fontSize: '0.9rem',
-                          paddingRight: '40px',
-                          transition: 'border-color 0.2s ease',
+                          borderRadius: 10,
+                          border: '1.5px solid #a5b4fc',
+                          fontSize: '1.04rem',
+                          paddingRight: 40,
+                          transition: 'border-color 0.2s',
                         }}
                         id='password'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        onFocus={(e) =>
-                          (e.target.style.borderColor = '#3b82f6')
-                        }
-                        onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
                         placeholder='Enter your password'
                       />
                       <button
                         type='button'
                         className='btn btn-sm position-absolute'
                         style={{
-                          right: '8px',
+                          right: 8,
                           top: '50%',
                           transform: 'translateY(-50%)',
                           border: 'none',
                           background: 'none',
                           color: '#64748b',
-                          padding: '0',
-                          width: '24px',
-                          height: '24px',
+                          padding: 0,
+                          width: 28,
+                          height: 28,
                         }}
                         onClick={() => setShowPassword(!showPassword)}
+                        tabIndex={-1}
                       >
                         {showPassword ? (
-                          <FaEyeSlash size={14} />
+                          <FaEyeSlash size={16} />
                         ) : (
-                          <FaEye size={14} />
+                          <FaEye size={16} />
                         )}
                       </button>
                     </div>
+                  </div>
 
-                    {/* Forgot Password Link */}
-                    <div className='text-end mt-2'>
-                      <Link
-                        to='/forgotPassword'
-                        className='text-decoration-none'
-                        style={{
-                          color: '#3b82f6',
-                          fontSize: '0.85rem',
-                          transition: 'color 0.2s ease',
-                        }}
-                        onMouseOver={(e) => (e.target.style.color = '#2563eb')}
-                        onMouseOut={(e) => (e.target.style.color = '#3b82f6')}
-                      >
-                        Forgot your password?
-                      </Link>
-                    </div>
+                  {/* Forgot Password Link */}
+                  <div className='text-end mt-2'>
+                    <Link
+                      to='/forgotPassword'
+                      className='text-decoration-none fw-medium'
+                      style={{
+                        color: '#3b82f6',
+                        fontSize: '0.95rem',
+                        transition: 'color 0.2s',
+                      }}
+                      onMouseOver={(e) => (e.target.style.color = '#2563eb')}
+                      onMouseOut={(e) => (e.target.style.color = '#3b82f6')}
+                    >
+                      Forgot your password?
+                    </Link>
                   </div>
 
                   {/* Submit Button */}
@@ -247,23 +256,24 @@ const LoginComponent = () => {
                       type='submit'
                       className='btn w-100 py-2 fw-medium'
                       style={{
-                        backgroundColor: '#3b82f6',
+                        background: 'linear-gradient(90deg, #3b82f6, #2563eb)',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '0.95rem',
-                        transition: 'all 0.2s ease',
+                        borderRadius: 10,
+                        fontSize: '1.07rem',
+                        boxShadow: '0 4px 12px rgba(59,130,246,0.09)',
+                        transition: 'all 0.2s',
                       }}
                       disabled={isLoading}
                       onMouseOver={(e) => {
-                        if (!isLoading) {
-                          e.target.style.backgroundColor = '#2563eb';
-                        }
+                        if (!isLoading)
+                          e.target.style.background =
+                            'linear-gradient(90deg, #2563eb, #1e40af)';
                       }}
                       onMouseOut={(e) => {
-                        if (!isLoading) {
-                          e.target.style.backgroundColor = '#3b82f6';
-                        }
+                        if (!isLoading)
+                          e.target.style.background =
+                            'linear-gradient(90deg, #3b82f6, #2563eb)';
                       }}
                     >
                       {isLoading ? (
@@ -271,7 +281,7 @@ const LoginComponent = () => {
                           <div
                             className='spinner-border spinner-border-sm me-2'
                             role='status'
-                            style={{ width: '16px', height: '16px' }}
+                            style={{ width: 18, height: 18 }}
                           >
                             <span className='visually-hidden'>Loading...</span>
                           </div>
@@ -279,7 +289,7 @@ const LoginComponent = () => {
                         </div>
                       ) : (
                         <>
-                          <FaSignInAlt className='me-2' size={14} />
+                          <FaSignInAlt className='me-2' size={15} />
                           Sign In
                         </>
                       )}
@@ -292,14 +302,17 @@ const LoginComponent = () => {
                   className='text-center mt-4 pt-3'
                   style={{ borderTop: '1px solid #f1f5f9' }}
                 >
-                  <p className='mb-0 text-slate-500 small'>
-                    Don't have an account?{' '}
+                  <p
+                    className='mb-0'
+                    style={{ color: '#64748b', fontSize: '0.97rem' }}
+                  >
+                    Don&apos;t have an account?{' '}
                     <Link
                       to='/register'
-                      className='text-decoration-none fw-medium'
+                      className='text-decoration-none fw-semibold'
                       style={{
                         color: '#3b82f6',
-                        transition: 'color 0.2s ease',
+                        transition: 'color 0.2s',
                       }}
                       onMouseOver={(e) => (e.target.style.color = '#2563eb')}
                       onMouseOut={(e) => (e.target.style.color = '#3b82f6')}
@@ -313,6 +326,13 @@ const LoginComponent = () => {
           </div>
         </div>
       </div>
+
+      {/* Animations */}
+      <style>{`
+        .glassy-btn:active {
+          box-shadow: 0 2px 12px rgba(59,130,246,0.12);
+        }
+      `}</style>
     </div>
   );
 };

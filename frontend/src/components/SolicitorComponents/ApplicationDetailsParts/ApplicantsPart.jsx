@@ -99,7 +99,6 @@ const ApplicantsPart = ({
     setFieldErrors({});
   };
 
-  // Simple validation functions
   const validatePPSField = (value) => {
     if (!value || value.trim() === '')
       return { valid: false, message: 'PPS number is required' };
@@ -113,18 +112,14 @@ const ApplicantsPart = ({
   const validatePhoneField = (value) => {
     if (!value || value.trim() === '')
       return { valid: false, message: 'Phone number is required' };
-
-    console.log('Validating phone:', value, 'Country:', countrySolicitors);
     const result = formatPhoneToInternational(value, countrySolicitors);
-    console.log('Phone validation result:', result);
-
     return {
       valid: result.success,
       message: result.success ? '' : result.error,
     };
   };
 
-  // EditableField component
+  // ---- EditableField ----
   const EditableField = ({
     applicant,
     index,
@@ -132,7 +127,7 @@ const ApplicantsPart = ({
     label,
     type = 'text',
     options = null,
-    cols = 6,
+    cols = 'col-12 col-xxl-6',
   }) => {
     const [localValue, setLocalValue] = useState(applicant[field] || '');
     const editKey = `applicant_${index}_${field}`;
@@ -156,7 +151,6 @@ const ApplicantsPart = ({
     };
 
     const handleSave = () => {
-      // Validate special fields
       if (field === 'pps_number') {
         const validation = validatePPSField(localValue);
         if (!validation.valid) {
@@ -169,7 +163,6 @@ const ApplicantsPart = ({
           return;
         }
       }
-
       if (field === 'phone_number') {
         const validation = validatePhoneField(localValue);
         if (!validation.valid) {
@@ -195,7 +188,6 @@ const ApplicantsPart = ({
           return;
         }
       }
-
       if (field !== 'phone_number') {
         const fakeEvent = { target: { value: localValue } };
         handleListChange(fakeEvent, index, 'applicants', field);
@@ -207,7 +199,7 @@ const ApplicantsPart = ({
     const displayValue = isEditing ? localValue : applicant[field] || '';
 
     return (
-      <div className={`col-md-${cols} mb-3`}>
+      <div className={cols + ' mb-3'}>
         <label className='form-label fw-semibold text-slate-700 mb-2'>
           {label}
         </label>
@@ -226,22 +218,7 @@ const ApplicantsPart = ({
               : '0 8px 24px rgba(0, 0, 0, 0.06)',
             transition: 'all 0.3s ease',
           }}
-          onMouseEnter={(e) => {
-            if (!isEditing) {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow =
-                '0 16px 40px rgba(0, 0, 0, 0.1)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isEditing) {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow =
-                '0 8px 24px rgba(0, 0, 0, 0.06)';
-            }
-          }}
         >
-          {/* Glow effect for editing */}
           {isEditing && (
             <div
               className='position-absolute'
@@ -259,7 +236,6 @@ const ApplicantsPart = ({
               }}
             />
           )}
-
           {options ? (
             <select
               className='form-control border-0'
@@ -315,8 +291,6 @@ const ApplicantsPart = ({
           >
             {isEditing ? <FaSave size={14} /> : <FaEdit size={14} />}
           </button>
-
-          {/* Editing Badge */}
           {isEditing && (
             <div
               className='position-absolute'
@@ -337,7 +311,6 @@ const ApplicantsPart = ({
             </div>
           )}
         </div>
-
         {hasError && (
           <div
             className='text-danger mt-2 small d-flex align-items-center gap-2'
@@ -357,12 +330,12 @@ const ApplicantsPart = ({
     );
   };
 
-  // FormField component
+  // ---- FormField ----
   const FormField = ({
     field,
     label,
     type = 'text',
-    cols = 6,
+    cols = 'col-12 col-xxl-6',
     options = null,
   }) => {
     const isRequired = requiredFields.includes(field);
@@ -370,7 +343,7 @@ const ApplicantsPart = ({
     const hasValue = Object.values(newApplicant).some((val) => val !== '');
 
     return (
-      <div className={`col-md-${cols}`}>
+      <div className={cols}>
         <label className='form-label fw-semibold mb-2 text-slate-700'>
           {label} {isRequired && <span className='text-danger'>*</span>}
         </label>
@@ -409,7 +382,6 @@ const ApplicantsPart = ({
               }}
             />
           )}
-
           {options ? (
             <select
               className='form-control border-0'
@@ -505,7 +477,6 @@ const ApplicantsPart = ({
         `;
       }}
     >
-      {/* Animated Background Pattern */}
       <div
         className='position-absolute w-100 h-100'
         style={{
@@ -517,8 +488,6 @@ const ApplicantsPart = ({
           animation: 'float 6s ease-in-out infinite',
         }}
       />
-
-      {/* Premium Header */}
       <div
         className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
         style={{
@@ -534,7 +503,6 @@ const ApplicantsPart = ({
           borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
         }}
       >
-        {/* Icon with Micro-animation */}
         <div
           className='d-flex align-items-center justify-content-center rounded-circle position-relative'
           style={{
@@ -546,18 +514,8 @@ const ApplicantsPart = ({
             transition: 'all 0.3s ease',
             cursor: 'pointer',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-          }}
         >
           <FaUsers size={20} />
-
-          {/* Subtle glow effect */}
           <div
             className='position-absolute rounded-circle'
             style={{
@@ -571,7 +529,6 @@ const ApplicantsPart = ({
             }}
           />
         </div>
-
         <div className='flex-grow-1'>
           <h5
             className='fw-bold mb-2 text-white'
@@ -593,8 +550,6 @@ const ApplicantsPart = ({
             Single applicant required
           </div>
         </div>
-
-        {/* Status Badge */}
         <span
           className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
           style={{
@@ -629,10 +584,7 @@ const ApplicantsPart = ({
           {application.applicants?.length > 0 ? 'Complete' : 'Required'}
         </span>
       </div>
-
-      {/* Content Area */}
       <div className='px-4 pb-4'>
-        {/* No Applicant Warning */}
         {(!application.applicants || application.applicants.length === 0) && (
           <div
             className='alert border-0 text-center mb-4'
@@ -666,10 +618,8 @@ const ApplicantsPart = ({
           </div>
         )}
 
-        {/* Existing Applicants */}
         {application.applicants?.map((applicant, index) => (
           <div key={applicant.id || index} className='mb-4'>
-            {/* Basic Info Card */}
             <div
               className='p-4 mb-4 position-relative'
               style={{
@@ -704,7 +654,6 @@ const ApplicantsPart = ({
                   Basic Information
                 </h6>
               </div>
-
               <div className='row g-3'>
                 <EditableField
                   applicant={applicant}
@@ -712,28 +661,28 @@ const ApplicantsPart = ({
                   field='title'
                   label='Title'
                   options={TITLE_CHOICES}
-                  cols={3}
+                  cols='col-12 col-xxl-3'
                 />
                 <EditableField
                   applicant={applicant}
                   index={index}
                   field='first_name'
                   label='First Name'
-                  cols={3}
+                  cols='col-12 col-xxl-3'
                 />
                 <EditableField
                   applicant={applicant}
                   index={index}
                   field='last_name'
                   label='Last Name'
-                  cols={3}
+                  cols='col-12 col-xxl-3'
                 />
                 <EditableField
                   applicant={applicant}
                   index={index}
                   field='pps_number'
                   label={`${idNumberArray[0]} Number`}
-                  cols={3}
+                  cols='col-12 col-xxl-3'
                 />
                 <EditableField
                   applicant={applicant}
@@ -741,14 +690,12 @@ const ApplicantsPart = ({
                   field='date_of_birth'
                   label='Date of Birth'
                   type='date'
+                  cols='col-12 col-xxl-6'
                 />
               </div>
             </div>
-
-            {/* Contact & Address Row */}
             <div className='row g-4'>
-              {/* Contact Card */}
-              <div className='col-md-6'>
+              <div className='col-12 col-xxl-6'>
                 <div
                   className='p-4 h-100 position-relative'
                   style={{
@@ -783,7 +730,6 @@ const ApplicantsPart = ({
                       Contact
                     </h6>
                   </div>
-
                   <div className='row g-3'>
                     <EditableField
                       applicant={applicant}
@@ -791,7 +737,7 @@ const ApplicantsPart = ({
                       field='email'
                       label='Email'
                       type='email'
-                      cols={12}
+                      cols='col-12'
                     />
                     <EditableField
                       applicant={applicant}
@@ -799,14 +745,12 @@ const ApplicantsPart = ({
                       field='phone_number'
                       label='Phone'
                       type='tel'
-                      cols={12}
+                      cols='col-12'
                     />
                   </div>
                 </div>
               </div>
-
-              {/* Address Card */}
-              <div className='col-md-6'>
+              <div className='col-12 col-xxl-6'>
                 <div
                   className='p-4 h-100 position-relative'
                   style={{
@@ -841,49 +785,48 @@ const ApplicantsPart = ({
                       Address
                     </h6>
                   </div>
-
-                  <div className='row g-2'>
+                  <div className='row g-3'>
                     <EditableField
                       applicant={applicant}
                       index={index}
                       field='address_line_1'
                       label='Address 1'
-                      cols={12}
+                      cols='col-12'
                     />
                     <EditableField
                       applicant={applicant}
                       index={index}
                       field='address_line_2'
                       label='Address 2 (Optional)'
-                      cols={12}
+                      cols='col-12'
                     />
                     <EditableField
                       applicant={applicant}
                       index={index}
                       field='city'
                       label='City'
-                      cols={6}
+                      cols='col-12 '
                     />
                     <EditableField
                       applicant={applicant}
                       index={index}
                       field='county'
                       label='County'
-                      cols={6}
+                      cols='col-12 '
                     />
                     <EditableField
                       applicant={applicant}
                       index={index}
                       field='postal_code'
                       label='Postal Code'
-                      cols={6}
+                      cols='col-12 '
                     />
                     <EditableField
                       applicant={applicant}
                       index={index}
                       field='country'
                       label='Country'
-                      cols={6}
+                      cols='col-12 '
                     />
                   </div>
                 </div>
@@ -892,7 +835,7 @@ const ApplicantsPart = ({
           </div>
         ))}
 
-        {/* Add New Applicant Form */}
+        {/* ---- Add New Applicant Form ---- */}
         {!application.approved &&
           !application.is_rejected &&
           (!application.applicants || application.applicants.length === 0) && (
@@ -910,7 +853,6 @@ const ApplicantsPart = ({
                     overflow: 'hidden',
                   }}
                 >
-                  {/* Glow effect */}
                   <div
                     className='position-absolute'
                     style={{
@@ -927,8 +869,6 @@ const ApplicantsPart = ({
                         'selectionGlow 3s ease-in-out infinite alternate',
                     }}
                   />
-
-                  {/* Form Header */}
                   <div
                     className='d-flex justify-content-between align-items-center p-4'
                     style={{
@@ -975,7 +915,6 @@ const ApplicantsPart = ({
                       Cancel
                     </button>
                   </div>
-
                   <div className='p-4'>
                     {!isFormValid &&
                       Object.values(newApplicant).some((val) => val !== '') && (
@@ -1014,8 +953,7 @@ const ApplicantsPart = ({
                           </div>
                         </div>
                       )}
-
-                    {/* Basic Information Section */}
+                    {/* Basic Information */}
                     <div className='mb-4'>
                       <div className='d-flex align-items-center gap-3 mb-3'>
                         <div
@@ -1042,34 +980,33 @@ const ApplicantsPart = ({
                         <FormField
                           field='title'
                           label='Title'
-                          cols={3}
+                          cols='col-12 col-xxl-3'
                           options={TITLE_CHOICES}
                         />
                         <FormField
                           field='first_name'
                           label='First Name'
-                          cols={3}
+                          cols='col-12 col-xxl-3'
                         />
                         <FormField
                           field='last_name'
                           label='Last Name'
-                          cols={3}
+                          cols='col-12 col-xxl-3'
                         />
                         <FormField
                           field='pps_number'
                           label={`${idNumberArray[0]} Number`}
-                          cols={3}
+                          cols='col-12 col-xxl-3'
                         />
                         <FormField
                           field='date_of_birth'
                           label='Date of Birth'
                           type='date'
-                          cols={6}
+                          cols='col-12 col-xxl-6'
                         />
                       </div>
                     </div>
-
-                    {/* Contact & Address Row */}
+                    {/* Contact & Address */}
                     <div className='row g-4 mb-4'>
                       <div className='col-md-6'>
                         <div className='d-flex align-items-center gap-3 mb-3'>
@@ -1098,17 +1035,16 @@ const ApplicantsPart = ({
                             field='email'
                             label='Email'
                             type='email'
-                            cols={12}
+                            cols='col-12'
                           />
                           <FormField
                             field='phone_number'
                             label='Phone'
                             type='tel'
-                            cols={12}
+                            cols='col-12'
                           />
                         </div>
                       </div>
-
                       <div className='col-md-6'>
                         <div className='d-flex align-items-center gap-3 mb-3'>
                           <div
@@ -1138,26 +1074,36 @@ const ApplicantsPart = ({
                           <FormField
                             field='address_line_1'
                             label='Address Line 1'
-                            cols={12}
+                            cols='col-12'
                           />
                           <FormField
                             field='address_line_2'
                             label='Address Line 2 (Optional)'
-                            cols={12}
+                            cols='col-12'
                           />
-                          <FormField field='city' label='City' cols={6} />
-                          <FormField field='county' label='County' cols={6} />
+                          <FormField
+                            field='city'
+                            label='City'
+                            cols='col-12 col-xxl-6'
+                          />
+                          <FormField
+                            field='county'
+                            label='County'
+                            cols='col-12 col-xxl-6'
+                          />
                           <FormField
                             field='postal_code'
                             label='Postal Code'
-                            cols={6}
+                            cols='col-12 col-xxl-6'
                           />
-                          <FormField field='country' label='Country' cols={6} />
+                          <FormField
+                            field='country'
+                            label='Country'
+                            cols='col-12 col-xxl-6'
+                          />
                         </div>
                       </div>
                     </div>
-
-                    {/* Form Actions */}
                     <div className='d-flex gap-3 justify-content-end'>
                       <button
                         className='btn rounded-pill px-4 d-flex align-items-center gap-2'
@@ -1199,7 +1145,6 @@ const ApplicantsPart = ({
                   </div>
                 </div>
               ) : (
-                /* Add Applicant CTA */
                 <div
                   className='text-center py-5'
                   style={{
@@ -1241,18 +1186,6 @@ const ApplicantsPart = ({
                       transition: 'all 0.3s ease',
                     }}
                     onClick={() => setShowAddForm(true)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform =
-                        'translateY(-2px) scale(1.05)';
-                      e.currentTarget.style.boxShadow =
-                        '0 20px 40px rgba(102, 126, 234, 0.5)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform =
-                        'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow =
-                        '0 15px 35px rgba(102, 126, 234, 0.4)';
-                    }}
                   >
                     <FaPlus />
                     Add Applicant
@@ -1261,8 +1194,6 @@ const ApplicantsPart = ({
               )}
             </>
           )}
-
-        {/* Success Message */}
         {!application.approved &&
           !application.is_rejected &&
           application.applicants?.length > 0 && (
@@ -1299,48 +1230,22 @@ const ApplicantsPart = ({
             </div>
           )}
       </div>
-
-      {/* CSS Animations */}
       <style>{`
         @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-10px) rotate(2deg);
-          }
+          0%,100% {transform:translateY(0px) rotate(0deg);}
+          50% {transform:translateY(-10px) rotate(2deg);}
         }
-
         @keyframes editingPulse {
-          0%,
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.8;
-            transform: scale(1.05);
-          }
+          0%,100% {opacity:1;transform:scale(1);}
+          50% {opacity:0.8;transform:scale(1.05);}
         }
-
         @keyframes selectionGlow {
-          0% {
-            opacity: 0.3;
-          }
-          100% {
-            opacity: 0.6;
-          }
+          0% {opacity:0.3;}
+          100% {opacity:0.6;}
         }
-
         @keyframes iconFloat {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0deg) scale(1);
-          }
-          50% {
-            transform: translateY(-8px) rotate(5deg) scale(1.02);
-          }
+          0%,100% {transform:translateY(0) rotate(0deg) scale(1);}
+          50% {transform:translateY(-8px) rotate(5deg) scale(1.02);}
         }
       `}</style>
     </div>
