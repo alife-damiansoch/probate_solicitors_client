@@ -39,7 +39,10 @@ function ForgotPassword() {
   };
 
   return (
-    <div className='min-vh-100 py-4' style={{ backgroundColor: '#f8fafc' }}>
+    <div
+      className='min-vh-100 pb-4'
+      style={{ backgroundColor: '#f8fafc', paddingTop: '150px' }}
+    >
       <div className='container'>
         {/* Header Section */}
         <div className='d-flex align-items-center mb-4'>

@@ -110,10 +110,11 @@ const UserProfile = () => {
 
   return (
     <div
-      className='min-vh-100 py-4'
+      className='min-vh-100 pb-3'
       style={{
         background: `linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)`,
         minHeight: '100vh',
+        paddingTop: '150px',
       }}
     >
       <div className='container'>

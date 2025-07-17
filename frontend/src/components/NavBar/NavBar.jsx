@@ -148,8 +148,13 @@ const NavBar = () => {
       {/* Navbar */}
       <nav
         ref={navbarRef}
-        className='navbar navbar-expand-lg border-0 mb-2 position-sticky top-0'
-        style={{ ...glassmorphismNavbar, zIndex: 1050, minHeight: '80px' }}
+        className='navbar navbar-expand-lg border-0 mb-2 position-fixed top-0'
+        style={{
+          ...glassmorphismNavbar,
+          zIndex: 1050,
+          minHeight: '80px',
+          width: '100%',
+        }}
       >
         <div className='container-fluid px-0 px-md-3'>
           <div className='row w-100 align-items-center mx-0'>

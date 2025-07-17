@@ -5,7 +5,10 @@ const FileManager = () => {
   const [refresh, setRefresh] = useState(false);
 
   return (
-    <div className='container-fluid my-5 px-0' style={{ maxWidth: 980 }}>
+    <div
+      className='container-fluid my-5 px-0'
+      style={{ maxWidth: 980, paddingTop: 120 }}
+    >
       <div
         className='modern-main-card border-0 position-relative overflow-hidden mx-auto'
         style={{

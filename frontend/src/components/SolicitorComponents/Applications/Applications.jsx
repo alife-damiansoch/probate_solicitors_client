@@ -38,6 +38,7 @@ const Applications = () => {
     mainContainer: {
       backgroundColor: '#1F2049',
       minHeight: '100vh',
+      paddingTop: '110px',
     },
     headerCard: {
       background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',

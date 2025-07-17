@@ -166,7 +166,7 @@ const ApplicationDetails = () => {
   // console.log('Application Details:', application);
 
   return (
-    <div className='position-relative'>
+    <div className='position-relative' style={{ paddingTop: '120px' }}>
       {/* Background Pattern */}
       <div
         className='position-fixed w-100 h-100 top-0 start-0'
