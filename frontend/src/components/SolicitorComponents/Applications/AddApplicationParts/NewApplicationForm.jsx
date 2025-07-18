@@ -22,7 +22,6 @@ export default function NewApplicationForm() {
   const token = useSelector((state) => state.auth.token.access);
   const navigate = useNavigate();
 
-  // Get country from cookies to set proper defaults
   const countrySolicitors = Cookies.get('country_solicitors') || 'IE';
   const countryName = countrySolicitors === 'IE' ? 'Ireland' : 'United Kingdom';
   const [applicantValidation, setApplicantValidation] = useState({
@@ -100,10 +99,10 @@ export default function NewApplicationForm() {
       className='min-vh-100 position-relative pt-2 pt-md-4 pb-2 pb-md-4 px-2 px-md-0'
       style={{
         background: `
-          linear-gradient(135deg, #1F2049 0%, #2a2d6b 25%, #1F2049 50%, #1a1d42 75%, #1F2049 100%),
-          radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%)
+          var(--gradient-main-bg),
+          radial-gradient(circle at 20% 30%, var(--primary-10) 0%, transparent 50%),
+          radial-gradient(circle at 80% 70%, var(--primary-20) 0%, transparent 50%),
+          radial-gradient(circle at 50% 50%, var(--success-20) 0%, transparent 70%)
         `,
         backdropFilter: 'blur(20px)',
       }}
@@ -113,8 +112,8 @@ export default function NewApplicationForm() {
         className='position-absolute w-100 h-100'
         style={{
           background: `
-            radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
-            radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.06) 0%, transparent 60%)
+            radial-gradient(circle at 30% 30%, var(--primary-10) 0%, transparent 60%),
+            radial-gradient(circle at 70% 70%, var(--primary-blue-light) 0%, transparent 60%)
           `,
           zIndex: -1,
         }}
@@ -125,17 +124,17 @@ export default function NewApplicationForm() {
           className='modern-main-card mt-0 mt-lg-5 mb-2 mb-lg-5 position-relative overflow-hidden'
           style={{
             background: `
-              linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 25%, rgba(30, 41, 59, 0.95) 50%, rgba(51, 65, 85, 0.95) 75%, rgba(30, 41, 59, 0.95) 100%),
-              radial-gradient(circle at 30% 10%, rgba(59, 130, 246, 0.15), transparent 50%),
-              radial-gradient(circle at 70% 90%, rgba(139, 92, 246, 0.12), transparent 50%)
+              var(--gradient-surface),
+              radial-gradient(circle at 30% 10%, var(--primary-20), transparent 50%),
+              radial-gradient(circle at 70% 90%, var(--primary-blue-light), transparent 50%)
             `,
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: '1px solid var(--border-primary)',
             borderRadius: '24px',
             boxShadow: `
-              0 20px 40px rgba(0, 0, 0, 0.4),
-              0 8px 16px rgba(0, 0, 0, 0.3),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1),
-              0 0 60px rgba(59, 130, 246, 0.1)
+              0 20px 40px rgba(0,0,0,0.4),
+              0 8px 16px rgba(0,0,0,0.3),
+              inset 0 1px 0 var(--white-10),
+              0 0 60px var(--primary-10)
             `,
             backdropFilter: 'blur(20px)',
             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -151,7 +150,7 @@ export default function NewApplicationForm() {
               right: 0,
               height: '2px',
               background:
-                'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.6), rgba(139, 92, 246, 0.6), transparent)',
+                'linear-gradient(90deg, transparent, var(--primary-blue-light), var(--primary-blue-dark), transparent)',
               animation: 'progressShimmer 3s infinite',
               borderRadius: '24px 24px 0 0',
             }}
@@ -162,17 +161,17 @@ export default function NewApplicationForm() {
             className='d-flex flex-column flex-sm-row align-items-center text-center text-sm-start position-relative p-3 p-md-4 gap-3'
             style={{
               background: `
-                linear-gradient(145deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 50%, rgba(29, 78, 216, 0.9) 100%),
-                linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
+                linear-gradient(145deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%),
+                linear-gradient(145deg, var(--white-10) 0%, transparent 50%)
               `,
-              color: '#ffffff',
+              color: 'var(--text-primary)',
               borderTopLeftRadius: '22px',
               borderTopRightRadius: '22px',
               backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(59, 130, 246, 0.4)',
-              borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+              border: '1px solid var(--border-primary)',
+              borderBottom: '1px solid var(--border-secondary)',
               boxShadow:
-                '0 4px 20px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                '0 4px 20px var(--primary-20), inset 0 1px 0 var(--white-20)',
             }}
           >
             {/* 3D Icon with Enhanced Animation */}
@@ -182,34 +181,36 @@ export default function NewApplicationForm() {
                 width: '56px',
                 height: '56px',
                 background:
-                  'linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
+                  'linear-gradient(145deg, var(--white-20), var(--white-10))',
+                border: '2px solid var(--white-20)',
                 backdropFilter: 'blur(15px)',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                 cursor: 'pointer',
                 boxShadow:
-                  '0 8px 25px rgba(59, 130, 246, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
+                  '0 8px 25px var(--primary-20), inset 0 2px 4px var(--white-10)',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform =
                   'scale(1.1) translateY(-2px) rotate(5deg)';
                 e.currentTarget.style.background =
-                  'linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2))';
+                  'linear-gradient(145deg, var(--white-25), var(--white-15))';
                 e.currentTarget.style.boxShadow =
-                  '0 12px 35px rgba(59, 130, 246, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3)';
+                  '0 12px 35px var(--primary-30), inset 0 2px 4px var(--white-20)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform =
                   'scale(1) translateY(0) rotate(0deg)';
                 e.currentTarget.style.background =
-                  'linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))';
+                  'linear-gradient(145deg, var(--white-20), var(--white-10))';
                 e.currentTarget.style.boxShadow =
-                  '0 8px 25px rgba(59, 130, 246, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)';
+                  '0 8px 25px var(--primary-20), inset 0 2px 4px var(--white-10)';
               }}
             >
               <FaPlus
                 size={window.innerWidth < 768 ? 18 : 22}
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))' }}
+                style={{
+                  filter: 'drop-shadow(0 2px 4px var(--bg-quaternary))',
+                }}
               />
 
               {/* Enhanced glow effect */}
@@ -221,7 +222,7 @@ export default function NewApplicationForm() {
                   right: '-15px',
                   bottom: '-15px',
                   background:
-                    'radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%)',
+                    'radial-gradient(circle, var(--primary-blue-light) 0%, transparent 70%)',
                   filter: 'blur(10px)',
                   zIndex: -1,
                   animation: 'iconGlow 3s ease-in-out infinite',
@@ -231,17 +232,17 @@ export default function NewApplicationForm() {
 
             <div className='flex-grow-1'>
               <h1
-                className='fw-bold mb-0 text-white'
+                className='fw-bold mb-0'
                 style={{
                   fontSize: 'clamp(1.2rem, 4vw, 1.75rem)',
                   letterSpacing: '-0.02em',
                   textShadow:
-                    '0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.2)',
+                    '0 2px 8px var(--bg-quaternary), 0 0 20px var(--white-10)',
                   background:
-                    'linear-gradient(145deg, #ffffff, #e2e8f0, #cbd5e1)',
+                    'linear-gradient(145deg, var(--text-primary), var(--text-secondary), var(--text-tertiary))',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
+                  filter: 'drop-shadow(0 2px 4px var(--bg-quaternary))',
                 }}
               >
                 Create New Application
@@ -267,12 +268,12 @@ export default function NewApplicationForm() {
                     className='p-3 p-md-4'
                     style={{
                       background:
-                        'linear-gradient(145deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.08))',
+                        'linear-gradient(145deg, var(--primary-10), var(--primary-blue-light)10)',
                       borderRadius: '20px',
-                      border: '1px solid rgba(59, 130, 246, 0.2)',
+                      border: '1px solid var(--border-primary)',
                       backdropFilter: 'blur(20px)',
                       boxShadow:
-                        '0 8px 25px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                        '0 8px 25px var(--bg-quaternary), inset 0 1px 0 var(--white-10)',
                     }}
                   >
                     <button
@@ -291,24 +292,24 @@ export default function NewApplicationForm() {
                         border: 'none',
                         background:
                           loading || !applicantValidation.isValid
-                            ? 'linear-gradient(145deg, rgba(107, 114, 128, 0.6), rgba(75, 85, 99, 0.6))'
+                            ? 'linear-gradient(145deg, var(--border-muted), var(--border-subtle))'
                             : applicantValidation.hasErrors
-                            ? 'linear-gradient(145deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)'
+                            ? 'linear-gradient(145deg, var(--error-primary) 0%, var(--error-dark) 100%)'
                             : applicantValidation.missingFields
-                            ? 'linear-gradient(145deg, #f59e0b 0%, #d97706 50%, #b45309 100%)'
-                            : 'linear-gradient(145deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)',
-                        color: '#ffffff',
+                            ? 'linear-gradient(145deg, var(--warning-primary) 0%, var(--warning-dark) 100%)'
+                            : 'linear-gradient(145deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%)',
+                        color: 'var(--text-primary)',
                         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                         boxShadow:
                           loading || !applicantValidation.isValid
-                            ? '0 4px 15px rgba(0, 0, 0, 0.2)'
+                            ? '0 4px 15px var(--bg-quaternary)'
                             : applicantValidation.hasErrors
-                            ? '0 6px 20px rgba(239, 68, 68, 0.4), 0 0 30px rgba(239, 68, 68, 0.2)'
+                            ? '0 6px 20px var(--error-40), 0 0 30px var(--error-20)'
                             : applicantValidation.missingFields
-                            ? '0 6px 20px rgba(245, 158, 11, 0.4), 0 0 30px rgba(245, 158, 11, 0.2)'
-                            : '0 6px 20px rgba(59, 130, 246, 0.4), 0 0 30px rgba(59, 130, 246, 0.2)',
+                            ? '0 6px 20px var(--warning-40), 0 0 30px var(--warning-20)'
+                            : '0 6px 20px var(--primary-40), 0 0 30px var(--primary-20)',
                         gap: '12px',
-                        textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                        textShadow: '0 2px 4px var(--bg-quaternary)',
                         letterSpacing: '0.5px',
                         position: 'relative',
                         overflow: 'hidden',
@@ -319,10 +320,10 @@ export default function NewApplicationForm() {
                             'translateY(-3px) scale(1.02)';
                           e.currentTarget.style.boxShadow =
                             applicantValidation.hasErrors
-                              ? '0 12px 35px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.3)'
+                              ? '0 12px 35px var(--error-30), 0 0 40px var(--error-10)'
                               : applicantValidation.missingFields
-                              ? '0 12px 35px rgba(245, 158, 11, 0.6), 0 0 40px rgba(245, 158, 11, 0.3)'
-                              : '0 12px 35px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.3)';
+                              ? '0 12px 35px var(--warning-30), 0 0 40px var(--warning-10)'
+                              : '0 12px 35px var(--primary-30), 0 0 40px var(--primary-10)';
                         }
                       }}
                       onMouseLeave={(e) => {
@@ -331,10 +332,10 @@ export default function NewApplicationForm() {
                             'translateY(0) scale(1)';
                           e.currentTarget.style.boxShadow =
                             applicantValidation.hasErrors
-                              ? '0 6px 20px rgba(239, 68, 68, 0.4), 0 0 30px rgba(239, 68, 68, 0.2)'
+                              ? '0 6px 20px var(--error-40), 0 0 30px var(--error-20)'
                               : applicantValidation.missingFields
-                              ? '0 6px 20px rgba(245, 158, 11, 0.4), 0 0 30px rgba(245, 158, 11, 0.2)'
-                              : '0 6px 20px rgba(59, 130, 246, 0.4), 0 0 30px rgba(59, 130, 246, 0.2)';
+                              ? '0 6px 20px var(--warning-40), 0 0 30px var(--warning-20)'
+                              : '0 6px 20px var(--primary-40), 0 0 30px var(--primary-20)';
                         }
                       }}
                     >
@@ -348,7 +349,7 @@ export default function NewApplicationForm() {
                             width: '100%',
                             height: '100%',
                             background:
-                              'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                              'linear-gradient(90deg, transparent, var(--white-10), transparent)',
                             animation: 'buttonShimmer 3s infinite',
                           }}
                         />
@@ -394,19 +395,21 @@ export default function NewApplicationForm() {
                         className={`text-center border-0 position-relative mt-3 mb-0 p-3 p-md-4`}
                         style={{
                           background: isError
-                            ? 'linear-gradient(145deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 50%, rgba(185, 28, 28, 0.1) 100%)'
-                            : 'linear-gradient(145deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 50%, rgba(29, 78, 216, 0.1) 100%)',
-                          color: isError ? '#fca5a5' : '#93c5fd',
+                            ? 'linear-gradient(145deg, var(--error-20), var(--error-30))'
+                            : 'linear-gradient(145deg, var(--primary-20), var(--primary-30))',
+                          color: isError
+                            ? 'var(--error-light)'
+                            : 'var(--primary-blue-light)',
                           borderRadius: '16px',
                           border: isError
-                            ? '1px solid rgba(239, 68, 68, 0.4)'
-                            : '1px solid rgba(59, 130, 246, 0.4)',
+                            ? '1px solid var(--error-30)'
+                            : '1px solid var(--primary-30)',
                           backdropFilter: 'blur(20px)',
                           fontWeight: '600',
                           boxShadow: isError
-                            ? '0 8px 25px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                            : '0 8px 25px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                            ? '0 8px 25px var(--error-20), inset 0 1px 0 var(--white-10)'
+                            : '0 8px 25px var(--primary-20), inset 0 1px 0 var(--white-10)',
+                          textShadow: '0 2px 4px var(--bg-quaternary)',
                         }}
                         role='alert'
                       >
@@ -417,16 +420,16 @@ export default function NewApplicationForm() {
                             height: '36px',
                             borderRadius: '50%',
                             background: isError
-                              ? 'linear-gradient(145deg, #ef4444, #dc2626, #b91c1c)'
-                              : 'linear-gradient(145deg, #3b82f6, #2563eb, #1d4ed8)',
-                            color: 'white',
+                              ? 'linear-gradient(145deg, var(--error-primary), var(--error-dark))'
+                              : 'linear-gradient(145deg, var(--primary-blue), var(--primary-blue-dark))',
+                            color: 'var(--text-primary)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             boxShadow: isError
-                              ? '0 6px 20px rgba(239, 68, 68, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.2)'
-                              : '0 6px 20px rgba(59, 130, 246, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
-                            border: '2px solid rgba(255, 255, 255, 0.2)',
+                              ? '0 6px 20px var(--error-30), inset 0 2px 4px var(--white-10)'
+                              : '0 6px 20px var(--primary-20), inset 0 2px 4px var(--white-10)',
+                            border: '2px solid var(--white-10)',
                           }}
                         >
                           {isError ? (
@@ -455,50 +458,31 @@ export default function NewApplicationForm() {
         .modern-main-card {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         .modern-main-card:hover {
           transform: translateY(-6px) scale(1.01);
           box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5),
             0 20px 40px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2),
-            0 0 80px rgba(59, 130, 246, 0.2);
+            inset 0 1px 0 var(--white-20),
+            0 0 80px var(--primary-20);
         }
-
         @keyframes progressShimmer {
           0% { background-position: -200% 0; }
           100% { background-position: 200% 0; }
         }
-
         @keyframes buttonShimmer {
           0% { left: -100%; }
           100% { left: 100%; }
         }
-
         @keyframes iconGlow {
-          0%, 100% { 
-            opacity: 0.6;
-            transform: scale(1);
-          }
-          50% { 
-            opacity: 1;
-            transform: scale(1.1);
-          }
+          0%, 100% { opacity: 0.6; transform: scale(1);}
+          50% { opacity: 1; transform: scale(1.1);}
         }
-
         @media (max-width: 768px) {
-          .modern-main-card {
-            border-radius: 16px !important;
-          }
-          
-          .modern-main-card:hover {
-            transform: translateY(-3px) scale(1.005);
-          }
+          .modern-main-card { border-radius: 16px !important; }
+          .modern-main-card:hover { transform: translateY(-3px) scale(1.005);}
         }
-
         @media (min-width: 992px) {
-          .modern-main-card {
-            border-radius: 28px !important;
-          }
+          .modern-main-card { border-radius: 28px !important; }
         }
       `}</style>
     </div>

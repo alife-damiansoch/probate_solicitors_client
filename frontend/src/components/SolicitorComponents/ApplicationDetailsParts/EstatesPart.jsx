@@ -79,21 +79,23 @@ const EstatesPart = ({
               }`}
             >
               <span
-                className='fw-medium text-slate-600 me-2'
+                className='fw-medium me-2'
                 style={{
                   fontSize: isMobile ? '0.75rem' : '0.8rem',
                   minWidth: isMobile ? '40%' : 'auto',
                   flexShrink: 0,
+                  color: 'var(--text-secondary)',
                 }}
               >
                 {formatFieldName(key)}:
               </span>
               <span
-                className='text-slate-500 text-end'
+                className='text-end'
                 style={{
                   fontSize: isMobile ? '0.75rem' : '0.8rem',
                   wordBreak: 'break-word',
                   lineHeight: '1.3',
+                  color: 'var(--text-muted)',
                 }}
               >
                 {val}
@@ -134,21 +136,23 @@ const EstatesPart = ({
               }`}
             >
               <span
-                className='fw-medium text-slate-600 me-2'
+                className='fw-medium me-2'
                 style={{
                   fontSize: isMobile ? '0.75rem' : '0.8rem',
                   minWidth: isMobile ? '40%' : 'auto',
                   flexShrink: 0,
+                  color: 'var(--text-secondary)',
                 }}
               >
                 {field.label}:
               </span>
               <span
-                className='text-slate-500 text-end'
+                className='text-end'
                 style={{
                   fontSize: isMobile ? '0.75rem' : '0.8rem',
                   wordBreak: 'break-word',
                   lineHeight: '1.3',
+                  color: 'var(--text-muted)',
                 }}
               >
                 {value}
@@ -165,17 +169,13 @@ const EstatesPart = ({
       <div
         className='modern-main-card mb-4 position-relative overflow-hidden'
         style={{
-          background: `
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-            radial-gradient(circle at 70% 90%, rgba(245, 158, 11, 0.1), transparent 50%)
-          `,
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          background: 'var(--gradient-surface)',
+          border: '1px solid var(--border-primary)',
           borderRadius: isMobile ? '16px' : '24px',
           boxShadow: `
-            0 20px 40px rgba(0, 0, 0, 0.08),
-            0 8px 16px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+            0 20px 40px var(--primary-10),
+            0 8px 16px var(--primary-20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1)
           `,
           backdropFilter: 'blur(20px)',
           padding: isMobile ? '1.5rem' : '3rem',
@@ -187,7 +187,7 @@ const EstatesPart = ({
           className='spinner-border mb-3'
           role='status'
           style={{
-            color: '#f59e0b',
+            color: 'var(--warning-primary)',
             width: isMobile ? '2rem' : '3rem',
             height: isMobile ? '2rem' : '3rem',
           }}
@@ -197,7 +197,7 @@ const EstatesPart = ({
         <div
           className='fw-bold'
           style={{
-            color: '#1e293b',
+            color: 'var(--text-primary)',
             fontSize: isMobile ? '1rem' : '1.2rem',
           }}
         >
@@ -213,18 +213,14 @@ const EstatesPart = ({
         <div
           className='modern-main-card mb-4 position-relative overflow-hidden'
           style={{
-            background: `
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-            radial-gradient(circle at 70% 90%, rgba(245, 158, 11, 0.1), transparent 50%)
-          `,
-            border: '1px solid rgba(255, 255, 255, 0.3)',
+            background: 'var(--gradient-surface)',
+            border: '1px solid var(--border-primary)',
             borderRadius: isMobile ? '16px' : '24px',
             boxShadow: `
-            0 20px 40px rgba(0, 0, 0, 0.08),
-            0 8px 16px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4)
-          `,
+              0 20px 40px var(--primary-10),
+              0 8px 16px var(--primary-20),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1)
+            `,
             backdropFilter: 'blur(20px)',
             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             transform: 'translateZ(0)',
@@ -240,16 +236,13 @@ const EstatesPart = ({
               isMobile ? '2' : '3'
             } position-relative`}
             style={{
-              background: `
-              linear-gradient(135deg, #f59e0b, #d97706),
-              linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
-            `,
-              color: '#ffffff',
+              background: 'var(--gradient-header)',
+              color: 'var(--text-primary)',
               borderTopLeftRadius: isMobile ? '14px' : '22px',
               borderTopRightRadius: isMobile ? '14px' : '22px',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-muted)',
+              borderBottom: '1px solid var(--border-primary)',
               flexDirection: isMobile ? 'column' : 'row',
               textAlign: isMobile ? 'center' : 'left',
             }}
@@ -260,12 +253,13 @@ const EstatesPart = ({
               style={{
                 width: isMobile ? '40px' : '56px',
                 height: isMobile ? '40px' : '56px',
-                background: 'rgba(255, 255, 255, 0.15)',
-                border: '2px solid rgba(255, 255, 255, 0.25)',
+                background: 'var(--surface-tertiary)',
+                border: '2px solid var(--border-muted)',
                 backdropFilter: 'blur(10px)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
                 marginBottom: isMobile ? '8px' : '0',
+                color: 'var(--warning-primary)',
               }}
             >
               <FaBuilding size={isMobile ? 16 : 20} />
@@ -273,25 +267,27 @@ const EstatesPart = ({
 
             <div className={`flex-grow-1 ${isMobile ? 'text-center' : ''}`}>
               <h5
-                className='fw-bold mb-2 text-white'
+                className='fw-bold mb-2'
                 style={{
                   fontSize: isMobile ? '1.1rem' : '1.4rem',
                   letterSpacing: '-0.02em',
                   marginBottom: isMobile ? '4px' : '8px',
+                  color: 'var(--text-primary)',
                 }}
               >
                 <span className='d-none d-sm-inline'>Estate Assessment</span>
                 <span className='d-inline d-sm-none'>Estate</span>
               </h5>
               <div
-                className='px-3 py-2 rounded-pill fw-semibold text-white'
+                className='px-3 py-2 rounded-pill fw-semibold'
                 style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
+                  background: 'var(--primary-20)',
                   fontSize: isMobile ? '0.75rem' : '0.9rem',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  border: '1px solid var(--border-muted)',
                   display: 'inline-block',
                   backdropFilter: 'blur(10px)',
                   letterSpacing: '0.02em',
+                  color: 'var(--text-primary)',
                 }}
               >
                 <span className='d-none d-sm-inline'>Assets & Liabilities</span>
@@ -305,11 +301,12 @@ const EstatesPart = ({
                 isMobile ? '2' : '3'
               } rounded-pill text-white fw-bold d-flex align-items-center gap-2 flex-shrink-0`}
               style={{
-                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                background:
+                  'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
                 fontSize: isMobile ? '0.75rem' : '0.9rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                border: '1px solid var(--border-muted)',
                 backdropFilter: 'blur(10px)',
-                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 8px 16px var(--error-20)',
                 transition: 'all 0.3s ease',
                 cursor: 'default',
                 letterSpacing: '0.02em',
@@ -342,12 +339,11 @@ const EstatesPart = ({
             <div
               className='alert border-0 mb-4'
               style={{
-                background:
-                  'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05))',
+                background: 'var(--error-20)',
                 borderRadius: isMobile ? '12px' : '16px',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
+                border: '1px solid var(--error-30)',
                 backdropFilter: 'blur(10px)',
-                color: '#dc2626',
+                color: 'var(--error-primary)',
                 padding: isMobile ? '1rem' : '1.5rem',
               }}
             >
@@ -356,13 +352,14 @@ const EstatesPart = ({
                   width: isMobile ? '32px' : '40px',
                   height: isMobile ? '32px' : '40px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                  background:
+                    'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
                   color: 'white',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 1rem',
-                  boxShadow: '0 8px 16px rgba(239, 68, 68, 0.3)',
+                  boxShadow: '0 8px 16px var(--error-30)',
                 }}
               >
                 <i
@@ -387,12 +384,13 @@ const EstatesPart = ({
               <button
                 className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
                 style={{
-                  background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                  background:
+                    'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                   color: 'white',
                   border: 'none',
                   borderRadius: isMobile ? '12px' : '16px',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                  boxShadow: '0 8px 20px var(--primary-30)',
                   fontSize: isMobile ? '0.85rem' : '1rem',
                   minHeight: isMobile ? '44px' : 'auto',
                   padding: isMobile ? '12px 20px' : '12px 16px',
@@ -448,23 +446,39 @@ const EstatesPart = ({
       <div
         className='modern-main-card mb-4 position-relative overflow-hidden'
         style={{
-          background: `
-          linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-          radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-          radial-gradient(circle at 70% 90%, rgba(245, 158, 11, 0.1), transparent 50%)
-        `,
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          background: 'var(--gradient-surface)',
+          border: '1px solid var(--border-primary)',
           borderRadius: isMobile ? '16px' : '24px',
           boxShadow: `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
-        `,
+            0 20px 40px var(--primary-10),
+            0 8px 16px var(--primary-20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1)
+          `,
           backdropFilter: 'blur(20px)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           transform: 'translateZ(0)',
           marginBottom: isMobile ? '100px' : '200px',
           margin: isMobile ? '0 8px 100px 8px' : '0 0 200px 0',
+        }}
+        onMouseEnter={(e) => {
+          if (!isMobile) {
+            e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
+            e.currentTarget.style.boxShadow = `
+              0 32px 64px var(--primary-20),
+              0 16px 32px var(--primary-30),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1)
+            `;
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isMobile) {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            e.currentTarget.style.boxShadow = `
+              0 20px 40px var(--primary-10),
+              0 8px 16px var(--primary-20),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1)
+            `;
+          }
         }}
       >
         {/* Premium Header */}
@@ -475,16 +489,13 @@ const EstatesPart = ({
             isMobile ? '2' : '3'
           } position-relative`}
           style={{
-            background: `
-            linear-gradient(135deg, #f59e0b, #d97706),
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
-          `,
-            color: '#ffffff',
+            background: 'var(--gradient-header)',
+            color: 'var(--text-primary)',
             borderTopLeftRadius: isMobile ? '14px' : '22px',
             borderTopRightRadius: isMobile ? '14px' : '22px',
             backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+            border: '1px solid var(--border-muted)',
+            borderBottom: '1px solid var(--border-primary)',
             flexDirection: isMobile ? 'column' : 'row',
             textAlign: isMobile ? 'center' : 'left',
           }}
@@ -495,12 +506,13 @@ const EstatesPart = ({
             style={{
               width: isMobile ? '40px' : '56px',
               height: isMobile ? '40px' : '56px',
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: '2px solid rgba(255, 255, 255, 0.25)',
+              background: 'var(--surface-tertiary)',
+              border: '2px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
               marginBottom: isMobile ? '8px' : '0',
+              color: 'var(--warning-primary)',
             }}
           >
             <FaBuilding size={isMobile ? 16 : 20} />
@@ -508,25 +520,27 @@ const EstatesPart = ({
 
           <div className={`flex-grow-1 ${isMobile ? 'text-center' : ''}`}>
             <h5
-              className='fw-bold mb-2 text-white'
+              className='fw-bold mb-2'
               style={{
                 fontSize: isMobile ? '1.1rem' : '1.4rem',
                 letterSpacing: '-0.02em',
                 marginBottom: isMobile ? '4px' : '8px',
+                color: 'var(--text-primary)',
               }}
             >
               <span className='d-none d-sm-inline'>Estate Assessment</span>
               <span className='d-inline d-sm-none'>Estate</span>
             </h5>
             <div
-              className='px-3 py-2 rounded-pill fw-semibold text-white'
+              className='px-3 py-2 rounded-pill fw-semibold'
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'var(--primary-20)',
                 fontSize: isMobile ? '0.75rem' : '0.9rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                border: '1px solid var(--border-muted)',
                 display: 'inline-block',
                 backdropFilter: 'blur(10px)',
                 letterSpacing: '0.02em',
+                color: 'var(--text-primary)',
               }}
             >
               <span className='d-none d-sm-inline'>Assets & Liabilities</span>
@@ -543,12 +557,16 @@ const EstatesPart = ({
               background:
                 Object.keys(assetGroups).length > 0 ||
                 Object.keys(liabilityGroups).length > 0
-                  ? 'linear-gradient(135deg, #22c55e, #16a34a)'
-                  : 'linear-gradient(135deg, #ef4444, #dc2626)',
+                  ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                  : 'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
               fontSize: isMobile ? '0.75rem' : '0.9rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
-              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+              boxShadow:
+                Object.keys(assetGroups).length > 0 ||
+                Object.keys(liabilityGroups).length > 0
+                  ? '0 8px 16px var(--success-20)'
+                  : '0 8px 16px var(--error-20)',
               transition: 'all 0.3s ease',
               cursor: 'default',
               letterSpacing: '0.02em',
@@ -605,11 +623,11 @@ const EstatesPart = ({
                   isMobile ? '3' : '4'
                 } position-relative`}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.7)',
+                  background: 'var(--surface-secondary)',
                   borderRadius: isMobile ? '12px' : '18px',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  border: '1px solid var(--border-primary)',
                   backdropFilter: 'blur(20px)',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                  boxShadow: '0 8px 24px var(--primary-20)',
                 }}
               >
                 <div
@@ -622,14 +640,15 @@ const EstatesPart = ({
                       width: isMobile ? '32px' : '40px',
                       height: isMobile ? '32px' : '40px',
                       borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                      background:
+                        'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                       color: 'white',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       marginRight: isMobile ? '0' : '1rem',
                       marginBottom: isMobile ? '8px' : '0',
-                      boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)',
+                      boxShadow: '0 8px 16px var(--primary-30)',
                     }}
                   >
                     <i
@@ -640,7 +659,7 @@ const EstatesPart = ({
                   <h6
                     className='mb-0 fw-bold'
                     style={{
-                      color: '#1e40af',
+                      color: 'var(--primary-blue)',
                       fontSize: isMobile ? '1rem' : '1.2rem',
                     }}
                   >
@@ -651,7 +670,7 @@ const EstatesPart = ({
                 {!isMobile && (
                   <p
                     className='mb-0 small'
-                    style={{ color: '#1e3a8a', fontStyle: 'italic' }}
+                    style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}
                   >
                     Property, investments, debts owed to the deceased, and other
                     valuable items comprising the gross estate
@@ -668,34 +687,14 @@ const EstatesPart = ({
                     <div
                       className='position-relative'
                       style={{
-                        background: 'rgba(255, 255, 255, 0.7)',
+                        background: 'var(--surface-secondary)',
                         borderRadius: isMobile ? '12px' : '18px',
-                        border: '1px solid rgba(255, 255, 255, 0.5)',
+                        border: '1px solid var(--border-muted)',
                         backdropFilter: 'blur(20px)',
-                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                        boxShadow: '0 8px 24px var(--primary-10)',
                         overflow: 'hidden',
                       }}
                     >
-                      <div
-                        className={`p-${isMobile ? '2' : '3'}`}
-                        style={{
-                          background:
-                            'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05))',
-                          borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
-                        }}
-                      >
-                        <h5
-                          className='mb-0 fw-bold'
-                          style={{
-                            color: '#3b82f6',
-                            fontSize: isMobile ? '0.9rem' : '1.1rem',
-                          }}
-                        >
-                          {isMobile && estateName.length > 30
-                            ? `${estateName.substring(0, 30)}...`
-                            : estateName}
-                        </h5>
-                      </div>
                       <div
                         className={`p-${isMobile ? '2' : '3'}`}
                         style={{ backgroundColor: 'transparent' }}
@@ -724,17 +723,17 @@ const EstatesPart = ({
                               style={{
                                 background:
                                   estate.is_asset === false
-                                    ? 'rgba(239, 68, 68, 0.1)'
-                                    : 'rgba(6, 182, 212, 0.1)',
+                                    ? 'var(--error-20)'
+                                    : 'var(--success-20)',
                                 borderLeft:
                                   estate.is_asset === false
-                                    ? '4px solid #ef4444'
-                                    : '4px solid #06b6d4',
+                                    ? '4px solid var(--error-primary)'
+                                    : '4px solid var(--success-primary)',
                                 borderRadius: '12px',
                                 minHeight: isMobile ? '60px' : '70px',
                                 transition: 'all 0.3s ease',
                                 backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                border: '1px solid var(--border-muted)',
                               }}
                             >
                               <div
@@ -749,11 +748,12 @@ const EstatesPart = ({
                                 >
                                   {groupedEstates.length > 1 && (
                                     <span
-                                      className='fw-bold text-slate-700 small'
+                                      className='fw-bold small'
                                       style={{
                                         fontSize: isMobile
                                           ? '0.75rem'
                                           : '0.85rem',
+                                        color: 'var(--text-secondary)',
                                       }}
                                     >
                                       {isMobile && displayName.length > 25
@@ -765,13 +765,12 @@ const EstatesPart = ({
                                     <span
                                       className='badge rounded-pill px-2 py-1 d-flex align-items-center gap-1'
                                       style={{
-                                        background: 'rgba(239, 68, 68, 0.2)',
-                                        color: '#dc2626',
+                                        background: 'var(--error-30)',
+                                        color: 'var(--error-primary)',
                                         fontSize: isMobile
                                           ? '0.6rem'
                                           : '0.7rem',
-                                        border:
-                                          '1px solid rgba(239, 68, 68, 0.3)',
+                                        border: '1px solid var(--error-40)',
                                       }}
                                       title='Liability'
                                     >
@@ -804,9 +803,10 @@ const EstatesPart = ({
                                   }`}
                                 >
                                   <div
-                                    className='small text-muted mb-1'
+                                    className='small mb-1'
                                     style={{
                                       fontSize: isMobile ? '0.7rem' : '0.75rem',
+                                      color: 'var(--text-muted)',
                                     }}
                                   >
                                     {estate.category === 'irish_debt'
@@ -818,8 +818,8 @@ const EstatesPart = ({
                                     style={{
                                       color:
                                         estate.is_asset === false
-                                          ? '#ef4444'
-                                          : '#059669',
+                                          ? 'var(--error-primary)'
+                                          : 'var(--success-primary)',
                                       fontSize: isMobile ? '0.9rem' : '1.1rem',
                                     }}
                                   >
@@ -846,11 +846,11 @@ const EstatesPart = ({
                   isMobile ? '3' : '4'
                 } position-relative`}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.7)',
+                  background: 'var(--surface-secondary)',
                   borderRadius: isMobile ? '12px' : '18px',
-                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  border: '1px solid var(--warning-30)',
                   backdropFilter: 'blur(20px)',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                  boxShadow: '0 8px 24px var(--warning-20)',
                   marginTop:
                     Object.keys(assetGroups).length > 0
                       ? isMobile
@@ -869,14 +869,15 @@ const EstatesPart = ({
                       width: isMobile ? '32px' : '40px',
                       height: isMobile ? '32px' : '40px',
                       borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                      background:
+                        'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                       color: 'white',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       marginRight: isMobile ? '0' : '1rem',
                       marginBottom: isMobile ? '8px' : '0',
-                      boxShadow: '0 8px 16px rgba(245, 158, 11, 0.3)',
+                      boxShadow: '0 8px 16px var(--warning-30)',
                     }}
                   >
                     <i
@@ -887,7 +888,7 @@ const EstatesPart = ({
                   <h6
                     className='mb-0 fw-bold'
                     style={{
-                      color: '#92400e',
+                      color: 'var(--warning-dark)',
                       fontSize: isMobile ? '1rem' : '1.2rem',
                     }}
                   >
@@ -900,7 +901,7 @@ const EstatesPart = ({
                 {!isMobile && (
                   <p
                     className='mb-0 small'
-                    style={{ color: '#92400e', fontStyle: 'italic' }}
+                    style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}
                   >
                     Debts, funeral expenses, and other obligations payable by
                     the estate
@@ -917,26 +918,25 @@ const EstatesPart = ({
                     <div
                       className='position-relative'
                       style={{
-                        background: 'rgba(255, 255, 255, 0.7)',
+                        background: 'var(--surface-secondary)',
                         borderRadius: isMobile ? '12px' : '18px',
-                        border: '1px solid rgba(255, 255, 255, 0.5)',
+                        border: '1px solid var(--border-muted)',
                         backdropFilter: 'blur(20px)',
-                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                        boxShadow: '0 8px 24px var(--warning-20)',
                         overflow: 'hidden',
                       }}
                     >
                       <div
                         className={`p-${isMobile ? '2' : '3'}`}
                         style={{
-                          background:
-                            'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05))',
-                          borderBottom: '1px solid rgba(245, 158, 11, 0.2)',
+                          background: 'var(--warning-20)',
+                          borderBottom: '1px solid var(--warning-30)',
                         }}
                       >
                         <h5
                           className='mb-0 fw-bold'
                           style={{
-                            color: '#f59e0b',
+                            color: 'var(--warning-primary)',
                             fontSize: isMobile ? '0.9rem' : '1.1rem',
                           }}
                         >
@@ -964,13 +964,13 @@ const EstatesPart = ({
                                   : ''
                               }`}
                               style={{
-                                background: 'rgba(239, 68, 68, 0.1)',
-                                borderLeft: '4px solid #ef4444',
+                                background: 'var(--error-20)',
+                                borderLeft: '4px solid var(--error-primary)',
                                 borderRadius: '12px',
                                 minHeight: isMobile ? 'auto' : '70px',
                                 transition: 'all 0.3s ease',
                                 backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                border: '1px solid var(--border-muted)',
                                 padding: isMobile ? '16px' : '16px 24px',
                               }}
                               onMouseEnter={(e) => {
@@ -978,7 +978,7 @@ const EstatesPart = ({
                                   e.currentTarget.style.transform =
                                     'translateY(-2px) translateX(4px)';
                                   e.currentTarget.style.boxShadow =
-                                    '0 8px 16px rgba(0, 0, 0, 0.1)';
+                                    '0 8px 16px var(--error-20)';
                                 }
                               }}
                               onMouseLeave={(e) => {
@@ -997,8 +997,11 @@ const EstatesPart = ({
                                     <div className='flex-grow-1'>
                                       {groupedEstates.length > 1 && (
                                         <div
-                                          className='fw-bold text-slate-700 mb-1'
-                                          style={{ fontSize: '0.85rem' }}
+                                          className='fw-bold mb-1'
+                                          style={{
+                                            fontSize: '0.85rem',
+                                            color: 'var(--text-secondary)',
+                                          }}
                                         >
                                           {displayName}
                                         </div>
@@ -1007,12 +1010,10 @@ const EstatesPart = ({
                                         <span
                                           className='badge rounded-pill px-2 py-1 d-flex align-items-center gap-1'
                                           style={{
-                                            background:
-                                              'rgba(239, 68, 68, 0.2)',
-                                            color: '#dc2626',
+                                            background: 'var(--error-30)',
+                                            color: 'var(--error-primary)',
                                             fontSize: '0.65rem',
-                                            border:
-                                              '1px solid rgba(239, 68, 68, 0.3)',
+                                            border: '1px solid var(--error-40)',
                                           }}
                                           title='Liability'
                                         >
@@ -1023,8 +1024,11 @@ const EstatesPart = ({
                                     </div>
                                     <div className='text-end ms-2'>
                                       <div
-                                        className='small text-muted mb-1'
-                                        style={{ fontSize: '0.7rem' }}
+                                        className='small mb-1'
+                                        style={{
+                                          fontSize: '0.7rem',
+                                          color: 'var(--text-muted)',
+                                        }}
                                       >
                                         {estate.category === 'irish_debt'
                                           ? 'Amount Owed'
@@ -1033,7 +1037,7 @@ const EstatesPart = ({
                                       <div
                                         className='fw-bold'
                                         style={{
-                                          color: '#ef4444',
+                                          color: 'var(--error-primary)',
                                           fontSize: '1rem',
                                         }}
                                       >
@@ -1049,7 +1053,7 @@ const EstatesPart = ({
                                   <div
                                     className='mt-2 pt-2 border-top border-1'
                                     style={{
-                                      borderColor: 'rgba(148, 163, 184, 0.2)',
+                                      borderColor: 'var(--border-subtle)',
                                     }}
                                   >
                                     {renderEstateFields(estate)}
@@ -1061,18 +1065,22 @@ const EstatesPart = ({
                                   <div className='flex-grow-1 pe-3'>
                                     <div className='d-flex align-items-center flex-wrap gap-2 mb-2'>
                                       {groupedEstates.length > 1 && (
-                                        <span className='fw-bold text-slate-700 small'>
+                                        <span
+                                          className='fw-bold small'
+                                          style={{
+                                            color: 'var(--text-secondary)',
+                                          }}
+                                        >
                                           {displayName}
                                         </span>
                                       )}
                                       <span
                                         className='badge rounded-pill px-2 py-1 d-flex align-items-center gap-1'
                                         style={{
-                                          background: 'rgba(239, 68, 68, 0.2)',
-                                          color: '#dc2626',
+                                          background: 'var(--error-30)',
+                                          color: 'var(--error-primary)',
                                           fontSize: '0.7rem',
-                                          border:
-                                            '1px solid rgba(239, 68, 68, 0.3)',
+                                          border: '1px solid var(--error-40)',
                                         }}
                                         title='Liability'
                                       >
@@ -1089,8 +1097,11 @@ const EstatesPart = ({
                                   >
                                     <div className='text-end w-100'>
                                       <div
-                                        className='small text-muted mb-1'
-                                        style={{ fontSize: '0.75rem' }}
+                                        className='small mb-1'
+                                        style={{
+                                          fontSize: '0.75rem',
+                                          color: 'var(--text-muted)',
+                                        }}
                                       >
                                         {estate.category === 'irish_debt'
                                           ? 'Amount Owed'
@@ -1099,7 +1110,7 @@ const EstatesPart = ({
                                       <div
                                         className='fw-bold'
                                         style={{
-                                          color: '#ef4444',
+                                          color: 'var(--error-primary)',
                                           fontSize: '1.1rem',
                                         }}
                                       >
@@ -1131,9 +1142,9 @@ const EstatesPart = ({
             <button
               className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
               style={{
-                background: 'rgba(255, 255, 255, 0.8)',
-                color: '#3b82f6',
-                border: '2px solid rgba(59, 130, 246, 0.3)',
+                background: 'var(--surface-secondary)',
+                color: 'var(--primary-blue)',
+                border: '2px solid var(--border-primary)',
                 borderRadius: isMobile ? '12px' : '16px',
                 transition: 'all 0.3s ease',
                 backdropFilter: 'blur(10px)',
@@ -1179,12 +1190,12 @@ const EstatesPart = ({
           @media (max-width: 767px) {
             .modern-main-card {
               transform: none !important;
-              box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
+              box-shadow: 0 8px 16px var(--primary-10) !important;
             }
             
             .modern-main-card:hover {
               transform: none !important;
-              box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
+              box-shadow: 0 8px 16px var(--primary-10) !important;
             }
           }
         `}</style>

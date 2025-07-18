@@ -8,7 +8,7 @@ const StagesTimeline = ({
   setHighlightedSectionId,
   highlitedSectionId,
 }) => {
-  // Pre-calculate step accessibility: a step is enabled if ALL previous steps have issueCount === 0
+  // Step accessibility: a step is enabled if ALL previous steps have issueCount === 0
   const stepEnabled = steps.map((step, i) =>
     steps.slice(0, i).every((prev) => prev.issueCount === 0)
   );
@@ -24,7 +24,7 @@ const StagesTimeline = ({
           right: 0,
           height: '8px',
           background:
-            'linear-gradient(180deg, rgba(59, 130, 246, 0.3) 0%, transparent 100%)',
+            'linear-gradient(180deg, var(--primary-30) 0%, transparent 100%)',
           borderRadius: '0 0 8px 8px',
           zIndex: 1,
         }}
@@ -43,7 +43,6 @@ const StagesTimeline = ({
             className='position-relative d-flex'
             style={{
               marginBottom: isLastStep ? '0' : '16px',
-              // Apply pointer events and visual effect if disabled
               pointerEvents: enabled ? 'auto' : 'none',
               filter: enabled
                 ? 'none'
@@ -62,7 +61,7 @@ const StagesTimeline = ({
             role={enabled ? 'button' : undefined}
             tabIndex={enabled ? 0 : -1}
           >
-            {/* Compact Timeline Connector */}
+            {/* Timeline Connector */}
             {!isLastStep && (
               <div
                 style={{
@@ -72,17 +71,17 @@ const StagesTimeline = ({
                   width: '2px',
                   height: '16px',
                   background: step.completed
-                    ? 'linear-gradient(180deg, #10b981, rgba(16, 185, 129, 0.3))'
-                    : 'linear-gradient(180deg, rgba(107, 114, 128, 0.3), rgba(107, 114, 128, 0.1))',
+                    ? 'linear-gradient(180deg, var(--success-primary) 0%, var(--success-30))'
+                    : 'linear-gradient(180deg, var(--border-muted) 0%, var(--border-subtle))',
                   borderRadius: '1px',
                   boxShadow: step.completed
-                    ? '0 0 6px rgba(16, 185, 129, 0.3)'
+                    ? '0 0 6px var(--success-30)'
                     : 'none',
                 }}
               />
             )}
 
-            {/* Compact Step Icon */}
+            {/* Step Icon */}
             <div
               style={{
                 width: '42px',
@@ -94,7 +93,7 @@ const StagesTimeline = ({
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '1rem',
-                boxShadow: `${theme.glow}, 0 3px 10px rgba(0, 0, 0, 0.2)`,
+                boxShadow: `${theme.glow}, 0 3px 10px var(--bg-quaternary)`,
                 animation: step.actionRequired
                   ? hasIssues
                     ? 'criticalPulse 2s infinite'
@@ -113,7 +112,7 @@ const StagesTimeline = ({
             >
               {getStepIcon(step.icon, theme, step.completed)}
 
-              {/* Compact Issue Count Badge */}
+              {/* Issue Count Badge */}
               {hasIssues && (
                 <div
                   style={{
@@ -122,7 +121,8 @@ const StagesTimeline = ({
                     right: '-6px',
                     width: '18px',
                     height: '18px',
-                    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    background:
+                      'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
@@ -130,16 +130,16 @@ const StagesTimeline = ({
                     color: 'white',
                     fontSize: '0.6rem',
                     fontWeight: '800',
-                    border: '2px solid #0a0f1c',
+                    border: '2px solid var(--bg-quaternary)',
                     animation: 'criticalPulse 1.5s infinite',
-                    boxShadow: '0 0 10px rgba(239, 68, 68, 0.6)',
+                    boxShadow: '0 0 10px var(--error-30)',
                   }}
                 >
                   {step.issueCount}
                 </div>
               )}
 
-              {/* Compact Step Number */}
+              {/* Step Number */}
               <div
                 style={{
                   position: 'absolute',
@@ -158,7 +158,7 @@ const StagesTimeline = ({
                   color: 'white',
                   fontSize: '0.6rem',
                   fontWeight: '800',
-                  border: '2px solid #0a0f1c',
+                  border: '2px solid var(--bg-quaternary)',
                   boxShadow: `0 0 6px ${theme.accent}40`,
                 }}
               >
@@ -166,12 +166,12 @@ const StagesTimeline = ({
               </div>
             </div>
 
-            {/* Compact Step Content */}
+            {/* Step Content */}
             <div
               className='ms-3 flex-grow-1'
               style={{ minWidth: 0, position: 'relative' }}
             >
-              {/* 3D Floating Progress Badge */}
+              {/* Progress Badge */}
               <div
                 style={{
                   position: 'absolute',
@@ -179,12 +179,12 @@ const StagesTimeline = ({
                   right: '-8px',
                   zIndex: 3,
                   background: hasIssues
-                    ? 'linear-gradient(145deg, #ef4444, #dc2626, #b91c1c)'
+                    ? 'linear-gradient(145deg, var(--error-primary), var(--error-dark))'
                     : `linear-gradient(145deg, ${theme.accent}, ${
                         theme.accentLight || theme.accent
                       }, ${theme.accent}cc)`,
                   border: hasIssues
-                    ? '2px solid rgba(239, 68, 68, 0.6)'
+                    ? '2px solid var(--error-30)'
                     : `2px solid ${theme.accent}60`,
                   borderRadius: '12px',
                   padding: '4px 8px',
@@ -193,8 +193,8 @@ const StagesTimeline = ({
                   fontWeight: '800',
                   letterSpacing: '0.3px',
                   boxShadow: hasIssues
-                    ? '0 4px 12px rgba(239, 68, 68, 0.4), 0 8px 24px rgba(239, 68, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                    : `0 4px 12px ${theme.accent}40, 0 8px 24px ${theme.accent}20, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+                    ? '0 4px 12px var(--error-20), 0 8px 24px var(--error-10), inset 0 1px 0 var(--white-10)'
+                    : `0 4px 12px ${theme.accent}40, 0 8px 24px ${theme.accent}20, inset 0 1px 0 var(--white-10)`,
                   transform:
                     hoveredStep === step.id
                       ? 'translateY(-2px) scale(1.05)'
@@ -206,14 +206,6 @@ const StagesTimeline = ({
                       ? 'criticalPulse 2s infinite'
                       : 'warningPulse 2s infinite'
                     : 'none',
-                  // 3D effect
-                  background: hasIssues
-                    ? `linear-gradient(145deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%),
-                       linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)`
-                    : `linear-gradient(145deg, ${theme.accent} 0%, ${
-                        theme.accentLight || theme.accent
-                      } 50%, ${theme.accent}cc 100%),
-                       linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)`,
                   backgroundBlendMode: 'overlay',
                 }}
               >
@@ -222,14 +214,9 @@ const StagesTimeline = ({
 
               <div
                 style={{
-                  background: `linear-gradient(145deg, 
-                    rgba(15, 23, 42, 0.95) 0%, 
-                    rgba(30, 41, 59, 0.95) 25%, 
-                    rgba(51, 65, 85, 0.95) 50%, 
-                    rgba(30, 41, 59, 0.95) 75%, 
-                    rgba(15, 23, 42, 0.95) 100%)`,
+                  background: 'var(--gradient-surface)',
                   border: hasIssues
-                    ? '1px solid rgba(239, 68, 68, 0.5)'
+                    ? '1px solid var(--error-30)'
                     : `1px solid ${theme.accent}50`,
                   borderRadius: '16px',
                   padding: '14px 18px',
@@ -243,24 +230,18 @@ const StagesTimeline = ({
                       : 'translateX(0) translateY(0) scale(1)',
                   boxShadow:
                     hoveredStep === step.id
-                      ? `0 8px 25px rgba(0, 0, 0, 0.3), 
-                       0 16px 40px rgba(0, 0, 0, 0.15), 
-                       0 0 20px ${theme.accent}20,
-                       inset 0 1px 0 rgba(255, 255, 255, 0.1)`
-                      : `0 4px 15px rgba(0, 0, 0, 0.2), 
-                       0 8px 25px rgba(0, 0, 0, 0.1),
-                       inset 0 1px 0 rgba(255, 255, 255, 0.05)`,
+                      ? `0 8px 25px var(--bg-quaternary), 0 16px 40px var(--primary-10), 0 0 20px ${theme.accent}20, inset 0 1px 0 var(--white-10)`
+                      : `0 4px 15px var(--bg-quaternary), 0 8px 25px var(--primary-10), inset 0 1px 0 var(--white-05)`,
                   cursor: enabled ? 'pointer' : 'not-allowed',
-                  // 3D depth effect
                   borderImage: hasIssues
-                    ? 'linear-gradient(145deg, rgba(239, 68, 68, 0.6), rgba(239, 68, 68, 0.2)) 1'
+                    ? 'linear-gradient(145deg, var(--error-30), var(--error-10)) 1'
                     : `linear-gradient(145deg, ${theme.accent}60, ${theme.accent}20) 1`,
                   filter: enabled
                     ? 'none'
                     : 'blur(1px) grayscale(0.4) brightness(0.7) saturate(0.5)',
                 }}
               >
-                {/* Enhanced 3D Shimmer Effect */}
+                {/* Shimmer for action step */}
                 {step.actionRequired && (
                   <>
                     <div
@@ -270,40 +251,27 @@ const StagesTimeline = ({
                         left: 0,
                         right: 0,
                         height: '2px',
-                        background: `linear-gradient(90deg, 
-                          transparent, 
-                          ${hasIssues ? '#ef4444' : theme.accent}80, 
-                          rgba(255, 255, 255, 0.4),
-                          ${hasIssues ? '#ef4444' : theme.accent}80,
-                          transparent)`,
+                        background: `linear-gradient(90deg, transparent, ${
+                          hasIssues ? 'var(--error-primary)' : theme.accent
+                        }80, var(--white-10), ${
+                          hasIssues ? 'var(--error-primary)' : theme.accent
+                        }80, transparent)`,
                         animation: 'progressShimmer 2s infinite',
                         borderRadius: '16px 16px 0 0',
-                      }}
-                    />
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '2px',
-                        left: '2px',
-                        right: '2px',
-                        height: '1px',
-                        background:
-                          'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
-                        animation: 'progressShimmer 3s infinite reverse',
                       }}
                     />
                   </>
                 )}
 
-                {/* 3D Title with Action Indicator */}
+                {/* Step Title & Action Indicator */}
                 <div className='d-flex align-items-center gap-2 mb-2'>
                   <h6
                     style={{
-                      color: 'white',
+                      color: 'var(--text-primary)',
                       margin: 0,
                       fontSize: '0.9rem',
                       fontWeight: '700',
-                      textShadow: `0 0 10px ${theme.accent}40, 0 2px 4px rgba(0, 0, 0, 0.3)`,
+                      textShadow: `0 0 10px ${theme.accent}40, 0 2px 4px var(--bg-quaternary)`,
                       letterSpacing: '0.2px',
                       lineHeight: '1.3',
                       flex: 1,
@@ -311,10 +279,10 @@ const StagesTimeline = ({
                       wordBreak: 'break-word',
                       overflowWrap: 'break-word',
                       background:
-                        'linear-gradient(145deg, #ffffff, #e2e8f0, #cbd5e1)',
+                        'linear-gradient(145deg, var(--text-primary), var(--text-secondary), var(--text-tertiary))',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))',
+                      filter: 'drop-shadow(0 1px 2px var(--bg-quaternary))',
                     }}
                   >
                     {step.title}
@@ -326,36 +294,36 @@ const StagesTimeline = ({
                         height: '8px',
                         borderRadius: '50%',
                         background: hasIssues
-                          ? 'linear-gradient(145deg, #ef4444, #dc2626, #b91c1c)'
+                          ? 'linear-gradient(145deg, var(--error-primary), var(--error-dark))'
                           : `linear-gradient(145deg, ${theme.accent}, ${
                               theme.accentLight || theme.accent
                             })`,
                         boxShadow: hasIssues
-                          ? '0 0 8px #ef4444, 0 2px 4px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                          : `0 0 8px ${theme.accent}, 0 2px 4px ${theme.accent}40, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+                          ? '0 0 8px var(--error-primary), 0 2px 4px var(--error-20), inset 0 1px 0 var(--white-10)'
+                          : `0 0 8px ${theme.accent}, 0 2px 4px ${theme.accent}40, inset 0 1px 0 var(--white-10)`,
                         animation: hasIssues
                           ? 'criticalPulse 1s infinite'
                           : 'warningPulse 2s infinite',
                         flexShrink: 0,
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        border: '1px solid var(--white-10)',
                       }}
                     />
                   )}
                 </div>
 
-                {/* Enhanced 3D Progress Bar */}
+                {/* Progress Bar */}
                 <div
                   style={{
                     width: '100%',
                     height: '4px',
                     background:
-                      'linear-gradient(145deg, rgba(107, 114, 128, 0.3), rgba(107, 114, 128, 0.1))',
+                      'linear-gradient(145deg, var(--border-muted), var(--border-subtle))',
                     borderRadius: '2px',
                     overflow: 'hidden',
                     marginBottom: '10px',
                     position: 'relative',
-                    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)',
-                    border: '1px solid rgba(107, 114, 128, 0.2)',
+                    boxShadow: 'inset 0 1px 2px var(--bg-quaternary)',
+                    border: '1px solid var(--border-subtle)',
                   }}
                 >
                   <div
@@ -363,22 +331,21 @@ const StagesTimeline = ({
                       width: `${step.progress}%`,
                       height: '100%',
                       background: hasIssues
-                        ? 'linear-gradient(145deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)'
+                        ? 'linear-gradient(145deg, var(--error-primary) 0%, var(--error-dark) 100%)'
                         : `linear-gradient(145deg, ${theme.accent} 0%, ${
                             theme.accentLight || theme.accent
-                          } 50%, ${theme.accent}cc 100%)`,
+                          } 100%)`,
                       borderRadius: '2px',
                       transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)',
                       boxShadow: hasIssues
-                        ? '0 0 8px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                        : `0 0 8px ${theme.accent}50, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+                        ? '0 0 8px var(--error-20), inset 0 1px 0 var(--white-10)'
+                        : `0 0 8px ${theme.accent}50, inset 0 1px 0 var(--white-10)`,
                       position: 'relative',
                       border: hasIssues
-                        ? '1px solid rgba(239, 68, 68, 0.3)'
+                        ? '1px solid var(--error-20)'
                         : `1px solid ${theme.accent}30`,
                     }}
                   >
-                    {/* Enhanced progress shimmer with 3D effect */}
                     <div
                       style={{
                         position: 'absolute',
@@ -387,7 +354,7 @@ const StagesTimeline = ({
                         right: 0,
                         bottom: 0,
                         background:
-                          'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4), transparent)',
+                          'linear-gradient(90deg, transparent, var(--white-10), var(--white-15), var(--white-10), transparent)',
                         animation:
                           step.progress > 0
                             ? 'progressShimmer 2s infinite'
@@ -398,16 +365,18 @@ const StagesTimeline = ({
                   </div>
                 </div>
 
-                {/* Enhanced 3D Description */}
+                {/* Step Description */}
                 <div>
                   <p
                     style={{
-                      color: hasIssues ? '#fca5a5' : '#e2e8f0',
+                      color: hasIssues
+                        ? 'var(--error-light)'
+                        : 'var(--text-secondary)',
                       margin: 0,
                       fontSize: '0.75rem',
                       lineHeight: '1.4',
                       fontWeight: hasIssues ? '600' : '500',
-                      textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+                      textShadow: '0 1px 2px var(--bg-quaternary)',
                       wordBreak: 'break-word',
                       overflowWrap: 'break-word',
                     }}
@@ -415,105 +384,6 @@ const StagesTimeline = ({
                     {step.description}
                   </p>
                 </div>
-
-                {/* Enhanced 3D Action Button */}
-                {step.actionText && step.actionRequired && (
-                  <div
-                    style={{
-                      marginTop: '10px',
-                      padding: '8px 12px',
-                      background: hasIssues
-                        ? 'linear-gradient(145deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15), rgba(185, 28, 28, 0.1))'
-                        : `linear-gradient(145deg, ${theme.accent}20, ${theme.accent}15, ${theme.accent}08)`,
-                      border: hasIssues
-                        ? '1px solid rgba(239, 68, 68, 0.4)'
-                        : `1px solid ${theme.accent}30`,
-                      borderRadius: '10px',
-                      cursor: enabled ? 'pointer' : 'not-allowed',
-                      transition: 'all 0.3s ease',
-                      boxShadow: hasIssues
-                        ? '0 2px 8px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                        : `0 2px 8px ${theme.accent}15, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
-                      backdropFilter: 'blur(10px)',
-                      filter: enabled
-                        ? 'none'
-                        : 'blur(1.2px) grayscale(0.4) brightness(0.8) saturate(0.6)',
-                      pointerEvents: enabled ? 'auto' : 'none',
-                    }}
-                    onClick={(e) => {
-                      if (!enabled) return;
-                      e.stopPropagation();
-                      setHighlightedSectionId &&
-                        setHighlightedSectionId(step.sectionId);
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!enabled) return;
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                      e.currentTarget.style.boxShadow = hasIssues
-                        ? '0 4px 12px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
-                        : `0 4px 12px ${theme.accent}25, inset 0 1px 0 rgba(255, 255, 255, 0.15)`;
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!enabled) return;
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = hasIssues
-                        ? '0 2px 8px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                        : `0 2px 8px ${theme.accent}15, inset 0 1px 0 rgba(255, 255, 255, 0.1)`;
-                    }}
-                  >
-                    <div className='d-flex align-items-center justify-content-between'>
-                      <span
-                        style={{
-                          color: hasIssues ? '#ef4444' : theme.accent,
-                          fontSize: '0.7rem',
-                          fontWeight: '600',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.3px',
-                          textShadow: hasIssues
-                            ? '0 1px 2px rgba(239, 68, 68, 0.3)'
-                            : `0 1px 2px ${theme.accent}30`,
-                        }}
-                      >
-                        {step.actionText}
-                      </span>
-                      <div
-                        style={{
-                          width: '16px',
-                          height: '16px',
-                          borderRadius: '50%',
-                          background: hasIssues
-                            ? 'linear-gradient(145deg, #ef4444, #dc2626)'
-                            : `linear-gradient(145deg, ${theme.accent}, ${
-                                theme.accentLight || theme.accent
-                              })`,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: hasIssues
-                            ? '0 2px 6px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                            : `0 2px 6px ${theme.accent}30, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
-                        }}
-                      >
-                        <svg
-                          width='6'
-                          height='6'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          stroke='white'
-                          strokeWidth='3'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          style={{
-                            filter: 'drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3))',
-                          }}
-                        >
-                          <polyline points='9,18 15,12 9,6' />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -529,7 +399,7 @@ const StagesTimeline = ({
           right: 0,
           height: '8px',
           background:
-            'linear-gradient(0deg, rgba(59, 130, 246, 0.3) 0%, transparent 100%)',
+            'linear-gradient(0deg, var(--primary-30) 0%, transparent 100%)',
           borderRadius: '8px 8px 0 0',
           zIndex: 1,
         }}
@@ -554,7 +424,7 @@ const StagesTimeline = ({
             style={{
               width: '3px',
               height: '12px',
-              background: 'rgba(59, 130, 246, 0.4)',
+              background: 'var(--primary-30)',
               borderRadius: '2px',
               animation: `scrollIndicator 2s infinite ${i * 0.5}s`,
             }}
@@ -563,17 +433,22 @@ const StagesTimeline = ({
       </div>
 
       {/* Additional CSS for scroll indicators */}
-      <style jsx>{`
+      <style>{`
         @keyframes scrollIndicator {
-          0%,
-          100% {
-            opacity: 0.3;
-            transform: scaleY(0.5);
-          }
-          50% {
-            opacity: 1;
-            transform: scaleY(1);
-          }
+          0%,100% { opacity: 0.3; transform: scaleY(0.5);}
+          50% { opacity: 1; transform: scaleY(1);}
+        }
+        @keyframes progressShimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        @keyframes criticalPulse {
+          0%,100% { box-shadow: 0 4px 15px var(--error-40), 0 0 30px var(--error-20);}
+          50% { box-shadow: 0 6px 25px var(--error-primary), 0 0 40px var(--error-40);}
+        }
+        @keyframes warningPulse {
+          0%,100% { box-shadow: 0 4px 15px var(--warning-40), 0 0 30px var(--warning-20);}
+          50% { box-shadow: 0 6px 25px var(--warning-primary), 0 0 40px var(--warning-40);}
         }
       `}</style>
     </div>

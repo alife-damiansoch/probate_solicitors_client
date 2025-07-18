@@ -33,10 +33,12 @@ export const DocumentsWaitingState = ({ application }) => {
     <div
       className='h-100 d-flex flex-column flex-md-row align-items-center justify-content-between position-relative overflow-hidden p-3 p-md-4 rounded-3 rounded-lg-4'
       style={{
-        background: 'linear-gradient(135deg, #0f172a, #1e293b, #334155)',
-        border: '1px solid rgba(59,130,246,0.2)',
-        boxShadow:
-          '0 10px 25px rgba(0, 0, 0, 0.15), 0 0 20px rgba(59, 130, 246, 0.1)',
+        background: 'var(--gradient-surface)',
+        border: '1px solid var(--border-primary)',
+        boxShadow: `
+          0 10px 25px var(--primary-10), 
+          0 0 20px var(--primary-20)
+        `,
       }}
     >
       <style>
@@ -63,12 +65,12 @@ export const DocumentsWaitingState = ({ application }) => {
             100% { transform: translate(-50%, -50%) rotate(360deg) translateX(25px) rotate(-360deg); }
           }
           @keyframes glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
-            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.3); }
+            0%, 100% { box-shadow: 0 0 15px var(--primary-30); }
+            50% { box-shadow: 0 0 30px var(--primary-40), 0 0 40px var(--primary-30); }
           }
           @keyframes glowMobile {
-            0%, 100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.3); }
+            0%, 100% { box-shadow: 0 0 10px var(--primary-30); }
+            50% { box-shadow: 0 0 20px var(--primary-40), 0 0 30px var(--primary-30); }
           }
           @media (max-width: 768px) {
             .orbit-animation { animation: orbitMobile 4s linear infinite !important; }
@@ -85,9 +87,9 @@ export const DocumentsWaitingState = ({ application }) => {
           top: 0,
           left: 0,
           background: `
-            radial-gradient(circle at 20% 30%, rgba(59,130,246,0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(16,185,129,0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 80%, rgba(245,158,11,0.1) 0%, transparent 50%)
+            radial-gradient(circle at 20% 30%, var(--primary-20) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, var(--success-20) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, var(--warning-20) 0%, transparent 50%)
           `,
           animation: 'pulse 4s ease-in-out infinite',
         }}
@@ -112,17 +114,22 @@ export const DocumentsWaitingState = ({ application }) => {
               left: '-6px',
               right: '-6px',
               bottom: '-6px',
-              background:
-                'conic-gradient(from 0deg, #3b82f6, #10b981, #f59e0b, #3b82f6)',
+              background: `
+                conic-gradient(from 0deg, 
+                  var(--primary-blue), 
+                  var(--success-primary), 
+                  var(--warning-primary), 
+                  var(--primary-blue)
+                )
+              `,
               opacity: 0.6,
             }}
           />
           <div
             className='position-absolute w-100 h-100 rounded-circle d-flex align-items-center justify-content-center'
             style={{
-              border: '2px solid rgba(59,130,246,0.3)',
-              background:
-                'linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.9))',
+              border: '2px solid var(--border-primary)',
+              background: 'var(--surface-secondary)',
               backdropFilter: 'blur(20px)',
             }}
           >
@@ -130,18 +137,18 @@ export const DocumentsWaitingState = ({ application }) => {
               size={24}
               className='d-block d-md-none'
               style={{
-                color: '#3b82f6',
+                color: 'var(--primary-blue)',
                 animation: 'pulse 2s ease-in-out infinite',
-                filter: 'drop-shadow(0 0 10px rgba(59,130,246,0.6))',
+                filter: 'drop-shadow(0 0 10px var(--primary-40))',
               }}
             />
             <FaHourglassHalf
               size={28}
               className='d-none d-md-block'
               style={{
-                color: '#3b82f6',
+                color: 'var(--primary-blue)',
                 animation: 'pulse 2s ease-in-out infinite',
-                filter: 'drop-shadow(0 0 15px rgba(59,130,246,0.6))',
+                filter: 'drop-shadow(0 0 15px var(--primary-40))',
               }}
             />
           </div>
@@ -152,8 +159,8 @@ export const DocumentsWaitingState = ({ application }) => {
               left: '50%',
               width: '5px',
               height: '5px',
-              background: '#10b981',
-              boxShadow: '0 0 6px #10b981',
+              background: 'var(--success-primary)',
+              boxShadow: '0 0 6px var(--success-primary)',
               transform: 'translate(-50%, -50%)',
             }}
           />
@@ -164,8 +171,8 @@ export const DocumentsWaitingState = ({ application }) => {
               left: '50%',
               width: '3px',
               height: '3px',
-              background: '#f59e0b',
-              boxShadow: '0 0 4px #f59e0b',
+              background: 'var(--warning-primary)',
+              boxShadow: '0 0 4px var(--warning-primary)',
               transform: 'translate(-50%, -50%)',
             }}
           />
@@ -177,7 +184,11 @@ export const DocumentsWaitingState = ({ application }) => {
         <h3
           className='fw-bold mb-2 mb-md-3 fs-5 fs-md-4'
           style={{
-            background: 'linear-gradient(135deg, #ffffff, #e2e8f0, #3b82f6)',
+            background: `linear-gradient(135deg, 
+              var(--text-primary), 
+              var(--text-secondary), 
+              var(--primary-blue)
+            )`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             textShadow: '0 0 20px rgba(255,255,255,0.1)',
@@ -188,8 +199,8 @@ export const DocumentsWaitingState = ({ application }) => {
         </h3>
 
         <p
-          className='text-muted fw-medium mb-3 fs-6'
-          style={{ color: '#94a3b8' }}
+          className='fw-medium mb-3 fs-6'
+          style={{ color: 'var(--text-muted)' }}
         >
           <span className='d-none d-sm-inline'>{getStatusMessage()}</span>
           <span className='d-inline d-sm-none'>{getMobileStatusMessage()}</span>
@@ -205,12 +216,12 @@ export const DocumentsWaitingState = ({ application }) => {
                 height: '10px',
                 background:
                   animationStep === index
-                    ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)'
-                    : 'rgba(59,130,246,0.3)',
+                    ? 'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))'
+                    : 'var(--primary-30)',
                 transition: 'all 0.3s ease',
                 boxShadow:
                   animationStep === index
-                    ? '0 0 10px rgba(59,130,246,0.6)'
+                    ? '0 0 10px var(--primary-40)'
                     : 'none',
               }}
             />
@@ -220,9 +231,8 @@ export const DocumentsWaitingState = ({ application }) => {
         <div
           className='p-3 rounded-3 position-relative'
           style={{
-            background:
-              'linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.8))',
-            border: '1px solid rgba(59,130,246,0.2)',
+            background: 'var(--surface-secondary)',
+            border: '1px solid var(--border-primary)',
             backdropFilter: 'blur(10px)',
           }}
         >
@@ -232,8 +242,11 @@ export const DocumentsWaitingState = ({ application }) => {
               top: 0,
               left: 0,
               height: '1px',
-              background:
-                'linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent)',
+              background: `linear-gradient(90deg, 
+                transparent, 
+                var(--primary-40), 
+                transparent
+              )`,
               animation: 'shimmer 2s infinite',
             }}
           />
@@ -243,8 +256,9 @@ export const DocumentsWaitingState = ({ application }) => {
               style={{
                 width: '24px',
                 height: '24px',
-                background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-                boxShadow: '0 0 8px rgba(59,130,246,0.4)',
+                background:
+                  'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
+                boxShadow: '0 0 8px var(--primary-40)',
               }}
             >
               <FaFileAlt
@@ -260,15 +274,18 @@ export const DocumentsWaitingState = ({ application }) => {
             </div>
             <div className='text-start'>
               <h6
-                className='mb-0 fw-semibold text-white'
-                style={{ fontSize: '0.85rem' }}
+                className='mb-0 fw-semibold'
+                style={{
+                  fontSize: '0.85rem',
+                  color: 'var(--text-primary)',
+                }}
               >
                 Application #{application.id}
               </h6>
               <p
                 className='mb-0'
                 style={{
-                  color: '#94a3b8',
+                  color: 'var(--text-muted)',
                   fontSize: '0.7rem',
                 }}
               >
@@ -282,7 +299,7 @@ export const DocumentsWaitingState = ({ application }) => {
           <ul
             className='mb-0 ps-3'
             style={{
-              color: '#64748b',
+              color: 'var(--text-muted)',
               fontSize: '0.7rem',
               lineHeight: 1.3,
             }}
@@ -306,7 +323,7 @@ export const DocumentsWaitingState = ({ application }) => {
           className='mt-2 mt-md-3 mb-0 fst-italic text-center text-md-start'
           style={{
             fontSize: '0.75rem',
-            color: '#64748b',
+            color: 'var(--text-muted)',
             lineHeight: 1.4,
           }}
         >

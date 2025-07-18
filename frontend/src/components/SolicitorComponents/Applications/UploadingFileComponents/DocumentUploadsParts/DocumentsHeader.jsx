@@ -36,8 +36,8 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
     <div
       className='p-0 p-xl-4'
       style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
+        background: 'var(--gradient-header)',
+        color: 'var(--text-primary)',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -49,7 +49,7 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
           right: '-50px',
           width: '200px',
           height: '200px',
-          background: 'rgba(255, 255, 255, 0.1)',
+          background: 'var(--primary-20)',
           borderRadius: '50%',
           filter: 'blur(40px)',
         }}
@@ -61,16 +61,28 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
             style={{
               width: '50px',
               height: '50px',
-              background: 'rgba(255, 255, 255, 0.2)',
+              background: 'var(--surface-tertiary)',
               backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              border: '1px solid var(--border-muted)',
             }}
           >
-            <FaFileAlt size={20} />
+            <FaFileAlt size={20} style={{ color: 'var(--primary-blue)' }} />
           </div>
           <div>
-            <h3 className='mb-1 fw-bold'>Documents Overview</h3>
-            <p className='mb-0 opacity-90' style={{ fontSize: '0.95rem' }}>
+            <h3
+              className='mb-1 fw-bold'
+              style={{ color: 'var(--text-primary)' }}
+            >
+              Documents Overview
+            </h3>
+            <p
+              className='mb-0'
+              style={{
+                fontSize: '0.95rem',
+                color: 'var(--text-secondary)',
+                opacity: 0.9,
+              }}
+            >
               Application #{application.id} • Document Management
             </p>
           </div>
@@ -83,14 +95,23 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
             <div
               className='p-4 rounded-4'
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'var(--surface-secondary)',
                 backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                border: '1px solid var(--border-muted)',
               }}
             >
               <div className='d-flex align-items-center mb-3'>
-                <FaExclamationTriangle size={18} className='me-2' />
-                <h5 className='mb-0 fw-bold'>Document Requirements</h5>
+                <FaExclamationTriangle
+                  size={18}
+                  className='me-2'
+                  style={{ color: 'var(--warning-primary)' }}
+                />
+                <h5
+                  className='mb-0 fw-bold'
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Document Requirements
+                </h5>
               </div>
               <div className='row g-3'>
                 {requirementStats.map((stat, index) => (
@@ -101,20 +122,31 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
                         style={{
                           width: '40px',
                           height: '40px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          backgroundColor: 'var(--primary-20)',
                         }}
                       >
-                        <stat.icon size={16} color='white' />
+                        <stat.icon
+                          size={16}
+                          style={{ color: 'var(--primary-blue)' }}
+                        />
                       </div>
                       <div
-                        className='fw-bold text-white'
-                        style={{ fontSize: '1.5rem' }}
+                        className='fw-bold'
+                        style={{
+                          fontSize: '1.5rem',
+                          color: 'var(--text-primary)',
+                        }}
                       >
                         {stat.value}
                       </div>
                       <div
-                        className='text-white opacity-90 fw-medium'
-                        style={{ fontSize: '0.8rem', lineHeight: '1.2' }}
+                        className='fw-medium'
+                        style={{
+                          fontSize: '0.8rem',
+                          lineHeight: '1.2',
+                          color: 'var(--text-secondary)',
+                          opacity: 0.9,
+                        }}
                       >
                         {stat.label}
                       </div>
@@ -130,14 +162,23 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
             <div
               className='p-4 rounded-4'
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'var(--surface-secondary)',
                 backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                border: '1px solid var(--border-muted)',
               }}
             >
               <div className='d-flex align-items-center mb-3'>
-                <FaFileSignature size={18} className='me-2' />
-                <h5 className='mb-0 fw-bold'>Signature Status</h5>
+                <FaFileSignature
+                  size={18}
+                  className='me-2'
+                  style={{ color: 'var(--success-primary)' }}
+                />
+                <h5
+                  className='mb-0 fw-bold'
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Signature Status
+                </h5>
               </div>
               <div className='row g-3 justify-content-center'>
                 {signatureStats.map((stat, index) => (
@@ -148,20 +189,31 @@ const DocumentsHeader = ({ application, stats, requirementStatus }) => {
                         style={{
                           width: '40px',
                           height: '40px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          backgroundColor: 'var(--success-20)',
                         }}
                       >
-                        <stat.icon size={16} color='white' />
+                        <stat.icon
+                          size={16}
+                          style={{ color: 'var(--success-primary)' }}
+                        />
                       </div>
                       <div
-                        className='fw-bold text-white'
-                        style={{ fontSize: '1.5rem' }}
+                        className='fw-bold'
+                        style={{
+                          fontSize: '1.5rem',
+                          color: 'var(--text-primary)',
+                        }}
                       >
                         {stat.value}
                       </div>
                       <div
-                        className='text-white opacity-90 fw-medium'
-                        style={{ fontSize: '0.8rem', lineHeight: '1.2' }}
+                        className='fw-medium'
+                        style={{
+                          fontSize: '0.8rem',
+                          lineHeight: '1.2',
+                          color: 'var(--text-secondary)',
+                          opacity: 0.9,
+                        }}
                       >
                         {stat.label}
                       </div>

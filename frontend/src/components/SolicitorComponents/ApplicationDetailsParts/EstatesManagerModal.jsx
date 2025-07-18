@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom'; // <-- Important for portal!
+import { createPortal } from 'react-dom';
 import { API_URL } from '../../../baseUrls';
 import {
   deleteData,
@@ -34,7 +34,6 @@ const ESTATE_ASSETS = [
 ];
 
 const ESTATE_LIABILITIES = ['irish_debts'];
-
 const ESTATE_DISPLAY_ORDER = [...ESTATE_ASSETS, ...ESTATE_LIABILITIES];
 
 const estateLabels = {
@@ -116,10 +115,7 @@ const EstateManagerModal = ({
   };
 
   const handleFormSubmit = async (type, data) => {
-    if (!type) {
-      console.error('Estate type is required for form submission');
-      return;
-    }
+    if (!type) return;
     const baseUrl = `${API_URL}/api/estates/${type}/`;
     const body = { ...data, application: applicationId };
 
@@ -134,23 +130,18 @@ const EstateManagerModal = ({
       closeForm();
       refreshEstates();
     } catch (err) {
-      console.error('Save error:', err);
       alert('Failed to save estate. Please try again.');
     }
   };
 
   const handleDelete = async (type, estate) => {
-    if (!type || !estate?.id) {
-      console.error('Estate type and ID are required for deletion');
-      return;
-    }
+    if (!type || !estate?.id) return;
     if (!confirm('Are you sure you want to delete this estate?')) return;
     try {
       const deleteEndpoint = `${API_URL}/api/estates/${type}/${estate.id}/`;
       await deleteData(deleteEndpoint);
       refreshEstates();
     } catch (err) {
-      console.error('Delete error:', err);
       alert('Failed to delete estate. Please try again.');
     }
   };
@@ -162,10 +153,7 @@ const EstateManagerModal = ({
   };
 
   const handleSimpleSave = async (type) => {
-    if (!type) {
-      console.error('Estate type is required for saving');
-      return;
-    }
+    if (!type) return;
     setSavingStates((prev) => ({ ...prev, [type]: true }));
     try {
       const value = simpleValues[type];
@@ -190,7 +178,6 @@ const EstateManagerModal = ({
       });
       refreshEstates();
     } catch (err) {
-      console.error('Save error for', type, ':', err);
       alert(`Failed to save ${estateLabels[type]}. Please try again.`);
     } finally {
       setSavingStates((prev) => ({ ...prev, [type]: false }));
@@ -222,7 +209,6 @@ const EstateManagerModal = ({
       });
       refreshEstates();
     } catch (err) {
-      console.error('Delete error for', type, ':', err);
       alert(`Failed to delete ${estateLabels[type]}. Please try again.`);
     } finally {
       setSavingStates((prev) => ({ ...prev, [type]: false }));
@@ -232,21 +218,36 @@ const EstateManagerModal = ({
   const renderSectionHeader = (title, description, isLiability = false) => (
     <div
       style={{
-        padding: '12px 16px',
-        marginBottom: '16px',
-        backgroundColor: isLiability ? '#fef3c7' : '#dbeafe',
-        border: `1px solid ${isLiability ? '#f59e0b' : '#3b82f6'}`,
-        borderRadius: '6px',
-        borderLeft: `4px solid ${isLiability ? '#f59e0b' : '#3b82f6'}`,
+        padding: '12px 18px',
+        marginBottom: '18px',
+        background: isLiability
+          ? 'var(--warning-10, #fff7e6)'
+          : 'var(--primary-10, #e0e7ff)',
+        border: `1.5px solid ${
+          isLiability
+            ? 'var(--warning-primary, #f59e0b)'
+            : 'var(--primary-blue, #3b82f6)'
+        }`,
+        borderRadius: '9px',
+        borderLeft: `4px solid ${
+          isLiability
+            ? 'var(--warning-primary, #f59e0b)'
+            : 'var(--primary-blue, #3b82f6)'
+        }`,
+        boxShadow: '0 1.5px 8px var(--primary-10, rgba(59,130,246,0.09))',
+        backdropFilter: 'blur(6px)',
       }}
     >
       <h3
         style={{
           margin: 0,
-          fontSize: '15px',
-          fontWeight: '600',
-          color: isLiability ? '#92400e' : '#1e40af',
+          fontSize: '15.7px',
+          fontWeight: '700',
+          color: isLiability
+            ? 'var(--warning-primary, #92400e)'
+            : 'var(--primary-blue, #1e40af)',
           marginBottom: description ? '4px' : 0,
+          letterSpacing: '0.01em',
         }}
       >
         {title}
@@ -255,9 +256,10 @@ const EstateManagerModal = ({
         <p
           style={{
             margin: 0,
-            fontSize: '12px',
-            color: '#6b7280',
-            lineHeight: '1.4',
+            fontSize: '12.5px',
+            color: 'var(--text-secondary, #6b7280)',
+            lineHeight: '1.47',
+            fontWeight: 500,
           }}
         >
           {description}
@@ -276,7 +278,7 @@ const EstateManagerModal = ({
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '12px',
           flexWrap: 'wrap',
         }}
       >
@@ -286,11 +288,11 @@ const EstateManagerModal = ({
           <label
             htmlFor={`value-${type}`}
             style={{
-              fontSize: '13px',
-              fontWeight: '500',
-              color: '#374151',
-              marginRight: '8px',
-              minWidth: '45px',
+              fontSize: '13.5px',
+              fontWeight: '600',
+              color: 'var(--text-primary, #374151)',
+              marginRight: '9px',
+              minWidth: '53px',
             }}
           >
             {isLiability ? 'Amount:' : 'Value:'}
@@ -304,52 +306,69 @@ const EstateManagerModal = ({
             disabled={isSaving}
             style={{
               width: '140px',
-              padding: '6px 8px',
-              fontSize: '13px',
-              border: `1px solid ${hasPendingChanges ? '#f59e0b' : '#d1d5db'}`,
-              borderRadius: '4px',
-              backgroundColor: isSaving ? '#f9fafb' : '#ffffff',
+              padding: '6.5px 12px',
+              fontSize: '13.4px',
+              border: `1.5px solid ${
+                hasPendingChanges
+                  ? 'var(--warning-primary, #f59e0b)'
+                  : 'var(--border-primary, #cbd5e1)'
+              }`,
+              borderRadius: '7px',
+              background: isSaving
+                ? 'var(--surface-disabled, #f3f4f6)'
+                : 'var(--surface-primary, #ffffff)',
               outline: 'none',
-              transition: 'border-color 0.15s ease',
+              transition: 'border-color 0.13s',
+              fontWeight: 500,
+              color: 'var(--text-primary, #22223b)',
+              boxShadow: hasPendingChanges
+                ? '0 0 0 1.5px var(--warning-primary, #f59e0b)'
+                : undefined,
             }}
           />
         </div>
-
-        <div style={{ display: 'flex', gap: '4px' }}>
+        <div style={{ display: 'flex', gap: '6px' }}>
           {hasPendingChanges && (
             <button
               onClick={() => handleSimpleSave(type)}
               disabled={isSaving}
               style={{
-                padding: '4px 8px',
-                fontSize: '11px',
-                fontWeight: '500',
-                color: '#ffffff',
-                backgroundColor: isSaving ? '#9ca3af' : '#10b981',
+                padding: '5px 14px',
+                fontSize: '12.6px',
+                fontWeight: '700',
+                color: 'var(--white, #fff)',
+                background: isSaving
+                  ? 'var(--border-primary, #9ca3af)'
+                  : 'var(--success-primary, #10b981)',
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: '5px',
                 cursor: isSaving ? 'not-allowed' : 'pointer',
-                transition: 'background-color 0.15s ease',
+                boxShadow: '0 1px 6px 0 var(--success-10, #d1fae5)',
+                transition: 'background 0.15s',
+                letterSpacing: '.01em',
               }}
             >
               {isSaving ? 'Saving...' : 'Save'}
             </button>
           )}
-
           {(hasExistingValue || simpleValues[type]) && (
             <button
               onClick={() => handleSimpleDelete(type)}
               disabled={isSaving}
               style={{
-                padding: '4px 8px',
-                fontSize: '11px',
-                fontWeight: '500',
-                color: '#ffffff',
-                backgroundColor: isSaving ? '#9ca3af' : '#dc2626',
+                padding: '5px 14px',
+                fontSize: '12.6px',
+                fontWeight: '700',
+                color: 'var(--white, #fff)',
+                background: isSaving
+                  ? 'var(--border-primary, #9ca3af)'
+                  : 'var(--error-primary, #dc2626)',
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: '5px',
                 cursor: isSaving ? 'not-allowed' : 'pointer',
-                transition: 'background-color 0.15s ease',
+                boxShadow: '0 1px 6px 0 var(--error-10, #fee2e2)',
+                transition: 'background 0.15s',
+                letterSpacing: '.01em',
               }}
             >
               {isSaving ? 'Deleting...' : 'Delete'}
@@ -360,7 +379,7 @@ const EstateManagerModal = ({
     );
   };
 
-  // --- Modal JSX ---
+  // --- MODAL CONTENT ---
   const modalContent = (
     <div
       style={{
@@ -369,47 +388,63 @@ const EstateManagerModal = ({
         left: 0,
         width: '100vw',
         height: '100vh',
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        backdropFilter: 'blur(2px)',
+        background: 'rgba(40, 46, 85, 0.60)',
+        backdropFilter: 'blur(4.5px) saturate(112%)',
         zIndex: 1050,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '20px',
+        padding: '26px',
+        animation: 'modalFadeIn 0.4s',
       }}
     >
+      <style>{`
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
       <div
         style={{
-          backgroundColor: '#ffffff',
+          background: `
+            linear-gradient(135deg, var(--surface-primary, #fff) 94%, var(--primary-10, #e0e7ff) 100%),
+            radial-gradient(circle at 15% 15%, var(--primary-blue, #667eea)10 0%, transparent 54%),
+            radial-gradient(circle at 92% 85%, var(--primary-purple, #a78bfa)10 0%, transparent 55%)
+          `,
           width: '100%',
-          maxWidth: '900px',
+          maxWidth: '950px',
           height: '90vh',
-          borderRadius: '12px',
+          borderRadius: '20px',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          boxShadow:
-            '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          border: '1px solid #e5e7eb',
+          boxShadow: `
+            0 24px 48px -8px var(--primary-20, rgba(59,130,246,0.11)),
+            0 2px 12px 0 var(--primary-10, rgba(59,130,246,0.08))
+          `,
+          border: '1.5px solid var(--border-primary, #e5e7eb)',
+          position: 'relative',
         }}
       >
         {/* Header */}
         <div
           style={{
-            padding: '16px 20px',
-            borderBottom: '1px solid #e5e7eb',
+            padding: '19px 26px',
+            borderBottom: '1.5px solid var(--border-primary, #e5e7eb)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: '#f9fafb',
+            background: 'var(--surface-header, #f9fafb)',
+            boxShadow: '0 3px 18px var(--primary-10, rgba(59,130,246,0.04))',
           }}
         >
           <h2
             style={{
               margin: 0,
-              fontSize: '18px',
-              fontWeight: '600',
-              color: '#111827',
+              fontSize: '20px',
+              fontWeight: '800',
+              color: 'var(--primary-blue, #1e40af)',
+              letterSpacing: '0.01em',
             }}
           >
             Estate Assets and Liabilities
@@ -417,27 +452,38 @@ const EstateManagerModal = ({
           <button
             onClick={onClose}
             style={{
-              padding: '4px',
-              backgroundColor: 'transparent',
+              padding: '7px',
+              background: 'rgba(59,130,246,0.07)',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: '7px',
               cursor: 'pointer',
-              color: '#6b7280',
-              fontSize: '18px',
+              color: 'var(--primary-blue, #64748b)',
+              fontSize: '22px',
               lineHeight: 1,
+              fontWeight: 700,
+              boxShadow: '0 1px 6px rgba(59,130,246,0.07)',
+              transition: 'background .18s',
             }}
+            onMouseOver={(e) => {
+              e.target.style.background = 'rgba(59,130,246,0.18)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = 'rgba(59,130,246,0.07)';
+            }}
+            aria-label='Close modal'
           >
             ✕
           </button>
         </div>
-
         {/* Body */}
         <div
           style={{
             flex: 1,
-            padding: '20px',
+            padding: '24px 24px 20px 24px',
             overflowY: 'auto',
-            backgroundColor: '#f9fafb',
+            background: 'var(--surface-main, #f9fafb)',
+            boxShadow:
+              'inset 0 2px 14px var(--primary-10, rgba(59,130,246,0.06))',
           }}
         >
           {/* Assets Section */}
@@ -445,13 +491,12 @@ const EstateManagerModal = ({
             'ESTATE ASSETS',
             'Property, investments, debts owed to the deceased, and other valuable items comprising the gross estate'
           )}
-
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '12px',
-              marginBottom: '32px',
+              gap: '14px',
+              marginBottom: '34px',
             }}
           >
             {ESTATE_ASSETS.map((type) => {
@@ -463,28 +508,31 @@ const EstateManagerModal = ({
                 <div
                   key={type}
                   style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '6px',
-                    padding: '12px 16px',
-                    transition: 'border-color 0.15s ease',
+                    background: 'var(--surface-card, #fff)',
+                    border: '1.5px solid var(--primary-20, #e5e7eb)',
+                    borderRadius: '9px',
+                    padding: '15px 20px',
+                    marginBottom: '2px',
                     position: 'relative',
+                    boxShadow:
+                      '0 2.5px 9px var(--primary-10, rgba(59,130,246,0.06))',
+                    transition: 'border-color 0.13s',
                   }}
                 >
                   <div
                     style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#3b82f6',
-                      marginBottom: isSimple ? '8px' : '12px',
+                      fontSize: '15px',
+                      fontWeight: '700',
+                      color: 'var(--primary-blue, #3b82f6)',
+                      marginBottom: isSimple ? '7px' : '13px',
+                      letterSpacing: '.01em',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px',
+                      gap: '7px',
                     }}
                   >
                     {label}
                   </div>
-
                   {isSimple ? (
                     renderSimpleEstateInput(type, false)
                   ) : (
@@ -502,16 +550,14 @@ const EstateManagerModal = ({
               );
             })}
           </div>
-
           {/* Liabilities Section */}
           {renderSectionHeader(
             'ESTATE LIABILITIES',
             'Debts, funeral expenses, and other obligations payable by the estate',
             true
           )}
-
           <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '13px' }}
           >
             {ESTATE_LIABILITIES.map((type) => {
               const label = estateLabels[type];
@@ -522,24 +568,26 @@ const EstateManagerModal = ({
                 <div
                   key={type}
                   style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #f59e0b',
-                    borderRadius: '6px',
-                    padding: '12px 16px',
-                    transition: 'border-color 0.15s ease',
+                    background: 'var(--surface-card, #fff)',
+                    border: '1.5px solid var(--warning-primary, #f59e0b)',
+                    borderRadius: '9px',
+                    padding: '15px 20px',
+                    boxShadow:
+                      '0 2.5px 9px var(--warning-10, rgba(245,158,11,0.06))',
+                    marginBottom: '2px',
                   }}
                 >
                   <div
                     style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#d97706',
-                      marginBottom: isSimple ? '8px' : '12px',
+                      fontSize: '15px',
+                      fontWeight: '700',
+                      color: 'var(--warning-primary, #d97706)',
+                      marginBottom: isSimple ? '7px' : '13px',
+                      letterSpacing: '.01em',
                     }}
                   >
                     {label}
                   </div>
-
                   {isSimple ? (
                     renderSimpleEstateInput(type, true)
                   ) : (
@@ -558,56 +606,56 @@ const EstateManagerModal = ({
             })}
           </div>
         </div>
-
         {/* Footer */}
         <div
           style={{
-            padding: '12px 20px',
-            borderTop: '1px solid #e5e7eb',
+            padding: '17px 26px',
+            borderTop: '1.5px solid var(--border-primary, #e5e7eb)',
             display: 'flex',
             justifyContent: 'flex-end',
-            backgroundColor: '#f9fafb',
+            alignItems: 'center',
+            background: 'var(--surface-header, #f9fafb)',
+            boxShadow: '0 -2px 8px var(--primary-10, rgba(59,130,246,0.07))',
           }}
         >
           <button
             onClick={onClose}
             style={{
-              padding: '8px 16px',
-              fontSize: '14px',
-              fontWeight: '500',
-              color: '#374151',
-              backgroundColor: '#ffffff',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
+              padding: '9px 19px',
+              fontSize: '15.1px',
+              fontWeight: '800',
+              color: 'var(--primary-blue, #2563eb)',
+              background: 'var(--surface-card, #fff)',
+              border: '1.5px solid var(--primary-blue, #c7d2fe)',
+              borderRadius: '7px',
               cursor: 'pointer',
-              transition: 'all 0.15s ease',
+              transition: 'background .15s',
+              boxShadow: '0 1px 7px 0 var(--primary-10, rgba(59,130,246,0.05))',
+              letterSpacing: '.01em',
             }}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f3f4f6';
-              e.target.style.borderColor = '#9ca3af';
+              e.target.style.background = 'var(--primary-10, #e0e7ff)';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#ffffff';
-              e.target.style.borderColor = '#d1d5db';
+              e.target.style.background = 'var(--surface-card, #fff)';
             }}
           >
             Close
           </button>
         </div>
+        <EstateFormModal
+          show={formState.show}
+          onClose={closeForm}
+          onSubmit={handleFormSubmit}
+          estateType={formState.estateType}
+          initialData={formState.initialData}
+          currency_sign={currency_sign}
+        />
       </div>
-
-      <EstateFormModal
-        show={formState.show}
-        onClose={closeForm}
-        onSubmit={handleFormSubmit}
-        estateType={formState.estateType}
-        initialData={formState.initialData}
-        currency_sign={currency_sign}
-      />
     </div>
   );
 
-  // Return with Portal!
+  // Portal: Glassmorphic overlay
   return createPortal(modalContent, document.body);
 };
 

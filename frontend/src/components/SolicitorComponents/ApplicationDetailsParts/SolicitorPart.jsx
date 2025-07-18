@@ -68,9 +68,7 @@ const SolicitorPart = ({
   }, [solicitor_id, solicitors]);
 
   const updateSelectedSolicitor = async (solicitor_id) => {
-    const data = {
-      solicitor: solicitor_id,
-    };
+    const data = { solicitor: solicitor_id };
 
     try {
       setIsUpdatingSolicitorAssigned(true);
@@ -106,16 +104,17 @@ const SolicitorPart = ({
       className='modern-main-card mb-4 position-relative overflow-hidden'
       style={{
         background: `
-          linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-          radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-          radial-gradient(circle at 70% 90%, rgba(139, 92, 246, 0.1), transparent 50%)
+          var(--gradient-surface),
+          linear-gradient(135deg, var(--primary-10), var(--primary-20)),
+          radial-gradient(circle at 30% 10%, var(--primary-20), transparent 50%),
+          radial-gradient(circle at 70% 90%, var(--primary-blue), transparent 50%)
         `,
-        border: '1px solid rgba(255, 255, 255, 0.3)',
+        border: '1px solid var(--border-primary)',
         borderRadius: '24px',
         boxShadow: `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          0 20px 40px var(--primary-10),
+          0 8px 16px var(--primary-20),
+          inset 0 1px 0 var(--white-10)
         `,
         backdropFilter: 'blur(20px)',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -124,17 +123,17 @@ const SolicitorPart = ({
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
         e.currentTarget.style.boxShadow = `
-          0 32px 64px rgba(0, 0, 0, 0.12),
-          0 16px 32px rgba(0, 0, 0, 0.08),
-          inset 0 1px 0 rgba(255, 255, 255, 0.6)
+          0 32px 64px var(--primary-20),
+          0 16px 32px var(--primary-30),
+          inset 0 1px 0 var(--white-10)
         `;
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0) scale(1)';
         e.currentTarget.style.boxShadow = `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          0 20px 40px var(--primary-10),
+          0 8px 16px var(--primary-20),
+          inset 0 1px 0 var(--white-10)
         `;
       }}
     >
@@ -143,10 +142,10 @@ const SolicitorPart = ({
         className='position-absolute w-100 h-100'
         style={{
           background: `
-            radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.06) 0%, transparent 50%)
+            radial-gradient(circle at 20% 20%, var(--primary-blue) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, var(--primary-blue-dark) 0%, transparent 50%)
           `,
-          opacity: 0.3,
+          opacity: 0.2,
           animation: 'float 6s ease-in-out infinite',
         }}
       />
@@ -156,15 +155,15 @@ const SolicitorPart = ({
         className='px-2 px-md-4 py-3 py-md-4 d-flex align-items-center gap-2 gap-md-3 position-relative'
         style={{
           background: `
-      linear-gradient(135deg, #8b5cf6, #7c3aed),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
-    `,
-          color: '#ffffff',
+            linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark)),
+            var(--gradient-header)
+          `,
+          color: 'var(--text-primary)',
           borderTopLeftRadius: '22px',
           borderTopRightRadius: '22px',
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          border: '1px solid var(--border-muted)',
+          borderBottom: '1px solid var(--border-primary)',
           minHeight: window.innerWidth < 768 ? '80px' : 'auto',
         }}
       >
@@ -174,24 +173,22 @@ const SolicitorPart = ({
           style={{
             width: window.innerWidth < 768 ? '40px' : '56px',
             height: window.innerWidth < 768 ? '40px' : '56px',
-            background: 'rgba(255, 255, 255, 0.15)',
-            border: '2px solid rgba(255, 255, 255, 0.25)',
+            background: 'var(--surface-tertiary)',
+            border: '2px solid var(--border-muted)',
             backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.3s',
             cursor: 'pointer',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+            e.currentTarget.style.background = 'var(--primary-20)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+            e.currentTarget.style.background = 'var(--surface-tertiary)';
           }}
         >
           <FaUserTie size={window.innerWidth < 768 ? 16 : 20} />
-
-          {/* Subtle glow effect */}
           <div
             className='position-absolute rounded-circle d-none d-md-block'
             style={{
@@ -199,7 +196,7 @@ const SolicitorPart = ({
               left: '-10px',
               right: '-10px',
               bottom: '-10px',
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'var(--primary-10)',
               filter: 'blur(8px)',
               zIndex: -1,
             }}
@@ -209,10 +206,11 @@ const SolicitorPart = ({
         {/* Content area - Responsive layout */}
         <div className='flex-grow-1 min-w-0'>
           <h5
-            className='fw-bold mb-1 mb-md-2 text-white'
+            className='fw-bold mb-1 mb-md-2'
             style={{
               fontSize: window.innerWidth < 768 ? '1.1rem' : '1.4rem',
               letterSpacing: '-0.02em',
+              color: 'var(--text-primary)',
               lineHeight: '1.2',
             }}
           >
@@ -220,14 +218,15 @@ const SolicitorPart = ({
             <span className='d-inline d-sm-none'>Legal Rep</span>
           </h5>
           <div
-            className='px-2 px-md-3 py-1 py-md-2 rounded-pill fw-semibold text-white'
+            className='px-2 px-md-3 py-1 py-md-2 rounded-pill fw-semibold'
             style={{
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'var(--primary-20)',
               fontSize: window.innerWidth < 768 ? '0.75rem' : '0.9rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-primary)',
               display: 'inline-block',
               backdropFilter: 'blur(10px)',
               letterSpacing: '0.02em',
+              color: 'var(--text-primary)',
             }}
           >
             <span className='d-none d-sm-inline'>Assigned Solicitor</span>
@@ -238,24 +237,25 @@ const SolicitorPart = ({
         {/* Responsive Status Badge */}
         <div className='flex-shrink-0'>
           <span
-            className='px-2 px-md-4 py-2 py-md-3 rounded-pill text-white fw-bold d-flex align-items-center gap-1 gap-md-2'
+            className='px-2 px-md-4 py-2 py-md-3 rounded-pill fw-bold d-flex align-items-center gap-1 gap-md-2'
             style={{
               background: assignedSolicitor
-                ? 'linear-gradient(135deg, #22c55e, #16a34a)'
-                : 'linear-gradient(135deg, #ef4444, #dc2626)',
+                ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                : 'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
               fontSize: window.innerWidth < 768 ? '0.75rem' : '0.9rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-primary)',
               backdropFilter: 'blur(10px)',
               boxShadow:
                 window.innerWidth < 768
-                  ? '0 4px 12px rgba(0, 0, 0, 0.15)'
-                  : '0 8px 16px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.3s ease',
+                  ? '0 4px 12px var(--primary-10)'
+                  : '0 8px 16px var(--primary-20)',
+              transition: 'all 0.3s',
               cursor: 'default',
               letterSpacing: '0.02em',
               minWidth: window.innerWidth < 768 ? '70px' : 'auto',
               justifyContent: 'center',
               whiteSpace: 'nowrap',
+              color: '#fff',
             }}
           >
             <svg
@@ -287,20 +287,18 @@ const SolicitorPart = ({
             </span>
           </span>
         </div>
-
         {/* Mobile-specific gradient overlay for better text contrast */}
         <div
           className='position-absolute top-0 start-0 w-100 h-100 d-block d-md-none'
           style={{
             background:
-              'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)',
+              'linear-gradient(135deg, var(--primary-blue-10) 0%, var(--primary-blue-dark-10) 100%)',
             borderTopLeftRadius: '22px',
             borderTopRightRadius: '22px',
             pointerEvents: 'none',
             zIndex: 0,
           }}
         />
-
         {/* Ensure content is above overlay */}
         <style>{`
           .position-relative > * {
@@ -312,24 +310,22 @@ const SolicitorPart = ({
 
       {/* Content Area */}
       <div className='px-4 pb-4'>
-        {/* Loading State */}
         {isUpdatingSolicitorAssigned ? (
           <div className='p-4'>
             <LoadingComponent message='Updating solicitor...' />
           </div>
         ) : (
           <>
-            {/* No Solicitor Warning */}
             {!assignedSolicitor && (
               <div
                 className='alert border-0 mb-4'
                 style={{
                   background:
-                    'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05))',
+                    'linear-gradient(135deg, var(--error-20), var(--error-10))',
                   borderRadius: '16px',
-                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  border: '1px solid var(--error-30)',
                   backdropFilter: 'blur(10px)',
-                  color: '#dc2626',
+                  color: 'var(--error-dark)',
                   padding: '1.5rem',
                 }}
               >
@@ -338,13 +334,14 @@ const SolicitorPart = ({
                     width: '40px',
                     height: '40px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    background:
+                      'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 1rem',
-                    boxShadow: '0 8px 16px rgba(239, 68, 68, 0.3)',
+                    boxShadow: '0 8px 16px var(--error-30)',
                   }}
                 >
                   <i className='fas fa-exclamation-triangle'></i>
@@ -366,17 +363,18 @@ const SolicitorPart = ({
               </div>
             )}
 
-            {/* Main Content */}
             {isLoading ? (
               <div className='p-4'>
                 <LoadingComponent message='Loading solicitors...' />
               </div>
             ) : (
               <div className='row g-4 align-items-end'>
-                {/* Solicitor Selection */}
                 <div className='col-md-8'>
-                  <label className='form-label fw-semibold text-slate-700 mb-2'>
-                    <i className='fas fa-user-tie me-2 text-purple-500'></i>
+                  <label className='form-label fw-semibold mb-2 theme-text-secondary'>
+                    <i
+                      className='fas fa-user-tie me-2'
+                      style={{ color: 'var(--primary-blue)' }}
+                    ></i>
                     Assigned Solicitor
                   </label>
 
@@ -385,11 +383,11 @@ const SolicitorPart = ({
                       className='alert border-0'
                       style={{
                         background:
-                          'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05))',
+                          'linear-gradient(135deg, var(--warning-20), var(--warning-30))',
                         borderRadius: '16px',
-                        border: '1px solid rgba(245, 158, 11, 0.2)',
+                        border: '1px solid var(--warning-30)',
                         backdropFilter: 'blur(10px)',
-                        color: '#92400e',
+                        color: 'var(--warning-dark)',
                         padding: '1.5rem',
                       }}
                     >
@@ -400,7 +398,7 @@ const SolicitorPart = ({
                             height: '32px',
                             borderRadius: '50%',
                             background:
-                              'linear-gradient(135deg, #f59e0b, #d97706)',
+                              'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                             color: 'white',
                             display: 'flex',
                             alignItems: 'center',
@@ -428,32 +426,17 @@ const SolicitorPart = ({
                       style={{
                         borderRadius: '16px',
                         overflow: 'hidden',
-                        background: 'rgba(255, 255, 255, 0.7)',
+                        background: 'var(--surface-secondary)',
                         border: !assignedSolicitor
-                          ? '2px solid #ef4444'
-                          : '1px solid rgba(255, 255, 255, 0.5)',
+                          ? '2px solid var(--error-primary)'
+                          : '1px solid var(--border-muted)',
                         backdropFilter: 'blur(20px)',
                         boxShadow: !assignedSolicitor
-                          ? '0 15px 35px rgba(239, 68, 68, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
-                          : '0 8px 24px rgba(0, 0, 0, 0.06)',
-                        transition: 'all 0.3s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (assignedSolicitor) {
-                          e.currentTarget.style.transform = 'translateY(-4px)';
-                          e.currentTarget.style.boxShadow =
-                            '0 16px 40px rgba(0, 0, 0, 0.1)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (assignedSolicitor) {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow =
-                            '0 8px 24px rgba(0, 0, 0, 0.06)';
-                        }
+                          ? '0 15px 35px var(--error-20), 0 5px 15px var(--primary-10)'
+                          : '0 8px 24px var(--primary-10)',
+                        transition: 'all 0.3s',
                       }}
                     >
-                      {/* Glow effect for error state */}
                       {!assignedSolicitor && (
                         <div
                           className='position-absolute'
@@ -463,7 +446,7 @@ const SolicitorPart = ({
                             right: '-2px',
                             bottom: '-2px',
                             background:
-                              'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1))',
+                              'linear-gradient(135deg, var(--error-30), var(--error-20))',
                             borderRadius: '18px',
                             filter: 'blur(8px)',
                             zIndex: -1,
@@ -480,7 +463,10 @@ const SolicitorPart = ({
                           width: '45px',
                         }}
                       >
-                        <i className='fas fa-user text-slate-500'></i>
+                        <i
+                          className='fas fa-user'
+                          style={{ color: 'var(--text-muted)' }}
+                        ></i>
                       </div>
                       <select
                         className='form-select border-0 fw-medium'
@@ -489,7 +475,9 @@ const SolicitorPart = ({
                           fontSize: '1rem',
                           fontWeight: '500',
                           padding: '0.75rem 1rem',
-                          color: !assignedSolicitor ? '#ef4444' : '#1e293b',
+                          color: !assignedSolicitor
+                            ? 'var(--error-primary)'
+                            : 'var(--text-primary)',
                         }}
                         onChange={(e) =>
                           updateSelectedSolicitor(e.target.value)
@@ -508,7 +496,7 @@ const SolicitorPart = ({
                             style={{
                               backgroundColor:
                                 solicitor.id === solicitor_id
-                                  ? '#dbeafe'
+                                  ? 'var(--primary-10)'
                                   : 'transparent',
                               fontWeight:
                                 solicitor.id === solicitor_id ? '600' : '400',
@@ -527,11 +515,11 @@ const SolicitorPart = ({
                     <div
                       className='mt-3 p-4 d-flex align-items-center position-relative'
                       style={{
-                        background: 'rgba(255, 255, 255, 0.7)',
+                        background: 'var(--surface-secondary)',
                         borderRadius: '16px',
-                        border: '1px solid rgba(34, 197, 94, 0.3)',
+                        border: '1px solid var(--success-30)',
                         backdropFilter: 'blur(20px)',
-                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                        boxShadow: '0 8px 24px var(--primary-10)',
                       }}
                     >
                       {/* Success glow */}
@@ -543,7 +531,7 @@ const SolicitorPart = ({
                           right: '-2px',
                           bottom: '-2px',
                           background:
-                            'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.05))',
+                            'linear-gradient(135deg, var(--success-20), var(--success-10))',
                           borderRadius: '18px',
                           filter: 'blur(6px)',
                           zIndex: -1,
@@ -558,9 +546,9 @@ const SolicitorPart = ({
                           width: '40px',
                           height: '40px',
                           background:
-                            'linear-gradient(135deg, #22c55e, #16a34a)',
+                            'linear-gradient(135deg, var(--success-primary), var(--success-dark))',
                           color: 'white',
-                          boxShadow: '0 8px 16px rgba(34, 197, 94, 0.3)',
+                          boxShadow: '0 8px 16px var(--success-30)',
                         }}
                       >
                         <i
@@ -571,11 +559,17 @@ const SolicitorPart = ({
                       <div>
                         <div
                           className='fw-bold text-success'
-                          style={{ fontSize: '1rem' }}
+                          style={{
+                            fontSize: '1rem',
+                            color: 'var(--success-dark)',
+                          }}
                         >
                           Currently Assigned
                         </div>
-                        <div className='text-success small'>
+                        <div
+                          className='text-success small'
+                          style={{ color: 'var(--success-dark)' }}
+                        >
                           {assignedSolicitor.title}{' '}
                           {assignedSolicitor.first_name}{' '}
                           {assignedSolicitor.last_name}
@@ -591,25 +585,26 @@ const SolicitorPart = ({
                     className='btn px-4 py-3 fw-medium text-decoration-none d-inline-flex align-items-center gap-2'
                     to='/solicitors'
                     style={{
-                      background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                      background:
+                        'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                       color: 'white',
                       border: 'none',
                       borderRadius: '16px',
-                      transition: 'all 0.3s ease',
-                      boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                      transition: 'all 0.3s',
+                      boxShadow: '0 8px 20px var(--primary-30)',
                       backdropFilter: 'blur(10px)',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform =
                         'translateY(-2px) scale(1.05)';
                       e.currentTarget.style.boxShadow =
-                        '0 15px 35px rgba(59, 130, 246, 0.5)';
+                        '0 15px 35px var(--primary-30)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform =
                         'translateY(0) scale(1)';
                       e.currentTarget.style.boxShadow =
-                        '0 8px 20px rgba(59, 130, 246, 0.3)';
+                        '0 8px 20px var(--primary-30)';
                     }}
                   >
                     <FaPlus size={14} />
@@ -627,14 +622,16 @@ const SolicitorPart = ({
                   className={`alert border-0 text-center`}
                   style={{
                     background: isError
-                      ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05))'
-                      : 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.05))',
+                      ? 'linear-gradient(135deg, var(--error-20), var(--error-10))'
+                      : 'linear-gradient(135deg, var(--success-20), var(--success-10))',
                     borderRadius: '16px',
                     border: isError
-                      ? '1px solid rgba(239, 68, 68, 0.2)'
-                      : '1px solid rgba(34, 197, 94, 0.2)',
+                      ? '1px solid var(--error-30)'
+                      : '1px solid var(--success-30)',
                     backdropFilter: 'blur(10px)',
-                    color: isError ? '#dc2626' : '#059669',
+                    color: isError
+                      ? 'var(--error-dark)'
+                      : 'var(--success-dark)',
                     padding: '1.5rem',
                   }}
                   role='alert'
@@ -646,8 +643,8 @@ const SolicitorPart = ({
                         height: '32px',
                         borderRadius: '50%',
                         background: isError
-                          ? 'linear-gradient(135deg, #ef4444, #dc2626)'
-                          : 'linear-gradient(135deg, #22c55e, #16a34a)',
+                          ? 'linear-gradient(135deg, var(--error-primary), var(--error-dark))'
+                          : 'linear-gradient(135deg, var(--success-primary), var(--success-dark))',
                         color: 'white',
                         display: 'flex',
                         alignItems: 'center',
@@ -672,17 +669,11 @@ const SolicitorPart = ({
         )}
       </div>
 
-      {/* CSS Animations */}
       <style>{`
         @keyframes float {
-          0%, 100% { 
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% { 
-            transform: translateY(-10px) rotate(2deg);
-          }
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-10px) rotate(2deg); }
         }
-        
         @keyframes selectionGlow {
           0% { opacity: 0.3; }
           100% { opacity: 0.6; }

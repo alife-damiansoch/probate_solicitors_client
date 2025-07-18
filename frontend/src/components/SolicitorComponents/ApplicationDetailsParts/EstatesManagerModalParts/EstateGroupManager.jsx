@@ -70,8 +70,8 @@ const EstateGroupManager = ({
           style={{
             marginTop: '8px',
             padding: '8px',
-            backgroundColor: '#f9fafb',
-            borderRadius: '4px',
+            background: 'var(--surface-main, #f9fafb)',
+            borderRadius: '7px',
             fontSize: '13px',
             lineHeight: '1.4',
           }}
@@ -80,14 +80,20 @@ const EstateGroupManager = ({
             <div key={key} style={{ display: 'flex', marginBottom: '2px' }}>
               <span
                 style={{
-                  fontWeight: '500',
-                  color: '#374151',
-                  minWidth: '80px',
+                  fontWeight: '600',
+                  color: 'var(--primary-blue, #374151)',
+                  minWidth: '85px',
+                  letterSpacing: '.01em',
                 }}
               >
                 {formatFieldName(key)}:
               </span>
-              <span style={{ color: '#6b7280', marginLeft: '8px' }}>
+              <span
+                style={{
+                  color: 'var(--text-secondary, #6b7280)',
+                  marginLeft: '8px',
+                }}
+              >
                 {key === 'value' ? formatMoney(val, currency_sign) : val}
               </span>
             </div>
@@ -108,8 +114,8 @@ const EstateGroupManager = ({
         style={{
           marginTop: '8px',
           padding: '8px',
-          backgroundColor: '#f9fafb',
-          borderRadius: '4px',
+          background: 'var(--surface-main, #f9fafb)',
+          borderRadius: '7px',
           fontSize: '13px',
           lineHeight: '1.4',
         }}
@@ -123,14 +129,20 @@ const EstateGroupManager = ({
             >
               <span
                 style={{
-                  fontWeight: '500',
-                  color: '#374151',
-                  minWidth: '80px',
+                  fontWeight: '600',
+                  color: 'var(--primary-blue, #374151)',
+                  minWidth: '85px',
+                  letterSpacing: '.01em',
                 }}
               >
                 {field.label}:
               </span>
-              <span style={{ color: '#6b7280', marginLeft: '8px' }}>
+              <span
+                style={{
+                  color: 'var(--text-secondary, #6b7280)',
+                  marginLeft: '8px',
+                }}
+              >
                 {field.name === 'value' || field.type === 'number'
                   ? formatMoney(value, currency_sign)
                   : value}
@@ -143,21 +155,22 @@ const EstateGroupManager = ({
   };
 
   return (
-    <div style={{ marginBottom: '24px' }}>
+    <div style={{ marginBottom: '26px' }}>
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '12px',
+          marginBottom: '13px',
         }}
       >
         <h4
           style={{
             margin: 0,
-            fontSize: '16px',
-            fontWeight: '600',
-            color: '#111827',
+            fontSize: '17px',
+            fontWeight: '700',
+            color: 'var(--primary-blue, #1e293b)',
+            letterSpacing: '0.01em',
           }}
         >
           {label}
@@ -165,23 +178,25 @@ const EstateGroupManager = ({
         <button
           onClick={() => onAdd(typeKey)}
           style={{
-            fontSize: '12px',
-            fontWeight: '500',
-            color: '#10b981',
-            backgroundColor: 'transparent',
-            border: '1px solid #10b981',
-            padding: '4px 8px',
-            borderRadius: '4px',
+            fontSize: '12.3px',
+            fontWeight: '700',
+            color: 'var(--primary-green, #10b981)',
+            background: 'transparent',
+            border: '1.3px solid var(--primary-green, #10b981)',
+            padding: '5px 13px',
+            borderRadius: '5px',
             cursor: 'pointer',
-            transition: 'all 0.15s ease',
+            transition: 'all 0.16s cubic-bezier(0.4,0,0.2,1)',
+            boxShadow: '0 1px 8px 0 var(--primary-green, #10b981)10',
+            letterSpacing: '.01em',
           }}
           onMouseOver={(e) => {
-            e.target.style.backgroundColor = '#10b981';
-            e.target.style.color = '#ffffff';
+            e.target.style.background = 'var(--primary-green, #10b981)';
+            e.target.style.color = '#fff';
           }}
           onMouseOut={(e) => {
-            e.target.style.backgroundColor = 'transparent';
-            e.target.style.color = '#10b981';
+            e.target.style.background = 'transparent';
+            e.target.style.color = 'var(--primary-green, #10b981)';
           }}
         >
           + Add {label}
@@ -189,16 +204,19 @@ const EstateGroupManager = ({
       </div>
 
       {estates.length > 0 ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {estates.map((estate, idx) => (
             <div
               key={estate.id || idx}
               style={{
-                padding: '12px',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
-                backgroundColor: '#ffffff',
-                transition: 'border-color 0.15s ease',
+                padding: '14px',
+                border: '1.5px solid var(--border-primary, #e5e7eb)',
+                borderRadius: '8px',
+                background:
+                  'linear-gradient(110deg, var(--surface-card, #fff) 90%, var(--primary-10, #f1f5f9) 100%)',
+                transition: 'border-color 0.17s',
+                boxShadow:
+                  '0 1.5px 6px var(--primary-blue, #667eea)08, 0 1px 2px var(--primary-10, #e0e7ff)',
               }}
             >
               <div
@@ -206,15 +224,15 @@ const EstateGroupManager = ({
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'flex-start',
-                  gap: '12px',
+                  gap: '13px',
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#111827',
+                      fontSize: '14.2px',
+                      fontWeight: '700',
+                      color: 'var(--primary-blue, #0f172a)',
                       marginBottom: '4px',
                       wordBreak: 'break-word',
                     }}
@@ -224,9 +242,9 @@ const EstateGroupManager = ({
                   {estate.value && (
                     <div
                       style={{
-                        fontSize: '13px',
-                        color: '#059669',
-                        fontWeight: '500',
+                        fontSize: '13.3px',
+                        color: 'var(--primary-green, #059669)',
+                        fontWeight: '700',
                         marginBottom: '4px',
                       }}
                     >
@@ -236,27 +254,30 @@ const EstateGroupManager = ({
                   {renderAllEstateFields(estate)}
                 </div>
 
-                <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+                <div style={{ display: 'flex', gap: '5px', flexShrink: 0 }}>
                   <button
                     onClick={() => onEdit(typeKey, estate)}
                     style={{
-                      fontSize: '11px',
-                      fontWeight: '500',
-                      color: '#d97706',
-                      backgroundColor: '#fef3c7',
-                      border: '1px solid #fbbf24',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
+                      fontSize: '11.6px',
+                      fontWeight: '700',
+                      color: 'var(--primary-orange, #d97706)',
+                      background: 'var(--orange-10, #fef3c7)',
+                      border: '1.3px solid var(--primary-orange, #fbbf24)',
+                      padding: '4.5px 10px',
+                      borderRadius: '5px',
                       cursor: 'pointer',
-                      transition: 'all 0.15s ease',
+                      transition: 'all 0.16s',
+                      boxShadow: '0 1px 6px 0 var(--primary-orange, #fbbf24)08',
+                      letterSpacing: '.01em',
                     }}
                     onMouseOver={(e) => {
-                      e.target.style.backgroundColor = '#fbbf24';
+                      e.target.style.background =
+                        'var(--primary-orange, #fbbf24)';
                       e.target.style.color = '#92400e';
                     }}
                     onMouseOut={(e) => {
-                      e.target.style.backgroundColor = '#fef3c7';
-                      e.target.style.color = '#d97706';
+                      e.target.style.background = 'var(--orange-10, #fef3c7)';
+                      e.target.style.color = 'var(--primary-orange, #d97706)';
                     }}
                   >
                     Edit
@@ -264,23 +285,26 @@ const EstateGroupManager = ({
                   <button
                     onClick={() => onDelete(typeKey, estate)}
                     style={{
-                      fontSize: '11px',
-                      fontWeight: '500',
-                      color: '#dc2626',
-                      backgroundColor: '#fee2e2',
-                      border: '1px solid #f87171',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
+                      fontSize: '11.6px',
+                      fontWeight: '700',
+                      color: 'var(--error-primary, #dc2626)',
+                      background: 'var(--error-10, #fee2e2)',
+                      border: '1.3px solid var(--error-primary, #f87171)',
+                      padding: '4.5px 10px',
+                      borderRadius: '5px',
                       cursor: 'pointer',
-                      transition: 'all 0.15s ease',
+                      transition: 'all 0.16s',
+                      boxShadow: '0 1px 6px 0 var(--error-primary, #f87171)08',
+                      letterSpacing: '.01em',
                     }}
                     onMouseOver={(e) => {
-                      e.target.style.backgroundColor = '#f87171';
-                      e.target.style.color = '#ffffff';
+                      e.target.style.background =
+                        'var(--error-primary, #f87171)';
+                      e.target.style.color = '#fff';
                     }}
                     onMouseOut={(e) => {
-                      e.target.style.backgroundColor = '#fee2e2';
-                      e.target.style.color = '#dc2626';
+                      e.target.style.background = 'var(--error-10, #fee2e2)';
+                      e.target.style.color = 'var(--error-primary, #dc2626)';
                     }}
                   >
                     Delete
@@ -293,18 +317,20 @@ const EstateGroupManager = ({
       ) : (
         <div
           style={{
-            padding: '16px',
-            backgroundColor: '#f9fafb',
-            border: '2px dashed #d1d5db',
-            borderRadius: '6px',
+            padding: '17px',
+            background: 'var(--surface-main, #f9fafb)',
+            border: '2px dashed var(--border-primary, #d1d5db)',
+            borderRadius: '7px',
             textAlign: 'center',
           }}
         >
           <div
             style={{
-              fontSize: '13px',
-              color: '#6b7280',
+              fontSize: '13.3px',
+              color: 'var(--text-secondary, #6b7280)',
               marginBottom: '8px',
+              fontWeight: 500,
+              letterSpacing: '.01em',
             }}
           >
             No {label.toLowerCase()} entries yet
@@ -312,10 +338,10 @@ const EstateGroupManager = ({
           <button
             onClick={() => onAdd(typeKey)}
             style={{
-              fontSize: '12px',
-              fontWeight: '500',
-              color: '#10b981',
-              backgroundColor: 'transparent',
+              fontSize: '12.3px',
+              fontWeight: '700',
+              color: 'var(--primary-green, #10b981)',
+              background: 'transparent',
               border: 'none',
               cursor: 'pointer',
               textDecoration: 'underline',

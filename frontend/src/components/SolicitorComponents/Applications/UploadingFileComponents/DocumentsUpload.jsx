@@ -200,17 +200,13 @@ const DocumentsUpload = ({
       <div
         className='modern-main-card mb-4 position-relative overflow-hidden'
         style={{
-          background: `
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-            radial-gradient(circle at 70% 90%, rgba(59, 130, 246, 0.1), transparent 50%)
-          `,
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          background: 'var(--gradient-surface)',
+          border: '1px solid var(--border-primary)',
           borderRadius: '24px',
           boxShadow: `
-            0 20px 40px rgba(0, 0, 0, 0.08),
-            0 8px 16px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+            0 20px 40px var(--primary-10),
+            0 8px 16px var(--primary-20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1)
           `,
           backdropFilter: 'blur(20px)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -219,17 +215,17 @@ const DocumentsUpload = ({
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
           e.currentTarget.style.boxShadow = `
-            0 32px 64px rgba(0, 0, 0, 0.12),
-            0 16px 32px rgba(0, 0, 0, 0.08),
-            inset 0 1px 0 rgba(255, 255, 255, 0.6)
+            0 32px 64px var(--primary-20),
+            0 16px 32px var(--primary-30),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2)
           `;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(0) scale(1)';
           e.currentTarget.style.boxShadow = `
-            0 20px 40px rgba(0, 0, 0, 0.08),
-            0 8px 16px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+            0 20px 40px var(--primary-10),
+            0 8px 16px var(--primary-20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1)
           `;
         }}
       >
@@ -238,8 +234,8 @@ const DocumentsUpload = ({
           className='position-absolute w-100 h-100'
           style={{
             background: `
-              radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.06) 0%, transparent 50%)
+              radial-gradient(circle at 20% 20%, var(--primary-20) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, var(--primary-30) 0%, transparent 50%)
             `,
             opacity: 0.3,
             animation: 'float 6s ease-in-out infinite',
@@ -250,16 +246,14 @@ const DocumentsUpload = ({
         <div
           className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
           style={{
-            background: `
-              linear-gradient(135deg, #3b82f6, #2563eb),
-              linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
-            `,
-            color: '#ffffff',
+            background:
+              'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
+            color: 'var(--text-primary)',
             borderTopLeftRadius: '22px',
             borderTopRightRadius: '22px',
             backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+            border: '1px solid var(--border-muted)',
+            borderBottom: '1px solid var(--border-primary)',
           }}
         >
           {/* Icon with Micro-animation */}
@@ -268,22 +262,22 @@ const DocumentsUpload = ({
             style={{
               width: '56px',
               height: '56px',
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: '2px solid rgba(255, 255, 255, 0.25)',
+              background: 'var(--surface-tertiary)',
+              border: '2px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+              e.currentTarget.style.background = 'var(--surface-secondary)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+              e.currentTarget.style.background = 'var(--surface-tertiary)';
             }}
           >
-            <FaFileAlt size={20} />
+            <FaFileAlt size={20} style={{ color: 'var(--primary-blue)' }} />
 
             {/* Subtle glow effect */}
             <div
@@ -293,7 +287,7 @@ const DocumentsUpload = ({
                 left: '-10px',
                 right: '-10px',
                 bottom: '-10px',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'var(--primary-20)',
                 filter: 'blur(8px)',
                 zIndex: -1,
               }}
@@ -302,20 +296,25 @@ const DocumentsUpload = ({
 
           <div className='flex-grow-1'>
             <h5
-              className='fw-bold mb-2 text-white'
-              style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+              className='fw-bold mb-2'
+              style={{
+                fontSize: '1.4rem',
+                letterSpacing: '-0.02em',
+                color: '#ffffff',
+              }}
             >
               Document Management
             </h5>
             <div
-              className='px-3 py-2 rounded-pill fw-semibold text-white'
+              className='px-3 py-2 rounded-pill fw-semibold'
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'var(--primary-20)',
                 fontSize: '0.9rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                border: '1px solid var(--border-muted)',
                 display: 'inline-block',
                 backdropFilter: 'blur(10px)',
                 letterSpacing: '0.02em',
+                color: '#ffffff',
               }}
             >
               Uploads & Requirements
@@ -326,11 +325,12 @@ const DocumentsUpload = ({
           <span
             className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
             style={{
-              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+              background:
+                'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
               fontSize: '0.9rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
-              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+              boxShadow: '0 8px 16px var(--error-20)',
               transition: 'all 0.3s ease',
               cursor: 'default',
               letterSpacing: '0.02em',
@@ -352,12 +352,11 @@ const DocumentsUpload = ({
           <div
             className='alert border-0 mb-4'
             style={{
-              background:
-                'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05))',
+              background: 'var(--error-20)',
               borderRadius: '16px',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
+              border: '1px solid var(--error-30)',
               backdropFilter: 'blur(10px)',
-              color: '#dc2626',
+              color: 'var(--error-primary)',
               padding: '1.5rem',
             }}
           >
@@ -366,13 +365,14 @@ const DocumentsUpload = ({
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                background:
+                  'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
                 color: 'white',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 1rem',
-                boxShadow: '0 8px 16px rgba(239, 68, 68, 0.3)',
+                boxShadow: '0 8px 16px var(--error-30)',
               }}
             >
               <FaExclamationTriangle />
@@ -386,12 +386,13 @@ const DocumentsUpload = ({
             <button
               className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
               style={{
-                background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                background:
+                  'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                 color: 'white',
                 border: 'none',
                 borderRadius: '16px',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                boxShadow: '0 8px 20px var(--primary-30)',
               }}
               onClick={() => {
                 navigate(`/upload_new_document/${application.id}`);
@@ -400,12 +401,12 @@ const DocumentsUpload = ({
                 e.currentTarget.style.transform =
                   'translateY(-2px) scale(1.05)';
                 e.currentTarget.style.boxShadow =
-                  '0 15px 35px rgba(59, 130, 246, 0.5)';
+                  '0 15px 35px var(--primary-40)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
                 e.currentTarget.style.boxShadow =
-                  '0 8px 20px rgba(59, 130, 246, 0.3)';
+                  '0 8px 20px var(--primary-30)';
               }}
             >
               <FaPlus size={14} />
@@ -425,17 +426,13 @@ const DocumentsUpload = ({
         }`}
         id='documents'
         style={{
-          background: `
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-            radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-            radial-gradient(circle at 70% 90%, rgba(59, 130, 246, 0.1), transparent 50%)
-          `,
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          background: 'var(--gradient-surface)',
+          border: '1px solid var(--border-primary)',
           borderRadius: '24px',
           boxShadow: `
-            0 20px 40px rgba(0, 0, 0, 0.08),
-            0 8px 16px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+            0 20px 40px var(--primary-10),
+            0 8px 16px var(--primary-20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1)
           `,
           backdropFilter: 'blur(20px)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -445,17 +442,17 @@ const DocumentsUpload = ({
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
           e.currentTarget.style.boxShadow = `
-            0 32px 64px rgba(0, 0, 0, 0.12),
-            0 16px 32px rgba(0, 0, 0, 0.08),
-            inset 0 1px 0 rgba(255, 255, 255, 0.6)
+            0 32px 64px var(--primary-20),
+            0 16px 32px var(--primary-30),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2)
           `;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(0) scale(1)';
           e.currentTarget.style.boxShadow = `
-            0 20px 40px rgba(0, 0, 0, 0.08),
-            0 8px 16px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4)
+            0 20px 40px var(--primary-10),
+            0 8px 16px var(--primary-20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1)
           `;
         }}
       >
@@ -464,8 +461,8 @@ const DocumentsUpload = ({
           className='position-absolute w-100 h-100'
           style={{
             background: `
-              radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.06) 0%, transparent 50%)
+              radial-gradient(circle at 20% 20%, var(--primary-20) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, var(--primary-30) 0%, transparent 50%)
             `,
             opacity: 0.3,
             animation: 'float 6s ease-in-out infinite',
@@ -476,16 +473,14 @@ const DocumentsUpload = ({
         <div
           className='px-1 py-4 d-flex align-items-center gap-3 position-relative'
           style={{
-            background: `
-              linear-gradient(135deg, #3b82f6, #2563eb),
-              linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
-            `,
-            color: '#ffffff',
+            background:
+              'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
+            color: 'var(--text-primary)',
             borderTopLeftRadius: '22px',
             borderTopRightRadius: '22px',
             backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+            border: '1px solid var(--border-muted)',
+            borderBottom: '1px solid var(--border-primary)',
           }}
         >
           {/* Icon with Micro-animation */}
@@ -494,22 +489,22 @@ const DocumentsUpload = ({
             style={{
               width: '56px',
               height: '56px',
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: '2px solid rgba(255, 255, 255, 0.25)',
+              background: 'var(--surface-tertiary)',
+              border: '2px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.1) rotate(5deg)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+              e.currentTarget.style.background = 'var(--surface-secondary)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+              e.currentTarget.style.background = 'var(--surface-tertiary)';
             }}
           >
-            <FaFileAlt size={20} />
+            <FaFileAlt size={20} style={{ color: 'var(--primary-blue)' }} />
 
             {/* Subtle glow effect */}
             <div
@@ -519,7 +514,7 @@ const DocumentsUpload = ({
                 left: '-10px',
                 right: '-10px',
                 bottom: '-10px',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'var(--primary-20)',
                 filter: 'blur(8px)',
                 zIndex: -1,
               }}
@@ -528,20 +523,25 @@ const DocumentsUpload = ({
 
           <div className='flex-grow-1'>
             <h5
-              className='fw-bold mb-2 text-white'
-              style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+              className='fw-bold mb-2'
+              style={{
+                fontSize: '1.4rem',
+                letterSpacing: '-0.02em',
+                color: '#ffffff',
+              }}
             >
               Document Management
             </h5>
             <div
-              className='px-3 py-2 rounded-pill fw-semibold text-white'
+              className='px-3 py-2 rounded-pill fw-semibold'
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'var(--primary-20)',
                 fontSize: '0.9rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                border: '1px solid var(--border-muted)',
                 display: 'inline-block',
                 backdropFilter: 'blur(10px)',
                 letterSpacing: '0.02em',
+                color: '#ffffff',
               }}
             >
               Uploads & Requirements
@@ -555,13 +555,18 @@ const DocumentsUpload = ({
               background:
                 documents.length > 0 || requirements.length > 0
                   ? hasSignatureIssues || hasMissingRequirements
-                    ? 'linear-gradient(135deg, #f59e0b, #d97706)'
-                    : 'linear-gradient(135deg, #22c55e, #16a34a)'
-                  : 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    ? 'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))'
+                    : 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                  : 'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
               fontSize: '0.9rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
-              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+              boxShadow:
+                documents.length > 0 || requirements.length > 0
+                  ? hasSignatureIssues || hasMissingRequirements
+                    ? '0 8px 16px var(--warning-20)'
+                    : '0 8px 16px var(--success-20)'
+                  : '0 8px 16px var(--error-20)',
               transition: 'all 0.3s ease',
               cursor: 'default',
               letterSpacing: '0.02em',
@@ -610,10 +615,10 @@ const DocumentsUpload = ({
             <div
               className='py-3 px-1 px-md-3 position-relative'
               style={{
-                background: 'rgba(255,255,255,0.24)',
+                background: 'var(--surface-secondary)',
                 borderRadius: '30px',
-                border: '1px solid rgba(120,144,156,0.16)',
-                boxShadow: '0 6px 32px rgba(36, 41, 46, 0.08)',
+                border: '1px solid var(--border-muted)',
+                boxShadow: '0 6px 32px var(--primary-10)',
                 maxWidth: 700,
                 margin: '0 auto',
                 transition: 'box-shadow 0.25s',
@@ -632,23 +637,23 @@ const DocumentsUpload = ({
                     background:
                       activeTab === 'uploaded'
                         ? hasSignatureIssues
-                          ? 'linear-gradient(110deg,#dc2626 10%,#b91c1c 100%)'
-                          : 'linear-gradient(110deg,#3b82f6 10%,#2563eb 100%)'
-                        : 'rgba(255,255,255,0.07)',
+                          ? 'linear-gradient(110deg, var(--error-primary) 10%, var(--error-dark) 100%)'
+                          : 'linear-gradient(110deg, var(--primary-blue) 10%, var(--primary-blue-dark) 100%)'
+                        : 'var(--surface-tertiary)',
                     color:
                       activeTab === 'uploaded'
                         ? '#fff'
                         : hasSignatureIssues
-                        ? '#dc2626'
-                        : '#374151',
+                        ? 'var(--error-primary)'
+                        : 'var(--text-secondary)',
                     fontSize: '1.05rem',
                     boxShadow:
                       activeTab === 'uploaded'
-                        ? '0 8px 32px 0 rgba(59,130,246,.18)'
-                        : '0 3px 8px 0 rgba(36,41,46,0.04)',
+                        ? '0 8px 32px var(--primary-20)'
+                        : '0 3px 8px var(--primary-10)',
                     border:
                       activeTab === 'uploaded'
-                        ? '2.5px solid #2563eb'
+                        ? '2.5px solid var(--primary-blue-dark)'
                         : '2.5px solid transparent',
                     outline: 'none',
                     zIndex: activeTab === 'uploaded' ? 10 : 2,
@@ -662,14 +667,14 @@ const DocumentsUpload = ({
                   onMouseEnter={(e) => {
                     if (activeTab !== 'uploaded') {
                       e.currentTarget.style.boxShadow =
-                        '0 4px 18px rgba(36,41,46,0.10)';
+                        '0 4px 18px var(--primary-20)';
                       e.currentTarget.style.transform = 'scale(1.03)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (activeTab !== 'uploaded') {
                       e.currentTarget.style.boxShadow =
-                        '0 3px 8px 0 rgba(36,41,46,0.04)';
+                        '0 3px 8px var(--primary-10)';
                       e.currentTarget.style.transform = 'scale(1)';
                     }
                   }}
@@ -683,7 +688,7 @@ const DocumentsUpload = ({
                       style={{
                         top: 6,
                         right: 14,
-                        background: '#dc2626',
+                        background: 'var(--error-primary)',
                         color: 'white',
                         width: 20,
                         height: 20,
@@ -693,7 +698,7 @@ const DocumentsUpload = ({
                         alignItems: 'center',
                         justifyContent: 'center',
                         border: '2.5px solid #fff',
-                        boxShadow: '0 2px 8px rgba(220,38,38,0.12)',
+                        boxShadow: '0 2px 8px var(--error-20)',
                         fontWeight: 700,
                         zIndex: 12,
                       }}
@@ -713,23 +718,23 @@ const DocumentsUpload = ({
                     background:
                       activeTab === 'required'
                         ? hasMissingRequirements
-                          ? 'linear-gradient(110deg,#dc2626 10%,#b91c1c 100%)'
-                          : 'linear-gradient(110deg,#3b82f6 10%,#2563eb 100%)'
-                        : 'rgba(255,255,255,0.07)',
+                          ? 'linear-gradient(110deg, var(--error-primary) 10%, var(--error-dark) 100%)'
+                          : 'linear-gradient(110deg, var(--primary-blue) 10%, var(--primary-blue-dark) 100%)'
+                        : 'var(--surface-tertiary)',
                     color:
                       activeTab === 'required'
                         ? '#fff'
                         : hasMissingRequirements
-                        ? '#dc2626'
-                        : '#374151',
+                        ? 'var(--error-primary)'
+                        : 'var(--text-secondary)',
                     fontSize: '1.05rem',
                     boxShadow:
                       activeTab === 'required'
-                        ? '0 8px 32px 0 rgba(59,130,246,.18)'
-                        : '0 3px 8px 0 rgba(36,41,46,0.04)',
+                        ? '0 8px 32px var(--primary-20)'
+                        : '0 3px 8px var(--primary-10)',
                     border:
                       activeTab === 'required'
-                        ? '2.5px solid #2563eb'
+                        ? '2.5px solid var(--primary-blue-dark)'
                         : '2.5px solid transparent',
                     outline: 'none',
                     zIndex: activeTab === 'required' ? 10 : 2,
@@ -743,14 +748,14 @@ const DocumentsUpload = ({
                   onMouseEnter={(e) => {
                     if (activeTab !== 'required') {
                       e.currentTarget.style.boxShadow =
-                        '0 4px 18px rgba(36,41,46,0.10)';
+                        '0 4px 18px var(--primary-20)';
                       e.currentTarget.style.transform = 'scale(1.03)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (activeTab !== 'required') {
                       e.currentTarget.style.boxShadow =
-                        '0 3px 8px 0 rgba(36,41,46,0.04)';
+                        '0 3px 8px var(--primary-10)';
                       e.currentTarget.style.transform = 'scale(1)';
                     }
                   }}
@@ -767,7 +772,7 @@ const DocumentsUpload = ({
                       style={{
                         top: 6,
                         right: 14,
-                        background: '#dc2626',
+                        background: 'var(--error-primary)',
                         color: 'white',
                         width: 20,
                         height: 20,
@@ -777,7 +782,7 @@ const DocumentsUpload = ({
                         alignItems: 'center',
                         justifyContent: 'center',
                         border: '2.5px solid #fff',
-                        boxShadow: '0 2px 8px rgba(220,38,38,0.12)',
+                        boxShadow: '0 2px 8px var(--error-20)',
                         fontWeight: 700,
                         zIndex: 12,
                       }}
@@ -806,11 +811,11 @@ const DocumentsUpload = ({
           <div
             className='position-relative'
             style={{
-              background: 'rgba(255, 255, 255, 0.7)',
+              background: 'var(--surface-secondary)',
               borderRadius: '18px',
-              border: '1px solid rgba(255, 255, 255, 0.5)',
+              border: '1px solid var(--border-muted)',
               backdropFilter: 'blur(20px)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+              boxShadow: '0 8px 24px var(--primary-10)',
               overflow: 'hidden',
               minHeight: '600px',
             }}
@@ -830,13 +835,14 @@ const DocumentsUpload = ({
                         width: '80px',
                         height: '80px',
                         borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                        background:
+                          'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                         color: 'white',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         margin: '0 auto 2rem',
-                        boxShadow: '0 20px 40px rgba(59, 130, 246, 0.3)',
+                        boxShadow: '0 20px 40px var(--primary-30)',
                         animation: 'float 3s ease-in-out infinite',
                       }}
                     >
@@ -844,16 +850,20 @@ const DocumentsUpload = ({
                     </div>
                     <h4
                       className='fw-bold mb-3'
-                      style={{ color: '#1e293b', fontSize: '1.5rem' }}
+                      style={{
+                        color: 'var(--text-primary)',
+                        fontSize: '1.5rem',
+                      }}
                     >
                       No Documents Uploaded
                     </h4>
                     <p
-                      className='text-muted mb-4'
+                      className='mb-4'
                       style={{
                         fontSize: '1.1rem',
                         maxWidth: '400px',
                         margin: '0 auto',
+                        color: 'var(--text-muted)',
                       }}
                     >
                       Upload your first document to get started with the
@@ -862,12 +872,13 @@ const DocumentsUpload = ({
                     <button
                       className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
                       style={{
-                        background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                        background:
+                          'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                         color: 'white',
                         border: 'none',
                         borderRadius: '16px',
                         transition: 'all 0.3s ease',
-                        boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)',
+                        boxShadow: '0 8px 20px var(--primary-30)',
                       }}
                       onClick={() => {
                         navigate(`/upload_new_document/${application.id}`);
@@ -876,13 +887,13 @@ const DocumentsUpload = ({
                         e.currentTarget.style.transform =
                           'translateY(-2px) scale(1.05)';
                         e.currentTarget.style.boxShadow =
-                          '0 15px 35px rgba(59, 130, 246, 0.5)';
+                          '0 15px 35px var(--primary-40)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform =
                           'translateY(0) scale(1)';
                         e.currentTarget.style.boxShadow =
-                          '0 8px 20px rgba(59, 130, 246, 0.3)';
+                          '0 8px 20px var(--primary-30)';
                       }}
                     >
                       <FaUpload size={16} />
@@ -905,8 +916,8 @@ const DocumentsUpload = ({
           <div
             className='mt-4 pt-4'
             style={{
-              borderTop: '1px solid rgba(226, 232, 240, 0.5)',
-              background: 'rgba(255, 255, 255, 0.3)',
+              borderTop: '1px solid var(--border-subtle)',
+              background: 'var(--surface-secondary)',
               borderRadius: '16px',
               padding: '1.5rem',
               backdropFilter: 'blur(10px)',
@@ -917,33 +928,32 @@ const DocumentsUpload = ({
                 <button
                   className='btn px-4 py-3 fw-medium d-inline-flex align-items-center gap-2'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.8)',
-                    color: '#0891b2',
-                    border: '2px solid rgba(8, 145, 178, 0.3)',
+                    background: 'var(--surface-primary)',
+                    color: 'var(--primary-blue)',
+                    border: '2px solid var(--border-primary)',
                     borderRadius: '16px',
                     transition: 'all 0.3s ease',
                     backdropFilter: 'blur(10px)',
-                    boxShadow: '0 4px 15px rgba(8, 145, 178, 0.1)',
+                    boxShadow: '0 4px 15px var(--primary-20)',
                   }}
                   onClick={() => {
                     navigate(`/upload_new_document/${application.id}`);
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background =
-                      'linear-gradient(135deg, #0891b2, #0e7490)';
+                      'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))';
                     e.currentTarget.style.color = 'white';
                     e.currentTarget.style.transform =
                       'translateY(-2px) scale(1.05)';
                     e.currentTarget.style.boxShadow =
-                      '0 15px 35px rgba(8, 145, 178, 0.4)';
+                      '0 15px 35px var(--primary-40)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background =
-                      'rgba(255, 255, 255, 0.8)';
-                    e.currentTarget.style.color = '#0891b2';
+                    e.currentTarget.style.background = 'var(--surface-primary)';
+                    e.currentTarget.style.color = 'var(--primary-blue)';
                     e.currentTarget.style.transform = 'translateY(0) scale(1)';
                     e.currentTarget.style.boxShadow =
-                      '0 4px 15px rgba(8, 145, 178, 0.1)';
+                      '0 4px 15px var(--primary-20)';
                   }}
                 >
                   <FaPlus size={14} />
@@ -957,15 +967,22 @@ const DocumentsUpload = ({
                   <div
                     className='fw-bold'
                     style={{
-                      color: documents.length > 0 ? '#22c55e' : '#6b7280',
+                      color:
+                        documents.length > 0
+                          ? 'var(--success-primary)'
+                          : 'var(--text-muted)',
                       fontSize: '1.2rem',
                     }}
                   >
                     {documents.length}
                   </div>
                   <div
-                    className='small text-muted'
-                    style={{ fontSize: '0.8rem', fontWeight: '500' }}
+                    className='small'
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: '500',
+                      color: 'var(--text-muted)',
+                    }}
                   >
                     Uploaded
                   </div>
@@ -975,22 +992,29 @@ const DocumentsUpload = ({
                     width: '2px',
                     height: '30px',
                     background:
-                      'linear-gradient(to bottom, rgba(107, 114, 128, 0.3), transparent)',
+                      'linear-gradient(to bottom, var(--border-muted), transparent)',
                   }}
                 />
                 <div className='text-center'>
                   <div
                     className='fw-bold'
                     style={{
-                      color: missingRequirements > 0 ? '#ef4444' : '#22c55e',
+                      color:
+                        missingRequirements > 0
+                          ? 'var(--error-primary)'
+                          : 'var(--success-primary)',
                       fontSize: '1.2rem',
                     }}
                   >
                     {missingRequirements}
                   </div>
                   <div
-                    className='small text-muted'
-                    style={{ fontSize: '0.8rem', fontWeight: '500' }}
+                    className='small'
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: '500',
+                      color: 'var(--text-muted)',
+                    }}
                   >
                     Missing
                   </div>
@@ -1000,22 +1024,29 @@ const DocumentsUpload = ({
                     width: '2px',
                     height: '30px',
                     background:
-                      'linear-gradient(to bottom, rgba(107, 114, 128, 0.3), transparent)',
+                      'linear-gradient(to bottom, var(--border-muted), transparent)',
                   }}
                 />
                 <div className='text-center'>
                   <div
                     className='fw-bold'
                     style={{
-                      color: pendingDocs.length > 0 ? '#f59e0b' : '#22c55e',
+                      color:
+                        pendingDocs.length > 0
+                          ? 'var(--warning-primary)'
+                          : 'var(--success-primary)',
                       fontSize: '1.2rem',
                     }}
                   >
                     {pendingDocs.length}
                   </div>
                   <div
-                    className='small text-muted'
-                    style={{ fontSize: '0.8rem', fontWeight: '500' }}
+                    className='small'
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: '500',
+                      color: 'var(--text-muted)',
+                    }}
                   >
                     Pending Signature
                   </div>

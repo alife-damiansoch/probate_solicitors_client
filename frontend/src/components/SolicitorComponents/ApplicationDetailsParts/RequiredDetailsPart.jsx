@@ -284,14 +284,14 @@ const RequiredDetailsPart = ({
     const paidOutDate = loan.paid_out_date;
 
     // Logic for icon, color, main status, and description
-    let statusColor = '#64748b';
+    let statusColor = 'var(--text-muted)';
     let icon = 'fa-search';
     let statusText = 'Under Final Review';
     let detailText =
       'Your application is under final review by our processing team. You will be notified of the decision soon.';
 
     if (isRejected) {
-      statusColor = '#dc2626';
+      statusColor = 'var(--error-primary)';
       icon = 'fa-times-circle';
       statusText = 'Application Rejected';
       detailText =
@@ -300,39 +300,39 @@ const RequiredDetailsPart = ({
       // Order: committee → payout → finance check → settlement
       if (needsCommittee) {
         if (isCommitteeApproved === null || isCommitteeApproved === undefined) {
-          statusColor = '#f59e0b';
+          statusColor = 'var(--warning-primary)';
           icon = 'fa-users';
           statusText = 'Awaiting Committee Approval';
           detailText =
             'Your application has been approved and is now pending committee review. You will be notified once a decision has been made.';
         } else if (isCommitteeApproved === false) {
-          statusColor = '#dc2626';
+          statusColor = 'var(--error-primary)';
           icon = 'fa-times-circle';
           statusText = 'Committee Rejected';
           detailText =
             'Your application was not approved by the committee. Please contact your agent for further details.';
         } else if (isCommitteeApproved === true) {
           if (!isPaidOut) {
-            statusColor = '#2563eb';
+            statusColor = 'var(--primary-blue)';
             icon = 'fa-credit-card';
             statusText = 'Awaiting Payment';
             detailText =
               'Your application has passed all approvals and is now awaiting payment. Your assigned agent will contact you with further details.';
           } else if (isPaidOut && !paidOutDate) {
             // NEW: Finance team final check stage
-            statusColor = '#7c3aed';
+            statusColor = 'var(--primary-blue-dark)';
             icon = 'fa-calculator';
             statusText = 'Finance Team Final Check';
             detailText =
               'Your application has been approved for payout and our finance team is conducting a final compliance check to ensure all requirements have been met. Payment will be processed once this review is complete.';
           } else if (!isSettled) {
-            statusColor = '#6366f1';
+            statusColor = 'var(--primary-blue-light)';
             icon = 'fa-file-alt';
             statusText = 'Awaiting Settlement';
             detailText =
               'Your application has been fully processed and payment has been issued. The advancement process is now complete. Once the probate process is finalised, please notify your agent so that settlement arrangements can be made. If you require any documentation or further assistance in the meantime, please contact your agent.';
           } else {
-            statusColor = '#059669';
+            statusColor = 'var(--success-primary)';
             icon = 'fa-check-circle';
             statusText = 'Advancement Process Completed';
             detailText =
@@ -342,26 +342,26 @@ const RequiredDetailsPart = ({
       } else {
         // Non-committee path
         if (!isPaidOut) {
-          statusColor = '#2563eb';
+          statusColor = 'var(--primary-blue)';
           icon = 'fa-credit-card';
           statusText = 'Awaiting Payment';
           detailText =
             'Your application has been approved and is now awaiting payment. Your assigned agent will contact you with further details.';
         } else if (isPaidOut && !paidOutDate) {
           // NEW: Finance team final check stage
-          statusColor = '#7c3aed';
+          statusColor = 'var(--primary-blue-dark)';
           icon = 'fa-calculator';
           statusText = 'Finance Team Final Check';
           detailText =
             'Your application has been approved for payout and our finance team is conducting a final compliance check to ensure all requirements have been met. Payment will be processed once this review is complete.';
         } else if (!isSettled) {
-          statusColor = '#6366f1';
+          statusColor = 'var(--primary-blue-light)';
           icon = 'fa-file-alt';
           statusText = 'Awaiting Settlement';
           detailText =
             'Your application has been fully processed and payment has been issued. The advancement process is now complete. Once the probate process is finalised, please notify your agent so that settlement arrangements can be made. If you require any documentation or further assistance in the meantime, please contact your agent.';
         } else {
-          statusColor = '#059669';
+          statusColor = 'var(--success-primary)';
           icon = 'fa-check-circle';
           statusText = 'Advancement Process Completed';
           detailText =
@@ -370,23 +370,21 @@ const RequiredDetailsPart = ({
       }
     }
 
-    // --- UI below is unchanged except for using above variables ---
-
     return (
       <div
         className='modern-main-card mb-4 position-relative overflow-hidden mt-4'
         style={{
           background: `
-          linear-gradient(135deg, rgba(255,255,255,0.10), rgba(248,250,252,0.05)),
-          radial-gradient(circle at 30% 10%, rgba(255,255,255,0.45), transparent 50%),
-          radial-gradient(circle at 70% 90%, ${statusColor}10, transparent 50%)
+          var(--gradient-surface),
+          radial-gradient(circle at 30% 10%, var(--primary-10), transparent 50%),
+          radial-gradient(circle at 70% 90%, var(--primary-20), transparent 50%)
         `,
-          border: '1px solid rgba(255,255,255,0.28)',
+          border: '1px solid var(--border-primary)',
           borderRadius: '24px',
           boxShadow: `
-          0 20px 40px rgba(0,0,0,0.08),
-          0 8px 16px rgba(0,0,0,0.06),
-          inset 0 1px 0 rgba(255,255,255,0.3)
+          0 20px 40px var(--primary-10),
+          0 8px 16px var(--primary-20),
+          inset 0 1px 0 var(--primary-10)
         `,
           backdropFilter: 'blur(20px)',
           transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
@@ -399,8 +397,8 @@ const RequiredDetailsPart = ({
           className='position-absolute w-100 h-100'
           style={{
             background: `
-            radial-gradient(circle at 20% 20%, ${statusColor}12 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, ${statusColor}09 0%, transparent 50%)
+            radial-gradient(circle at 20% 20%, var(--primary-20) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, var(--primary-10) 0%, transparent 50%)
           `,
             opacity: 0.2,
             animation: 'float 6s ease-in-out infinite',
@@ -413,13 +411,13 @@ const RequiredDetailsPart = ({
           style={{
             background: `
             linear-gradient(135deg, ${statusColor}, ${statusColor}),
-            linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))
+            var(--gradient-header)
           `,
-            color: '#fff',
+            color: 'var(--text-primary)',
             borderTopLeftRadius: '22px',
             borderTopRightRadius: '22px',
-            border: '1px solid rgba(255,255,255,0.13)',
-            borderBottom: '1px solid rgba(255,255,255,0.18)',
+            border: '1px solid var(--border-muted)',
+            borderBottom: '1px solid var(--border-primary)',
           }}
         >
           <div
@@ -427,12 +425,15 @@ const RequiredDetailsPart = ({
             style={{
               width: '36px',
               height: '36px',
-              background: 'rgba(255,255,255,0.13)',
-              border: '2px solid rgba(255,255,255,0.15)',
+              background: 'var(--surface-tertiary)',
+              border: '2px solid var(--border-muted)',
               fontSize: '1.2rem',
             }}
           >
-            <i className={`fas ${icon}`} style={{ fontSize: '1.15rem' }} />
+            <i
+              className={`fas ${icon}`}
+              style={{ fontSize: '1.15rem', color: statusColor }}
+            />
             <div
               className='position-absolute rounded-circle'
               style={{
@@ -440,7 +441,7 @@ const RequiredDetailsPart = ({
                 left: '-6px',
                 right: '-6px',
                 bottom: '-6px',
-                background: 'rgba(255,255,255,0.09)',
+                background: 'var(--primary-10)',
                 filter: 'blur(5px)',
                 zIndex: -1,
               }}
@@ -449,20 +450,25 @@ const RequiredDetailsPart = ({
 
           <div className='flex-grow-1'>
             <h5
-              className='fw-bold mb-1 text-white'
-              style={{ fontSize: '1.07rem', letterSpacing: '-0.01em' }}
+              className='fw-bold mb-1'
+              style={{
+                fontSize: '1.07rem',
+                letterSpacing: '-0.01em',
+                color: 'var(--text-primary)',
+              }}
             >
               Final Review &amp; Approval
             </h5>
             <div
-              className='px-2 py-1 rounded-pill fw-semibold text-white'
+              className='px-2 py-1 rounded-pill fw-semibold'
               style={{
-                background: 'rgba(255,255,255,0.08)',
+                background: 'var(--primary-20)',
                 fontSize: '0.8rem',
-                border: '1px solid rgba(255,255,255,0.13)',
+                border: '1px solid var(--border-muted)',
                 display: 'inline-block',
                 backdropFilter: 'blur(7px)',
                 letterSpacing: '0.01em',
+                color: 'var(--text-primary)',
               }}
             >
               Final Stage
@@ -471,14 +477,15 @@ const RequiredDetailsPart = ({
 
           {/* Status Badge */}
           <span
-            className='px-3 py-2 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+            className='px-3 py-2 rounded-pill fw-bold d-flex align-items-center gap-2'
             style={{
-              background: `linear-gradient(135deg,${statusColor},${statusColor})`,
+              background: `linear-gradient(135deg, ${statusColor}, ${statusColor})`,
               fontSize: '0.85rem',
-              border: '1px solid rgba(255,255,255,0.15)',
+              border: '1px solid var(--border-muted)',
               backdropFilter: 'blur(9px)',
-              boxShadow: '0 6px 12px rgba(0,0,0,0.09)',
+              boxShadow: '0 6px 12px var(--primary-20)',
               letterSpacing: '0.01em',
+              color: '#ffffff',
               animation:
                 !isRejected && !isApproved
                   ? 'statusPulse 2.3s ease-in-out infinite'
@@ -496,10 +503,10 @@ const RequiredDetailsPart = ({
           <div
             className='text-center p-3 mb-3 position-relative'
             style={{
-              background: 'rgba(255,255,255,0.78)',
+              background: 'var(--surface-secondary)',
               borderRadius: '14px',
-              border: `1px solid ${statusColor}30`,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+              border: `1px solid var(--border-primary)`,
+              boxShadow: '0 4px 12px var(--primary-10)',
             }}
           >
             {/* Status glow */}
@@ -510,7 +517,7 @@ const RequiredDetailsPart = ({
                 left: '-2px',
                 right: '-2px',
                 bottom: '-2px',
-                background: `linear-gradient(135deg,${statusColor}15,${statusColor}06)`,
+                background: `linear-gradient(135deg, var(--primary-20), var(--primary-10))`,
                 borderRadius: '15px',
                 filter: 'blur(4px)',
                 zIndex: -1,
@@ -523,12 +530,12 @@ const RequiredDetailsPart = ({
               style={{
                 width: '54px',
                 height: '54px',
-                background: `linear-gradient(135deg,${statusColor},${statusColor})`,
+                background: `linear-gradient(135deg, ${statusColor}, ${statusColor})`,
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: `0 6px 14px ${statusColor}33`,
+                boxShadow: `0 6px 14px var(--primary-30)`,
                 animation:
                   !isRejected && !isApproved
                     ? 'statusPulse 4s ease-in-out infinite'
@@ -543,7 +550,7 @@ const RequiredDetailsPart = ({
                   left: '-3px',
                   right: '-3px',
                   bottom: '-3px',
-                  background: `radial-gradient(circle,${statusColor}16,transparent 70%)`,
+                  background: `radial-gradient(circle, var(--primary-20), transparent 70%)`,
                   borderRadius: '50%',
                   filter: 'blur(7px)',
                   zIndex: -1,
@@ -568,7 +575,7 @@ const RequiredDetailsPart = ({
               className='mb-0'
               style={{
                 fontSize: '1.02rem',
-                color: '#64748b',
+                color: 'var(--text-muted)',
                 fontWeight: 500,
                 lineHeight: '1.5',
                 maxWidth: '420px',
@@ -586,10 +593,10 @@ const RequiredDetailsPart = ({
             <div
               className='p-3 position-relative'
               style={{
-                background: 'rgba(255,255,255,0.82)',
+                background: 'var(--surface-secondary)',
                 borderRadius: '13px',
-                border: `1px solid ${statusColor}20`,
-                boxShadow: `0 4px 12px ${statusColor}06`,
+                border: `1px solid var(--border-primary)`,
+                boxShadow: `0 4px 12px var(--primary-10)`,
               }}
             >
               <div className='d-flex align-items-center gap-2 mb-2'>
@@ -598,12 +605,12 @@ const RequiredDetailsPart = ({
                     width: '30px',
                     height: '30px',
                     borderRadius: '9px',
-                    background: `linear-gradient(135deg,${statusColor},${statusColor})`,
+                    background: `linear-gradient(135deg, ${statusColor}, ${statusColor})`,
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: `0 4px 10px ${statusColor}15`,
+                    boxShadow: `0 4px 10px var(--primary-20)`,
                   }}
                 >
                   <i className='fas fa-user-tie' style={{ fontSize: '1rem' }} />
@@ -611,7 +618,7 @@ const RequiredDetailsPart = ({
                 <h3
                   className='fw-bold mb-0'
                   style={{
-                    color: '#92400e',
+                    color: 'var(--warning-dark)',
                     fontSize: '1rem',
                     letterSpacing: '-0.01em',
                   }}
@@ -623,7 +630,7 @@ const RequiredDetailsPart = ({
                 <p
                   className='mb-2'
                   style={{
-                    color: '#78350f',
+                    color: 'var(--warning-dark)',
                     fontSize: '0.98rem',
                     lineHeight: '1.5',
                     fontWeight: 500,
@@ -669,20 +676,14 @@ const RequiredDetailsPart = ({
       <div
         className='modern-main-card mb-4 position-relative overflow-hidden mt-4'
         style={{
-          background: `
-          linear-gradient(135deg, rgba(255,255,255,0.1), rgba(248,250,252,0.05)),
-          radial-gradient(circle at 30% 10%, rgba(255,255,255,0.6), transparent 50%),
-          radial-gradient(circle at 70% 90%, ${
-            isVerified ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'
-          }, transparent 50%)
-        `,
-          border: '1px solid rgba(255,255,255,0.3)',
+          background: 'var(--gradient-surface)',
+          border: '1px solid var(--border-primary)',
           borderRadius: '24px',
           boxShadow: `
-          0 20px 40px rgba(0,0,0,0.08),
-          0 8px 16px rgba(0,0,0,0.06),
-          inset 0 1px 0 rgba(255,255,255,0.4)
-        `,
+            0 20px 40px var(--primary-10),
+            0 8px 16px var(--primary-20),
+            inset 0 1px 0 rgba(255,255,255,0.1)
+          `,
           backdropFilter: 'blur(20px)',
           transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
           transform: 'translateZ(0)',
@@ -695,13 +696,13 @@ const RequiredDetailsPart = ({
           className='position-absolute w-100 h-100'
           style={{
             background: `
-            radial-gradient(circle at 20% 20%, ${
-              isVerified ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)'
-            } 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, ${
-              isVerified ? 'rgba(5,150,105,0.06)' : 'rgba(220,38,38,0.06)'
-            } 0%, transparent 50%)
-          `,
+              radial-gradient(circle at 20% 20%, ${
+                isVerified ? 'var(--success-20)' : 'var(--error-20)'
+              } 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, ${
+                isVerified ? 'var(--success-30)' : 'var(--error-30)'
+              } 0%, transparent 50%)
+            `,
             opacity: 0.3,
             animation: 'float 6s ease-in-out infinite',
           }}
@@ -711,18 +712,15 @@ const RequiredDetailsPart = ({
         <div
           className='px-3 py-2 d-flex align-items-center gap-2 position-relative'
           style={{
-            background: `
-            linear-gradient(135deg, ${
-              isVerified ? '#10b981,#059669' : '#ef4444,#dc2626'
-            }),
-            linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.05))
-          `,
+            background: isVerified
+              ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+              : 'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
             color: '#fff',
             borderTopLeftRadius: '22px',
             borderTopRightRadius: '22px',
             backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderBottom: '1px solid rgba(255,255,255,0.2)',
+            border: '1px solid var(--border-muted)',
+            borderBottom: '1px solid var(--border-primary)',
             minHeight: 0, // Remove excess height
           }}
         >
@@ -731,8 +729,8 @@ const RequiredDetailsPart = ({
             style={{
               width: '36px',
               height: '36px',
-              background: 'rgba(255,255,255,0.12)',
-              border: '2px solid rgba(255,255,255,0.18)',
+              background: 'var(--surface-tertiary)',
+              border: '2px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
@@ -762,19 +760,24 @@ const RequiredDetailsPart = ({
           <div className='flex-grow-1'>
             <h5
               className='fw-bold mb-1 text-white'
-              style={{ fontSize: '1.07rem', letterSpacing: '-0.01em' }}
+              style={{
+                fontSize: '1.07rem',
+                letterSpacing: '-0.01em',
+                color: 'var(--text-primary)',
+              }}
             >
               Information Verification
             </h5>
             <div
               className='px-2 py-1 rounded-pill fw-semibold text-white'
               style={{
-                background: 'rgba(255,255,255,0.08)',
+                background: 'var(--primary-20)',
                 fontSize: '0.8rem',
-                border: '1px solid rgba(255,255,255,0.16)',
+                border: '1px solid var(--border-muted)',
                 display: 'inline-block',
                 backdropFilter: 'blur(8px)',
                 letterSpacing: '0.01em',
+                color: 'var(--text-primary)',
               }}
             >
               Legal Review Status
@@ -785,12 +788,14 @@ const RequiredDetailsPart = ({
             className='px-3 py-2 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
             style={{
               background: isVerified
-                ? 'linear-gradient(135deg,#22c55e,#16a34a)'
-                : 'linear-gradient(135deg,#f59e0b,#d97706)',
+                ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                : 'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
               fontSize: '0.85rem',
-              border: '1px solid rgba(255,255,255,0.16)',
+              border: '1px solid var(--border-muted)',
               backdropFilter: 'blur(10px)',
-              boxShadow: '0 6px 12px rgba(0,0,0,0.09)',
+              boxShadow: isVerified
+                ? '0 6px 12px var(--success-30)'
+                : '0 6px 12px var(--warning-30)',
               cursor: 'default',
               letterSpacing: '0.01em',
               animation: isVerified
@@ -823,12 +828,14 @@ const RequiredDetailsPart = ({
           <div
             className='text-center p-3 mb-3 position-relative'
             style={{
-              background: 'rgba(255,255,255,0.7)',
+              background: 'var(--surface-secondary)',
               borderRadius: '14px',
               border: `1px solid ${
-                isVerified ? 'rgba(16,185,129,0.21)' : 'rgba(245,158,11,0.19)'
+                isVerified ? 'var(--success-30)' : 'var(--warning-30)'
               }`,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+              boxShadow: `0 4px 12px ${
+                isVerified ? 'var(--success-20)' : 'var(--warning-20)'
+              }`,
               marginTop: '20px',
             }}
           >
@@ -841,10 +848,8 @@ const RequiredDetailsPart = ({
                 right: '-2px',
                 bottom: '-2px',
                 background: `linear-gradient(135deg, ${
-                  isVerified ? 'rgba(16,185,129,0.13)' : 'rgba(245,158,11,0.15)'
-                }, ${
-                  isVerified ? 'rgba(16,185,129,0.05)' : 'rgba(245,158,11,0.05)'
-                })`,
+                  isVerified ? 'var(--success-30)' : 'var(--warning-30)'
+                }, ${isVerified ? 'var(--success-20)' : 'var(--warning-20)'})`,
                 borderRadius: '15px',
                 filter: 'blur(4px)',
                 zIndex: -1,
@@ -858,15 +863,15 @@ const RequiredDetailsPart = ({
                 width: '54px',
                 height: '54px',
                 background: isVerified
-                  ? 'linear-gradient(135deg,#10b981,#059669)'
-                  : 'linear-gradient(135deg,#f59e0b,#d97706)',
+                  ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                  : 'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: isVerified
-                  ? '0 6px 14px rgba(16,185,129,0.23)'
-                  : '0 6px 14px rgba(245,158,11,0.24)',
+                  ? '0 6px 14px var(--success-30)'
+                  : '0 6px 14px var(--warning-30)',
                 animation: isVerified
                   ? 'iconFloat 4s ease-in-out infinite'
                   : 'statusPulse 3s ease-in-out infinite',
@@ -880,11 +885,9 @@ const RequiredDetailsPart = ({
                   left: '-3px',
                   right: '-3px',
                   bottom: '-3px',
-                  background: `radial-gradient(circle,${
-                    isVerified
-                      ? 'rgba(16,185,129,0.22)'
-                      : 'rgba(245,158,11,0.21)'
-                  },transparent 70%)`,
+                  background: `radial-gradient(circle, ${
+                    isVerified ? 'var(--success-30)' : 'var(--warning-30)'
+                  }, transparent 70%)`,
                   borderRadius: '50%',
                   filter: 'blur(7px)',
                   zIndex: -1,
@@ -899,7 +902,9 @@ const RequiredDetailsPart = ({
               className='fw-bold mb-2'
               style={{
                 fontSize: '1.27rem',
-                color: isVerified ? '#059669' : '#d97706',
+                color: isVerified
+                  ? 'var(--success-dark)'
+                  : 'var(--warning-dark)',
                 letterSpacing: '-0.01em',
               }}
             >
@@ -909,7 +914,7 @@ const RequiredDetailsPart = ({
               className='mb-0'
               style={{
                 fontSize: '1.02rem',
-                color: '#64748b',
+                color: 'var(--text-muted)',
                 fontWeight: 500,
                 lineHeight: '1.5',
                 maxWidth: '420px',
@@ -927,10 +932,10 @@ const RequiredDetailsPart = ({
             <div
               className='p-3 position-relative'
               style={{
-                background: 'rgba(255,255,255,0.7)',
+                background: 'var(--surface-secondary)',
                 borderRadius: '13px',
-                border: '1px solid rgba(245,158,11,0.16)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.04)',
+                border: '1px solid var(--warning-30)',
+                boxShadow: '0 4px 12px var(--warning-20)',
               }}
             >
               {/* Info glow */}
@@ -942,7 +947,7 @@ const RequiredDetailsPart = ({
                   right: '-2px',
                   bottom: '-2px',
                   background:
-                    'linear-gradient(135deg,rgba(245,158,11,0.13),rgba(245,158,11,0.05))',
+                    'linear-gradient(135deg, var(--warning-30), var(--warning-20))',
                   borderRadius: '13px',
                   filter: 'blur(4px)',
                   zIndex: -1,
@@ -955,12 +960,13 @@ const RequiredDetailsPart = ({
                     width: '30px',
                     height: '30px',
                     borderRadius: '9px',
-                    background: 'linear-gradient(135deg,#f59e0b,#d97706)',
+                    background:
+                      'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 4px 10px rgba(245,158,11,0.17)',
+                    boxShadow: '0 4px 10px var(--warning-30)',
                   }}
                 >
                   <i
@@ -971,7 +977,7 @@ const RequiredDetailsPart = ({
                 <h3
                   className='fw-bold mb-0'
                   style={{
-                    color: '#92400e',
+                    color: 'var(--warning-dark)',
                     fontSize: '1rem',
                     letterSpacing: '-0.01em',
                   }}
@@ -983,7 +989,7 @@ const RequiredDetailsPart = ({
                 <p
                   className='mb-2'
                   style={{
-                    color: '#78350f',
+                    color: 'var(--text-secondary)',
                     fontSize: '0.98rem',
                     lineHeight: '1.5',
                     fontWeight: 500,
@@ -998,7 +1004,7 @@ const RequiredDetailsPart = ({
                 <p
                   className='mb-0'
                   style={{
-                    color: '#78350f',
+                    color: 'var(--text-secondary)',
                     fontSize: '0.98rem',
                     lineHeight: '1.5',
                     fontWeight: 500,
@@ -1032,7 +1038,6 @@ const RequiredDetailsPart = ({
       </div>
     );
   };
-
   // Render the appropriate component based on active section
   const renderActiveComponent = () => {
     if (isTransitioning) {

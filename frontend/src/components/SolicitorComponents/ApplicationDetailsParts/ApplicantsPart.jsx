@@ -200,7 +200,7 @@ const ApplicantsPart = ({
 
     return (
       <div className={cols + ' mb-3'}>
-        <label className='form-label fw-semibold text-slate-700 mb-2'>
+        <label className='form-label fw-semibold mb-2 theme-text-secondary'>
           {label}
         </label>
         <div
@@ -208,15 +208,15 @@ const ApplicantsPart = ({
           style={{
             borderRadius: '16px',
             overflow: 'hidden',
-            background: 'rgba(255, 255, 255, 0.7)',
+            background: 'var(--surface-secondary)',
             border: isEditing
-              ? '2px solid #667eea'
-              : '1px solid rgba(255, 255, 255, 0.5)',
-            backdropFilter: 'blur(20px)',
+              ? '2px solid var(--primary-blue)'
+              : '1px solid var(--border-muted)',
+            backdropFilter: 'blur(18px)',
             boxShadow: isEditing
-              ? '0 15px 35px rgba(102, 126, 234, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
-              : '0 8px 24px rgba(0, 0, 0, 0.06)',
-            transition: 'all 0.3s ease',
+              ? '0 12px 30px var(--primary-20), 0 4px 12px var(--border-primary)'
+              : '0 8px 20px var(--primary-10)',
+            transition: 'all 0.3s',
           }}
         >
           {isEditing && (
@@ -228,11 +228,12 @@ const ApplicantsPart = ({
                 right: '-2px',
                 bottom: '-2px',
                 background:
-                  'linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(102, 126, 234, 0.1))',
+                  'linear-gradient(135deg, var(--primary-blue-light) 0%, var(--primary-blue-dark) 100%)',
                 borderRadius: '18px',
-                filter: 'blur(8px)',
+                filter: 'blur(7px)',
                 zIndex: -1,
                 animation: 'selectionGlow 3s ease-in-out infinite alternate',
+                opacity: 0.2,
               }}
             />
           )}
@@ -243,8 +244,7 @@ const ApplicantsPart = ({
                 backgroundColor: 'transparent',
                 fontSize: '1rem',
                 fontWeight: '500',
-                padding: '0.75rem 1rem',
-                color: '#1e293b',
+                color: 'var(--text-primary)',
               }}
               value={displayValue}
               onChange={(e) => setLocalValue(e.target.value)}
@@ -264,8 +264,7 @@ const ApplicantsPart = ({
                 backgroundColor: 'transparent',
                 fontSize: '1rem',
                 fontWeight: '500',
-                padding: '0.75rem 1rem',
-                color: '#1e293b',
+                color: 'var(--text-primary)',
               }}
               value={displayValue}
               onChange={(e) => setLocalValue(e.target.value)}
@@ -276,11 +275,13 @@ const ApplicantsPart = ({
             type='button'
             className='btn'
             style={{
-              backgroundColor: isEditing ? '#ef4444' : '#667eea',
-              color: 'white',
+              backgroundColor: isEditing
+                ? 'var(--error-primary)'
+                : 'var(--primary-blue)',
+              color: '#fff',
               border: 'none',
               padding: '0 1rem',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.2s',
             }}
             onClick={isEditing ? handleSave : handleEdit}
             disabled={
@@ -297,13 +298,14 @@ const ApplicantsPart = ({
               style={{
                 top: '-8px',
                 right: '70px',
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                background:
+                  'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                 color: 'white',
                 padding: '2px 8px',
                 borderRadius: '20px',
                 fontSize: '0.7rem',
                 fontWeight: '600',
-                boxShadow: '0 4px 8px rgba(102, 126, 234, 0.3)',
+                boxShadow: '0 4px 8px var(--primary-20)',
                 animation: 'editingPulse 2s ease-in-out infinite',
               }}
             >
@@ -316,10 +318,11 @@ const ApplicantsPart = ({
             className='text-danger mt-2 small d-flex align-items-center gap-2'
             style={{
               padding: '0.5rem 0.75rem',
-              background: 'rgba(239, 68, 68, 0.1)',
+              background: 'var(--error-20)',
               borderRadius: '12px',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
+              border: '1px solid var(--error-30)',
               backdropFilter: 'blur(10px)',
+              color: 'var(--error-primary)',
             }}
           >
             <i className='fas fa-exclamation-circle'></i>
@@ -344,7 +347,7 @@ const ApplicantsPart = ({
 
     return (
       <div className={cols}>
-        <label className='form-label fw-semibold mb-2 text-slate-700'>
+        <label className='form-label fw-semibold mb-2 theme-text-secondary'>
           {label} {isRequired && <span className='text-danger'>*</span>}
         </label>
         <div
@@ -352,17 +355,17 @@ const ApplicantsPart = ({
           style={{
             borderRadius: '16px',
             overflow: 'hidden',
-            background: 'rgba(255, 255, 255, 0.7)',
+            background: 'var(--surface-secondary)',
             border:
               hasError && hasValue
-                ? '2px solid #ef4444'
-                : '1px solid rgba(255, 255, 255, 0.5)',
-            backdropFilter: 'blur(20px)',
+                ? '2px solid var(--error-primary)'
+                : '1px solid var(--border-muted)',
+            backdropFilter: 'blur(18px)',
             boxShadow:
               hasError && hasValue
-                ? '0 15px 35px rgba(239, 68, 68, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
-                : '0 8px 24px rgba(0, 0, 0, 0.06)',
-            transition: 'all 0.3s ease',
+                ? '0 12px 30px var(--error-20)'
+                : '0 8px 20px var(--primary-10)',
+            transition: 'all 0.3s',
           }}
         >
           {hasError && hasValue && (
@@ -374,11 +377,12 @@ const ApplicantsPart = ({
                 right: '-2px',
                 bottom: '-2px',
                 background:
-                  'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1))',
+                  'linear-gradient(135deg, var(--error-30), var(--error-20))',
                 borderRadius: '18px',
-                filter: 'blur(8px)',
+                filter: 'blur(7px)',
                 zIndex: -1,
                 animation: 'selectionGlow 3s ease-in-out infinite alternate',
+                opacity: 0.18,
               }}
             />
           )}
@@ -387,10 +391,9 @@ const ApplicantsPart = ({
               className='form-control border-0'
               style={{
                 backgroundColor: 'transparent',
-                padding: '0.75rem 1rem',
                 fontSize: '1rem',
                 fontWeight: '500',
-                color: '#1e293b',
+                color: 'var(--text-primary)',
               }}
               value={newApplicant[field]}
               onChange={(e) => handleNewApplicantChange(e, field)}
@@ -408,10 +411,9 @@ const ApplicantsPart = ({
               className='form-control border-0'
               style={{
                 backgroundColor: 'transparent',
-                padding: '0.75rem 1rem',
                 fontSize: '1rem',
                 fontWeight: '500',
-                color: '#1e293b',
+                color: 'var(--text-primary)',
               }}
               value={newApplicant[field]}
               onChange={(e) => handleNewApplicantChange(e, field)}
@@ -424,10 +426,11 @@ const ApplicantsPart = ({
             className='text-danger mt-1 d-block d-flex align-items-center gap-2'
             style={{
               padding: '0.5rem 0.75rem',
-              background: 'rgba(239, 68, 68, 0.1)',
+              background: 'var(--error-20)',
               borderRadius: '12px',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
+              border: '1px solid var(--error-30)',
               backdropFilter: 'blur(10px)',
+              color: 'var(--error-primary)',
             }}
           >
             <i className='fas fa-exclamation-circle'></i>
@@ -445,16 +448,15 @@ const ApplicantsPart = ({
       className='modern-main-card mb-4 position-relative overflow-hidden'
       style={{
         background: `
-          linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-          radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-          radial-gradient(circle at 70% 90%, rgba(102, 126, 234, 0.1), transparent 50%)
+          var(--gradient-surface),
+          linear-gradient(135deg, var(--primary-20) 0%, var(--success-20) 100%)
         `,
-        border: '1px solid rgba(255, 255, 255, 0.3)',
+        border: '1px solid var(--border-primary)',
         borderRadius: '24px',
         boxShadow: `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          0 20px 40px var(--primary-10),
+          0 8px 16px var(--success-20),
+          inset 0 1px 0 var(--white-10)
         `,
         backdropFilter: 'blur(20px)',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -463,17 +465,17 @@ const ApplicantsPart = ({
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
         e.currentTarget.style.boxShadow = `
-          0 32px 64px rgba(0, 0, 0, 0.12),
-          0 16px 32px rgba(0, 0, 0, 0.08),
-          inset 0 1px 0 rgba(255, 255, 255, 0.6)
+          0 32px 64px var(--primary-20),
+          0 16px 32px var(--success-20),
+          inset 0 1px 0 var(--white-10)
         `;
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0) scale(1)';
         e.currentTarget.style.boxShadow = `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          0 20px 40px var(--primary-10),
+          0 8px 16px var(--success-20),
+          inset 0 1px 0 var(--white-10)
         `;
       }}
     >
@@ -481,10 +483,10 @@ const ApplicantsPart = ({
         className='position-absolute w-100 h-100'
         style={{
           background: `
-            radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.06) 0%, transparent 50%)
+            radial-gradient(circle at 20% 20%, var(--primary-blue) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, var(--success-primary) 0%, transparent 50%)
           `,
-          opacity: 0.3,
+          opacity: 0.2,
           animation: 'float 6s ease-in-out infinite',
         }}
       />
@@ -492,15 +494,15 @@ const ApplicantsPart = ({
         className='px-4 py-4 d-flex align-items-center gap-3 position-relative'
         style={{
           background: `
-            linear-gradient(135deg, #667eea, #764ba2),
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
+            linear-gradient(135deg, var(--primary-blue), var(--success-primary)),
+            var(--gradient-header)
           `,
-          color: '#ffffff',
+          color: 'var(--text-primary)',
           borderTopLeftRadius: '22px',
           borderTopRightRadius: '22px',
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          border: '1px solid var(--border-muted)',
+          borderBottom: '1px solid var(--border-primary)',
         }}
       >
         <div
@@ -508,10 +510,10 @@ const ApplicantsPart = ({
           style={{
             width: '56px',
             height: '56px',
-            background: 'rgba(255, 255, 255, 0.15)',
-            border: '2px solid rgba(255, 255, 255, 0.25)',
+            background: 'var(--surface-tertiary)',
+            border: '2px solid var(--border-muted)',
             backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.3s',
             cursor: 'pointer',
           }}
         >
@@ -523,7 +525,7 @@ const ApplicantsPart = ({
               left: '-10px',
               right: '-10px',
               bottom: '-10px',
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'var(--primary-10)',
               filter: 'blur(8px)',
               zIndex: -1,
             }}
@@ -531,39 +533,40 @@ const ApplicantsPart = ({
         </div>
         <div className='flex-grow-1'>
           <h5
-            className='fw-bold mb-2 text-white'
-            style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+            className='fw-bold mb-2'
+            style={{ fontSize: '1.4rem', color: 'var(--text-primary)' }}
           >
             Applicant Information
           </h5>
           <div
-            className='px-3 py-2 rounded-pill fw-semibold text-white'
+            className='px-3 py-2 rounded-pill fw-semibold'
             style={{
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'var(--primary-20)',
               fontSize: '0.9rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-muted)',
               display: 'inline-block',
               backdropFilter: 'blur(10px)',
               letterSpacing: '0.02em',
+              color: 'var(--text-primary)',
             }}
           >
             Single applicant required
           </div>
         </div>
         <span
-          className='px-4 py-3 rounded-pill text-white fw-bold d-flex align-items-center gap-2'
+          className='px-4 py-3 rounded-pill fw-bold d-flex align-items-center gap-2'
           style={{
             background:
               application.applicants?.length > 0
-                ? 'linear-gradient(135deg, #22c55e, #16a34a)'
-                : 'linear-gradient(135deg, #ef4444, #dc2626)',
+                ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                : 'linear-gradient(135deg, var(--error-primary), var(--error-dark))',
             fontSize: '0.9rem',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: '1px solid var(--border-muted)',
             backdropFilter: 'blur(10px)',
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-            transition: 'all 0.3s ease',
+            boxShadow: '0 8px 16px var(--primary-10)',
+            transition: 'all 0.3s',
             cursor: 'default',
-            letterSpacing: '0.02em',
+            color: '#fff',
           }}
         >
           <svg width='18' height='18' fill='currentColor' viewBox='0 0 20 20'>
@@ -590,11 +593,11 @@ const ApplicantsPart = ({
             className='alert border-0 text-center mb-4'
             style={{
               background:
-                'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05))',
+                'linear-gradient(135deg, var(--warning-20), var(--warning-30))',
               borderRadius: '16px',
-              border: '1px solid rgba(245, 158, 11, 0.2)',
+              border: '1px solid var(--warning-30)',
               backdropFilter: 'blur(10px)',
-              color: '#92400e',
+              color: 'var(--warning-dark)',
               padding: '1.5rem',
             }}
           >
@@ -603,13 +606,14 @@ const ApplicantsPart = ({
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                background:
+                  'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                 color: 'white',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 1rem',
-                boxShadow: '0 8px 16px rgba(245, 158, 11, 0.3)',
+                boxShadow: '0 8px 16px var(--warning-30)',
               }}
             >
               <i className='fas fa-exclamation-triangle'></i>
@@ -623,12 +627,12 @@ const ApplicantsPart = ({
             <div
               className='p-4 mb-4 position-relative'
               style={{
-                background: 'rgba(255, 255, 255, 0.7)',
+                background: 'var(--surface-secondary)',
                 borderRadius: '18px',
-                border: '1px solid rgba(255, 255, 255, 0.5)',
+                border: '1px solid var(--border-muted)',
                 backdropFilter: 'blur(20px)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
-                transition: 'all 0.3s ease',
+                boxShadow: '0 8px 24px var(--primary-10)',
+                transition: 'all 0.3s',
               }}
             >
               <div className='d-flex align-items-center gap-3 mb-3'>
@@ -637,19 +641,20 @@ const ApplicantsPart = ({
                     width: '40px',
                     height: '40px',
                     borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                    background:
+                      'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)',
+                    boxShadow: '0 8px 16px var(--primary-30)',
                   }}
                 >
                   <i className='fas fa-user'></i>
                 </div>
                 <h6
-                  className='fw-bold text-primary mb-0'
-                  style={{ fontSize: '1.2rem' }}
+                  className='fw-bold'
+                  style={{ fontSize: '1.2rem', color: 'var(--primary-blue)' }}
                 >
                   Basic Information
                 </h6>
@@ -699,12 +704,12 @@ const ApplicantsPart = ({
                 <div
                   className='p-4 h-100 position-relative'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.7)',
+                    background: 'var(--surface-secondary)',
                     borderRadius: '18px',
-                    border: '1px solid rgba(255, 255, 255, 0.5)',
+                    border: '1px solid var(--border-muted)',
                     backdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
-                    transition: 'all 0.3s ease',
+                    boxShadow: '0 8px 24px var(--success-20)',
+                    transition: 'all 0.3s',
                   }}
                 >
                   <div className='d-flex align-items-center gap-3 mb-3'>
@@ -713,19 +718,23 @@ const ApplicantsPart = ({
                         width: '40px',
                         height: '40px',
                         borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                        background:
+                          'linear-gradient(135deg, var(--success-primary), var(--success-dark))',
                         color: 'white',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 8px 16px rgba(34, 197, 94, 0.3)',
+                        boxShadow: '0 8px 16px var(--success-30)',
                       }}
                     >
                       <i className='fas fa-phone'></i>
                     </div>
                     <h6
-                      className='fw-bold text-success mb-0'
-                      style={{ fontSize: '1.1rem' }}
+                      className='fw-bold'
+                      style={{
+                        fontSize: '1.1rem',
+                        color: 'var(--success-dark)',
+                      }}
                     >
                       Contact
                     </h6>
@@ -754,12 +763,12 @@ const ApplicantsPart = ({
                 <div
                   className='p-4 h-100 position-relative'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.7)',
+                    background: 'var(--surface-secondary)',
                     borderRadius: '18px',
-                    border: '1px solid rgba(255, 255, 255, 0.5)',
+                    border: '1px solid var(--border-muted)',
                     backdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
-                    transition: 'all 0.3s ease',
+                    boxShadow: '0 8px 24px var(--warning-20)',
+                    transition: 'all 0.3s',
                   }}
                 >
                   <div className='d-flex align-items-center gap-3 mb-3'>
@@ -768,19 +777,23 @@ const ApplicantsPart = ({
                         width: '40px',
                         height: '40px',
                         borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                        background:
+                          'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                         color: 'white',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 8px 16px rgba(245, 158, 11, 0.3)',
+                        boxShadow: '0 8px 16px var(--warning-30)',
                       }}
                     >
                       <i className='fas fa-home'></i>
                     </div>
                     <h6
-                      className='fw-bold mb-0'
-                      style={{ fontSize: '1.1rem', color: '#d97706' }}
+                      className='fw-bold'
+                      style={{
+                        fontSize: '1.1rem',
+                        color: 'var(--warning-dark)',
+                      }}
                     >
                       Address
                     </h6>
@@ -844,12 +857,12 @@ const ApplicantsPart = ({
                 <div
                   className='position-relative'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.7)',
+                    background: 'var(--surface-secondary)',
                     borderRadius: '18px',
-                    border: '2px solid #f59e0b',
+                    border: '2px solid var(--warning-primary)',
                     backdropFilter: 'blur(20px)',
                     boxShadow:
-                      '0 15px 35px rgba(245, 158, 11, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)',
+                      '0 15px 35px var(--warning-30), 0 5px 15px var(--primary-10)',
                     overflow: 'hidden',
                   }}
                 >
@@ -861,7 +874,7 @@ const ApplicantsPart = ({
                       right: '-2px',
                       bottom: '-2px',
                       background:
-                        'linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(245, 158, 11, 0.1))',
+                        'linear-gradient(135deg, var(--warning-30), var(--warning-20))',
                       borderRadius: '20px',
                       filter: 'blur(8px)',
                       zIndex: -1,
@@ -873,8 +886,8 @@ const ApplicantsPart = ({
                     className='d-flex justify-content-between align-items-center p-4'
                     style={{
                       background:
-                        'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05))',
-                      borderBottom: '1px solid rgba(245, 158, 11, 0.2)',
+                        'linear-gradient(135deg, var(--warning-20), var(--warning-30))',
+                      borderBottom: '1px solid var(--warning-30)',
                     }}
                   >
                     <div className='d-flex align-items-center gap-3'>
@@ -884,26 +897,29 @@ const ApplicantsPart = ({
                           height: '40px',
                           borderRadius: '12px',
                           background:
-                            'linear-gradient(135deg, #f59e0b, #d97706)',
+                            'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                           color: 'white',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          boxShadow: '0 8px 16px rgba(245, 158, 11, 0.3)',
+                          boxShadow: '0 8px 16px var(--warning-30)',
                         }}
                       >
                         <FaPlus />
                       </div>
-                      <h5 className='mb-0 fw-bold' style={{ color: '#92400e' }}>
+                      <h5
+                        className='mb-0 fw-bold'
+                        style={{ color: 'var(--warning-dark)' }}
+                      >
                         Add Applicant
                       </h5>
                     </div>
                     <button
                       className='btn btn-sm rounded-pill d-flex align-items-center gap-2'
                       style={{
-                        background: 'rgba(255, 255, 255, 0.8)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                        color: '#64748b',
+                        background: 'var(--surface-tertiary)',
+                        border: '1px solid var(--border-muted)',
+                        color: 'var(--text-muted)',
                         padding: '0.5rem 1rem',
                       }}
                       onClick={() => {
@@ -922,11 +938,11 @@ const ApplicantsPart = ({
                           className='alert border-0 mb-4'
                           style={{
                             background:
-                              'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05))',
+                              'linear-gradient(135deg, var(--primary-10), var(--primary-20))',
                             borderRadius: '16px',
-                            border: '1px solid rgba(59, 130, 246, 0.2)',
+                            border: '1px solid var(--primary-30)',
                             backdropFilter: 'blur(10px)',
-                            color: '#1e40af',
+                            color: 'var(--primary-blue-dark)',
                             padding: '1rem 1.5rem',
                           }}
                         >
@@ -937,7 +953,7 @@ const ApplicantsPart = ({
                                 height: '32px',
                                 borderRadius: '50%',
                                 background:
-                                  'linear-gradient(135deg, #3b82f6, #2563eb)',
+                                  'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                                 color: 'white',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -962,7 +978,7 @@ const ApplicantsPart = ({
                             height: '32px',
                             borderRadius: '8px',
                             background:
-                              'linear-gradient(135deg, #3b82f6, #2563eb)',
+                              'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                             color: 'white',
                             display: 'flex',
                             alignItems: 'center',
@@ -972,7 +988,10 @@ const ApplicantsPart = ({
                         >
                           <i className='fas fa-user'></i>
                         </div>
-                        <h6 className='fw-bold mb-0 text-primary'>
+                        <h6
+                          className='fw-bold mb-0'
+                          style={{ color: 'var(--primary-blue)' }}
+                        >
                           Basic Information
                         </h6>
                       </div>
@@ -1016,7 +1035,7 @@ const ApplicantsPart = ({
                               height: '32px',
                               borderRadius: '8px',
                               background:
-                                'linear-gradient(135deg, #22c55e, #16a34a)',
+                                'linear-gradient(135deg, var(--success-primary), var(--success-dark))',
                               color: 'white',
                               display: 'flex',
                               alignItems: 'center',
@@ -1026,7 +1045,10 @@ const ApplicantsPart = ({
                           >
                             <i className='fas fa-phone'></i>
                           </div>
-                          <h6 className='fw-bold mb-0 text-success'>
+                          <h6
+                            className='fw-bold mb-0'
+                            style={{ color: 'var(--success-dark)' }}
+                          >
                             Contact Information
                           </h6>
                         </div>
@@ -1053,7 +1075,7 @@ const ApplicantsPart = ({
                               height: '32px',
                               borderRadius: '8px',
                               background:
-                                'linear-gradient(135deg, #f59e0b, #d97706)',
+                                'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                               color: 'white',
                               display: 'flex',
                               alignItems: 'center',
@@ -1065,7 +1087,7 @@ const ApplicantsPart = ({
                           </div>
                           <h6
                             className='fw-bold mb-0'
-                            style={{ color: '#d97706' }}
+                            style={{ color: 'var(--warning-dark)' }}
                           >
                             Address Information
                           </h6>
@@ -1108,9 +1130,9 @@ const ApplicantsPart = ({
                       <button
                         className='btn rounded-pill px-4 d-flex align-items-center gap-2'
                         style={{
-                          background: 'rgba(255, 255, 255, 0.8)',
-                          border: '1px solid rgba(255, 255, 255, 0.3)',
-                          color: '#64748b',
+                          background: 'var(--surface-tertiary)',
+                          border: '1px solid var(--border-muted)',
+                          color: 'var(--text-muted)',
                           backdropFilter: 'blur(10px)',
                         }}
                         onClick={() => {
@@ -1127,14 +1149,14 @@ const ApplicantsPart = ({
                         disabled={!isFormValid}
                         style={{
                           background: isFormValid
-                            ? 'linear-gradient(135deg, #22c55e, #16a34a)'
-                            : 'rgba(148, 163, 184, 0.7)',
+                            ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                            : 'var(--primary-10)',
                           color: 'white',
                           border: 'none',
                           opacity: isFormValid ? 1 : 0.7,
                           cursor: isFormValid ? 'pointer' : 'not-allowed',
                           boxShadow: isFormValid
-                            ? '0 8px 16px rgba(34, 197, 94, 0.3)'
+                            ? '0 8px 16px var(--success-30)'
                             : 'none',
                         }}
                       >
@@ -1148,11 +1170,11 @@ const ApplicantsPart = ({
                 <div
                   className='text-center py-5'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.7)',
+                    background: 'var(--surface-secondary)',
                     borderRadius: '18px',
-                    border: '1px solid rgba(255, 255, 255, 0.5)',
+                    border: '1px solid var(--border-muted)',
                     backdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                    boxShadow: '0 8px 24px var(--primary-10)',
                   }}
                 >
                   <div className='mb-4'>
@@ -1161,15 +1183,19 @@ const ApplicantsPart = ({
                       style={{
                         width: '80px',
                         height: '80px',
-                        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                        background:
+                          'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                         color: 'white',
-                        boxShadow: '0 15px 35px rgba(102, 126, 234, 0.4)',
+                        boxShadow: '0 15px 35px var(--primary-30)',
                         animation: 'iconFloat 4s ease-in-out infinite',
                       }}
                     >
                       <FaPlus size={30} />
                     </div>
-                    <h5 className='fw-bold mb-2' style={{ color: '#1e293b' }}>
+                    <h5
+                      className='fw-bold mb-2'
+                      style={{ color: 'var(--text-primary)' }}
+                    >
                       Add Applicant Information
                     </h5>
                     <p className='text-muted'>
@@ -1179,11 +1205,12 @@ const ApplicantsPart = ({
                   <button
                     className='btn btn-lg rounded-pill px-5 d-flex align-items-center gap-3 mx-auto'
                     style={{
-                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                      background:
+                        'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                       border: 'none',
                       color: 'white',
-                      boxShadow: '0 15px 35px rgba(102, 126, 234, 0.4)',
-                      transition: 'all 0.3s ease',
+                      boxShadow: '0 15px 35px var(--primary-30)',
+                      transition: 'all 0.3s',
                     }}
                     onClick={() => setShowAddForm(true)}
                   >
@@ -1201,11 +1228,11 @@ const ApplicantsPart = ({
               className='alert border-0 text-center'
               style={{
                 background:
-                  'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.05))',
+                  'linear-gradient(135deg, var(--success-20), var(--success-30))',
                 borderRadius: '16px',
-                border: '1px solid rgba(34, 197, 94, 0.2)',
+                border: '1px solid var(--success-30)',
                 backdropFilter: 'blur(10px)',
-                color: '#059669',
+                color: 'var(--success-dark)',
                 padding: '1.5rem',
               }}
             >
@@ -1214,13 +1241,14 @@ const ApplicantsPart = ({
                   width: '40px',
                   height: '40px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                  background:
+                    'linear-gradient(135deg, var(--success-primary), var(--success-dark))',
                   color: 'white',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 1rem',
-                  boxShadow: '0 8px 16px rgba(34, 197, 94, 0.3)',
+                  boxShadow: '0 8px 16px var(--success-30)',
                 }}
               >
                 <i className='fas fa-check-circle'></i>
@@ -1240,8 +1268,8 @@ const ApplicantsPart = ({
           50% {opacity:0.8;transform:scale(1.05);}
         }
         @keyframes selectionGlow {
-          0% {opacity:0.3;}
-          100% {opacity:0.6;}
+          0% {opacity:0.2;}
+          100% {opacity:0.5;}
         }
         @keyframes iconFloat {
           0%,100% {transform:translateY(0) rotate(0deg) scale(1);}

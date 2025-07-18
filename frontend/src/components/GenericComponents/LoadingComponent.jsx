@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 const LoadingComponent = ({ message = 'Loading...' }) => {
@@ -31,100 +32,176 @@ const LoadingComponent = ({ message = 'Loading...' }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Enhanced theme-aware styles
+  const backgroundStyle = {
+    background: `
+      var(--gradient-main-bg),
+      radial-gradient(circle at 20% 30%, var(--primary-10) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, var(--primary-20) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, var(--success-20) 0%, transparent 70%)
+    `,
+    zIndex: 9999,
+    overflow: 'hidden',
+  };
+
+  const containerStyle = {
+    background: 'var(--gradient-surface)',
+    backdropFilter: 'blur(30px)',
+    WebkitBackdropFilter: 'blur(30px)',
+    borderRadius: '24px',
+    padding: '60px 80px',
+    border: '1px solid var(--border-primary)',
+    boxShadow: `
+      0 20px 60px rgba(0, 0, 0, 0.25),
+      0 8px 32px var(--primary-20),
+      0 4px 16px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 var(--white-10)
+    `,
+    zIndex: 10,
+    position: 'relative',
+  };
+
+  const glowRingStyle = {
+    top: '-2px',
+    left: '-2px',
+    right: '-2px',
+    bottom: '-2px',
+    borderRadius: '24px',
+    background: `
+      linear-gradient(45deg, transparent, var(--primary-50), transparent, var(--primary-40), transparent)
+    `,
+    animation: 'rotateGlow 3s linear infinite',
+    zIndex: -1,
+  };
+
+  const getRingColor = (index, isActive) => {
+    const colors = [
+      { active: 'var(--primary-blue)', inactive: 'var(--primary-30)' },
+      { active: 'var(--primary-blue-light)', inactive: 'var(--primary-20)' },
+      { active: 'var(--success-primary)', inactive: 'var(--success-30)' },
+    ];
+    return isActive ? colors[index].active : colors[index].inactive;
+  };
+
+  const textStyle = {
+    color: 'var(--text-primary)',
+    fontSize: '1.2rem',
+    fontWeight: '700',
+    marginBottom: '8px',
+    background: `
+      linear-gradient(145deg, var(--text-primary), var(--text-secondary), var(--text-tertiary))
+    `,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+    textShadow: '0 0 20px var(--primary-20)',
+    letterSpacing: '0.5px',
+    animation: 'textGlow 3s ease-in-out infinite',
+  };
+
+  const progressBarStyle = {
+    width: '200px',
+    height: '4px',
+    background: 'var(--primary-20)',
+    borderRadius: '2px',
+    overflow: 'hidden',
+    position: 'relative',
+    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)',
+  };
+
+  const progressFillStyle = {
+    height: '100%',
+    background: `
+      linear-gradient(90deg, var(--primary-blue), var(--primary-blue-light), var(--success-primary), var(--primary-blue))
+    `,
+    borderRadius: '2px',
+    animation: 'progressFlow 2s linear infinite',
+    boxShadow: '0 0 10px var(--primary-50)',
+  };
+
   return (
-    <div
+    <motion.div
       className='position-fixed top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center'
-      style={{
-        background: `
-          linear-gradient(135deg, #1F2049 0%, #2a2d6b 25%, #1F2049 50%, #1a1d42 75%, #1F2049 100%),
-          radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%)
-        `,
-        zIndex: 9999,
-        overflow: 'hidden',
-      }}
+      style={backgroundStyle}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
     >
       {/* Animated Background Particles */}
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className='position-absolute'
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            background: 'rgba(59, 130, 246, 0.6)',
-            borderRadius: '50%',
-            filter: 'blur(1px)',
-            animation: `floatParticle ${particle.duration}s infinite ${particle.delay}s ease-in-out`,
-            boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
-          }}
-        />
-      ))}
+      <AnimatePresence>
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className='position-absolute'
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              background: 'var(--primary-50)',
+              borderRadius: '50%',
+              filter: 'blur(1px)',
+              boxShadow: '0 0 10px var(--primary-50)',
+            }}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{
+              opacity: [0.6, 1, 0.6],
+              scale: [1, 1.2, 1],
+              y: [-20, 0, -20],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: particle.duration,
+              delay: particle.delay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
+      </AnimatePresence>
 
       {/* Main Loading Container */}
-      <div
+      <motion.div
         className='position-relative d-flex flex-column align-items-center'
-        style={{
-          background:
-            'linear-gradient(145deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.8) 100%)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '24px',
-          padding: '60px 80px',
-          border: '1px solid rgba(59, 130, 246, 0.3)',
-          boxShadow: `
-            0 20px 40px rgba(0, 0, 0, 0.4),
-            0 0 60px rgba(59, 130, 246, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1)
-          `,
-          zIndex: 10,
-        }}
+        style={containerStyle}
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
       >
         {/* Animated Glow Ring */}
-        <div
-          className='position-absolute'
-          style={{
-            top: '-2px',
-            left: '-2px',
-            right: '-2px',
-            bottom: '-2px',
-            borderRadius: '24px',
-            background:
-              'linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.5), transparent, rgba(139, 92, 246, 0.5), transparent)',
-            animation: 'rotateGlow 3s linear infinite',
-            zIndex: -1,
-          }}
-        />
+        <div className='position-absolute' style={glowRingStyle} />
 
         {/* Central Loading Rings */}
-        <div
+        <motion.div
           className='position-relative mb-4'
           style={{ width: '120px', height: '120px' }}
+          initial={{ rotate: 0 }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
         >
           {/* Outer Ring */}
-          <div
+          <motion.div
             className='position-absolute'
             style={{
               width: '100%',
               height: '100%',
               borderRadius: '50%',
               border: '3px solid transparent',
-              borderTopColor:
-                activeRing === 0 ? '#3b82f6' : 'rgba(59, 130, 246, 0.3)',
-              borderRightColor:
-                activeRing === 0 ? '#3b82f6' : 'rgba(59, 130, 246, 0.3)',
-              animation: 'spinRing 2s linear infinite',
-              filter: `drop-shadow(0 0 10px ${
-                activeRing === 0 ? '#3b82f6' : 'rgba(59, 130, 246, 0.3)'
-              })`,
+              borderTopColor: getRingColor(0, activeRing === 0),
+              borderRightColor: getRingColor(0, activeRing === 0),
+              filter: `drop-shadow(0 0 10px ${getRingColor(
+                0,
+                activeRing === 0
+              )})`,
               transition: 'all 0.3s ease',
             }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           />
 
           {/* Middle Ring */}
-          <div
+          <motion.div
             className='position-absolute'
             style={{
               width: '80%',
@@ -133,20 +210,20 @@ const LoadingComponent = ({ message = 'Loading...' }) => {
               left: '10%',
               borderRadius: '50%',
               border: '3px solid transparent',
-              borderTopColor:
-                activeRing === 1 ? '#8b5cf6' : 'rgba(139, 92, 246, 0.3)',
-              borderLeftColor:
-                activeRing === 1 ? '#8b5cf6' : 'rgba(139, 92, 246, 0.3)',
-              animation: 'spinRing 1.5s linear infinite reverse',
-              filter: `drop-shadow(0 0 8px ${
-                activeRing === 1 ? '#8b5cf6' : 'rgba(139, 92, 246, 0.3)'
-              })`,
+              borderTopColor: getRingColor(1, activeRing === 1),
+              borderLeftColor: getRingColor(1, activeRing === 1),
+              filter: `drop-shadow(0 0 8px ${getRingColor(
+                1,
+                activeRing === 1
+              )})`,
               transition: 'all 0.3s ease',
             }}
+            animate={{ rotate: -360 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
           />
 
           {/* Inner Ring */}
-          <div
+          <motion.div
             className='position-absolute'
             style={{
               width: '60%',
@@ -155,20 +232,20 @@ const LoadingComponent = ({ message = 'Loading...' }) => {
               left: '20%',
               borderRadius: '50%',
               border: '3px solid transparent',
-              borderTopColor:
-                activeRing === 2 ? '#10b981' : 'rgba(16, 185, 129, 0.3)',
-              borderBottomColor:
-                activeRing === 2 ? '#10b981' : 'rgba(16, 185, 129, 0.3)',
-              animation: 'spinRing 1s linear infinite',
-              filter: `drop-shadow(0 0 6px ${
-                activeRing === 2 ? '#10b981' : 'rgba(16, 185, 129, 0.3)'
-              })`,
+              borderTopColor: getRingColor(2, activeRing === 2),
+              borderBottomColor: getRingColor(2, activeRing === 2),
+              filter: `drop-shadow(0 0 6px ${getRingColor(
+                2,
+                activeRing === 2
+              )})`,
               transition: 'all 0.3s ease',
             }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
 
           {/* Central Pulsing Dot */}
-          <div
+          <motion.div
             className='position-absolute'
             style={{
               width: '20px',
@@ -177,81 +254,83 @@ const LoadingComponent = ({ message = 'Loading...' }) => {
               left: '50%',
               transform: 'translate(-50%, -50%)',
               borderRadius: '50%',
-              background: 'linear-gradient(145deg, #3b82f6, #1d4ed8)',
-              boxShadow:
-                '0 0 20px rgba(59, 130, 246, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.3)',
-              animation: 'pulseDot 2s ease-in-out infinite',
+              background: `linear-gradient(145deg, var(--primary-blue), var(--primary-blue-dark))`,
+              boxShadow: `
+                0 0 20px var(--primary-50),
+                inset 0 2px 4px var(--white-10)
+              `,
             }}
+            animate={{
+              scale: [1, 1.2, 1],
+              boxShadow: [
+                `0 0 20px var(--primary-50), inset 0 2px 4px var(--white-10)`,
+                `0 0 30px var(--primary-blue), inset 0 2px 4px var(--white-20)`,
+                `0 0 20px var(--primary-50), inset 0 2px 4px var(--white-10)`,
+              ],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           />
 
           {/* Orbiting Dots */}
           {[0, 1, 2].map((i) => (
-            <div
+            <motion.div
               key={i}
               className='position-absolute'
               style={{
                 width: '8px',
                 height: '8px',
                 borderRadius: '50%',
-                background: `linear-gradient(145deg, ${
-                  i === 0 ? '#3b82f6' : i === 1 ? '#8b5cf6' : '#10b981'
-                }, ${i === 0 ? '#1d4ed8' : i === 1 ? '#7c3aed' : '#059669'})`,
-                boxShadow: `0 0 10px ${
-                  i === 0
-                    ? 'rgba(59, 130, 246, 0.8)'
-                    : i === 1
-                    ? 'rgba(139, 92, 246, 0.8)'
-                    : 'rgba(16, 185, 129, 0.8)'
-                }`,
-                animation: `orbitDot ${2 + i * 0.5}s linear infinite`,
-                animationDelay: `${i * 0.3}s`,
-                transformOrigin: '50px 50px',
+                background: `linear-gradient(145deg, ${getRingColor(
+                  i,
+                  true
+                )}, ${getRingColor(i, true)})`,
+                boxShadow: `0 0 10px ${getRingColor(i, true)}`,
                 left: 'calc(50% - 4px)',
                 top: 'calc(50% - 4px)',
               }}
+              animate={{
+                rotate: 360,
+                x: [0, 50, 0, -50, 0],
+                y: [0, 0, 50, 0, 0],
+              }}
+              transition={{
+                duration: 2 + i * 0.5,
+                delay: i * 0.3,
+                repeat: Infinity,
+                ease: 'linear',
+              }}
             />
           ))}
-        </div>
+        </motion.div>
 
         {/* Modern Loading Text */}
         <div className='text-center'>
-          <h4
-            style={{
-              color: 'white',
-              fontSize: '1.2rem',
-              fontWeight: '700',
-              marginBottom: '8px',
-              background: 'linear-gradient(145deg, #ffffff, #e2e8f0, #cbd5e1)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 0 20px rgba(255, 255, 255, 0.3)',
-              letterSpacing: '0.5px',
-              animation: 'textGlow 3s ease-in-out infinite',
+          <motion.h4
+            style={textStyle}
+            animate={{
+              textShadow: [
+                '0 0 20px var(--primary-20)',
+                '0 0 30px var(--primary-30), 0 0 40px var(--primary-40)',
+                '0 0 20px var(--primary-20)',
+              ],
             }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           >
             {message}
-          </h4>
+          </motion.h4>
 
           {/* Progress Indicator */}
-          <div
-            style={{
-              width: '200px',
-              height: '4px',
-              background: 'rgba(59, 130, 246, 0.2)',
-              borderRadius: '2px',
-              overflow: 'hidden',
-              position: 'relative',
-              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            <div
-              style={{
-                height: '100%',
-                background:
-                  'linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981, #3b82f6)',
-                borderRadius: '2px',
-                animation: 'progressFlow 2s linear infinite',
-                boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
+          <div style={progressBarStyle}>
+            <motion.div
+              style={progressFillStyle}
+              animate={{
+                x: ['-100%', '100%'],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'linear',
               }}
             />
           </div>
@@ -259,7 +338,7 @@ const LoadingComponent = ({ message = 'Loading...' }) => {
           {/* Status Dots */}
           <div className='d-flex justify-content-center gap-2 mt-3'>
             {[0, 1, 2].map((i) => (
-              <div
+              <motion.div
                 key={i}
                 style={{
                   width: '6px',
@@ -267,73 +346,37 @@ const LoadingComponent = ({ message = 'Loading...' }) => {
                   borderRadius: '50%',
                   background:
                     activeRing === i
-                      ? 'linear-gradient(145deg, #3b82f6, #1d4ed8)'
-                      : 'rgba(59, 130, 246, 0.3)',
+                      ? `linear-gradient(145deg, var(--primary-blue), var(--primary-blue-dark))`
+                      : 'var(--primary-30)',
                   boxShadow:
-                    activeRing === i
-                      ? '0 0 8px rgba(59, 130, 246, 0.8)'
-                      : 'none',
+                    activeRing === i ? `0 0 8px var(--primary-50)` : 'none',
                   transition: 'all 0.3s ease',
-                  animation:
-                    activeRing === i ? 'statusPulse 0.6s ease-in-out' : 'none',
                 }}
+                animate={
+                  activeRing === i ? { scale: [1, 1.3, 1] } : { scale: 1 }
+                }
+                transition={{ duration: 0.6, ease: 'easeInOut' }}
               />
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* CSS Animations */}
-      <style jsx>{`
+      {/* Enhanced CSS Animations */}
+      <style>{`
         @keyframes rotateGlow {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes spinRing {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes pulseDot {
-          0%,
-          100% {
-            transform: translate(-50%, -50%) scale(1);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.8),
-              inset 0 2px 4px rgba(255, 255, 255, 0.3);
-          }
-          50% {
-            transform: translate(-50%, -50%) scale(1.2);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 1),
-              inset 0 2px 4px rgba(255, 255, 255, 0.5);
-          }
-        }
-
-        @keyframes orbitDot {
-          0% {
-            transform: rotate(0deg) translateX(50px) rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg) translateX(50px) rotate(-360deg);
-          }
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
 
         @keyframes textGlow {
-          0%,
-          100% {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+          0%, 100% { 
+            text-shadow: 0 0 20px var(--primary-20); 
           }
-          50% {
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.6),
-              0 0 40px rgba(59, 130, 246, 0.4);
+          50% { 
+            text-shadow: 
+              0 0 30px var(--primary-30),
+              0 0 40px var(--primary-40); 
           }
         }
 
@@ -351,31 +394,16 @@ const LoadingComponent = ({ message = 'Loading...' }) => {
           }
         }
 
-        @keyframes statusPulse {
-          0% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.3);
-          }
-          100% {
-            transform: scale(1);
-          }
+        /* Theme-aware glow animations */
+        [data-theme="light"] .position-absolute {
+          filter: brightness(0.8);
         }
 
-        @keyframes floatParticle {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-            opacity: 0.6;
-          }
-          50% {
-            transform: translateY(-20px) rotate(180deg);
-            opacity: 1;
-          }
+        [data-theme="dark"] .position-absolute {
+          filter: brightness(1.2);
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { fetchData } from '../../../GenericFunctions/AxiosGenericFunctions';
@@ -10,7 +11,7 @@ const ApplicationDetailStages = ({
   application,
   refresh,
   setHighlightedSectionId,
-  advancement, // Add advancement prop
+  advancement,
   highlitedSectionId,
   isSidebarOpen,
 }) => {
@@ -43,15 +44,13 @@ const ApplicationDetailStages = ({
           const token = localStorage.getItem('token');
           const response = await fetchData(token, application.estate_summary);
           setEstates(response.data || response || []);
-        } catch (error) {
-          console.error('Error fetching estates:', error);
+        } catch {
           setEstates([]);
         } finally {
           setEstatesLoading(false);
         }
       }
     };
-
     fetchEstates();
   }, [application?.estate_summary, refresh]);
 
@@ -80,8 +79,7 @@ const ApplicationDetailStages = ({
           const statusEndpoint = `/api/applications/${application.id}/requirement-status/`;
           const statusResponse = await fetchData(token, statusEndpoint);
           setRequirementStatus(statusResponse.data || null);
-        } catch (error) {
-          console.error('Error fetching documents/requirements:', error);
+        } catch {
           setDocuments([]);
           setRequirements([]);
           setRequirementStatus(null);
@@ -90,7 +88,6 @@ const ApplicationDetailStages = ({
         }
       }
     };
-
     fetchDocumentsAndRequirements();
   }, [application?.id, refresh]);
 
@@ -115,7 +112,6 @@ const ApplicationDetailStages = ({
     const allDocumentsSigned =
       signatureRequiredDocs.length > 0 && pendingSignatures.length === 0;
 
-    // Determine completion status
     let isComplete = false;
     let status = 'waiting';
 
@@ -166,7 +162,7 @@ const ApplicationDetailStages = ({
     getDocumentsAnalysis,
     getEstateItemsCount,
     currency_sign,
-    advancement, // Pass advancement data
+    advancement,
   });
 
   const completedSteps = steps.filter((step) => step.completed).length;
@@ -178,87 +174,49 @@ const ApplicationDetailStages = ({
   const nextActionStep = steps.find((step) => step.actionRequired);
 
   return (
-    <div
-      className='h-100 d-flex flex-column'
+    <motion.div
+      className='stages-glass-container d-flex flex-column position-relative'
       style={{
-        background:
-          'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
-        minHeight: '100vh',
-        paddingTop: '100px',
+        maxHeight: 'calc(100vh-110px)',
+        paddingTop: '110px',
+        background: 'var(--gradient-main-bg)',
+        borderRadius: '28px',
+        border: '1.5px solid var(--border-primary)',
+        boxShadow:
+          '0 16px 40px rgba(0,0,0,0.15), 0 4px 20px var(--primary-20), 0 2px 4px rgba(0,0,0,0.05)',
+        overflow: 'hidden',
+        backdropFilter: 'blur(34px)',
+        WebkitBackdropFilter: 'blur(34px)',
+        color: 'var(--text-primary)',
+        zIndex: 2,
       }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55 }}
     >
-      <style>
-        {`
-          @keyframes neonPulse {
-            0%, 100% { 
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 40px rgba(59, 130, 246, 0.2); 
-            }
-            50% { 
-              box-shadow: 0 0 30px rgba(59, 130, 246, 0.7), 0 0 60px rgba(59, 130, 246, 0.4); 
-            }
-          }
-          
-          @keyframes criticalPulse {
-            0%, 100% { 
-              box-shadow: 0 0 20px rgba(239, 68, 68, 0.5), 0 0 40px rgba(239, 68, 68, 0.3); 
-            }
-            50% { 
-              box-shadow: 0 0 35px rgba(239, 68, 68, 0.8), 0 0 70px rgba(239, 68, 68, 0.5); 
-            }
-          }
-          
-          @keyframes warningPulse {
-            0%, 100% { 
-              box-shadow: 0 0 20px rgba(245, 158, 11, 0.5), 0 0 40px rgba(245, 158, 11, 0.3); 
-            }
-            50% { 
-              box-shadow: 0 0 35px rgba(245, 158, 11, 0.8), 0 0 70px rgba(245, 158, 11, 0.5); 
-            }
-          }
+      {/* Animated glassy float background */}
+      <div
+        className='position-absolute w-100 h-100 top-0 start-0'
+        style={{
+          zIndex: 0,
+          pointerEvents: 'none',
+          background: `
+            radial-gradient(circle at 18% 35%, var(--primary-10) 0%, transparent 55%),
+            radial-gradient(circle at 80% 60%, var(--success-20) 0%, transparent 50%),
+            radial-gradient(circle at 55% 14%, var(--primary-20) 0%, transparent 34%)
+          `,
+          animation: 'backgroundFloat 20s ease-in-out infinite',
+        }}
+      />
 
-          @keyframes progressShimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-          }
-
-          @keyframes issueAlert {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-          }
-
-          @keyframes iconSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-
-          @keyframes progressFill {
-            from { transform: scaleX(0); }
-            to { transform: scaleX(1); }
-          }
-
-          /* Custom scrollbar styling */
-          .stages-container::-webkit-scrollbar {
-            width: 6px;
-          }
-
-          .stages-container::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.3);
-            border-radius: 3px;
-          }
-
-          .stages-container::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.4);
-            border-radius: 3px;
-          }
-
-          .stages-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(59, 130, 246, 0.6);
-          }
-        `}
-      </style>
-
-      {/* Header - Fixed at top with responsive padding */}
-      <div className='flex-shrink-0 p-3 pt-5'>
+      {/* Header */}
+      <motion.div
+        className='flex-shrink-0 p-3 pt-4'
+        style={{ zIndex: 2, background: 'transparent' }}
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.55 }}
+      >
         <StagesHeader
           application={application}
           overallProgress={overallProgress}
@@ -267,15 +225,19 @@ const ApplicationDetailStages = ({
           totalSteps={steps.length}
           nextActionStep={nextActionStep}
         />
-      </div>
+      </motion.div>
 
-      {/* Scrollable Timeline Content */}
-      <div
-        className='flex-grow-1 overflow-auto px-3 stages-container'
+      {/* Timeline Content */}
+      <motion.div
+        className='flex-grow-1 overflow-auto px-2 px-md-4 stages-container'
         style={{
           scrollBehavior: 'smooth',
           overflowX: 'hidden',
+          zIndex: 2,
         }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.18, duration: 0.45 }}
       >
         <StagesTimeline
           steps={steps}
@@ -284,18 +246,54 @@ const ApplicationDetailStages = ({
           setHighlightedSectionId={setHighlightedSectionId}
           highlitedSectionId={highlitedSectionId}
         />
-      </div>
+      </motion.div>
 
-      {/* Footer - Fixed at bottom with responsive padding */}
-      {/* <div className='flex-shrink-0 p-3 pb-4'>
-        <StagesFooter
-          nextActionStep={nextActionStep}
-          completedSteps={completedSteps}
-          totalSteps={steps.length}
-          application={application}
-        />
-      </div> */}
-    </div>
+      {/* Glass + animation styles */}
+      <style>{`
+        @keyframes backgroundFloat {
+          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.65; }
+          33% { transform: translateY(-18px) rotate(120deg); opacity: 0.82; }
+          66% { transform: translateY(11px) rotate(240deg); opacity: 0.76; }
+        }
+        .stages-glass-container {
+          background: var(--gradient-surface);
+          backdrop-filter: blur(38px);
+          -webkit-backdrop-filter: blur(38px);
+          border-radius: 28px;
+          border: 1.5px solid var(--border-primary);
+          box-shadow: 0 24px 56px rgba(0,0,0,0.14), 0 6px 32px var(--primary-20), 0 2px 4px rgba(0,0,0,0.06);
+          color: var(--text-primary);
+        }
+        .stages-glass-container::-webkit-scrollbar {
+          width: 7px;
+        }
+        .stages-glass-container::-webkit-scrollbar-track {
+          background: var(--scrollbar-track);
+          border-radius: 4px;
+        }
+        .stages-glass-container::-webkit-scrollbar-thumb {
+          background: var(--scrollbar-thumb);
+          border-radius: 4px;
+        }
+        .stages-glass-container::-webkit-scrollbar-thumb:hover {
+          background: var(--scrollbar-thumb-hover);
+        }
+        .stages-container::-webkit-scrollbar {
+          width: 6px;
+        }
+        .stages-container::-webkit-scrollbar-track {
+          background: var(--scrollbar-track);
+          border-radius: 3px;
+        }
+        .stages-container::-webkit-scrollbar-thumb {
+          background: var(--scrollbar-thumb);
+          border-radius: 3px;
+        }
+        .stages-container::-webkit-scrollbar-thumb:hover {
+          background: var(--scrollbar-thumb-hover);
+        }
+      `}</style>
+    </motion.div>
   );
 };
 

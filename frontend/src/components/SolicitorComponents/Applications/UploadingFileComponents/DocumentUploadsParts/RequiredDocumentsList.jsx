@@ -44,9 +44,9 @@ const RequiredDocumentsList = ({
           <span
             className='badge rounded-pill px-3 py-2 d-flex align-items-center'
             style={{
-              backgroundColor: '#dcfce7',
-              color: '#16a34a',
-              border: '1px solid #bbf7d0',
+              backgroundColor: 'var(--success-20)',
+              color: 'var(--success-primary)',
+              border: '1px solid var(--success-30)',
               fontSize: '0.7rem',
               fontWeight: '600',
             }}
@@ -60,9 +60,9 @@ const RequiredDocumentsList = ({
           <span
             className='badge rounded-pill px-3 py-2 d-flex align-items-center'
             style={{
-              backgroundColor: '#fef3c7',
-              color: '#d97706',
-              border: '1px solid #fed7aa',
+              backgroundColor: 'var(--warning-20)',
+              color: 'var(--warning-primary)',
+              border: '1px solid var(--warning-30)',
               fontSize: '0.7rem',
               fontWeight: '600',
             }}
@@ -76,9 +76,9 @@ const RequiredDocumentsList = ({
           <span
             className='badge rounded-pill px-3 py-2 d-flex align-items-center'
             style={{
-              backgroundColor: '#fee2e2',
-              color: '#dc2626',
-              border: '1px solid #fecaca',
+              backgroundColor: 'var(--error-20)',
+              color: 'var(--error-primary)',
+              border: '1px solid var(--error-30)',
               fontSize: '0.7rem',
               fontWeight: '600',
             }}
@@ -92,9 +92,9 @@ const RequiredDocumentsList = ({
 
   const getSignerIcon = (signer) => {
     return signer === 'applicant' ? (
-      <FaUser className='text-primary' size={12} />
+      <FaUser style={{ color: 'var(--primary-blue)' }} size={12} />
     ) : (
-      <FaUserTie className='text-secondary' size={12} />
+      <FaUserTie style={{ color: 'var(--text-secondary)' }} size={12} />
     );
   };
 
@@ -102,11 +102,11 @@ const RequiredDocumentsList = ({
     const status = getRequirementStatus(requirement);
     switch (status) {
       case 'completed':
-        return 'linear-gradient(90deg, #10b981, #059669)';
+        return 'linear-gradient(90deg, var(--success-primary), var(--success-dark))';
       case 'pending_signature':
-        return 'linear-gradient(90deg, #f59e0b, #d97706)';
+        return 'linear-gradient(90deg, var(--warning-primary), var(--warning-dark))';
       default:
-        return 'linear-gradient(90deg, #ef4444, #dc2626)';
+        return 'linear-gradient(90deg, var(--error-primary), var(--error-dark))';
     }
   };
 
@@ -127,9 +127,9 @@ const RequiredDocumentsList = ({
       <div
         className='text-center py-5'
         style={{
-          background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+          background: 'var(--primary-20)',
           borderRadius: '20px',
-          border: '1px solid #bae6fd',
+          border: '1px solid var(--primary-30)',
         }}
       >
         <div
@@ -137,17 +137,17 @@ const RequiredDocumentsList = ({
           style={{
             width: '80px',
             height: '80px',
-            background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
-            color: '#0891b2',
-            border: '3px solid #bae6fd',
+            background: 'var(--primary-30)',
+            color: 'var(--primary-blue)',
+            border: '3px solid var(--primary-40)',
           }}
         >
           <FaFileAlt size={32} />
         </div>
-        <h4 className='fw-bold mb-2' style={{ color: '#0891b2' }}>
+        <h4 className='fw-bold mb-2' style={{ color: 'var(--primary-blue)' }}>
           No Document Requirements Set
         </h4>
-        <p className='mb-0 text-muted'>
+        <p className='mb-0' style={{ color: 'var(--text-muted)' }}>
           No specific documents have been marked as required for this
           application yet.
         </p>
@@ -168,26 +168,23 @@ const RequiredDocumentsList = ({
                 className='card border-0 h-100 position-relative'
                 style={{
                   borderRadius: '16px',
-                  background:
-                    'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-                  border: '1px solid #e2e8f0',
+                  background: 'var(--gradient-surface)',
+                  border: '1px solid var(--border-muted)',
                   transition:
                     'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                   overflow: 'hidden',
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.boxShadow =
-                    '0 25px 50px -12px rgba(0, 0, 0, 0.15)';
+                    '0 25px 50px -12px var(--primary-20)';
                   e.currentTarget.style.transform =
                     'translateY(-8px) scale(1.02)';
-                  e.currentTarget.style.background =
-                    'linear-gradient(145deg, #ffffff 0%, #ffffff 100%)';
+                  e.currentTarget.style.background = 'var(--surface-primary)';
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.boxShadow = 'none';
                   e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                  e.currentTarget.style.background =
-                    'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)';
+                  e.currentTarget.style.background = 'var(--gradient-surface)';
                 }}
               >
                 {/* Status Border */}
@@ -224,22 +221,22 @@ const RequiredDocumentsList = ({
                         height: '48px',
                         background:
                           status === 'completed'
-                            ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)'
+                            ? 'var(--success-20)'
                             : status === 'pending_signature'
-                            ? 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)'
-                            : 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+                            ? 'var(--warning-20)'
+                            : 'var(--error-20)',
                         color:
                           status === 'completed'
-                            ? '#16a34a'
+                            ? 'var(--success-primary)'
                             : status === 'pending_signature'
-                            ? '#d97706'
-                            : '#dc2626',
+                            ? 'var(--warning-primary)'
+                            : 'var(--error-primary)',
                         border: `2px solid ${
                           status === 'completed'
-                            ? '#bbf7d0'
+                            ? 'var(--success-30)'
                             : status === 'pending_signature'
-                            ? '#fed7aa'
-                            : '#fecaca'
+                            ? 'var(--warning-30)'
+                            : 'var(--error-30)'
                         }`,
                       }}
                     >
@@ -248,16 +245,19 @@ const RequiredDocumentsList = ({
                     <div className='flex-grow-1'>
                       <div className='d-flex align-items-center mb-1'>
                         <h6
-                          className='mb-0 fw-bold text-dark me-2'
-                          style={{ fontSize: '0.95rem' }}
+                          className='mb-0 fw-bold me-2'
+                          style={{
+                            fontSize: '0.95rem',
+                            color: 'var(--text-primary)',
+                          }}
                         >
                           {documentType.name}
                         </h6>
                         <span
                           className='badge'
                           style={{
-                            backgroundColor: '#f1f5f9',
-                            color: '#64748b',
+                            backgroundColor: 'var(--surface-secondary)',
+                            color: 'var(--text-muted)',
                             fontSize: '0.65rem',
                             fontWeight: '500',
                           }}
@@ -266,10 +266,11 @@ const RequiredDocumentsList = ({
                         </span>
                       </div>
                       <p
-                        className='mb-0 text-muted'
+                        className='mb-0'
                         style={{
                           fontSize: '0.8rem',
                           lineHeight: '1.3',
+                          color: 'var(--text-muted)',
                         }}
                       >
                         {documentType.description || 'No description provided'}
@@ -284,19 +285,24 @@ const RequiredDocumentsList = ({
                         <div
                           className='p-2 rounded-3'
                           style={{
-                            backgroundColor: '#f8fafc',
-                            border: '1px solid #e2e8f0',
+                            backgroundColor: 'var(--surface-secondary)',
+                            border: '1px solid var(--border-muted)',
                           }}
                         >
                           <div
-                            className='fw-bold text-dark'
-                            style={{ fontSize: '0.8rem' }}
+                            className='fw-bold'
+                            style={{
+                              fontSize: '0.8rem',
+                              color: 'var(--text-primary)',
+                            }}
                           >
                             Status
                           </div>
                           <div
-                            className='text-muted'
-                            style={{ fontSize: '0.7rem' }}
+                            style={{
+                              fontSize: '0.7rem',
+                              color: 'var(--text-muted)',
+                            }}
                           >
                             {requirement.is_uploaded ? 'Uploaded' : 'Missing'}
                           </div>
@@ -306,19 +312,24 @@ const RequiredDocumentsList = ({
                         <div
                           className='p-2 rounded-3'
                           style={{
-                            backgroundColor: '#f8fafc',
-                            border: '1px solid #e2e8f0',
+                            backgroundColor: 'var(--surface-secondary)',
+                            border: '1px solid var(--border-muted)',
                           }}
                         >
                           <div
-                            className='fw-bold text-dark'
-                            style={{ fontSize: '0.8rem' }}
+                            className='fw-bold'
+                            style={{
+                              fontSize: '0.8rem',
+                              color: 'var(--text-primary)',
+                            }}
                           >
                             Priority
                           </div>
                           <div
-                            className='text-muted'
-                            style={{ fontSize: '0.7rem' }}
+                            style={{
+                              fontSize: '0.7rem',
+                              color: 'var(--text-muted)',
+                            }}
                           >
                             {documentType.signature_required
                               ? 'High'
@@ -330,19 +341,24 @@ const RequiredDocumentsList = ({
                         <div
                           className='p-2 rounded-3'
                           style={{
-                            backgroundColor: '#f8fafc',
-                            border: '1px solid #e2e8f0',
+                            backgroundColor: 'var(--surface-secondary)',
+                            border: '1px solid var(--border-muted)',
                           }}
                         >
                           <div
-                            className='fw-bold text-dark'
-                            style={{ fontSize: '0.8rem' }}
+                            className='fw-bold'
+                            style={{
+                              fontSize: '0.8rem',
+                              color: 'var(--text-primary)',
+                            }}
                           >
                             Added
                           </div>
                           <div
-                            className='text-muted'
-                            style={{ fontSize: '0.7rem' }}
+                            style={{
+                              fontSize: '0.7rem',
+                              color: 'var(--text-muted)',
+                            }}
                           >
                             {new Date(
                               requirement.created_at
@@ -360,10 +376,12 @@ const RequiredDocumentsList = ({
                       style={{
                         background:
                           status === 'completed'
-                            ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)'
-                            : 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)',
+                            ? 'var(--success-20)'
+                            : 'var(--warning-20)',
                         border: `1px solid ${
-                          status === 'completed' ? '#bbf7d0' : '#fed7aa'
+                          status === 'completed'
+                            ? 'var(--success-30)'
+                            : 'var(--warning-30)'
                         }`,
                       }}
                     >
@@ -376,8 +394,8 @@ const RequiredDocumentsList = ({
                               style={{
                                 color:
                                   status === 'completed'
-                                    ? '#16a34a'
-                                    : '#d97706',
+                                    ? 'var(--success-primary)'
+                                    : 'var(--warning-primary)',
                                 fontSize: '0.8rem',
                               }}
                             >
@@ -387,8 +405,10 @@ const RequiredDocumentsList = ({
                               Signature Required
                             </div>
                             <div
-                              className='text-muted'
-                              style={{ fontSize: '0.7rem' }}
+                              style={{
+                                fontSize: '0.7rem',
+                                color: 'var(--text-muted)',
+                              }}
                             >
                               {status === 'completed'
                                 ? 'Document signed and complete'
@@ -401,7 +421,7 @@ const RequiredDocumentsList = ({
                         {status !== 'completed' && (
                           <FaFileSignature
                             size={16}
-                            style={{ color: '#d97706' }}
+                            style={{ color: 'var(--warning-primary)' }}
                           />
                         )}
                       </div>
@@ -413,26 +433,32 @@ const RequiredDocumentsList = ({
                     <div
                       className='mb-3 p-3 rounded-3'
                       style={{
-                        backgroundColor: '#f0f9ff',
-                        border: '1px solid #bae6fd',
+                        backgroundColor: 'var(--primary-20)',
+                        border: '1px solid var(--primary-30)',
                       }}
                     >
                       <div className='d-flex align-items-center'>
                         <FaCheckCircle
-                          className='text-success me-2'
+                          className='me-2'
                           size={16}
+                          style={{ color: 'var(--success-primary)' }}
                         />
                         <div>
                           <div
-                            className='fw-bold text-dark'
-                            style={{ fontSize: '0.8rem' }}
+                            className='fw-bold'
+                            style={{
+                              fontSize: '0.8rem',
+                              color: 'var(--text-primary)',
+                            }}
                           >
                             Uploaded:{' '}
                             {requirement.uploaded_document.original_name}
                           </div>
                           <div
-                            className='text-muted'
-                            style={{ fontSize: '0.7rem' }}
+                            style={{
+                              fontSize: '0.7rem',
+                              color: 'var(--text-muted)',
+                            }}
                           >
                             Uploaded on:{' '}
                             {new Date(
@@ -452,7 +478,7 @@ const RequiredDocumentsList = ({
                         onClick={() => handleUploadClick(requirement)}
                         style={{
                           background:
-                            'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                            'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                           border: 'none',
                           color: 'white',
                           borderRadius: '12px',
@@ -463,12 +489,12 @@ const RequiredDocumentsList = ({
                         }}
                         onMouseOver={(e) => {
                           e.target.style.background =
-                            'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+                            'linear-gradient(135deg, var(--warning-dark), var(--warning-primary))';
                           e.target.style.transform = 'translateY(-1px)';
                         }}
                         onMouseOut={(e) => {
                           e.target.style.background =
-                            'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                            'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))';
                           e.target.style.transform = 'translateY(0)';
                         }}
                       >
@@ -479,9 +505,9 @@ const RequiredDocumentsList = ({
                       <button
                         className='btn flex-fill'
                         style={{
-                          backgroundColor: '#dcfce7',
-                          border: '1px solid #bbf7d0',
-                          color: '#16a34a',
+                          backgroundColor: 'var(--success-20)',
+                          border: '1px solid var(--success-30)',
+                          color: 'var(--success-primary)',
                           borderRadius: '12px',
                           fontSize: '0.8rem',
                           fontWeight: '600',

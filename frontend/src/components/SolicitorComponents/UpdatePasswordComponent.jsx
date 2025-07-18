@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import {
   FaArrowLeft,
@@ -63,88 +64,152 @@ const UpdatePasswordComponent = () => {
   };
 
   return (
-    <div
+    <motion.div
       className='min-vh-100 pb-4'
       style={{
-        background: 'linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)',
+        background: 'var(--gradient-main-bg)',
         minHeight: '100vh',
-        paddingTop: '150px',
+        paddingTop: '120px',
+        position: 'relative',
+        overflow: 'hidden',
       }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.7 }}
     >
-      <div className='container'>
+      {/* Glassy animated background */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `
+            radial-gradient(circle at 25% 18%, var(--error-20) 0%, transparent 60%),
+            radial-gradient(circle at 85% 86%, var(--primary-10) 0%, transparent 52%),
+            radial-gradient(circle at 65% 7%, var(--primary-30) 0%, transparent 35%)
+          `,
+          opacity: 0.7,
+          animation: 'backgroundFloat 23s linear infinite',
+        }}
+      />
+
+      <div className='container position-relative' style={{ zIndex: 2 }}>
         {/* Header Section */}
-        <div className='d-flex align-items-center mb-4 gap-2'>
-          <button
-            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
+        <motion.div
+          className='d-flex align-items-center mb-4 gap-2'
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.12, duration: 0.7 }}
+        >
+          <motion.button
+            className='btn d-flex align-items-center px-3 py-2'
             style={{
-              background: 'rgba(255,255,255,0.92)',
-              border: '1px solid #e2e8f0',
-              borderRadius: '12px',
-              color: '#64748b',
+              background: 'var(--surface-secondary)',
+              border: '1.5px solid var(--border-muted)',
+              borderRadius: '13px',
+              color: 'var(--text-muted)',
               fontWeight: 500,
               fontSize: '1rem',
-              boxShadow: '0 2px 10px rgba(59,130,246,0.07)',
+              boxShadow: '0 2px 10px var(--error-20)',
               transition: 'all 0.2s',
               backdropFilter: 'blur(10px)',
             }}
+            whileHover={{
+              background: 'var(--surface-primary)',
+              color: 'var(--error-primary)',
+            }}
             onClick={() => navigate(-1)}
-            onMouseOver={(e) => {
-              e.target.style.background = 'rgba(240,240,255,0.98)';
-              e.target.style.borderColor = '#cbd5e1';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.background = 'rgba(255,255,255,0.92)';
-              e.target.style.borderColor = '#e2e8f0';
-            }}
           >
             <FaArrowLeft className='me-2' size={16} />
             Back
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
         {/* Main Card */}
-        <div className='row justify-content-center'>
+        <motion.div
+          className='row justify-content-center'
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7 }}
+        >
           <div className='col-12 col-md-8 col-lg-6 col-xl-5'>
-            <div
-              className='card border-0 shadow-lg'
+            <motion.div
+              className='card border-0'
               style={{
-                borderRadius: 22,
-                background: 'rgba(255,255,255,0.98)',
-                boxShadow:
-                  '0 8px 32px rgba(59,130,246,0.10), 0 2px 8px rgba(239,68,68,0.09)',
-                backdropFilter: 'blur(14px)',
+                borderRadius: 26,
+                background: 'var(--surface-primary)',
+                boxShadow: `
+                  0 12px 32px var(--error-20),
+                  0 4px 12px var(--primary-20),
+                  inset 0 1px 0 var(--white-10)
+                `,
+                backdropFilter: 'blur(18px)',
                 overflow: 'hidden',
               }}
+              initial={{ scale: 0.98, opacity: 0.82 }}
+              animate={{ scale: 1, opacity: 1 }}
+              whileHover={{
+                scale: 1.01,
+                boxShadow: `
+                  0 22px 48px var(--error-30),
+                  0 10px 22px var(--primary-30),
+                  0 7px 18px var(--success-20),
+                  inset 0 1px 0 var(--white-15)
+                `,
+              }}
+              transition={{ type: 'spring', stiffness: 280, damping: 26 }}
             >
               {/* Card Header */}
-              <div
+              <motion.div
                 className='card-header border-0 py-4 text-center'
                 style={{
-                  background: 'linear-gradient(135deg,#ef4444,#fdba74)',
+                  background: 'var(--gradient-header), var(--error-20)',
                   borderBottom: 'none',
-                  borderTopLeftRadius: 22,
-                  borderTopRightRadius: 22,
-                  color: '#fff',
-                  boxShadow: '0 8px 24px rgba(239,68,68,0.10)',
+                  borderTopLeftRadius: 26,
+                  borderTopRightRadius: 26,
+                  color: 'var(--text-primary)',
+                  boxShadow: '0 8px 22px var(--error-20)',
                 }}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.22, duration: 0.7 }}
               >
-                <div
+                <motion.div
                   className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
                   style={{
                     width: 64,
                     height: 64,
-                    background: 'rgba(255,255,255,0.20)',
-                    color: '#fff',
-                    boxShadow: '0 4px 16px rgba(239,68,68,0.10)',
+                    background: 'var(--error-20)',
+                    color: 'var(--error-primary)',
+                    boxShadow: '0 4px 16px var(--error-20)',
                   }}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.28, duration: 0.6 }}
                 >
                   <FaShieldAlt size={26} />
-                </div>
-                <h3 className='mb-1 fw-bold'>Update Password</h3>
-                <div className='mb-0 small' style={{ opacity: 0.94 }}>
+                </motion.div>
+                <motion.h3
+                  className='mb-1 fw-bold'
+                  style={{
+                    background:
+                      'linear-gradient(135deg, var(--error-primary), var(--warning-primary))',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  Update Password
+                </motion.h3>
+                <motion.div
+                  className='mb-0 small'
+                  style={{ opacity: 0.94, color: 'var(--text-tertiary)' }}
+                  initial={{ opacity: 0, y: 7 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
                   Change your account password securely
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
               {/* Error Display */}
               {errors && (
@@ -152,9 +217,9 @@ const UpdatePasswordComponent = () => {
                   <div
                     className='alert border-0'
                     style={{
-                      background: 'rgba(239,68,68,0.07)',
-                      color: '#dc2626',
-                      borderRadius: 12,
+                      background: 'var(--error-20)',
+                      color: 'var(--error-primary)',
+                      borderRadius: 13,
                       fontSize: '1rem',
                     }}
                   >
@@ -169,7 +234,7 @@ const UpdatePasswordComponent = () => {
                   {/* Old Password */}
                   <div className='mb-3'>
                     <label className='form-label fw-medium mb-2'>
-                      <FaLock className='me-2 text-danger' size={13} />
+                      <FaLock className='me-2 status-error' size={13} />
                       Current Password
                     </label>
                     <div className='position-relative'>
@@ -177,9 +242,11 @@ const UpdatePasswordComponent = () => {
                         type={showOldPassword ? 'text' : 'password'}
                         className='form-control'
                         style={{
-                          borderRadius: 10,
-                          border: '1.5px solid #fda4af',
-                          fontSize: '1.02rem',
+                          borderRadius: 11,
+                          border: '1.5px solid var(--error-20)',
+                          fontSize: '1.03rem',
+                          background: 'var(--surface-secondary)',
+                          color: 'var(--text-primary)',
                           paddingRight: 40,
                         }}
                         id='oldPassword'
@@ -197,7 +264,7 @@ const UpdatePasswordComponent = () => {
                           transform: 'translateY(-50%)',
                           border: 'none',
                           background: 'none',
-                          color: '#64748b',
+                          color: 'var(--text-muted)',
                           padding: 0,
                           width: 28,
                           height: 28,
@@ -217,7 +284,7 @@ const UpdatePasswordComponent = () => {
                   {/* New Password */}
                   <div className='mb-3'>
                     <label className='form-label fw-medium mb-2'>
-                      <FaLock className='me-2 text-success' size={13} />
+                      <FaLock className='me-2 status-success' size={13} />
                       New Password
                     </label>
                     <div className='position-relative'>
@@ -225,9 +292,11 @@ const UpdatePasswordComponent = () => {
                         type={showNewPassword ? 'text' : 'password'}
                         className='form-control'
                         style={{
-                          borderRadius: 10,
-                          border: '1.5px solid #a7f3d0',
-                          fontSize: '1.02rem',
+                          borderRadius: 11,
+                          border: '1.5px solid var(--success-20)',
+                          fontSize: '1.03rem',
+                          background: 'var(--surface-secondary)',
+                          color: 'var(--text-primary)',
                           paddingRight: 40,
                         }}
                         id='newPassword'
@@ -245,7 +314,7 @@ const UpdatePasswordComponent = () => {
                           transform: 'translateY(-50%)',
                           border: 'none',
                           background: 'none',
-                          color: '#64748b',
+                          color: 'var(--text-muted)',
                           padding: 0,
                           width: 28,
                           height: 28,
@@ -265,7 +334,7 @@ const UpdatePasswordComponent = () => {
                   {/* Confirm New Password */}
                   <div className='mb-4'>
                     <label className='form-label fw-medium mb-2'>
-                      <FaLock className='me-2 text-success' size={13} />
+                      <FaLock className='me-2 status-success' size={13} />
                       Confirm New Password
                     </label>
                     <div className='position-relative'>
@@ -273,9 +342,11 @@ const UpdatePasswordComponent = () => {
                         type={showConfirmPassword ? 'text' : 'password'}
                         className='form-control'
                         style={{
-                          borderRadius: 10,
-                          border: '1.5px solid #a7f3d0',
-                          fontSize: '1.02rem',
+                          borderRadius: 11,
+                          border: '1.5px solid var(--success-20)',
+                          fontSize: '1.03rem',
+                          background: 'var(--surface-secondary)',
+                          color: 'var(--text-primary)',
                           paddingRight: 40,
                         }}
                         id='confirmNewPassword'
@@ -293,7 +364,7 @@ const UpdatePasswordComponent = () => {
                           transform: 'translateY(-50%)',
                           border: 'none',
                           background: 'none',
-                          color: '#64748b',
+                          color: 'var(--text-muted)',
                           padding: 0,
                           width: 28,
                           height: 28,
@@ -316,15 +387,16 @@ const UpdatePasswordComponent = () => {
                   <div
                     className='mb-4 p-3 rounded'
                     style={{
-                      background: 'rgba(59,130,246,0.07)',
-                      border: '1px solid #bae6fd',
+                      background: 'var(--primary-10)',
+                      border: '1.5px solid var(--primary-20)',
                       fontSize: '0.96rem',
+                      color: 'var(--text-secondary)',
                     }}
                   >
                     <strong>Password Requirements:</strong>
                     <ul className='mb-0 ps-3'>
                       <li>At least 8 characters</li>
-                      <li>Upper & lower case letters</li>
+                      <li>Upper &amp; lower case letters</li>
                       <li>Include numbers and special characters</li>
                     </ul>
                   </div>
@@ -334,32 +406,26 @@ const UpdatePasswordComponent = () => {
                     {isSending ? (
                       <LoadingComponent message='Updating password...' />
                     ) : (
-                      <button
+                      <motion.button
                         type='submit'
                         className='btn px-4 py-2 fw-medium w-100'
                         style={{
-                          background:
-                            'linear-gradient(90deg, #ef4444, #fdba74)',
-                          color: 'white',
+                          background: 'var(--error-primary)',
+                          color: '#fff',
                           border: 'none',
                           borderRadius: '10px',
-                          fontSize: '1.07rem',
-                          boxShadow: '0 4px 14px rgba(239,68,68,0.12)',
-                          transition: 'all 0.2s',
+                          fontSize: '1.09rem',
+                          boxShadow: '0 4px 14px var(--error-20)',
+                          transition: 'all 0.19s',
+                        }}
+                        whileHover={{
+                          background: 'var(--error-dark)',
                         }}
                         disabled={isSending}
-                        onMouseOver={(e) => {
-                          e.target.style.background =
-                            'linear-gradient(90deg, #dc2626, #b91c1c)';
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.background =
-                            'linear-gradient(90deg, #ef4444, #fdba74)';
-                        }}
                       >
                         <FaShieldAlt className='me-2' size={15} />
                         Update Password
-                      </button>
+                      </motion.button>
                     )}
                   </div>
                 </form>
@@ -375,18 +441,20 @@ const UpdatePasswordComponent = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Animations */}
       <style>{`
-        .glassy-btn:active {
-          box-shadow: 0 2px 12px rgba(239,68,68,0.14);
+        @keyframes backgroundFloat {
+          0%,100%{transform:translateY(0) rotate(0deg);opacity:.67;}
+          33%{transform:translateY(-13px) rotate(88deg);opacity:.82;}
+          66%{transform:translateY(8px) rotate(180deg);opacity:.75;}
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

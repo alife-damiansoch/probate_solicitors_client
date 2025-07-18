@@ -1,18 +1,16 @@
-// Updated ApplicationDetails.js - Earlier Mobile Breakpoint
+import { motion } from 'framer-motion';
+import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BackToApplicationsIcon from '../../GenericComponents/BackToApplicationsIcon';
-import DeleteApplication from './DeleteApplication';
-
-import Cookies from 'js-cookie';
 import LoadingComponent from '../../GenericComponents/LoadingComponent';
 import { fetchData } from '../../GenericFunctions/AxiosGenericFunctions';
 import RequiredDetailsPart from '../ApplicationDetailsParts/RequiredDetailsPart';
+import DeleteApplication from './DeleteApplication';
 
-// Import the new modern progress component
+// Progress sidebar component
 import ModernApplicationProgress from './ApplicationDetailStages/ApplicationDetailStages';
-import './ApplicationDetails.css'; // Import minimal CSS for animations only
 
 const ApplicationDetails = () => {
   const { id } = useParams();
@@ -23,42 +21,30 @@ const ApplicationDetails = () => {
 
   const [deleteAppId, setDeleteAppId] = useState('');
   const [refresh, setRefresh] = useState(false);
-
   const [highlitedSectionId, setHighlightedSectionId] = useState('');
   const [isApplicationLocked, setIsApplicationLocked] = useState(false);
-
-  // Mobile sidebar state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Tooltip state - check localStorage for tooltip visibility
+  // Tooltip state - show once per session
   const [showTooltip, setShowTooltip] = useState(() => {
     try {
-      return true; // Default to showing tooltip
+      return !localStorage.getItem('mobile-stages-tooltip-dismissed');
     } catch {
-      return true; // Default to showing tooltip if localStorage is not available
+      return true;
     }
   });
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-
-    // Hide tooltip when button is pressed and save to localStorage
     if (showTooltip) {
       setShowTooltip(false);
       try {
         localStorage.setItem('mobile-stages-tooltip-dismissed', 'true');
-      } catch {
-        // Handle localStorage errors gracefully
-        console.warn('Could not save tooltip state to localStorage');
-      }
+      } catch {}
     }
   };
+  const closeSidebar = () => setIsSidebarOpen(false);
 
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
-  };
-
-  //checking if application is locked
   useEffect(() => {
     if (
       application?.processing_status?.application_details_completed_confirmed
@@ -67,46 +53,35 @@ const ApplicationDetails = () => {
     }
   }, [application]);
 
-  // Fetch estates for the progress component
   useEffect(() => {
     const getEstates = async () => {
       if (!application?.estate_summary) return;
-
       try {
         const response = await fetchData(
           token?.access || token,
           application.estate_summary,
           true
         );
-
         // Flatten all estate categories into a single array
         const allEstates = Object.values(response.data)
           .filter(Array.isArray)
           .flat();
         setEstates(allEstates);
       } catch (e) {
-        console.error('Error fetching estates:', e);
         setEstates([]);
       }
     };
-
-    if (application) {
-      getEstates();
-    }
+    if (application) getEstates();
   }, [application?.estate_summary, refresh, token]);
 
   useEffect(() => {
     if (highlitedSectionId !== '') {
-      console.log('H_S_id: ', highlitedSectionId);
-      // Close sidebar when navigating to section on mobile
       setIsSidebarOpen(false);
-      // Scroll to the section with the given ID
       const targetElement = document.getElementById(highlitedSectionId);
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } else {
-      // Scroll to the top of the page
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [highlitedSectionId]);
@@ -119,12 +94,9 @@ const ApplicationDetails = () => {
         try {
           const response = await fetchData(accessToken, endpoint);
           setApplication(response.data);
-        } catch (error) {
-          console.error('Error fetching application details:', error);
-        }
+        } catch {}
       }
     };
-
     fetchApplication();
   }, [token, id, refresh]);
 
@@ -138,22 +110,11 @@ const ApplicationDetails = () => {
           if (response.status && response.status === 200) {
             setAdvancement(response.data);
           }
-        } catch (error) {
-          console.error('Error fetching advancement details:', error);
-        }
+        } catch {}
       }
     };
-
     fetchAdvancementForApplication();
   }, [token, id, refresh]);
-
-  // Simple click handler cleanup
-  useEffect(() => {
-    return () => {
-      // Cleanup any event listeners
-      document.removeEventListener('click', () => {});
-    };
-  }, []);
 
   if (!application) {
     return (
@@ -163,41 +124,56 @@ const ApplicationDetails = () => {
     );
   }
 
-  // console.log('Application Details:', application);
-
   return (
-    <div className='position-relative' style={{ paddingTop: '120px' }}>
-      {/* Background Pattern */}
+    <motion.div
+      className='position-relative'
+      style={{
+        paddingTop: '120px',
+        minHeight: '100vh',
+        background: 'var(--gradient-main-bg)',
+        overflow: 'hidden',
+      }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: [0.42, 0, 0.58, 1] }}
+    >
+      {/* Glassy, animated background */}
       <div
-        className='position-fixed w-100 h-100 top-0 start-0'
+        className='position-absolute w-100 h-100 top-0 start-0'
         style={{
-          background: `
-               radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.05), transparent 40%), 
-               radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.05), transparent 40%)
-             `,
           zIndex: 0,
           pointerEvents: 'none',
+          background: `
+            radial-gradient(circle at 20% 30%, var(--primary-10) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, var(--success-20) 0%, transparent 55%),
+            radial-gradient(circle at 60% 10%, var(--primary-20) 0%, transparent 40%)
+          `,
+          animation: 'backgroundFloat 20s ease-in-out infinite',
         }}
       />
 
-      {/* Bootstrap Container with Responsive Layout */}
-      <div className='container-fluid p-0'>
+      <div
+        className='container-fluid p-0'
+        style={{ zIndex: 2, position: 'relative' }}
+      >
         <div className='row g-0'>
-          {/* Progress Sidebar - Hidden on mobile/tablet, shown on desktop */}
-          {/* Changed from col-lg-3 to col-xl-3 (1200px breakpoint) */}
+          {/* Progress Sidebar */}
           <div className='col-12 col-xl-4 d-none d-xl-block'>
-            <div
+            <motion.div
               className='position-fixed top-0 bottom-0 overflow-auto'
               style={{
                 maxWidth: '400px',
-                background:
-                  'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
-                borderRight: '1px solid rgba(59, 130, 246, 0.3)',
+                background: 'var(--gradient-main-bg)',
+                borderRight: '1px solid var(--border-primary)',
                 zIndex: 1040,
-                backdropFilter: 'blur(20px)',
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)',
                 boxShadow:
-                  '8px 0 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(59, 130, 246, 0.1)',
+                  '8px 0 32px rgba(0,0,0,0.45), 0 0 60px var(--primary-20)',
               }}
+              initial={{ opacity: 0, x: -32 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
             >
               <ModernApplicationProgress
                 application={application}
@@ -208,14 +184,12 @@ const ApplicationDetails = () => {
                 highlitedSectionId={highlitedSectionId}
                 isSidebarOpen={isSidebarOpen}
               />
-            </div>
+            </motion.div>
           </div>
 
           {/* Main Content Area */}
-          {/* Changed from col-lg-9 to col-xl-9 */}
           <div className='col-12 col-xl-8 p-0 m-0'>
-            {/* Mobile Toggle Button - Now visible on tablets too */}
-            {/* Changed from d-lg-none to d-xl-none */}
+            {/* Mobile Sidebar Toggle */}
             <div
               className='d-xl-none position-fixed'
               style={{
@@ -225,7 +199,6 @@ const ApplicationDetails = () => {
                 zIndex: 1050,
               }}
             >
-              {/* Professional Tooltip */}
               {showTooltip && (
                 <div
                   className='position-absolute'
@@ -240,17 +213,15 @@ const ApplicationDetails = () => {
                   <div
                     className='px-3 py-2 text-white rounded-2 shadow-lg'
                     style={{
-                      background:
-                        'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-                      border: '1px solid rgba(59, 130, 246, 0.3)',
-                      backdropFilter: 'blur(10px)',
+                      background: 'var(--gradient-header)',
+                      border: '1px solid var(--border-primary)',
+                      backdropFilter: 'blur(12px)',
                       fontSize: '0.85rem',
                       fontWeight: '500',
-                      letterSpacing: '0.02em',
                       minWidth: '200px',
                       maxWidth: '280px',
                       boxShadow:
-                        '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(59, 130, 246, 0.2)',
+                        '0 8px 32px rgba(0,0,0,0.3), 0 0 20px var(--primary-20)',
                       position: 'relative',
                     }}
                   >
@@ -261,40 +232,35 @@ const ApplicationDetails = () => {
                       style={{
                         left: '-6px',
                         top: '50%',
-                        transform: 'translateY(-50%)',
+                        transform: 'translateY(-50%) rotate(45deg)',
                         width: '12px',
                         height: '12px',
-                        background:
-                          'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-                        border: '1px solid rgba(59, 130, 246, 0.3)',
+                        background: 'var(--gradient-header)',
+                        border: '1px solid var(--border-primary)',
                         borderRight: 'none',
                         borderBottom: 'none',
-                        transform: 'translateY(-50%) rotate(45deg)',
                       }}
                     />
                   </div>
                 </div>
               )}
-
-              {/* Toggle Button */}
               <button
-                className='btn stages-toggle-btn d-flex align-items-center justify-content-center'
+                className='btn d-flex align-items-center justify-content-center'
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleSidebar();
                 }}
                 aria-label='Toggle stages sidebar'
                 style={{
-                  background:
-                    'linear-gradient(145deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 50%, rgba(29, 78, 216, 0.9) 100%)',
-                  border: '2px solid rgba(59, 130, 246, 0.3)',
+                  background: 'var(--gradient-header)',
+                  border: '2px solid var(--border-primary)',
                   color: 'white',
                   borderRadius: '50%',
                   width: '50px',
                   height: '50px',
                   boxShadow: showTooltip
-                    ? '0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4)'
-                    : '0 4px 15px rgba(59, 130, 246, 0.4)',
+                    ? '0 6px 20px var(--primary-40), 0 0 30px var(--primary-20)'
+                    : '0 4px 15px var(--primary-20)',
                   transition: 'all 0.3s ease',
                   transform: showTooltip ? 'scale(1.05)' : 'scale(1)',
                   animation: showTooltip
@@ -302,61 +268,43 @@ const ApplicationDetails = () => {
                     : 'none',
                   padding: '0',
                   fontSize: '20px',
-                  lineHeight: '1',
                   fontWeight: 'bold',
                 }}
               >
                 {isSidebarOpen ? (
-                  <svg
-                    width='24'
-                    height='24'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
+                  <svg width='24' height='24' fill='none' viewBox='0 0 24 24'>
                     <path
                       d='M18 6L6 18'
                       stroke='white'
                       strokeWidth='2'
                       strokeLinecap='round'
-                      strokeLinejoin='round'
                     />
                     <path
                       d='M6 6L18 18'
                       stroke='white'
                       strokeWidth='2'
                       strokeLinecap='round'
-                      strokeLinejoin='round'
                     />
                   </svg>
                 ) : (
-                  <svg
-                    width='24'
-                    height='24'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
+                  <svg width='24' height='24' fill='none' viewBox='0 0 24 24'>
                     <path
                       d='M3 12H21'
                       stroke='white'
                       strokeWidth='2'
                       strokeLinecap='round'
-                      strokeLinejoin='round'
                     />
                     <path
                       d='M3 6H21'
                       stroke='white'
                       strokeWidth='2'
                       strokeLinecap='round'
-                      strokeLinejoin='round'
                     />
                     <path
                       d='M3 18H21'
                       stroke='white'
                       strokeWidth='2'
                       strokeLinecap='round'
-                      strokeLinejoin='round'
                     />
                   </svg>
                 )}
@@ -367,10 +315,7 @@ const ApplicationDetails = () => {
             {isSidebarOpen && (
               <div
                 className='position-fixed w-100 h-100 top-0 start-0 d-xl-none'
-                style={{
-                  background: 'rgba(0, 0, 0, 0.5)',
-                  zIndex: 1035,
-                }}
+                style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1035 }}
                 onClick={(e) => {
                   e.stopPropagation();
                   closeSidebar();
@@ -379,7 +324,7 @@ const ApplicationDetails = () => {
             )}
 
             {/* Mobile Sidebar */}
-            <div
+            <motion.div
               className={`position-fixed top-0 bottom-0 d-xl-none ${
                 isSidebarOpen ? 'mobile-sidebar-show' : ''
               }`}
@@ -387,19 +332,22 @@ const ApplicationDetails = () => {
                 left: isSidebarOpen ? '0' : '-400px',
                 width: '400px',
                 height: '100vh',
-                background:
-                  'linear-gradient(180deg, #0a0f1c 0%, #111827 30%, #1f2937 70%, #0a0f1c 100%)',
-                borderRight: '1px solid rgba(59, 130, 246, 0.3)',
+                background: 'var(--gradient-main-bg)',
+                borderRight: '1px solid var(--border-primary)',
                 zIndex: 1041,
                 overflowY: 'auto',
                 overflowX: 'hidden',
-                backdropFilter: 'blur(20px)',
+                backdropFilter: 'blur(28px)',
+                WebkitBackdropFilter: 'blur(28px)',
                 boxShadow:
-                  '8px 0 32px rgba(0, 0, 0, 0.5), 0 0 60px rgba(59, 130, 246, 0.1)',
-                transition: 'left 0.3s ease-in-out',
+                  '8px 0 32px rgba(0,0,0,0.45), 0 0 60px var(--primary-20)',
+                transition: 'left 0.3s cubic-bezier(.4,0,.2,1)',
                 WebkitOverflowScrolling: 'touch',
-                transform: 'translateZ(0)', // Force hardware acceleration
+                transform: 'translateZ(0)',
               }}
+              initial={false}
+              animate={{ left: isSidebarOpen ? 0 : -400 }}
+              transition={{ duration: 0.32 }}
               onClick={(e) => e.stopPropagation()}
             >
               <div style={{ minHeight: '100%' }}>
@@ -412,263 +360,202 @@ const ApplicationDetails = () => {
                   highlitedSectionId={highlitedSectionId}
                 />
               </div>
-            </div>
+            </motion.div>
 
             {/* Main Content */}
             <div className='p-2 p-md-3'>
-              {/* Navigation */}
               <BackToApplicationsIcon backUrl={-1} />
-
-              {/* Content Container */}
-              <div className='mt-3'>
-                <div
-                  className='position-relative overflow-hidden rounded-3'
-                  style={{
-                    backgroundColor: '#1F2049',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(59, 130, 246, 0.1)',
-                    boxShadow:
-                      '0 10px 25px rgba(0, 0, 0, 0.08), 0 0 30px rgba(59, 130, 246, 0.05)',
-                    zIndex: 1,
-                  }}
-                >
-                  {/* Compact Status Alert */}
-                  {(application.is_rejected ||
-                    application.approved ||
-                    isApplicationLocked) && (
+              {/* GLASSMORPHIC CARD */}
+              <motion.div
+                className='glassmorphic-card position-relative overflow-hidden rounded-3 mt-3'
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.13 }}
+              >
+                {/* Status Alert */}
+                {(application.is_rejected ||
+                  application.approved ||
+                  isApplicationLocked) && (
+                  <div
+                    className={`d-flex flex-row align-items-center gap-2 gap-md-3 p-3 p-md-4 rounded-2 border-start border-3 m-2 m-md-3`}
+                    style={{
+                      background: application.is_rejected
+                        ? 'var(--error-20)'
+                        : application.approved
+                        ? 'var(--success-20)'
+                        : 'var(--warning-20)',
+                      borderLeftColor: application.is_rejected
+                        ? 'var(--error-primary)'
+                        : application.approved
+                        ? 'var(--success-primary)'
+                        : 'var(--warning-primary)',
+                      backdropFilter: 'blur(15px)',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+                    }}
+                  >
                     <div
-                      className={`d-flex flex-row align-items-center gap-2 gap-md-3 p-3 p-md-4 rounded-2 rounded-md-3 border-start border-3 border-md-4 m-2 m-md-3`}
+                      className='d-flex align-items-center justify-content-center rounded-2 text-white fw-bold flex-shrink-0'
                       style={{
+                        width: '32px',
+                        height: '32px',
                         background: application.is_rejected
-                          ? 'linear-gradient(145deg, rgba(254, 242, 242, 0.95) 0%, rgba(254, 202, 202, 0.95) 50%, rgba(254, 242, 242, 0.95) 100%)'
+                          ? 'var(--error-primary)'
                           : application.approved
-                          ? 'linear-gradient(145deg, rgba(240, 253, 244, 0.95) 0%, rgba(187, 247, 208, 0.95) 50%, rgba(240, 253, 244, 0.95) 100%)'
-                          : 'linear-gradient(145deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.95) 50%, rgba(254, 243, 199, 0.95) 100%)',
-                        borderLeftColor: application.is_rejected
-                          ? '#dc2626'
-                          : application.approved
-                          ? '#059669'
-                          : '#d97706',
-                        backdropFilter: 'blur(15px)',
-                        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+                          ? 'var(--success-primary)'
+                          : 'var(--warning-primary)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                       }}
                     >
-                      <div
-                        className='d-flex align-items-center justify-content-center rounded-2 text-white fw-bold flex-shrink-0'
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          background: application.is_rejected
-                            ? 'linear-gradient(145deg, #ef4444, #dc2626, #b91c1c)'
-                            : application.approved
-                            ? 'linear-gradient(145deg, #10b981, #059669, #047857)'
-                            : 'linear-gradient(145deg, #f59e0b, #d97706, #b45309)',
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                        }}
+                      {/* Status SVG */}
+                      <svg
+                        width='18'
+                        height='18'
+                        viewBox='0 0 20 20'
+                        fill='currentColor'
                       >
-                        <svg
-                          width='16'
-                          height='16'
-                          fill='currentColor'
-                          viewBox='0 0 20 20'
-                          className='d-block d-md-none'
-                        >
-                          {application.is_rejected ? (
-                            <path
-                              fillRule='evenodd'
-                              d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
-                              clipRule='evenodd'
-                            />
-                          ) : application.approved ? (
-                            <path
-                              fillRule='evenodd'
-                              d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-                              clipRule='evenodd'
-                            />
-                          ) : (
-                            <path
-                              fillRule='evenodd'
-                              d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
-                              clipRule='evenodd'
-                            />
-                          )}
-                        </svg>
-                        <svg
-                          width='20'
-                          height='20'
-                          fill='currentColor'
-                          viewBox='0 0 20 20'
-                          className='d-none d-md-block'
-                        >
-                          {application.is_rejected ? (
-                            <path
-                              fillRule='evenodd'
-                              d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
-                              clipRule='evenodd'
-                            />
-                          ) : application.approved ? (
-                            <path
-                              fillRule='evenodd'
-                              d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-                              clipRule='evenodd'
-                            />
-                          ) : (
-                            <path
-                              fillRule='evenodd'
-                              d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
-                              clipRule='evenodd'
-                            />
-                          )}
-                        </svg>
-                      </div>
-                      <div className='flex-grow-1 min-w-0'>
-                        <div
-                          className='fw-semibold lh-1 mb-1'
-                          style={{
-                            color: application.is_rejected
-                              ? '#dc2626'
-                              : application.approved
-                              ? '#059669'
-                              : '#d97706',
-                            fontSize: '0.9rem',
-                          }}
-                        >
-                          {application.is_rejected
-                            ? 'Rejected'
-                            : application.approved
-                            ? 'Approved'
-                            : 'Locked'}
-                          <span className='d-none d-md-inline ms-1'>
-                            Application
-                          </span>
-                        </div>
-                        <small
-                          className='text-muted d-block lh-1'
-                          style={{ fontSize: '0.75rem' }}
-                        >
-                          <span className='d-none d-sm-inline'>
-                            Editing is disabled. Contact agent if you need help.
-                          </span>
-                          <span className='d-inline d-sm-none'>
-                            Editing disabled
-                          </span>
-                        </small>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Application Details Section */}
-                  <div className='p-0 p-md-3'>
-                    <div
-                      className='position-relative overflow-hidden rounded-3'
-                      style={{
-                        backdropFilter: 'blur(15px)',
-                        border: '1px solid rgba(59, 130, 246, 0.08)',
-                      }}
-                    >
-                      {/* Top border accent */}
-                      <div
-                        className='position-absolute w-100 top-0 start-0'
-                        style={{
-                          height: '2px',
-                          background:
-                            'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent)',
-                        }}
-                      />
-
-                      <div
-                        className='p-0 p-md-3'
-                        style={{ backgroundColor: '#1F2049' }}
-                      >
-                        {/* Delete Application Modal */}
-                        {deleteAppId !== '' && (
-                          <div className='mb-4'>
-                            <DeleteApplication
-                              applicationId={deleteAppId}
-                              setDeleteAppId={setDeleteAppId}
-                            />
-                          </div>
+                        {application.is_rejected ? (
+                          <path
+                            fillRule='evenodd'
+                            d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
+                            clipRule='evenodd'
+                          />
+                        ) : application.approved ? (
+                          <path
+                            fillRule='evenodd'
+                            d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                            clipRule='evenodd'
+                          />
+                        ) : (
+                          <path
+                            fillRule='evenodd'
+                            d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
+                            clipRule='evenodd'
+                          />
                         )}
-
-                        <RequiredDetailsPart
-                          application={application}
-                          setApplication={setApplication}
-                          id={id}
-                          refresh={refresh}
-                          setRefresh={setRefresh}
-                          highlitedSectionId={highlitedSectionId}
-                          setHighlightedSectionId={setHighlightedSectionId}
-                          isApplicationLocked={isApplicationLocked}
-                          advancement={advancement}
-                        />
+                      </svg>
+                    </div>
+                    <div className='flex-grow-1 min-w-0'>
+                      <div
+                        className='fw-semibold lh-1 mb-1'
+                        style={{
+                          color: application.is_rejected
+                            ? 'var(--error-primary)'
+                            : application.approved
+                            ? 'var(--success-primary)'
+                            : 'var(--warning-primary)',
+                          fontSize: '0.92rem',
+                        }}
+                      >
+                        {application.is_rejected
+                          ? 'Rejected'
+                          : application.approved
+                          ? 'Approved'
+                          : 'Locked'}
+                        <span className='d-none d-md-inline ms-1'>
+                          Application
+                        </span>
                       </div>
+                      <small
+                        className='text-muted d-block lh-1'
+                        style={{ fontSize: '0.75rem' }}
+                      >
+                        <span className='d-none d-sm-inline'>
+                          Editing is disabled. Contact agent if you need help.
+                        </span>
+                        <span className='d-inline d-sm-none'>
+                          Editing disabled
+                        </span>
+                      </small>
                     </div>
                   </div>
+                )}
+
+                {/* Application Details Section */}
+                <div className='p-0 p-md-3'>
+                  <motion.div
+                    className='glassmorphic-card position-relative overflow-hidden rounded-3'
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, duration: 0.65 }}
+                  >
+                    {/* Top border accent */}
+                    <div
+                      className='position-absolute w-100 top-0 start-0'
+                      style={{
+                        height: '2px',
+                        background:
+                          'linear-gradient(90deg, transparent, var(--primary-30), transparent)',
+                      }}
+                    />
+                    <div className='p-0 p-md-3'>
+                      {deleteAppId !== '' && (
+                        <div className='mb-4'>
+                          <DeleteApplication
+                            applicationId={deleteAppId}
+                            setDeleteAppId={setDeleteAppId}
+                          />
+                        </div>
+                      )}
+                      <RequiredDetailsPart
+                        application={application}
+                        setApplication={setApplication}
+                        id={id}
+                        refresh={refresh}
+                        setRefresh={setRefresh}
+                        highlitedSectionId={highlitedSectionId}
+                        setHighlightedSectionId={setHighlightedSectionId}
+                        isApplicationLocked={isApplicationLocked}
+                        advancement={advancement}
+                      />
+                    </div>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* CSS Animations */}
+      {/* GLASS + ANIMATION STYLES */}
       <style>{`
+        @keyframes backgroundFloat {
+          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+          33% { transform: translateY(-20px) rotate(120deg); opacity: 0.8; }
+          66% { transform: translateY(10px) rotate(240deg); opacity: 0.7; }
+        }
         @keyframes tooltipFadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-50%) translateX(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(-50%) translateX(0);
-          }
+          from { opacity: 0; transform: translateY(-50%) translateX(-10px);}
+          to { opacity: 1; transform: translateY(-50%) translateX(0);}
         }
-
         @keyframes buttonPulse {
-          0%, 100% {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4);
-          }
-          50% {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6);
-          }
+          0%, 100% { transform: scale(1.05); box-shadow: 0 6px 20px var(--primary-40), 0 0 30px var(--primary-20);}
+          50% { transform: scale(1.12); box-shadow: 0 10px 30px var(--primary-blue);}
         }
-
-        /* Custom scrollbar for progress sidebar */
-        .col-xl-3::-webkit-scrollbar,
-        .position-fixed::-webkit-scrollbar {
-          width: 6px;
+        .glassmorphic-card {
+          background: var(--gradient-surface);
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          border-radius: 24px;
+          border: 1.5px solid var(--border-primary);
+          box-shadow:
+            0 16px 32px rgba(0,0,0,0.15),
+            0 8px 16px var(--primary-20),
+            0 4px 8px rgba(0,0,0,0.07),
+            inset 0 1px 0 var(--white-10),
+            inset 0 -1px 0 rgba(0,0,0,0.05);
+          color: var(--text-primary);
+          transition: box-shadow 0.3s cubic-bezier(.4,0,.2,1), border 0.3s cubic-bezier(.4,0,.2,1);
         }
-
-        .col-xl-3::-webkit-scrollbar-track,
-        .position-fixed::-webkit-scrollbar-track {
-          background: rgba(15, 23, 42, 0.3);
-          border-radius: 3px;
+        .glassmorphic-card:hover {
+          box-shadow:
+            0 28px 64px rgba(0,0,0,0.2),
+            0 14px 28px var(--primary-30),
+            0 8px 16px rgba(0,0,0,0.15),
+            inset 0 2px 4px var(--white-15);
         }
-
-        .col-xl-3::-webkit-scrollbar-thumb,
-        .position-fixed::-webkit-scrollbar-thumb {
-          background: rgba(59, 130, 246, 0.4);
-          border-radius: 3px;
-        }
-
-        .col-xl-3::-webkit-scrollbar-thumb:hover,
-        .position-fixed::-webkit-scrollbar-thumb:hover {
-          background: rgba(59, 130, 246, 0.6);
-        }
-
-        /* Mobile sidebar styling */
-        .mobile-sidebar-show {
-          left: 0 !important;
-        }
-
-        /* Debug helper */
-        .debug-sidebar {
-          border: 2px solid red !important;
-        }
+        .mobile-sidebar-show { left: 0 !important; }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

@@ -11,6 +11,12 @@ import {
 import './App.css';
 import { COUNTRY } from './baseUrls';
 import './bootstrap.min.css';
+
+// ============ THEME CSS IMPORT ============
+// Import the theme CSS variables EARLY to ensure global availability
+import './themes.css';
+// =========================================
+
 import FooterComponent from './components/GenericComponents/FooterComponent';
 import renderErrors from './components/GenericFunctions/HelperGenericFunctions';
 import ActivationPage from './components/Login/ActivationPage';
@@ -39,6 +45,7 @@ import UnderstandingProbate from './components/StaticPagesComponents/Understandi
 import { loginSuccess, logout } from './store/authSlice';
 import { clearUser, fetchUser } from './store/userSlice';
 import apiEventEmitter from './utils/eventEmitter';
+
 // app
 function App() {
   const dispatch = useDispatch();

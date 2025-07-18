@@ -1,4 +1,4 @@
-// Updated NavBar.js - Mobile-First Responsive with Bootstrap
+// Updated NavBar.js - Original Functionality + Theme Variables
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { LuUserRoundCog } from 'react-icons/lu';
@@ -11,6 +11,7 @@ import NavLinkAnimated from '../GenericComponents/NavLinkAnimated';
 import AnimatedSection from '../GenericFunctions/AnimatedSection';
 import { postData } from '../GenericFunctions/AxiosGenericFunctions';
 import AliBanner from './AliBanner/AliBanner';
+import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher'; // Import theme switcher
 
 const NavBar = () => {
   const dispatch = useDispatch();
@@ -71,20 +72,19 @@ const NavBar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  // Inline styles for glassmorphism effects
+  // Updated styles using CSS variables (converted from original hardcoded values)
   const glassmorphismNavbar = {
-    background:
-      'linear-gradient(135deg, rgba(10, 15, 28, 0.98) 0%, rgba(17, 24, 39, 0.98) 30%, rgba(31, 41, 59, 0.98) 70%, rgba(10, 15, 28, 0.98) 100%)',
+    background: 'var(--gradient-main-bg)',
     backdropFilter: 'blur(20px)',
-    borderBottom: '1px solid rgba(59, 130, 246, 0.3)',
-    boxShadow:
-      '0 4px 20px rgba(0, 0, 0, 0.3), 0 0 30px rgba(59, 130, 246, 0.1)',
+    borderBottom: '1px solid var(--border-primary)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), 0 0 30px var(--primary-10)',
   };
 
   const glassmorphismLogo = {
+    // ALWAYS light background for dark logo visibility
     background:
       'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 30%, rgba(241, 245, 249, 0.95) 70%, rgba(255, 255, 255, 0.95) 100%)',
-    border: '2px solid rgba(59, 130, 246, 0.2)',
+    border: '2px solid var(--primary-20)',
     boxShadow:
       '0 4px 16px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -92,54 +92,54 @@ const NavBar = () => {
 
   const glassmorphismBtn = {
     background:
-      'linear-gradient(145deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 50%, rgba(29, 78, 216, 0.9) 100%)',
-    border: '2px solid rgba(59, 130, 246, 0.3)',
+      'linear-gradient(145deg, var(--primary-blue) 0%, var(--primary-blue-dark) 50%, var(--primary-blue-dark) 100%)',
+    border: '2px solid var(--primary-30)',
     backdropFilter: 'blur(15px)',
     boxShadow:
-      '0 2px 10px rgba(59, 130, 246, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+      '0 2px 10px var(--primary-30), 0 0 0 1px var(--white-10), inset 0 1px 0 var(--white-20)',
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   const glassmorphismBtnDanger = {
     background:
-      'linear-gradient(145deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 50%, rgba(185, 28, 28, 0.9) 100%)',
-    border: '2px solid rgba(239, 68, 68, 0.3)',
+      'linear-gradient(145deg, var(--error-primary) 0%, var(--error-dark) 50%, var(--error-darker) 100%)',
+    border: '2px solid var(--error-30)',
     backdropFilter: 'blur(15px)',
     boxShadow:
-      '0 2px 10px rgba(239, 68, 68, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+      '0 2px 10px var(--error-30), 0 0 0 1px var(--white-10), inset 0 1px 0 var(--white-20)',
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   const glassmorphismBtnSuccess = {
     background:
-      'linear-gradient(145deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.9) 50%, rgba(4, 120, 87, 0.9) 100%)',
-    border: '2px solid rgba(16, 185, 129, 0.3)',
+      'linear-gradient(145deg, var(--success-primary) 0%, var(--success-dark) 50%, var(--success-darker) 100%)',
+    border: '2px solid var(--success-30)',
     backdropFilter: 'blur(15px)',
     boxShadow:
-      '0 2px 10px rgba(16, 185, 129, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+      '0 2px 10px var(--success-30), 0 0 0 1px var(--white-10), inset 0 1px 0 var(--white-20)',
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   const glassmorphismCollapse = {
-    background:
-      'linear-gradient(135deg, rgba(10, 15, 28, 0.98) 0%, rgba(17, 24, 39, 0.98) 50%, rgba(10, 15, 28, 0.98) 100%)',
+    background: 'var(--gradient-surface)',
     backdropFilter: 'blur(25px)',
-    border: '1px solid rgba(59, 130, 246, 0.2)',
+    border: '1px solid var(--border-secondary)',
   };
 
   const heroOverlay = {
     background:
-      'linear-gradient(135deg, rgba(10, 15, 28, 0.6) 0%, transparent 50%, rgba(59, 130, 246, 0.3) 100%)',
+      'linear-gradient(135deg, var(--bg-primary) 60%, transparent 50%, var(--primary-30) 100%)',
   };
 
   const heroText = {
-    background: 'linear-gradient(135deg, #ffffff, #e2e8f0, #cbd5e1)',
+    background:
+      'linear-gradient(135deg, var(--text-primary), var(--text-secondary), var(--text-tertiary))',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
-    textShadow: '0 0 20px rgba(255, 255, 255, 0.5)',
+    textShadow: '0 0 20px var(--white-50)',
     transition: 'all 0.6s ease',
   };
 
@@ -194,8 +194,11 @@ const NavBar = () => {
               </Link>
             </div>
 
-            {/* Mobile Toggle Button */}
-            <div className='col-6 col-md-10 d-flex justify-content-end d-lg-none px-2'>
+            {/* Mobile Toggle Button and Theme Switcher */}
+            <div className='col-6 col-md-10 d-flex justify-content-end align-items-center gap-3 d-lg-none px-2'>
+              {/* Theme Switcher - Mobile */}
+              <ThemeSwitcher size='small' showLabel={false} />
+
               <button
                 className='navbar-toggler border-0 p-2 rounded-3'
                 type='button'
@@ -206,9 +209,8 @@ const NavBar = () => {
                 aria-label='Toggle navigation'
                 onClick={toggleNavbar}
                 style={{
-                  border: '1px solid rgba(59, 130, 246, 0.4)',
-                  background:
-                    'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15))',
+                  border: '1px solid var(--border-primary)',
+                  background: 'var(--gradient-header)',
                   backdropFilter: 'blur(10px)',
                 }}
               >
@@ -268,12 +270,20 @@ const NavBar = () => {
                   </ul>
                 </div>
 
-                {/* Action Buttons */}
+                {/* Action Buttons + Theme Switcher */}
                 <div className='col-12 col-lg-4'>
                   <div className='d-flex flex-column flex-lg-row align-items-center justify-content-lg-end gap-2'>
-                    {/* User Profile Button */}
+                    {/* Theme Switcher - Desktop */}
+                    <div className='d-none d-lg-flex order-lg-1'>
+                      <ThemeSwitcher size='normal' showLabel={true} />
+                    </div>
+
+                    {/* User Profile Button - Only show when user exists */}
                     {user && (
-                      <AnimatedSection as='div' className='w-100 w-lg-auto'>
+                      <AnimatedSection
+                        as='div'
+                        className='w-100 w-lg-auto order-lg-2'
+                      >
                         <div
                           className='btn text-white fw-bold text-uppercase rounded-3 d-flex align-items-center justify-content-center w-100 w-lg-auto'
                           style={{
@@ -291,14 +301,15 @@ const NavBar = () => {
                           onClick={viewUserProfileHandler}
                         >
                           <LuUserRoundCog size={20} className='me-2' />
-                          <span className='text-truncate'></span>Profile
+                          <span className='text-truncate'>Profile</span>
                         </div>
                       </AnimatedSection>
                     )}
+
                     {/* Login/Logout Button */}
                     {isLoggedIn ? (
                       <Link
-                        className='btn text-white fw-bold text-uppercase rounded-3 d-flex align-items-center justify-content-center w-100 w-lg-auto'
+                        className='btn text-white fw-bold text-uppercase rounded-3 d-flex align-items-center justify-content-center w-100 w-lg-auto order-lg-3'
                         style={{
                           ...glassmorphismBtnDanger,
                           minWidth: '120px',
@@ -317,7 +328,7 @@ const NavBar = () => {
                       </Link>
                     ) : (
                       <Link
-                        className='btn text-white fw-bold text-uppercase rounded-3 d-flex align-items-center justify-content-center w-100 w-lg-auto'
+                        className='btn text-white fw-bold text-uppercase rounded-3 d-flex align-items-center justify-content-center w-100 w-lg-auto order-lg-3'
                         style={{
                           ...glassmorphismBtn,
                           minWidth: '120px',
@@ -341,7 +352,7 @@ const NavBar = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section - Updated to use CSS variables */}
       {!location.pathname.includes('/applications') &&
         !location.pathname.includes('/addApplication') &&
         !location.pathname.includes('/login') &&

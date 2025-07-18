@@ -140,11 +140,15 @@ export default function EstateSummarySticky({
         <div
           className='d-flex justify-content-between align-items-center p-2 border rounded'
           onClick={() => toggleDetails(sectionKey)}
-          style={{ backgroundColor: '#f8f9fa', cursor: 'pointer' }}
+          style={{
+            backgroundColor: 'var(--surface-secondary)',
+            cursor: 'pointer',
+            borderColor: 'var(--border-muted)',
+          }}
         >
           <div className='d-flex align-items-center'>
             <span className={`fw-bold ${colorClass}`}>{title}</span>
-            <span className='ms-2 text-muted'>
+            <span className='ms-2' style={{ color: 'var(--text-muted)' }}>
               ({estatesGroup.length} items)
             </span>
           </div>
@@ -153,9 +157,17 @@ export default function EstateSummarySticky({
               {formatCurrency(total)}
             </span>
             {showDetails[sectionKey] ? (
-              <FaEyeSlash size={14} className='ms-1' />
+              <FaEyeSlash
+                size={14}
+                className='ms-1'
+                style={{ color: 'var(--text-muted)' }}
+              />
             ) : (
-              <FaEye size={14} className='ms-1' />
+              <FaEye
+                size={14}
+                className='ms-1'
+                style={{ color: 'var(--text-muted)' }}
+              />
             )}
           </div>
         </div>
@@ -166,14 +178,21 @@ export default function EstateSummarySticky({
               <div
                 key={index}
                 className='d-flex justify-content-between py-1 border-bottom'
+                style={{ borderColor: 'var(--border-subtle)' }}
               >
                 <span
                   className='text-truncate me-2'
-                  style={{ maxWidth: '160px' }}
+                  style={{
+                    maxWidth: '160px',
+                    color: 'var(--text-secondary)',
+                  }}
                 >
                   {estate.group_label || estate.name || 'Unnamed'}
                 </span>
-                <span className='text-nowrap'>
+                <span
+                  className='text-nowrap'
+                  style={{ color: 'var(--text-primary)' }}
+                >
                   {formatCurrency(estate.value)}
                 </span>
               </div>
@@ -187,57 +206,93 @@ export default function EstateSummarySticky({
   // *** MAIN RETURN BLOCK ***
   return (
     <div
-      className='estate-summary-sticky position-fixed start-0 end-0 bottom-0 bg-white border-top shadow'
+      className='estate-summary-sticky position-fixed start-0 end-0 bottom-0 border-top shadow'
       style={{
         zIndex: 1050,
         maxHeight: expandLevel === 2 ? '70vh' : 'auto',
         overflow: expandLevel === 2 ? 'auto' : 'visible',
         transition: 'all 0.3s',
+        backgroundColor: 'var(--surface-primary)',
+        borderColor: 'var(--border-primary)',
+        boxShadow: '0 -8px 24px var(--primary-20)',
       }}
     >
       <div className='container-fluid p-2 p-sm-3'>
         {/* HEADER: PC/Desktop layout */}
         <div className='d-none d-sm-flex justify-content-between align-items-center'>
           <div className='d-flex align-items-center'>
-            <FaInfoCircle className='text-primary me-2' />
+            <FaInfoCircle
+              className='me-2'
+              style={{ color: 'var(--primary-blue)' }}
+            />
             <div>
-              <span className='fw-bold text-primary me-3'>Max Advance: </span>
-              <span className='h6 mb-0 text-warning fw-bold'>
+              <span
+                className='fw-bold me-3'
+                style={{ color: 'var(--primary-blue)' }}
+              >
+                Max Advance:{' '}
+              </span>
+              <span
+                className='h6 mb-0 fw-bold'
+                style={{ color: 'var(--warning-primary)' }}
+              >
                 {formatCurrency(calculations.maximumAdvance)}
               </span>
               {requested > 0 && (
-                <span className='ms-3 small text-muted'>
+                <span
+                  className='ms-3 small'
+                  style={{ color: 'var(--text-muted)' }}
+                >
                   Requested:{' '}
-                  <span className='fw-bold'>{formatCurrency(requested)}</span>
+                  <span
+                    className='fw-bold'
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    {formatCurrency(requested)}
+                  </span>
                 </span>
               )}
             </div>
           </div>
           <div className='d-flex align-items-center'>
             <div
-              className={`badge bg-${
-                status.type === 'danger'
-                  ? 'danger'
-                  : status.type === 'success'
-                  ? 'success'
-                  : status.type === 'warning'
-                  ? 'warning'
-                  : 'info'
-              } me-3`}
+              className={`badge me-3`}
+              style={{
+                backgroundColor:
+                  status.type === 'danger'
+                    ? 'var(--error-primary)'
+                    : status.type === 'success'
+                    ? 'var(--success-primary)'
+                    : status.type === 'warning'
+                    ? 'var(--warning-primary)'
+                    : 'var(--primary-blue)',
+                color: '#ffffff',
+                border: '1px solid var(--border-muted)',
+              }}
             >
               {status.short}
             </div>
             {expandLevel === 1 ? (
               <div className='d-flex gap-2'>
                 <button
-                  className='btn btn-outline-secondary btn-sm'
+                  className='btn btn-sm'
+                  style={{
+                    backgroundColor: 'var(--surface-secondary)',
+                    color: 'var(--text-secondary)',
+                    border: '1px solid var(--border-muted)',
+                  }}
                   onClick={() => setExpandLevel(0)}
                 >
                   <FaChevronDown />
                   <span className='ms-1'>Show Less</span>
                 </button>
                 <button
-                  className='btn btn-outline-primary btn-sm'
+                  className='btn btn-sm'
+                  style={{
+                    backgroundColor: 'var(--surface-secondary)',
+                    color: 'var(--primary-blue)',
+                    border: '1px solid var(--border-primary)',
+                  }}
                   onClick={() => setExpandLevel(2)}
                 >
                   <FaExpand />
@@ -246,7 +301,12 @@ export default function EstateSummarySticky({
               </div>
             ) : (
               <button
-                className='btn btn-outline-primary btn-sm'
+                className='btn btn-sm'
+                style={{
+                  backgroundColor: 'var(--surface-secondary)',
+                  color: 'var(--primary-blue)',
+                  border: '1px solid var(--border-primary)',
+                }}
                 onClick={cycleExpandLevel}
               >
                 {expandLevel === 0 ? (
@@ -273,15 +333,31 @@ export default function EstateSummarySticky({
           <div className='d-flex flex-column gap-2'>
             <div className='d-flex justify-content-between align-items-center'>
               <span>
-                <FaInfoCircle className='text-primary me-2 fs-5' />
-                <span className='fw-bold text-primary'>Max:</span>
-                <span className='fw-bold text-warning ms-2'>
+                <FaInfoCircle
+                  className='me-2 fs-5'
+                  style={{ color: 'var(--primary-blue)' }}
+                />
+                <span
+                  className='fw-bold'
+                  style={{ color: 'var(--primary-blue)' }}
+                >
+                  Max:
+                </span>
+                <span
+                  className='fw-bold ms-2'
+                  style={{ color: 'var(--warning-primary)' }}
+                >
                   {formatCurrency(calculations.maximumAdvance)}
                 </span>
               </span>
               <button
-                className='btn btn-outline-primary btn-lg px-3 py-2'
-                style={{ fontSize: '17px' }}
+                className='btn btn-lg px-3 py-2'
+                style={{
+                  fontSize: '17px',
+                  backgroundColor: 'var(--surface-secondary)',
+                  color: 'var(--primary-blue)',
+                  border: '1px solid var(--border-primary)',
+                }}
                 onClick={cycleExpandLevel}
               >
                 {expandLevel === 0 ? (
@@ -302,21 +378,30 @@ export default function EstateSummarySticky({
             </div>
             <div className='d-flex align-items-center justify-content-between'>
               {requested > 0 && (
-                <span className='small text-muted'>
+                <span className='small' style={{ color: 'var(--text-muted)' }}>
                   Requested:{' '}
-                  <span className='fw-bold'>{formatCurrency(requested)}</span>
+                  <span
+                    className='fw-bold'
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    {formatCurrency(requested)}
+                  </span>
                 </span>
               )}
               <div
-                className={`badge bg-${
-                  status.type === 'danger'
-                    ? 'danger'
-                    : status.type === 'success'
-                    ? 'success'
-                    : status.type === 'warning'
-                    ? 'warning'
-                    : 'info'
-                }`}
+                className={`badge`}
+                style={{
+                  backgroundColor:
+                    status.type === 'danger'
+                      ? 'var(--error-primary)'
+                      : status.type === 'success'
+                      ? 'var(--success-primary)'
+                      : status.type === 'warning'
+                      ? 'var(--warning-primary)'
+                      : 'var(--primary-blue)',
+                  color: '#ffffff',
+                  border: '1px solid var(--border-muted)',
+                }}
               >
                 {status.short}
               </div>
@@ -326,16 +411,30 @@ export default function EstateSummarySticky({
 
         {/* Expanded View - Level 1 */}
         {expandLevel >= 1 && (
-          <div className='mt-2 pt-2 border-top'>
+          <div
+            className='mt-2 pt-2 border-top'
+            style={{ borderColor: 'var(--border-muted)' }}
+          >
             {/* PC - columns */}
             <div className='row g-2 mb-3 d-none d-sm-flex'>
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
-                  style={{ backgroundColor: '#e8f5e8' }}
+                  style={{
+                    backgroundColor: 'var(--success-20)',
+                    borderColor: 'var(--border-muted)',
+                  }}
                 >
-                  <div className='small text-muted mb-1'>Total Assets</div>
-                  <div className='h6 text-success mb-0 fw-bold'>
+                  <div
+                    className='small mb-1'
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Total Assets
+                  </div>
+                  <div
+                    className='h6 mb-0 fw-bold'
+                    style={{ color: 'var(--success-primary)' }}
+                  >
                     {formatCurrency(calculations.totalAssets)}
                   </div>
                 </div>
@@ -343,10 +442,21 @@ export default function EstateSummarySticky({
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
-                  style={{ backgroundColor: '#ffe8e8' }}
+                  style={{
+                    backgroundColor: 'var(--error-20)',
+                    borderColor: 'var(--border-muted)',
+                  }}
                 >
-                  <div className='small text-muted mb-1'>Total Liabilities</div>
-                  <div className='h6 text-danger mb-0 fw-bold'>
+                  <div
+                    className='small mb-1'
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Total Liabilities
+                  </div>
+                  <div
+                    className='h6 mb-0 fw-bold'
+                    style={{ color: 'var(--error-primary)' }}
+                  >
                     {formatCurrency(calculations.totalLiabilities)}
                   </div>
                 </div>
@@ -354,10 +464,21 @@ export default function EstateSummarySticky({
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
-                  style={{ backgroundColor: '#e3f2fd' }}
+                  style={{
+                    backgroundColor: 'var(--primary-20)',
+                    borderColor: 'var(--border-muted)',
+                  }}
                 >
-                  <div className='small text-muted mb-1'>Net Irish Estate</div>
-                  <div className='h6 text-primary mb-0 fw-bold'>
+                  <div
+                    className='small mb-1'
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Net Irish Estate
+                  </div>
+                  <div
+                    className='h6 mb-0 fw-bold'
+                    style={{ color: 'var(--primary-blue)' }}
+                  >
                     {formatCurrency(calculations.netIrishEstate)}
                   </div>
                 </div>
@@ -365,10 +486,21 @@ export default function EstateSummarySticky({
               <div className='col-sm-6 col-lg-3'>
                 <div
                   className='text-center p-2 border rounded'
-                  style={{ backgroundColor: '#f3e5f5' }}
+                  style={{
+                    backgroundColor: 'var(--warning-20)',
+                    borderColor: 'var(--border-muted)',
+                  }}
                 >
-                  <div className='small text-muted mb-1'>Lendable Estate</div>
-                  <div className='h6 text-purple mb-0 fw-bold'>
+                  <div
+                    className='small mb-1'
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Lendable Estate
+                  </div>
+                  <div
+                    className='h6 mb-0 fw-bold'
+                    style={{ color: 'var(--warning-primary)' }}
+                  >
                     {formatCurrency(calculations.lendableIrishEstate)}
                   </div>
                 </div>
@@ -380,10 +512,21 @@ export default function EstateSummarySticky({
                 <div className='col-12'>
                   <div
                     className='text-center p-2 border rounded'
-                    style={{ backgroundColor: '#e8f5e8' }}
+                    style={{
+                      backgroundColor: 'var(--success-20)',
+                      borderColor: 'var(--border-muted)',
+                    }}
                   >
-                    <div className='small text-muted mb-1'>Total Assets</div>
-                    <div className='fw-bold text-success'>
+                    <div
+                      className='small mb-1'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
+                      Total Assets
+                    </div>
+                    <div
+                      className='fw-bold'
+                      style={{ color: 'var(--success-primary)' }}
+                    >
                       {formatCurrency(calculations.totalAssets)}
                     </div>
                   </div>
@@ -391,12 +534,21 @@ export default function EstateSummarySticky({
                 <div className='col-12'>
                   <div
                     className='text-center p-2 border rounded'
-                    style={{ backgroundColor: '#ffe8e8' }}
+                    style={{
+                      backgroundColor: 'var(--error-20)',
+                      borderColor: 'var(--border-muted)',
+                    }}
                   >
-                    <div className='small text-muted mb-1'>
+                    <div
+                      className='small mb-1'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
                       Total Liabilities
                     </div>
-                    <div className='fw-bold text-danger'>
+                    <div
+                      className='fw-bold'
+                      style={{ color: 'var(--error-primary)' }}
+                    >
                       {formatCurrency(calculations.totalLiabilities)}
                     </div>
                   </div>
@@ -404,12 +556,21 @@ export default function EstateSummarySticky({
                 <div className='col-12'>
                   <div
                     className='text-center p-2 border rounded'
-                    style={{ backgroundColor: '#e3f2fd' }}
+                    style={{
+                      backgroundColor: 'var(--primary-20)',
+                      borderColor: 'var(--border-muted)',
+                    }}
                   >
-                    <div className='small text-muted mb-1'>
+                    <div
+                      className='small mb-1'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
                       Net Irish Estate
                     </div>
-                    <div className='fw-bold text-primary'>
+                    <div
+                      className='fw-bold'
+                      style={{ color: 'var(--primary-blue)' }}
+                    >
                       {formatCurrency(calculations.netIrishEstate)}
                     </div>
                   </div>
@@ -417,10 +578,21 @@ export default function EstateSummarySticky({
                 <div className='col-12'>
                   <div
                     className='text-center p-2 border rounded'
-                    style={{ backgroundColor: '#f3e5f5' }}
+                    style={{
+                      backgroundColor: 'var(--warning-20)',
+                      borderColor: 'var(--border-muted)',
+                    }}
                   >
-                    <div className='small text-muted mb-1'>Lendable Estate</div>
-                    <div className='fw-bold' style={{ color: '#800080' }}>
+                    <div
+                      className='small mb-1'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
+                      Lendable Estate
+                    </div>
+                    <div
+                      className='fw-bold'
+                      style={{ color: 'var(--warning-primary)' }}
+                    >
                       {formatCurrency(calculations.lendableIrishEstate)}
                     </div>
                   </div>
@@ -429,15 +601,33 @@ export default function EstateSummarySticky({
             </div>
             {/* Status Message */}
             <div
-              className={`alert alert-${
-                status.type === 'danger'
-                  ? 'danger'
-                  : status.type === 'success'
-                  ? 'success'
-                  : status.type === 'warning'
-                  ? 'warning'
-                  : 'info'
-              } mb-0 mt-2`}
+              className={`alert mb-0 mt-2`}
+              style={{
+                backgroundColor:
+                  status.type === 'danger'
+                    ? 'var(--error-20)'
+                    : status.type === 'success'
+                    ? 'var(--success-20)'
+                    : status.type === 'warning'
+                    ? 'var(--warning-20)'
+                    : 'var(--primary-20)',
+                borderColor:
+                  status.type === 'danger'
+                    ? 'var(--error-30)'
+                    : status.type === 'success'
+                    ? 'var(--success-30)'
+                    : status.type === 'warning'
+                    ? 'var(--warning-30)'
+                    : 'var(--primary-30)',
+                color:
+                  status.type === 'danger'
+                    ? 'var(--error-primary)'
+                    : status.type === 'success'
+                    ? 'var(--success-primary)'
+                    : status.type === 'warning'
+                    ? 'var(--warning-primary)'
+                    : 'var(--primary-blue)',
+              }}
             >
               <div className='d-flex align-items-start'>
                 <FaInfoCircle className='me-2 mt-1' />
@@ -463,11 +653,21 @@ export default function EstateSummarySticky({
 
         {/* Full Breakdown View - Level 2 */}
         {expandLevel >= 2 && (
-          <div className='mt-3 pt-3 border-top'>
+          <div
+            className='mt-3 pt-3 border-top'
+            style={{ borderColor: 'var(--border-muted)' }}
+          >
             <div className='d-flex justify-content-between align-items-center mb-3'>
-              <h6 className='text-secondary mb-0'>Detailed Estate Breakdown</h6>
+              <h6 className='mb-0' style={{ color: 'var(--text-secondary)' }}>
+                Detailed Estate Breakdown
+              </h6>
               <button
-                className='btn btn-outline-secondary btn-sm'
+                className='btn btn-sm'
+                style={{
+                  backgroundColor: 'var(--surface-secondary)',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-muted)',
+                }}
                 onClick={() => setExpandLevel(1)}
               >
                 <FaCompress />
@@ -491,7 +691,10 @@ export default function EstateSummarySticky({
               'text-danger'
             )}
             {estates.length === 0 && (
-              <div className='text-center text-muted py-4'>
+              <div
+                className='text-center py-4'
+                style={{ color: 'var(--text-muted)' }}
+              >
                 <FaInfoCircle size={24} className='mb-2' />
                 <div>No estate items have been added yet.</div>
                 <div className='small'>
@@ -499,8 +702,11 @@ export default function EstateSummarySticky({
                 </div>
               </div>
             )}
-            <div className='border-top pt-2 mt-3'>
-              <small className='text-muted d-block'>
+            <div
+              className='border-top pt-2 mt-3'
+              style={{ borderColor: 'var(--border-muted)' }}
+            >
+              <small className='d-block' style={{ color: 'var(--text-muted)' }}>
                 <sup>*</sup> Only lendable estate items are considered for
                 advance calculations. This assessment may change; please consult
                 your agent for more information.
@@ -509,6 +715,19 @@ export default function EstateSummarySticky({
           </div>
         )}
       </div>
+
+      <style>{`
+        /* Custom color classes for estate groups */
+        .text-success {
+          color: var(--success-primary) !important;
+        }
+        .text-warning {
+          color: var(--warning-primary) !important;
+        }
+        .text-danger {
+          color: var(--error-primary) !important;
+        }
+      `}</style>
     </div>
   );
 }

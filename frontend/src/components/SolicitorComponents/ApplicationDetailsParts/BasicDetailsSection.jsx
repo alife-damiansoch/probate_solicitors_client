@@ -23,16 +23,17 @@ const BasicDetailsSection = ({
       className='mb-4 position-relative overflow-hidden'
       style={{
         background: `
-          linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(248, 250, 252, 0.05)),
-          radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6), transparent 50%),
-          radial-gradient(circle at 70% 90%, rgba(59, 130, 246, 0.1), transparent 50%)
+          var(--gradient-surface),
+          linear-gradient(135deg, var(--primary-10), var(--primary-20)),
+          radial-gradient(circle at 30% 10%, var(--primary-20), transparent 50%),
+          radial-gradient(circle at 70% 90%, var(--primary-blue), transparent 50%)
         `,
-        border: '1px solid rgba(255, 255, 255, 0.3)',
+        border: '1px solid var(--border-primary)',
         borderRadius: '24px',
         boxShadow: `
-          0 20px 40px rgba(0, 0, 0, 0.08),
-          0 8px 16px rgba(0, 0, 0, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+          0 20px 40px var(--primary-10),
+          0 8px 16px var(--primary-20),
+          inset 0 1px 0 var(--white-10)
         `,
         backdropFilter: 'blur(20px)',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -44,33 +45,34 @@ const BasicDetailsSection = ({
         className='px-4 py-4 d-flex flex-column flex-lg-row align-items-center gap-3 position-relative'
         style={{
           background: `
-            linear-gradient(135deg, #3b82f6, #2563eb),
-            linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))
+            linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark)),
+            var(--gradient-header)
           `,
-          color: '#ffffff',
+          color: 'var(--text-primary)',
           borderTopLeftRadius: '22px',
           borderTopRightRadius: '22px',
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          border: '1px solid var(--border-muted)',
+          borderBottom: '1px solid var(--border-primary)',
         }}
       >
-        {/* Icon */}
         <div
           className='d-flex align-items-center justify-content-center rounded-circle position-relative mb-3 mb-lg-0'
           style={{
             width: '56px',
             height: '56px',
-            background: 'rgba(255, 255, 255, 0.15)',
-            border: '2px solid rgba(255, 255, 255, 0.25)',
+            background: 'var(--surface-tertiary)',
+            border: '2px solid var(--border-muted)',
             backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.3s',
             cursor: 'pointer',
             animation: 'iconFloat 3.5s ease-in-out infinite',
           }}
         >
-          <i className='fas fa-edit' style={{ fontSize: '1.5rem' }}></i>
-          {/* Glow */}
+          <i
+            className='fas fa-edit'
+            style={{ fontSize: '1.5rem', color: 'var(--text-primary)' }}
+          ></i>
           <div
             className='position-absolute rounded-circle'
             style={{
@@ -78,7 +80,7 @@ const BasicDetailsSection = ({
               left: '-10px',
               right: '-10px',
               bottom: '-10px',
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'var(--primary-10)',
               filter: 'blur(8px)',
               zIndex: -1,
             }}
@@ -86,20 +88,25 @@ const BasicDetailsSection = ({
         </div>
         <div className='flex-grow-1 text-center text-lg-start'>
           <h5
-            className='fw-bold mb-2 text-white'
-            style={{ fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+            className='fw-bold mb-2'
+            style={{
+              fontSize: '1.4rem',
+              letterSpacing: '-0.02em',
+              color: 'var(--text-primary)',
+            }}
           >
             Application Details
           </h5>
           <div
-            className='px-3 py-2 rounded-pill fw-semibold text-white'
+            className='px-3 py-2 rounded-pill fw-semibold'
             style={{
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'var(--primary-10)',
               fontSize: '0.9rem',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid var(--border-primary)',
               display: 'inline-block',
               backdropFilter: 'blur(10px)',
               letterSpacing: '0.02em',
+              color: 'var(--text-primary)',
             }}
           >
             {isApplicationLocked ? 'Locked' : 'Editable'}
@@ -113,8 +120,8 @@ const BasicDetailsSection = ({
           {/* Amount and Term Row */}
           <div className='row g-4 mb-4'>
             <div className='col-12 col-xxl-6'>
-              <label className='form-label fw-semibold text-slate-700 mb-2'>
-                <i className='fas fa-euro-sign me-2 text-success'></i>
+              <label className='form-label fw-semibold mb-2 theme-text-secondary'>
+                <i className='fas fa-euro-sign me-2 status-success'></i>
                 Amount
               </label>
               <div
@@ -122,15 +129,15 @@ const BasicDetailsSection = ({
                 style={{
                   borderRadius: '16px',
                   overflow: 'visible',
-                  background: 'rgba(255, 255, 255, 0.7)',
+                  background: 'var(--surface-secondary)',
                   border: editMode.amount
-                    ? '2px solid #22c55e'
-                    : '1px solid rgba(255, 255, 255, 0.5)',
+                    ? '2px solid var(--success-primary)'
+                    : '1px solid var(--border-muted)',
                   backdropFilter: 'blur(20px)',
                   boxShadow: editMode.amount
-                    ? '0 15px 35px rgba(34, 197, 94, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
-                    : '0 8px 24px rgba(0, 0, 0, 0.06)',
-                  transition: 'all 0.3s ease',
+                    ? '0 15px 35px var(--success-30), 0 5px 15px var(--primary-10)'
+                    : '0 8px 24px var(--primary-10)',
+                  transition: 'all 0.3s',
                 }}
               >
                 {editMode.amount && (
@@ -142,7 +149,7 @@ const BasicDetailsSection = ({
                       right: '-2px',
                       bottom: '-2px',
                       background:
-                        'linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1))',
+                        'linear-gradient(135deg, var(--success-30), var(--success-20))',
                       borderRadius: '18px',
                       filter: 'blur(8px)',
                       zIndex: -1,
@@ -159,7 +166,7 @@ const BasicDetailsSection = ({
                     fontSize: '1rem',
                     fontWeight: '500',
                     padding: '0.75rem 1rem',
-                    color: '#1e293b',
+                    color: 'var(--text-primary)',
                     letterSpacing: '-0.01em',
                   }}
                   value={
@@ -174,11 +181,13 @@ const BasicDetailsSection = ({
                   type='button'
                   className='btn position-relative'
                   style={{
-                    backgroundColor: editMode.amount ? '#ef4444' : '#1f2937',
-                    color: 'white',
+                    backgroundColor: editMode.amount
+                      ? 'var(--error-primary)'
+                      : 'var(--surface-primary)',
+                    color: 'var(--text-primary)',
                     border: 'none',
                     padding: '0 1rem',
-                    transition: 'all 0.2s ease',
+                    transition: 'all 0.2s',
                     borderRadius: '16px',
                   }}
                   onClick={() => {
@@ -203,13 +212,14 @@ const BasicDetailsSection = ({
                     style={{
                       top: '-8px',
                       right: '70px',
-                      background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                      background:
+                        'linear-gradient(135deg, var(--success-primary), var(--success-dark))',
                       color: 'white',
                       padding: '2px 8px',
                       borderRadius: '20px',
                       fontSize: '0.7rem',
                       fontWeight: '600',
-                      boxShadow: '0 4px 8px rgba(34, 197, 94, 0.3)',
+                      boxShadow: '0 4px 8px var(--success-20)',
                       animation: 'editingPulse 2s ease-in-out infinite',
                     }}
                   >
@@ -224,10 +234,11 @@ const BasicDetailsSection = ({
                   className='text-danger mt-2 small fw-medium d-flex align-items-center gap-2'
                   style={{
                     padding: '0.5rem 0.75rem',
-                    background: 'rgba(239, 68, 68, 0.1)',
+                    background: 'var(--error-20)',
                     borderRadius: '12px',
-                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                    border: '1px solid var(--error-30)',
                     backdropFilter: 'blur(10px)',
+                    color: 'var(--error-primary)',
                   }}
                 >
                   <i className='fas fa-exclamation-circle'></i>
@@ -236,8 +247,11 @@ const BasicDetailsSection = ({
               )}
             </div>
             <div className='col-12 col-xxl-6'>
-              <label className='form-label fw-semibold text-slate-700 mb-2'>
-                <i className='fas fa-calendar-alt me-2 text-blue-500'></i>
+              <label className='form-label fw-semibold mb-2 theme-text-secondary'>
+                <i
+                  className='fas fa-calendar-alt me-2'
+                  style={{ color: 'var(--primary-blue)' }}
+                ></i>
                 Initial Term
               </label>
               <div
@@ -245,10 +259,10 @@ const BasicDetailsSection = ({
                 style={{
                   borderRadius: '16px',
                   overflow: 'visible',
-                  background: 'rgba(255, 255, 255, 0.5)',
-                  border: '1px solid rgba(255, 255, 255, 0.5)',
+                  background: 'var(--surface-secondary)',
+                  border: '1px solid var(--border-muted)',
                   backdropFilter: 'blur(20px)',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                  boxShadow: '0 8px 24px var(--primary-10)',
                   opacity: 0.7,
                 }}
               >
@@ -260,7 +274,7 @@ const BasicDetailsSection = ({
                     fontSize: '1rem',
                     fontWeight: '500',
                     padding: '0.75rem 1rem',
-                    color: '#64748b',
+                    color: 'var(--text-muted)',
                   }}
                   value={`${application.term} months`}
                   readOnly
@@ -269,7 +283,7 @@ const BasicDetailsSection = ({
                   type='button'
                   className='btn'
                   style={{
-                    backgroundColor: '#94a3b8',
+                    backgroundColor: 'var(--text-muted)',
                     color: 'white',
                     border: 'none',
                     padding: '0 1rem',
@@ -291,7 +305,7 @@ const BasicDetailsSection = ({
                 flex: 1,
                 height: '1px',
                 background:
-                  'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
+                  'linear-gradient(90deg, transparent, var(--primary-20), transparent)',
               }}
             />
             <div
@@ -300,10 +314,11 @@ const BasicDetailsSection = ({
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                background:
+                  'linear-gradient(135deg, var(--primary-blue-light), var(--primary-blue-dark))',
                 color: 'white',
                 fontSize: '1rem',
-                boxShadow: '0 8px 16px rgba(139, 92, 246, 0.3)',
+                boxShadow: '0 8px 16px var(--primary-20)',
                 animation: 'iconFloat 4s ease-in-out infinite',
               }}
             >
@@ -314,16 +329,20 @@ const BasicDetailsSection = ({
                 flex: 1,
                 height: '1px',
                 background:
-                  'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
+                  'linear-gradient(90deg, transparent, var(--primary-20), transparent)',
               }}
             />
           </div>
 
           {/* Deceased Details Row */}
           <div className='row g-4 mb-4'>
+            {/* Deceased First Name */}
             <div className='col-12 col-xxl-6'>
-              <label className='form-label fw-semibold text-slate-700 mb-2'>
-                <i className='fas fa-user me-2 text-purple-500'></i>
+              <label className='form-label fw-semibold mb-2 theme-text-secondary'>
+                <i
+                  className='fas fa-user me-2'
+                  style={{ color: 'var(--primary-blue)' }}
+                ></i>
                 Deceased First Name
               </label>
               <div
@@ -331,15 +350,15 @@ const BasicDetailsSection = ({
                 style={{
                   borderRadius: '16px',
                   overflow: 'visible',
-                  background: 'rgba(255, 255, 255, 0.7)',
+                  background: 'var(--surface-secondary)',
                   border: editMode.deceased_first_name
-                    ? '2px solid #8b5cf6'
-                    : '1px solid rgba(255, 255, 255, 0.5)',
+                    ? '2px solid var(--primary-blue)'
+                    : '1px solid var(--border-muted)',
                   backdropFilter: 'blur(20px)',
                   boxShadow: editMode.deceased_first_name
-                    ? '0 15px 35px rgba(139, 92, 246, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
-                    : '0 8px 24px rgba(0, 0, 0, 0.06)',
-                  transition: 'all 0.3s ease',
+                    ? '0 15px 35px var(--primary-20), 0 5px 15px var(--primary-10)'
+                    : '0 8px 24px var(--primary-10)',
+                  transition: 'all 0.3s',
                 }}
               >
                 {editMode.deceased_first_name && (
@@ -351,7 +370,7 @@ const BasicDetailsSection = ({
                       right: '-2px',
                       bottom: '-2px',
                       background:
-                        'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1))',
+                        'linear-gradient(135deg, var(--primary-30), var(--primary-20))',
                       borderRadius: '18px',
                       filter: 'blur(8px)',
                       zIndex: -1,
@@ -368,7 +387,7 @@ const BasicDetailsSection = ({
                     fontSize: '1rem',
                     fontWeight: '500',
                     padding: '0.75rem 1rem',
-                    color: '#1e293b',
+                    color: 'var(--text-primary)',
                   }}
                   value={application.deceased.first_name}
                   onChange={(e) =>
@@ -381,12 +400,12 @@ const BasicDetailsSection = ({
                   className='btn'
                   style={{
                     backgroundColor: editMode.deceased_first_name
-                      ? '#ef4444'
-                      : '#1f2937',
-                    color: 'white',
+                      ? 'var(--error-primary)'
+                      : 'var(--surface-primary)',
+                    color: 'var(--text-primary)',
                     border: 'none',
                     padding: '0 1rem',
-                    transition: 'all 0.2s ease',
+                    transition: 'all 0.2s',
                     borderRadius: '16px',
                   }}
                   onClick={() => {
@@ -411,13 +430,14 @@ const BasicDetailsSection = ({
                     style={{
                       top: '-8px',
                       right: '70px',
-                      background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                      background:
+                        'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                       color: 'white',
                       padding: '2px 8px',
                       borderRadius: '20px',
                       fontSize: '0.7rem',
                       fontWeight: '600',
-                      boxShadow: '0 4px 8px rgba(139, 92, 246, 0.3)',
+                      boxShadow: '0 4px 8px var(--primary-20)',
                       animation: 'editingPulse 2s ease-in-out infinite',
                     }}
                   >
@@ -426,9 +446,13 @@ const BasicDetailsSection = ({
                 )}
               </div>
             </div>
+            {/* Deceased Last Name */}
             <div className='col-12 col-xxl-6'>
-              <label className='form-label fw-semibold text-slate-700 mb-2'>
-                <i className='fas fa-user me-2 text-purple-500'></i>
+              <label className='form-label fw-semibold mb-2 theme-text-secondary'>
+                <i
+                  className='fas fa-user me-2'
+                  style={{ color: 'var(--primary-blue)' }}
+                ></i>
                 Deceased Last Name
               </label>
               <div
@@ -436,15 +460,15 @@ const BasicDetailsSection = ({
                 style={{
                   borderRadius: '16px',
                   overflow: 'visible',
-                  background: 'rgba(255, 255, 255, 0.7)',
+                  background: 'var(--surface-secondary)',
                   border: editMode.deceased_last_name
-                    ? '2px solid #8b5cf6'
-                    : '1px solid rgba(255, 255, 255, 0.5)',
+                    ? '2px solid var(--primary-blue)'
+                    : '1px solid var(--border-muted)',
                   backdropFilter: 'blur(20px)',
                   boxShadow: editMode.deceased_last_name
-                    ? '0 15px 35px rgba(139, 92, 246, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
-                    : '0 8px 24px rgba(0, 0, 0, 0.06)',
-                  transition: 'all 0.3s ease',
+                    ? '0 15px 35px var(--primary-20), 0 5px 15px var(--primary-10)'
+                    : '0 8px 24px var(--primary-10)',
+                  transition: 'all 0.3s',
                 }}
               >
                 {editMode.deceased_last_name && (
@@ -456,7 +480,7 @@ const BasicDetailsSection = ({
                       right: '-2px',
                       bottom: '-2px',
                       background:
-                        'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1))',
+                        'linear-gradient(135deg, var(--primary-30), var(--primary-20))',
                       borderRadius: '18px',
                       filter: 'blur(8px)',
                       zIndex: -1,
@@ -473,7 +497,7 @@ const BasicDetailsSection = ({
                     fontSize: '1rem',
                     fontWeight: '500',
                     padding: '0.75rem 1rem',
-                    color: '#1e293b',
+                    color: 'var(--text-primary)',
                   }}
                   value={application.deceased.last_name}
                   onChange={(e) =>
@@ -486,12 +510,12 @@ const BasicDetailsSection = ({
                   className='btn'
                   style={{
                     backgroundColor: editMode.deceased_last_name
-                      ? '#ef4444'
-                      : '#1f2937',
-                    color: 'white',
+                      ? 'var(--error-primary)'
+                      : 'var(--surface-primary)',
+                    color: 'var(--text-primary)',
                     border: 'none',
                     padding: '0 1rem',
-                    transition: 'all 0.2s ease',
+                    transition: 'all 0.2s',
                     borderRadius: '16px',
                   }}
                   onClick={() => {
@@ -516,13 +540,14 @@ const BasicDetailsSection = ({
                     style={{
                       top: '-8px',
                       right: '70px',
-                      background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                      background:
+                        'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))',
                       color: 'white',
                       padding: '2px 8px',
                       borderRadius: '20px',
                       fontSize: '0.7rem',
                       fontWeight: '600',
-                      boxShadow: '0 4px 8px rgba(139, 92, 246, 0.3)',
+                      boxShadow: '0 4px 8px var(--primary-20)',
                       animation: 'editingPulse 2s ease-in-out infinite',
                     }}
                   >
@@ -535,39 +560,43 @@ const BasicDetailsSection = ({
 
           {/* Will Preparation Section */}
           <div className='mb-4'>
-            <label className='form-label fw-semibold text-slate-700 mb-3'>
-              <i className='fas fa-gavel me-2 text-amber-500'></i>
+            <label className='form-label fw-semibold mb-3 theme-text-secondary'>
+              <i
+                className='fas fa-gavel me-2'
+                style={{ color: 'var(--warning-primary)' }}
+              ></i>
               Was this will professionally prepared by a solicitor?
             </label>
             <div
               className='d-flex gap-4 p-4 flex-column flex-md-row'
               style={{
-                background: 'rgba(255, 255, 255, 0.7)',
+                background: 'var(--surface-secondary)',
                 borderRadius: '18px',
-                border: '1px solid rgba(255, 255, 255, 0.5)',
+                border: '1px solid var(--border-muted)',
                 backdropFilter: 'blur(20px)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+                boxShadow: '0 8px 24px var(--primary-10)',
               }}
             >
+              {/* YES Option */}
               <div
                 className='form-check position-relative flex-fill'
                 style={{
                   padding: '1rem 1.5rem',
                   borderRadius: '14px',
                   background: !!application.was_will_prepared_by_solicitor
-                    ? 'linear-gradient(135deg, #22c55e, #16a34a)'
-                    : 'rgba(255, 255, 255, 0.5)',
+                    ? 'linear-gradient(135deg, var(--success-primary), var(--success-dark))'
+                    : 'var(--surface-tertiary)',
                   border: !!application.was_will_prepared_by_solicitor
-                    ? '2px solid #22c55e'
-                    : '1px solid rgba(255, 255, 255, 0.3)',
-                  transition: 'all 0.3s ease',
+                    ? '2px solid var(--success-primary)'
+                    : '1px solid var(--border-muted)',
+                  transition: 'all 0.3s',
                   cursor: 'pointer',
                   transform: !!application.was_will_prepared_by_solicitor
                     ? 'scale(1.02) translateY(-2px)'
                     : 'scale(1)',
                   boxShadow: !!application.was_will_prepared_by_solicitor
-                    ? '0 8px 16px rgba(34, 197, 94, 0.30)'
-                    : '0 4px 8px rgba(0, 0, 0, 0.05)',
+                    ? '0 8px 16px var(--success-20)'
+                    : '0 4px 8px var(--primary-10)',
                 }}
               >
                 {!!application.was_will_prepared_by_solicitor && (
@@ -579,7 +608,7 @@ const BasicDetailsSection = ({
                       right: '-3px',
                       bottom: '-3px',
                       background:
-                        'linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1))',
+                        'linear-gradient(135deg, var(--success-30), var(--success-20))',
                       borderRadius: '17px',
                       filter: 'blur(6px)',
                       zIndex: -1,
@@ -622,7 +651,7 @@ const BasicDetailsSection = ({
                   style={{
                     color: !!application.was_will_prepared_by_solicitor
                       ? 'white'
-                      : '#059669',
+                      : 'var(--success-dark)',
                     fontSize: '1rem',
                     fontWeight: '600',
                     cursor: 'pointer',
@@ -632,25 +661,26 @@ const BasicDetailsSection = ({
                   Yes
                 </label>
               </div>
+              {/* NO Option */}
               <div
                 className='form-check position-relative flex-fill'
                 style={{
                   padding: '1rem 1.5rem',
                   borderRadius: '14px',
                   background: !application.was_will_prepared_by_solicitor
-                    ? 'linear-gradient(135deg, #ef4444, #dc2626)'
-                    : 'rgba(255, 255, 255, 0.5)',
+                    ? 'linear-gradient(135deg, var(--error-primary), var(--error-dark))'
+                    : 'var(--surface-tertiary)',
                   border: !application.was_will_prepared_by_solicitor
-                    ? '2px solid #ef4444'
-                    : '1px solid rgba(255, 255, 255, 0.3)',
-                  transition: 'all 0.3s ease',
+                    ? '2px solid var(--error-primary)'
+                    : '1px solid var(--border-muted)',
+                  transition: 'all 0.3s',
                   cursor: 'pointer',
                   transform: !application.was_will_prepared_by_solicitor
                     ? 'scale(1.02) translateY(-2px)'
                     : 'scale(1)',
                   boxShadow: !application.was_will_prepared_by_solicitor
-                    ? '0 8px 16px rgba(239, 68, 68, 0.30)'
-                    : '0 4px 8px rgba(0, 0, 0, 0.05)',
+                    ? '0 8px 16px var(--error-20)'
+                    : '0 4px 8px var(--primary-10)',
                 }}
               >
                 {!application.was_will_prepared_by_solicitor && (
@@ -662,7 +692,7 @@ const BasicDetailsSection = ({
                       right: '-3px',
                       bottom: '-3px',
                       background:
-                        'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1))',
+                        'linear-gradient(135deg, var(--error-30), var(--error-20))',
                       borderRadius: '17px',
                       filter: 'blur(6px)',
                       zIndex: -1,
@@ -705,7 +735,7 @@ const BasicDetailsSection = ({
                   style={{
                     color: !application.was_will_prepared_by_solicitor
                       ? 'white'
-                      : '#dc2626',
+                      : 'var(--error-dark)',
                     fontSize: '1rem',
                     fontWeight: '600',
                     cursor: 'pointer',
@@ -720,8 +750,11 @@ const BasicDetailsSection = ({
 
           {/* Dispute Details */}
           <div className='mb-4'>
-            <label className='form-label fw-semibold text-slate-700 mb-2'>
-              <i className='fas fa-exclamation-triangle me-2 text-orange-500'></i>
+            <label className='form-label fw-semibold mb-2 theme-text-secondary'>
+              <i
+                className='fas fa-exclamation-triangle me-2'
+                style={{ color: 'var(--warning-primary)' }}
+              ></i>
               Dispute Details
             </label>
             <div
@@ -729,15 +762,15 @@ const BasicDetailsSection = ({
               style={{
                 borderRadius: '16px',
                 overflow: 'visible',
-                background: 'rgba(255, 255, 255, 0.7)',
+                background: 'var(--surface-secondary)',
                 border: editMode.dispute_details
-                  ? '2px solid #f97316'
-                  : '1px solid rgba(255, 255, 255, 0.5)',
+                  ? '2px solid var(--warning-primary)'
+                  : '1px solid var(--border-muted)',
                 backdropFilter: 'blur(20px)',
                 boxShadow: editMode.dispute_details
-                  ? '0 15px 35px rgba(249, 115, 22, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1)'
-                  : '0 8px 24px rgba(0, 0, 0, 0.06)',
-                transition: 'all 0.3s ease',
+                  ? '0 15px 35px var(--warning-20), 0 5px 15px var(--primary-10)'
+                  : '0 8px 24px var(--primary-10)',
+                transition: 'all 0.3s',
               }}
             >
               {editMode.dispute_details && (
@@ -749,7 +782,7 @@ const BasicDetailsSection = ({
                     right: '-2px',
                     bottom: '-2px',
                     background:
-                      'linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(249, 115, 22, 0.1))',
+                      'linear-gradient(135deg, var(--warning-30), var(--warning-20))',
                     borderRadius: '18px',
                     filter: 'blur(8px)',
                     zIndex: -1,
@@ -767,7 +800,7 @@ const BasicDetailsSection = ({
                   padding: '1rem',
                   minHeight: '120px',
                   resize: 'vertical',
-                  color: '#1e293b',
+                  color: 'var(--text-primary)',
                   letterSpacing: '-0.01em',
                   lineHeight: '1.6',
                 }}
@@ -789,12 +822,12 @@ const BasicDetailsSection = ({
                 className='btn align-self-stretch'
                 style={{
                   backgroundColor: editMode.dispute_details
-                    ? '#ef4444'
-                    : '#1f2937',
-                  color: 'white',
+                    ? 'var(--error-primary)'
+                    : 'var(--surface-primary)',
+                  color: 'var(--text-primary)',
                   border: 'none',
                   padding: '1rem',
-                  transition: 'all 0.2s ease',
+                  transition: 'all 0.2s',
                   borderRadius: '16px',
                 }}
                 onClick={() => {
@@ -819,13 +852,14 @@ const BasicDetailsSection = ({
                   style={{
                     top: '-8px',
                     right: '70px',
-                    background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                    background:
+                      'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                     color: 'white',
                     padding: '2px 8px',
                     borderRadius: '20px',
                     fontSize: '0.7rem',
                     fontWeight: '600',
-                    boxShadow: '0 4px 8px rgba(249, 115, 22, 0.3)',
+                    boxShadow: '0 4px 8px var(--warning-20)',
                     animation: 'editingPulse 2s ease-in-out infinite',
                   }}
                 >

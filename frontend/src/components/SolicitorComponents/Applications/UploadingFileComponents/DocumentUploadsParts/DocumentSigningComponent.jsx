@@ -358,14 +358,27 @@ const DocumentSigningComponent = ({
 
   if (fetchingDocument) {
     return (
-      <div className='text-center py-5'>
+      <div
+        className='text-center py-5'
+        style={{
+          background: 'var(--surface-primary)',
+          color: 'var(--text-primary)',
+        }}
+      >
         <LoadingComponent message='Loading document for signing...' />
       </div>
     );
   }
 
   return (
-    <div className='container-fluid'>
+    <div
+      className='container-fluid'
+      style={{
+        background: 'var(--surface-primary)',
+        color: 'var(--text-primary)',
+        minHeight: '100vh',
+      }}
+    >
       {/* Document Reading Flow for Loan Agreements */}
       {documentData?.is_loan_agreement &&
         requiredDocuments.length > 0 &&

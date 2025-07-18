@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import {
@@ -16,7 +17,6 @@ import renderErrors from '../GenericFunctions/HelperGenericFunctions';
 
 const UserProfile = () => {
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
-
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const postcode_placeholders = JSON.parse(
@@ -101,7 +101,7 @@ const UserProfile = () => {
     return (
       <div
         className='min-vh-100 d-flex align-items-center justify-content-center'
-        style={{ background: '#f8fafc' }}
+        style={{ background: 'var(--gradient-main-bg)' }}
       >
         <LoadingComponent message='Loading user data...' />
       </div>
@@ -109,116 +109,176 @@ const UserProfile = () => {
   }
 
   return (
-    <div
+    <motion.div
       className='min-vh-100 pb-3'
       style={{
-        background: `linear-gradient(120deg, #f0f3fa 0%, #e0e7ef 100%)`,
+        background: 'var(--gradient-main-bg)',
         minHeight: '100vh',
-        paddingTop: '150px',
+        paddingTop: '120px',
+        position: 'relative',
+        overflow: 'hidden',
       }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.7 }}
     >
-      <div className='container'>
+      {/* Glassy, animated BG */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `
+            radial-gradient(circle at 22% 26%, var(--primary-10) 0%, transparent 60%),
+            radial-gradient(circle at 80% 80%, var(--success-20) 0%, transparent 52%),
+            radial-gradient(circle at 60% 8%, var(--primary-20) 0%, transparent 32%)
+          `,
+          opacity: 0.7,
+          animation: 'backgroundFloat 21s linear infinite',
+        }}
+      />
+
+      <div className='container position-relative' style={{ zIndex: 2 }}>
         {/* Header Section */}
-        <div className='d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2'>
-          <button
-            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
+        <motion.div
+          className='d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2'
+          initial={{ y: -40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.12, duration: 0.7 }}
+        >
+          <motion.button
+            className='btn d-flex align-items-center px-3 py-2'
             style={{
-              background: 'rgba(255,255,255,0.85)',
-              border: '1px solid #e2e8f0',
-              borderRadius: '12px',
-              color: '#64748b',
+              background: 'var(--surface-secondary)',
+              border: '1.5px solid var(--border-muted)',
+              borderRadius: '13px',
+              color: 'var(--text-muted)',
               fontWeight: 500,
               fontSize: '1rem',
-              boxShadow: '0 2px 10px rgba(59,130,246,0.07)',
+              boxShadow: '0 2px 10px var(--primary-10)',
               transition: 'all 0.2s ease',
               backdropFilter: 'blur(10px)',
             }}
+            whileHover={{
+              background: 'var(--surface-primary)',
+              color: 'var(--primary-blue)',
+            }}
             onClick={() => navigate(-1)}
-            onMouseOver={(e) => {
-              e.target.style.background = 'rgba(240,240,255,0.98)';
-              e.target.style.borderColor = '#cbd5e1';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.background = 'rgba(255,255,255,0.85)';
-              e.target.style.borderColor = '#e2e8f0';
-            }}
           >
             <FaArrowLeft className='me-2' size={15} />
             Back
-          </button>
+          </motion.button>
 
-          <button
-            className='btn d-flex align-items-center px-3 py-2 glassy-btn'
+          <motion.button
+            className='btn d-flex align-items-center px-3 py-2'
             style={{
-              background: 'linear-gradient(90deg, #ef4444, #dc2626)',
+              background: 'var(--error-primary)',
               border: 'none',
-              borderRadius: '12px',
-              color: 'white',
+              borderRadius: '13px',
+              color: '#fff',
               fontWeight: 500,
               fontSize: '1rem',
-              boxShadow: '0 2px 10px rgba(239,68,68,0.14)',
+              boxShadow: '0 2px 10px var(--error-20)',
               transition: 'all 0.2s ease',
             }}
+            whileHover={{
+              background: 'var(--error-dark)',
+              color: '#fff',
+            }}
             onClick={() => navigate('/update_password')}
-            onMouseOver={(e) => {
-              e.target.style.background =
-                'linear-gradient(90deg, #dc2626, #b91c1c)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.background =
-                'linear-gradient(90deg, #ef4444, #dc2626)';
-            }}
           >
             <FaLock className='me-2' size={14} />
             Change Password
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
         {/* Profile Card */}
-        <div className='row justify-content-center'>
+        <motion.div
+          className='row justify-content-center'
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7 }}
+        >
           <div className='col-12 col-lg-10 col-xl-8'>
-            <div
-              className='card border-0 shadow-lg'
+            <motion.div
+              className='card border-0'
               style={{
-                borderRadius: 22,
-                background: 'rgba(255,255,255,0.92)',
-                boxShadow:
-                  '0 8px 32px rgba(59,130,246,0.10), 0 2px 8px rgba(102,126,234,0.07)',
-                backdropFilter: 'blur(14px)',
+                borderRadius: 26,
+                background: 'var(--surface-primary)',
+                boxShadow: `
+                  0 12px 32px var(--primary-10),
+                  0 4px 12px var(--primary-20),
+                  inset 0 1px 0 var(--white-10)
+                `,
+                backdropFilter: 'blur(18px)',
                 overflow: 'hidden',
               }}
+              initial={{ scale: 0.99, opacity: 0.8 }}
+              animate={{ scale: 1, opacity: 1 }}
+              whileHover={{
+                scale: 1.01,
+                boxShadow: `
+                  0 22px 48px var(--primary-20),
+                  0 10px 22px var(--primary-30),
+                  0 7px 18px var(--success-20),
+                  inset 0 1px 0 var(--white-15)
+                `,
+              }}
+              transition={{ type: 'spring', stiffness: 280, damping: 26 }}
             >
               {/* Card Header */}
-              <div
+              <motion.div
                 className='card-header border-0 py-4'
                 style={{
-                  background: 'linear-gradient(135deg,#667eea,#764ba2)',
+                  background: 'var(--gradient-header)',
                   borderBottom: 'none',
-                  borderTopLeftRadius: 22,
-                  borderTopRightRadius: 22,
-                  color: '#fff',
-                  boxShadow: '0 8px 24px rgba(59,130,246,0.12)',
+                  borderTopLeftRadius: 26,
+                  borderTopRightRadius: 26,
+                  color: 'var(--text-primary)',
+                  boxShadow: '0 8px 22px var(--primary-20)',
                 }}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.22, duration: 0.7 }}
               >
                 <div className='text-center'>
-                  <div
+                  <motion.div
                     className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
                     style={{
                       width: 64,
                       height: 64,
-                      background: 'rgba(255,255,255,0.16)',
-                      color: '#fff',
-                      boxShadow: '0 4px 16px rgba(59,130,246,0.09)',
+                      background: 'var(--primary-20)',
+                      color: 'var(--primary-blue)',
+                      boxShadow: '0 4px 16px var(--primary-20)',
                     }}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.28, duration: 0.6 }}
                   >
-                    <FaUser size={26} />
-                  </div>
-                  <h3 className='mb-1 fw-bold'>User Profile</h3>
-                  <div className='mb-0 small' style={{ opacity: 0.95 }}>
+                    <FaUser size={28} />
+                  </motion.div>
+                  <motion.h3
+                    className='mb-1 fw-bold'
+                    style={{
+                      background:
+                        'linear-gradient(135deg, var(--text-primary), var(--primary-blue-light))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    User Profile
+                  </motion.h3>
+                  <motion.div
+                    className='mb-0 small'
+                    style={{ opacity: 0.97, color: 'var(--text-tertiary)' }}
+                    initial={{ opacity: 0, y: 7 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
                     Manage your account information
-                  </div>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Error Display */}
               {errors && (
@@ -226,9 +286,9 @@ const UserProfile = () => {
                   <div
                     className='alert border-0'
                     style={{
-                      background: 'rgba(239,68,68,0.07)',
-                      color: '#dc2626',
-                      borderRadius: 12,
+                      background: 'var(--error-20)',
+                      color: 'var(--error-primary)',
+                      borderRadius: 13,
                       fontSize: '1rem',
                     }}
                   >
@@ -243,23 +303,30 @@ const UserProfile = () => {
                   <div className='row gy-4'>
                     {/* Left Column - Personal Info */}
                     <div className='col-12 col-md-6'>
-                      <h6 className='fw-bold mb-3 text-primary d-flex align-items-center'>
+                      <h6
+                        className='fw-bold mb-3 d-flex align-items-center'
+                        style={{
+                          color: 'var(--primary-blue)',
+                          letterSpacing: '.01em',
+                        }}
+                      >
                         <FaUser className='me-2' size={16} />
                         Personal Information
                       </h6>
-
                       {/* Email */}
                       <div className='mb-3'>
                         <label className='form-label fw-medium mb-1'>
-                          Email Address <span className='text-danger'>*</span>
+                          Email Address <span className='status-error'>*</span>
                         </label>
                         <input
                           type='email'
                           className='form-control'
                           style={{
-                            borderRadius: 10,
-                            border: '1.5px solid #c7d1ee',
-                            fontSize: '1.02rem',
+                            borderRadius: 11,
+                            border: '1.5px solid var(--border-primary)',
+                            fontSize: '1.03rem',
+                            background: 'var(--surface-secondary)',
+                            color: 'var(--text-primary)',
                           }}
                           name='email'
                           value={formData.email}
@@ -270,19 +337,20 @@ const UserProfile = () => {
                           Login email will be updated
                         </small>
                       </div>
-
                       {/* Name */}
                       <div className='mb-3'>
                         <label className='form-label fw-medium mb-1'>
-                          Firm Name <span className='text-danger'>*</span>
+                          Firm Name <span className='status-error'>*</span>
                         </label>
                         <input
                           type='text'
                           className='form-control'
                           style={{
-                            borderRadius: 10,
-                            border: '1.5px solid #c7d1ee',
-                            fontSize: '1.02rem',
+                            borderRadius: 11,
+                            border: '1.5px solid var(--border-primary)',
+                            fontSize: '1.03rem',
+                            background: 'var(--surface-secondary)',
+                            color: 'var(--text-primary)',
                           }}
                           name='name'
                           value={formData.name}
@@ -290,7 +358,6 @@ const UserProfile = () => {
                           required
                         />
                       </div>
-
                       {/* Phone */}
                       <div className='mb-3'>
                         <label className='form-label fw-medium mb-1'>
@@ -300,9 +367,11 @@ const UserProfile = () => {
                           type='text'
                           className='form-control'
                           style={{
-                            borderRadius: 10,
-                            border: '1.5px solid #c7d1ee',
-                            fontSize: '1.02rem',
+                            borderRadius: 11,
+                            border: '1.5px solid var(--border-primary)',
+                            fontSize: '1.03rem',
+                            background: 'var(--surface-secondary)',
+                            color: 'var(--text-primary)',
                           }}
                           name='phone_number'
                           value={formData.phone_number}
@@ -316,23 +385,30 @@ const UserProfile = () => {
 
                     {/* Right Column - Address */}
                     <div className='col-12 col-md-6'>
-                      <h6 className='fw-bold mb-3 text-success d-flex align-items-center'>
+                      <h6
+                        className='fw-bold mb-3 d-flex align-items-center'
+                        style={{
+                          color: 'var(--success-primary)',
+                          letterSpacing: '.01em',
+                        }}
+                      >
                         <FaMapMarkerAlt className='me-2' size={16} />
                         Address Information
                       </h6>
-
                       {/* Address Line 1 */}
                       <div className='mb-3'>
                         <label className='form-label fw-medium mb-1'>
-                          Address Line 1 <span className='text-danger'>*</span>
+                          Address Line 1 <span className='status-error'>*</span>
                         </label>
                         <input
                           type='text'
                           className='form-control'
                           style={{
-                            borderRadius: 10,
-                            border: '1.5px solid #badbcc',
-                            fontSize: '1.02rem',
+                            borderRadius: 11,
+                            border: '1.5px solid var(--border-primary)',
+                            fontSize: '1.03rem',
+                            background: 'var(--surface-secondary)',
+                            color: 'var(--text-primary)',
                           }}
                           name='address.line1'
                           value={formData.address.line1}
@@ -340,7 +416,6 @@ const UserProfile = () => {
                           required
                         />
                       </div>
-
                       {/* Address Line 2 */}
                       <div className='mb-3'>
                         <label className='form-label fw-medium mb-1'>
@@ -350,29 +425,32 @@ const UserProfile = () => {
                           type='text'
                           className='form-control'
                           style={{
-                            borderRadius: 10,
-                            border: '1.5px solid #badbcc',
-                            fontSize: '1.02rem',
+                            borderRadius: 11,
+                            border: '1.5px solid var(--border-primary)',
+                            fontSize: '1.03rem',
+                            background: 'var(--surface-secondary)',
+                            color: 'var(--text-primary)',
                           }}
                           name='address.line2'
                           value={formData.address.line2}
                           onChange={handleChange}
                         />
                       </div>
-
                       {/* Town/County Row */}
                       <div className='row'>
                         <div className='col-12 col-sm-7 mb-3'>
                           <label className='form-label fw-medium mb-1'>
-                            Town/City <span className='text-danger'>*</span>
+                            Town/City <span className='status-error'>*</span>
                           </label>
                           <input
                             type='text'
                             className='form-control'
                             style={{
-                              borderRadius: 10,
-                              border: '1.5px solid #badbcc',
-                              fontSize: '1.02rem',
+                              borderRadius: 11,
+                              border: '1.5px solid var(--border-primary)',
+                              fontSize: '1.03rem',
+                              background: 'var(--surface-secondary)',
+                              color: 'var(--text-primary)',
                             }}
                             name='address.town_city'
                             value={formData.address.town_city}
@@ -388,9 +466,11 @@ const UserProfile = () => {
                             type='text'
                             className='form-control'
                             style={{
-                              borderRadius: 10,
-                              border: '1.5px solid #badbcc',
-                              fontSize: '1.02rem',
+                              borderRadius: 11,
+                              border: '1.5px solid var(--border-primary)',
+                              fontSize: '1.03rem',
+                              background: 'var(--surface-secondary)',
+                              color: 'var(--text-primary)',
                             }}
                             name='address.county'
                             value={formData.address.county}
@@ -398,20 +478,21 @@ const UserProfile = () => {
                           />
                         </div>
                       </div>
-
                       {/* Postcode */}
                       <div className='mb-3'>
                         <label className='form-label fw-medium mb-1'>
                           {postcode_placeholders[0]}{' '}
-                          <span className='text-danger'>*</span>
+                          <span className='status-error'>*</span>
                         </label>
                         <input
                           type='text'
                           className='form-control'
                           style={{
-                            borderRadius: 10,
-                            border: '1.5px solid #badbcc',
-                            fontSize: '1.02rem',
+                            borderRadius: 11,
+                            border: '1.5px solid var(--border-primary)',
+                            fontSize: '1.03rem',
+                            background: 'var(--surface-secondary)',
+                            color: 'var(--text-primary)',
                           }}
                           name='address.eircode'
                           value={formData.address.eircode}
@@ -430,54 +511,49 @@ const UserProfile = () => {
                   <div
                     className='text-center mt-4 pt-3'
                     style={{
-                      borderTop: '1px solid #f3f4f6',
+                      borderTop: '1px solid var(--border-muted)',
                     }}
                   >
                     {isUpdatingProfile ? (
                       <LoadingComponent message='Updating profile...' />
                     ) : (
-                      <button
+                      <motion.button
                         type='submit'
                         className='btn px-4 py-2 fw-medium'
                         style={{
-                          background:
-                            'linear-gradient(90deg, #667eea, #764ba2)',
-                          color: 'white',
+                          background: 'var(--primary-blue)',
+                          color: '#fff',
                           border: 'none',
                           borderRadius: '10px',
-                          fontSize: '1.07rem',
+                          fontSize: '1.09rem',
                           minWidth: '170px',
-                          boxShadow: '0 4px 14px rgba(59,130,246,0.12)',
-                          transition: 'all 0.2s',
+                          boxShadow: '0 4px 14px var(--primary-20)',
+                          transition: 'all 0.19s',
                         }}
-                        onMouseOver={(e) => {
-                          e.target.style.background =
-                            'linear-gradient(90deg, #2563eb, #4f46e5)';
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.background =
-                            'linear-gradient(90deg, #667eea, #764ba2)';
+                        whileHover={{
+                          background: 'var(--primary-blue-dark)',
                         }}
                       >
                         <FaEdit className='me-2' size={15} />
                         Update Profile
-                      </button>
+                      </motion.button>
                     )}
                   </div>
                 </form>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
-
       {/* Animations */}
       <style>{`
-        .glassy-btn:active {
-          box-shadow: 0 2px 12px rgba(102,126,234,0.12);
+        @keyframes backgroundFloat {
+          0%,100%{transform:translateY(0) rotate(0deg);opacity:.68;}
+          40%{transform:translateY(-12px) rotate(60deg);opacity:.83;}
+          80%{transform:translateY(7px) rotate(140deg);opacity:.74;}
         }
       `}</style>
-    </div>
+    </motion.div>
   );
 };
 

@@ -57,10 +57,17 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
 
   const getDocumentTypeIcon = () => {
     if (document?.is_terms_of_business)
-      return <HiOutlineDocumentText className='text-primary' size={24} />;
+      return (
+        <HiOutlineDocumentText
+          style={{ color: 'var(--primary-blue)' }}
+          size={24}
+        />
+      );
     if (document?.is_secci)
-      return <FaFileAlt className='text-warning' size={24} />;
-    return <FaFileAlt className='text-secondary' size={24} />;
+      return (
+        <FaFileAlt style={{ color: 'var(--warning-primary)' }} size={24} />
+      );
+    return <FaFileAlt style={{ color: 'var(--text-secondary)' }} size={24} />;
   };
 
   const getDocumentTypeName = () => {
@@ -136,9 +143,9 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
             style={{
               width: '100vw',
               height: '100vh',
-              background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)',
-              border: 'none',
+              background: 'var(--gradient-surface)',
+              boxShadow: '0 25px 50px var(--primary-30)',
+              border: '1px solid var(--border-primary)',
               overflow: 'hidden',
             }}
             onClick={(e) => e.stopPropagation()}
@@ -147,19 +154,21 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
             <div
               className='card-header border-0 p-3'
               style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background:
+                  'linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%)',
                 borderRadius: '0',
                 minHeight: '80px',
+                border: '1px solid var(--border-muted)',
               }}
             >
               <div className='d-flex align-items-center justify-content-between'>
                 <div className='d-flex align-items-center'>
                   <div className='me-3'>{getDocumentTypeIcon()}</div>
                   <div>
-                    <h5 className='text-white mb-1 fw-bold'>
+                    <h5 style={{ color: '#ffffff' }} className='mb-1 fw-bold'>
                       {getDocumentTypeName()}
                     </h5>
-                    <small className='text-white-50'>
+                    <small style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                       {document?.original_name}
                     </small>
                   </div>
@@ -170,7 +179,13 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={handleDownload}
-                      className='btn btn-outline-light btn-sm me-2'
+                      className='btn btn-sm me-2'
+                      style={{
+                        backgroundColor: 'transparent',
+                        border: '1px solid rgba(255, 255, 255, 0.5)',
+                        color: '#ffffff',
+                        borderRadius: '8px',
+                      }}
                       title='Download Document'
                     >
                       <FaDownload size={16} />
@@ -180,8 +195,15 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={onClose}
-                    className='btn btn-outline-light btn-sm'
-                    style={{ fontSize: '16px', padding: '8px 12px' }}
+                    className='btn btn-sm'
+                    style={{
+                      fontSize: '16px',
+                      padding: '8px 12px',
+                      backgroundColor: 'transparent',
+                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      color: '#ffffff',
+                      borderRadius: '8px',
+                    }}
                   >
                     <FaTimes size={20} />
                   </motion.button>
@@ -195,24 +217,30 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
               style={{
                 height: 'calc(100vh - 160px)',
                 overflow: 'hidden',
-                background: '#f8f9fa',
+                background: 'var(--surface-secondary)',
               }}
             >
               {isLoading ? (
                 <div className='d-flex align-items-center justify-content-center h-100'>
                   <div className='text-center p-5'>
                     <div
-                      className='spinner-border text-primary mb-3'
+                      className='spinner-border mb-3'
+                      style={{ color: 'var(--primary-blue)' }}
                       role='status'
                     >
                       <span className='visually-hidden'>Loading...</span>
                     </div>
-                    <p className='text-muted'>Loading document...</p>
+                    <p style={{ color: 'var(--text-muted)' }}>
+                      Loading document...
+                    </p>
                   </div>
                 </div>
               ) : error ? (
                 <div className='d-flex align-items-center justify-content-center h-100'>
-                  <div className='text-center text-danger p-5'>
+                  <div
+                    className='text-center p-5'
+                    style={{ color: 'var(--error-primary)' }}
+                  >
                     <FaTimes size={48} className='mb-3 opacity-50' />
                     <p>{error}</p>
                   </div>
@@ -224,7 +252,7 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
                   title={document?.original_name}
                   style={{
                     minHeight: 'calc(100vh - 160px)',
-                    background: 'white',
+                    background: 'var(--surface-primary)',
                   }}
                   onLoad={() => {
                     // For iframe, we'll consider it "scrolled" after a few seconds
@@ -239,8 +267,14 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
               ) : (
                 <div className='d-flex align-items-center justify-content-center h-100'>
                   <div className='text-center p-5'>
-                    <FaFileAlt size={48} className='mb-3 text-muted' />
-                    <p className='text-muted'>No document content available</p>
+                    <FaFileAlt
+                      size={48}
+                      className='mb-3'
+                      style={{ color: 'var(--text-muted)' }}
+                    />
+                    <p style={{ color: 'var(--text-muted)' }}>
+                      No document content available
+                    </p>
                   </div>
                 </div>
               )}
@@ -250,7 +284,7 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
             <div
               className='card-footer border-0 p-3'
               style={{
-                background: 'linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%)',
+                background: 'var(--gradient-surface)',
                 borderRadius: '0',
                 minHeight: '80px',
                 position: 'fixed',
@@ -258,22 +292,29 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
                 left: 0,
                 right: 0,
                 zIndex: 10000,
+                border: '1px solid var(--border-muted)',
+                borderBottom: 'none',
+                borderLeft: 'none',
+                borderRight: 'none',
               }}
             >
               <div className='d-flex align-items-center justify-content-between'>
                 <div className='d-flex align-items-center'>
                   <FaEye
-                    className={
-                      hasStartedReading
-                        ? 'text-success me-2'
-                        : 'text-muted me-2'
-                    }
+                    className='me-2'
+                    style={{
+                      color: hasStartedReading
+                        ? 'var(--success-primary)'
+                        : 'var(--text-muted)',
+                    }}
                     size={16}
                   />
                   <small
-                    className={
-                      hasStartedReading ? 'text-success' : 'text-muted'
-                    }
+                    style={{
+                      color: hasStartedReading
+                        ? 'var(--success-primary)'
+                        : 'var(--text-muted)',
+                    }}
                   >
                     {hasStartedReading
                       ? 'Document viewed'
@@ -291,15 +332,20 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
                     }
                   }}
                   disabled={!isScrolledToBottom}
-                  className={`btn btn-lg fw-bold px-4 py-2 ${
-                    isScrolledToBottom ? 'btn-success' : 'btn-secondary'
-                  }`}
+                  className='btn btn-lg fw-bold px-4 py-2'
                   style={{
                     borderRadius: '12px',
+                    backgroundColor: isScrolledToBottom
+                      ? 'var(--success-primary)'
+                      : 'var(--text-muted)',
+                    color: '#ffffff',
+                    border: 'none',
                     boxShadow: isScrolledToBottom
-                      ? '0 4px 15px rgba(40, 167, 69, 0.3)'
+                      ? '0 4px 15px var(--success-40)'
                       : 'none',
                     fontSize: '18px',
+                    opacity: isScrolledToBottom ? 1 : 0.6,
+                    cursor: isScrolledToBottom ? 'pointer' : 'not-allowed',
                   }}
                 >
                   <FaCheckCircle className='me-2' size={18} />
@@ -313,8 +359,17 @@ const DocumentModal = ({ isOpen, onClose, document, onRead, token }) => {
                   animate={{ opacity: 1, y: 0 }}
                   className='text-center mt-2'
                 >
-                  <small className='text-warning fw-bold'>
-                    <span className='badge bg-warning text-dark me-2 animate-pulse'>
+                  <small
+                    className='fw-bold'
+                    style={{ color: 'var(--warning-dark)' }}
+                  >
+                    <span
+                      className='badge me-2 animate-pulse'
+                      style={{
+                        backgroundColor: 'var(--warning-primary)',
+                        color: 'var(--text-primary)',
+                      }}
+                    >
                       ●
                     </span>
                     Please review the entire document to continue (wait 5

@@ -123,7 +123,11 @@ const RequirementUploadModal = ({
   return (
     <div
       className='modal show d-block'
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}
+      style={{
+        backgroundColor: 'var(--primary-50)',
+        zIndex: 1050,
+        backdropFilter: 'blur(4px)',
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget && !isUploading) {
           onClose();
@@ -133,60 +137,94 @@ const RequirementUploadModal = ({
       <div className='modal-dialog modal-lg modal-dialog-centered'>
         <div
           className='modal-content'
-          style={{ borderRadius: '20px', border: 'none', overflow: 'hidden' }}
+          style={{
+            borderRadius: '20px',
+            border: '1px solid var(--border-primary)',
+            overflow: 'hidden',
+            background: 'var(--surface-primary)',
+            boxShadow: '0 25px 50px var(--primary-30)',
+          }}
         >
           {/* Header */}
           <div
             className='modal-header'
             style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              borderBottom: 'none',
+              background: 'var(--gradient-header)',
+              color: 'var(--text-primary)',
+              borderBottom: '1px solid var(--border-primary)',
               padding: '24px',
             }}
           >
             <div className='d-flex align-items-center'>
-              <FaUpload className='me-3' size={24} />
+              <FaUpload
+                className='me-3'
+                size={24}
+                style={{ color: 'var(--warning-primary)' }}
+              />
               <div>
-                <h4 className='modal-title mb-1 fw-bold'>Upload Document</h4>
-                <p className='mb-0 opacity-90' style={{ fontSize: '0.9rem' }}>
+                <h4
+                  className='modal-title mb-1 fw-bold'
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Upload Document
+                </h4>
+                <p
+                  className='mb-0 opacity-90'
+                  style={{
+                    fontSize: '0.9rem',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
                   {requirement.document_type.name}
                 </p>
               </div>
             </div>
             <button
               type='button'
-              className='btn-close btn-close-white'
+              className='btn-close'
               onClick={onClose}
               disabled={isUploading}
-              style={{ fontSize: '1.2rem' }}
+              style={{
+                fontSize: '1.2rem',
+                filter: 'invert(1) brightness(0.8)',
+                opacity: 0.9,
+              }}
             ></button>
           </div>
 
           {/* Body */}
-          <div className='modal-body p-4'>
+          <div
+            className='modal-body p-4'
+            style={{ background: 'var(--surface-primary)' }}
+          >
             {/* Requirement Info */}
             <div
               className='mb-4 p-3 rounded-3'
               style={{
-                backgroundColor: '#f8fafc',
-                border: '1px solid #e2e8f0',
+                backgroundColor: 'var(--surface-secondary)',
+                border: '1px solid var(--border-muted)',
               }}
             >
               <div className='d-flex align-items-start'>
                 <FaFileAlt
                   className='me-3 mt-1'
                   size={20}
-                  style={{ color: '#667eea' }}
+                  style={{ color: 'var(--primary-blue)' }}
                 />
                 <div>
-                  <h6 className='fw-bold text-dark mb-1'>
+                  <h6
+                    className='fw-bold mb-1'
+                    style={{ color: 'var(--text-primary)' }}
+                  >
                     {requirement.document_type.name}
                   </h6>
                   {requirement.document_type.description && (
                     <p
-                      className='mb-2 text-muted'
-                      style={{ fontSize: '0.9rem' }}
+                      className='mb-2'
+                      style={{
+                        fontSize: '0.9rem',
+                        color: 'var(--text-muted)',
+                      }}
                     >
                       {requirement.document_type.description}
                     </p>
@@ -196,9 +234,10 @@ const RequirementUploadModal = ({
                       <span
                         className='badge rounded-pill px-2 py-1'
                         style={{
-                          backgroundColor: '#fef3c7',
-                          color: '#d97706',
+                          backgroundColor: 'var(--warning-20)',
+                          color: 'var(--warning-primary)',
                           fontSize: '0.75rem',
+                          border: '1px solid var(--warning-30)',
                         }}
                       >
                         Signature Required (
@@ -213,14 +252,14 @@ const RequirementUploadModal = ({
             {/* Drop Zone */}
             <div
               {...getRootProps()}
-              className={`dropzone rounded-3 p-4 text-center position-relative ${
-                isDragActive ? 'border-primary bg-light' : ''
-              }`}
+              className={`dropzone rounded-3 p-4 text-center position-relative`}
               style={{
                 border: isDragActive
-                  ? '2px dashed #667eea'
-                  : '2px dashed #cbd5e1',
-                backgroundColor: isDragActive ? '#f8fafc' : '#ffffff',
+                  ? '2px dashed var(--primary-blue)'
+                  : '2px dashed var(--border-muted)',
+                backgroundColor: isDragActive
+                  ? 'var(--primary-20)'
+                  : 'var(--surface-secondary)',
                 cursor: isUploading ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 minHeight: '120px',
@@ -244,16 +283,28 @@ const RequirementUploadModal = ({
               >
                 <TbClick
                   size={40}
-                  style={{ color: '#667eea', marginBottom: '12px' }}
+                  style={{
+                    color: 'var(--primary-blue)',
+                    marginBottom: '12px',
+                  }}
                 />
               </motion.div>
 
-              <p className='mb-2 fw-medium' style={{ color: '#374151' }}>
+              <p
+                className='mb-2 fw-medium'
+                style={{ color: 'var(--text-primary)' }}
+              >
                 {isDragActive
                   ? 'Drop the file here'
                   : 'Drag & drop a file here, or click to select'}
               </p>
-              <p className='mb-0 text-muted' style={{ fontSize: '0.8rem' }}>
+              <p
+                className='mb-0'
+                style={{
+                  fontSize: '0.8rem',
+                  color: 'var(--text-muted)',
+                }}
+              >
                 Accepted: PDF, DOC, DOCX, XLS, XLSX, Images
               </p>
             </div>
@@ -261,31 +312,41 @@ const RequirementUploadModal = ({
             {/* Accepted Files */}
             {acceptedFiles.length > 0 && (
               <div className='mt-3'>
-                <h6 className='fw-bold mb-2'>Selected File:</h6>
+                <h6
+                  className='fw-bold mb-2'
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Selected File:
+                </h6>
                 {acceptedFiles.map((file, index) => (
                   <div
                     key={index}
                     className='d-flex align-items-center justify-content-between p-3 rounded-3'
                     style={{
-                      backgroundColor: '#f0f9ff',
-                      border: '1px solid #bae6fd',
+                      backgroundColor: 'var(--primary-20)',
+                      border: '1px solid var(--primary-30)',
                     }}
                   >
                     <div className='d-flex align-items-center'>
                       <FaFileAlt
                         className='me-2'
-                        style={{ color: '#0891b2' }}
+                        style={{ color: 'var(--primary-blue)' }}
                       />
                       <div>
                         <div
                           className='fw-medium'
-                          style={{ fontSize: '0.9rem' }}
+                          style={{
+                            fontSize: '0.9rem',
+                            color: 'var(--text-primary)',
+                          }}
                         >
                           {file.name}
                         </div>
                         <div
-                          className='text-muted'
-                          style={{ fontSize: '0.8rem' }}
+                          style={{
+                            fontSize: '0.8rem',
+                            color: 'var(--text-muted)',
+                          }}
                         >
                           {(file.size / 1024 / 1024).toFixed(2)} MB
                         </div>
@@ -299,7 +360,7 @@ const RequirementUploadModal = ({
                           removeFile(file);
                         }}
                         style={{
-                          color: '#dc2626',
+                          color: 'var(--error-primary)',
                           border: 'none',
                           backgroundColor: 'transparent',
                         }}
@@ -315,27 +376,37 @@ const RequirementUploadModal = ({
             {/* Rejected Files */}
             {fileRejections.length > 0 && (
               <div className='mt-3'>
-                <h6 className='fw-bold mb-2 text-danger'>Rejected Files:</h6>
+                <h6
+                  className='fw-bold mb-2'
+                  style={{ color: 'var(--error-primary)' }}
+                >
+                  Rejected Files:
+                </h6>
                 {fileRejections.map(({ file, errors }, index) => (
                   <div
                     key={index}
                     className='p-3 rounded-3'
                     style={{
-                      backgroundColor: '#fef2f2',
-                      border: '1px solid #fecaca',
+                      backgroundColor: 'var(--error-20)',
+                      border: '1px solid var(--error-30)',
                     }}
                   >
                     <div
-                      className='fw-medium text-danger'
-                      style={{ fontSize: '0.9rem' }}
+                      className='fw-medium'
+                      style={{
+                        fontSize: '0.9rem',
+                        color: 'var(--error-primary)',
+                      }}
                     >
                       {file.name}
                     </div>
                     {errors.map((error, errorIndex) => (
                       <div
                         key={errorIndex}
-                        className='text-danger'
-                        style={{ fontSize: '0.8rem' }}
+                        style={{
+                          fontSize: '0.8rem',
+                          color: 'var(--error-primary)',
+                        }}
                       >
                         {error.message}
                       </div>
@@ -349,10 +420,19 @@ const RequirementUploadModal = ({
             {uploadStatus && (
               <div className='mt-3'>
                 <div
-                  className={`alert ${
-                    isError ? 'alert-danger' : 'alert-success'
-                  } mb-0`}
-                  style={{ borderRadius: '12px' }}
+                  className='alert mb-0'
+                  style={{
+                    borderRadius: '12px',
+                    backgroundColor: isError
+                      ? 'var(--error-20)'
+                      : 'var(--success-20)',
+                    border: `1px solid ${
+                      isError ? 'var(--error-30)' : 'var(--success-30)'
+                    }`,
+                    color: isError
+                      ? 'var(--error-primary)'
+                      : 'var(--success-primary)',
+                  }}
                 >
                   {uploadStatus}
                 </div>
@@ -363,17 +443,24 @@ const RequirementUploadModal = ({
           {/* Footer */}
           <div
             className='modal-footer'
-            style={{ borderTop: '1px solid #e2e8f0', padding: '20px 24px' }}
+            style={{
+              borderTop: '1px solid var(--border-muted)',
+              padding: '20px 24px',
+              background: 'var(--surface-primary)',
+            }}
           >
             <button
               type='button'
-              className='btn btn-secondary'
+              className='btn'
               onClick={onClose}
               disabled={isUploading}
               style={{
                 borderRadius: '12px',
                 padding: '12px 24px',
                 fontWeight: '600',
+                backgroundColor: 'var(--surface-secondary)',
+                border: '1px solid var(--border-muted)',
+                color: 'var(--text-secondary)',
               }}
             >
               Cancel
@@ -384,8 +471,14 @@ const RequirementUploadModal = ({
               onClick={uploadFilesHandler}
               disabled={acceptedFiles.length === 0 || isUploading}
               style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
+                background:
+                  acceptedFiles.length > 0 && !isUploading
+                    ? 'linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark))'
+                    : 'var(--surface-tertiary)',
+                color:
+                  acceptedFiles.length > 0 && !isUploading
+                    ? 'white'
+                    : 'var(--text-disabled)',
                 border: 'none',
                 borderRadius: '12px',
                 padding: '12px 24px',

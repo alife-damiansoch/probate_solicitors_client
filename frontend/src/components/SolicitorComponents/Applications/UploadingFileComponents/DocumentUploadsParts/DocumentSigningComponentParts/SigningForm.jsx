@@ -52,16 +52,29 @@ const SigningForm = ({
     <li
       key={`${file.name}-${file.lastModified || 'existing'}`}
       className='list-group-item d-flex justify-content-between align-items-center'
+      style={{
+        backgroundColor: 'var(--surface-secondary)',
+        border: '1px solid var(--border-muted)',
+        color: 'var(--text-primary)',
+      }}
     >
       <div>
-        <strong>{file.name}</strong>
-        <small className='text-muted d-block'>
+        <strong style={{ color: 'var(--text-primary)' }}>{file.name}</strong>
+        <small className='d-block' style={{ color: 'var(--text-muted)' }}>
           {file.size
             ? `${Math.round(file.size / 1024)} KB`
             : 'Existing document'}
         </small>
       </div>
-      <span className='badge bg-success rounded-pill'>Ready</span>
+      <span
+        className='badge rounded-pill'
+        style={{
+          backgroundColor: 'var(--success-primary)',
+          color: '#ffffff',
+        }}
+      >
+        Ready
+      </span>
     </li>
   ));
 
@@ -69,10 +82,10 @@ const SigningForm = ({
     <div className='card-body'>
       <div
         style={{
-          border: '1px solid #e2e8f0',
+          border: '1px solid var(--border-muted)',
           borderRadius: '16px',
           padding: '0',
-          background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+          background: 'var(--gradient-surface)',
           maxHeight: '80vh',
           overflow: 'auto',
         }}
@@ -83,25 +96,38 @@ const SigningForm = ({
             {/* Document Info for Sign Mode */}
             {mode === 'sign' && documentData && (
               <div
-                className='alert alert-info border-0'
+                className='alert border-0'
                 style={{
-                  background:
-                    'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
+                  background: 'var(--primary-20)',
                   borderRadius: '12px',
                   marginBottom: '15px',
                   padding: '0.75rem 1rem',
+                  border: '1px solid var(--primary-30)',
                 }}
               >
                 <div className='d-flex align-items-center'>
-                  <FaFileAlt className='text-primary me-3' size={20} />
+                  <FaFileAlt
+                    className='me-3'
+                    size={20}
+                    style={{ color: 'var(--primary-blue)' }}
+                  />
                   <div>
                     <h6
                       className='alert-heading mb-1'
-                      style={{ fontSize: '0.9rem' }}
+                      style={{
+                        fontSize: '0.9rem',
+                        color: 'var(--text-primary)',
+                      }}
                     >
                       Document Ready for Signing
                     </h6>
-                    <p className='mb-0' style={{ fontSize: '0.85rem' }}>
+                    <p
+                      className='mb-0'
+                      style={{
+                        fontSize: '0.85rem',
+                        color: 'var(--text-secondary)',
+                      }}
+                    >
                       <strong>{documentData.original_name}</strong> is loaded
                       and ready for your signature.
                     </p>
@@ -113,19 +139,33 @@ const SigningForm = ({
             {/* Documents to Sign */}
             <div className='mb-2'>
               <h6
-                className='fw-bold text-dark mb-2'
-                style={{ fontSize: '0.9rem' }}
+                className='fw-bold mb-2'
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--text-primary)',
+                }}
               >
                 Document{mode === 'upload' ? 's' : ''} to Sign
               </h6>
               {acceptedFiles.length > 0 ? (
-                <ul className='list-group list-group-flush'>
+                <ul
+                  className='list-group list-group-flush'
+                  style={{
+                    border: '1px solid var(--border-muted)',
+                    borderRadius: '8px',
+                  }}
+                >
                   {acceptedFileItems}
                 </ul>
               ) : (
                 <div
-                  className='alert alert-warning border-0 py-2'
-                  style={{ borderRadius: '12px' }}
+                  className='alert border-0 py-2'
+                  style={{
+                    borderRadius: '12px',
+                    background: 'var(--warning-20)',
+                    border: '1px solid var(--warning-30)',
+                    color: 'var(--warning-primary)',
+                  }}
                 >
                   <small>
                     {mode === 'sign' && fetchingDocument
@@ -136,13 +176,19 @@ const SigningForm = ({
               )}
             </div>
 
-            {/* Signature Pad */}
+            {/* Signature Pad - PRESERVE ORIGINAL FUNCTIONALITY */}
             <div className='signature-container mb-2'>
               <h6
-                className='fw-bold text-dark mb-2 text-center'
-                style={{ fontSize: '0.9rem' }}
+                className='fw-bold mb-2 text-center'
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--text-primary)',
+                }}
               >
-                Draw <span className='text-primary'>{getSignerLabel()}</span>{' '}
+                Draw{' '}
+                <span style={{ color: 'var(--primary-blue)' }}>
+                  {getSignerLabel()}
+                </span>{' '}
                 Signature
               </h6>
               <div className='text-center'>
@@ -175,8 +221,13 @@ const SigningForm = ({
                 </div>
                 <button
                   onClick={clearSignature}
-                  className='btn btn-outline-secondary btn-sm'
-                  style={{ borderRadius: '8px' }}
+                  className='btn btn-sm'
+                  style={{
+                    borderRadius: '8px',
+                    backgroundColor: 'var(--surface-secondary)',
+                    border: '1px solid var(--border-muted)',
+                    color: 'var(--text-secondary)',
+                  }}
                 >
                   <FaTimes className='me-1' size={12} />
                   Clear Signature
@@ -189,10 +240,15 @@ const SigningForm = ({
               <label
                 htmlFor='solicitorFullName'
                 className='form-label fw-bold'
-                style={{ fontSize: '0.9rem' }}
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--text-primary)',
+                }}
               >
-                <span className='text-primary'>{getSignerLabel()}</span> Full
-                Name
+                <span style={{ color: 'var(--primary-blue)' }}>
+                  {getSignerLabel()}
+                </span>{' '}
+                Full Name
               </label>
               <input
                 type='text'
@@ -204,8 +260,10 @@ const SigningForm = ({
                 required
                 style={{
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid var(--border-muted)',
                   padding: '0.5rem 0.75rem',
+                  backgroundColor: 'var(--surface-secondary)',
+                  color: 'var(--text-primary)',
                 }}
               />
             </div>
@@ -215,9 +273,9 @@ const SigningForm = ({
               <div
                 className='card border-0'
                 style={{
-                  background:
-                    'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                  background: 'var(--surface-secondary)',
                   borderRadius: '12px',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 <div className='card-body p-3'>
@@ -230,6 +288,7 @@ const SigningForm = ({
                       onChange={(e) => setCheckboxChecked(e.target.checked)}
                       style={{
                         transform: 'scale(1.2)',
+                        accentColor: 'var(--primary-blue)',
                       }}
                     />
                     <label
@@ -237,8 +296,11 @@ const SigningForm = ({
                       htmlFor='solicitorConfirmationCheckbox'
                     >
                       <div
-                        className='text-primary fw-bold'
-                        style={{ fontSize: '0.85rem' }}
+                        className='fw-bold'
+                        style={{
+                          fontSize: '0.85rem',
+                          color: 'var(--text-primary)',
+                        }}
                       >
                         {confirmationMessage}
                       </div>
@@ -251,11 +313,18 @@ const SigningForm = ({
             {/* Warning for Sign Mode */}
             {mode === 'sign' && (
               <div
-                className='alert alert-warning border-0 py-2 mb-2'
-                style={{ borderRadius: '12px' }}
+                className='alert border-0 py-2 mb-2'
+                style={{
+                  borderRadius: '12px',
+                  background: 'var(--warning-20)',
+                  border: '1px solid var(--warning-30)',
+                }}
               >
-                <small className='text-muted'>
-                  <FaExclamationTriangle className='me-2' />
+                <small style={{ color: 'var(--text-secondary)' }}>
+                  <FaExclamationTriangle
+                    className='me-2'
+                    style={{ color: 'var(--warning-primary)' }}
+                  />
                   You are signing an existing document. Please ensure all
                   details are correct before proceeding.
                 </small>
@@ -282,8 +351,8 @@ const SigningForm = ({
                     solicitorFullName &&
                     signatureProvided &&
                     !fetchingDocument
-                      ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-                      : '#e2e8f0',
+                      ? 'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))'
+                      : 'var(--surface-tertiary)',
                   color:
                     acceptedFiles.length >= 1 &&
                     checkboxChecked &&
@@ -291,7 +360,7 @@ const SigningForm = ({
                     signatureProvided &&
                     !fetchingDocument
                       ? 'white'
-                      : '#9ca3af',
+                      : 'var(--text-disabled)',
                   border: 'none',
                   borderRadius: '12px',
                   transition: 'all 0.3s ease',
@@ -301,7 +370,7 @@ const SigningForm = ({
                     solicitorFullName &&
                     signatureProvided &&
                     !fetchingDocument
-                      ? '0 4px 15px rgba(245, 158, 11, 0.3)'
+                      ? '0 4px 15px var(--warning-30)'
                       : 'none',
                 }}
               >
@@ -327,7 +396,10 @@ const SigningForm = ({
 
               {/* Debug info - remove in production */}
               {process.env.NODE_ENV === 'development' && (
-                <div className='mt-2 text-muted small'>
+                <div
+                  className='mt-2 small'
+                  style={{ color: 'var(--text-muted)' }}
+                >
                   Debug: Files: {acceptedFiles.length}, Checkbox:{' '}
                   {checkboxChecked ? 'Y' : 'N'}, Name:{' '}
                   {solicitorFullName ? 'Y' : 'N'}, Signature:{' '}

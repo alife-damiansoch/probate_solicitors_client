@@ -44,9 +44,9 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
 
   const getSignerIcon = (signer) => {
     return signer === 'applicant' ? (
-      <FaUser className='text-primary' size={12} />
+      <FaUser style={{ color: 'var(--primary-blue)' }} size={12} />
     ) : (
-      <FaUserTie className='text-secondary' size={12} />
+      <FaUserTie style={{ color: 'var(--text-secondary)' }} size={12} />
     );
   };
 
@@ -55,23 +55,20 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
       className='card border-0 h-100 position-relative'
       style={{
         borderRadius: '16px',
-        background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-        border: '1px solid #e2e8f0',
+        background: 'var(--gradient-surface)',
+        border: '1px solid var(--border-muted)',
         transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         overflow: 'hidden',
       }}
       onMouseOver={(e) => {
-        e.currentTarget.style.boxShadow =
-          '0 25px 50px -12px rgba(0, 0, 0, 0.15)';
+        e.currentTarget.style.boxShadow = '0 25px 50px -12px var(--primary-20)';
         e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-        e.currentTarget.style.background =
-          'linear-gradient(145deg, #ffffff 0%, #ffffff 100%)';
+        e.currentTarget.style.background = 'var(--surface-primary)';
       }}
       onMouseOut={(e) => {
         e.currentTarget.style.boxShadow = 'none';
         e.currentTarget.style.transform = 'translateY(0) scale(1)';
-        e.currentTarget.style.background =
-          'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)';
+        e.currentTarget.style.background = 'var(--gradient-surface)';
       }}
     >
       {/* Animated Border */}
@@ -83,10 +80,10 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
           right: 0,
           height: '3px',
           background: doc.is_signed
-            ? 'linear-gradient(90deg, #10b981, #059669)'
+            ? 'linear-gradient(90deg, var(--success-primary), var(--success-dark))'
             : doc.signature_required
-            ? 'linear-gradient(90deg, #f59e0b, #d97706)'
-            : 'linear-gradient(90deg, #6b7280, #4b5563)',
+            ? 'linear-gradient(90deg, var(--warning-primary), var(--warning-dark))'
+            : 'linear-gradient(90deg, var(--text-muted), var(--text-disabled))',
         }}
       ></div>
 
@@ -111,21 +108,21 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               width: '48px',
               height: '48px',
               background: doc.is_signed
-                ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)'
+                ? 'var(--success-20)'
                 : doc.signature_required
-                ? 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)'
-                : 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
+                ? 'var(--warning-20)'
+                : 'var(--primary-20)',
               color: doc.is_signed
-                ? '#16a34a'
+                ? 'var(--success-primary)'
                 : doc.signature_required
-                ? '#d97706'
-                : '#0891b2',
+                ? 'var(--warning-primary)'
+                : 'var(--primary-blue)',
               border: `2px solid ${
                 doc.is_signed
-                  ? '#bbf7d0'
+                  ? 'var(--success-30)'
                   : doc.signature_required
-                  ? '#fed7aa'
-                  : '#bae6fd'
+                  ? 'var(--warning-30)'
+                  : 'var(--primary-30)'
               }`,
             }}
           >
@@ -134,16 +131,19 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
           <div className='flex-grow-1'>
             <div className='d-flex align-items-center mb-1'>
               <h6
-                className='mb-0 fw-bold text-dark me-2'
-                style={{ fontSize: '0.9rem' }}
+                className='mb-0 fw-bold me-2'
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--text-primary)',
+                }}
               >
                 {getDocumentType(doc)}
               </h6>
               <span
                 className='badge'
                 style={{
-                  backgroundColor: '#f1f5f9',
-                  color: '#64748b',
+                  backgroundColor: 'var(--surface-secondary)',
+                  color: 'var(--text-muted)',
                   fontSize: '0.65rem',
                   fontWeight: '500',
                 }}
@@ -152,7 +152,7 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               </span>
             </div>
             <p
-              className='mb-0 text-muted'
+              className='mb-0'
               style={{
                 fontSize: '0.8rem',
                 lineHeight: '1.3',
@@ -160,6 +160,7 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
+                color: 'var(--text-muted)',
               }}
             >
               {doc.original_name}
@@ -174,17 +175,25 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               <div
                 className='p-2 rounded-3'
                 style={{
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  backgroundColor: 'var(--surface-secondary)',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 <div
-                  className='fw-bold text-dark'
-                  style={{ fontSize: '0.8rem' }}
+                  className='fw-bold'
+                  style={{
+                    fontSize: '0.8rem',
+                    color: 'var(--text-primary)',
+                  }}
                 >
                   App
                 </div>
-                <div className='text-muted' style={{ fontSize: '0.7rem' }}>
+                <div
+                  style={{
+                    fontSize: '0.7rem',
+                    color: 'var(--text-muted)',
+                  }}
+                >
                   #{doc.application}
                 </div>
               </div>
@@ -193,17 +202,25 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               <div
                 className='p-2 rounded-3'
                 style={{
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  backgroundColor: 'var(--surface-secondary)',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 <div
-                  className='fw-bold text-dark'
-                  style={{ fontSize: '0.8rem' }}
+                  className='fw-bold'
+                  style={{
+                    fontSize: '0.8rem',
+                    color: 'var(--text-primary)',
+                  }}
                 >
                   Status
                 </div>
-                <div className='text-muted' style={{ fontSize: '0.7rem' }}>
+                <div
+                  style={{
+                    fontSize: '0.7rem',
+                    color: 'var(--text-muted)',
+                  }}
+                >
                   {doc.is_signed ? 'Signed' : 'Unsigned'}
                 </div>
               </div>
@@ -212,17 +229,25 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               <div
                 className='p-2 rounded-3'
                 style={{
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  backgroundColor: 'var(--surface-secondary)',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 <div
-                  className='fw-bold text-dark'
-                  style={{ fontSize: '0.8rem' }}
+                  className='fw-bold'
+                  style={{
+                    fontSize: '0.8rem',
+                    color: 'var(--text-primary)',
+                  }}
                 >
                   Format
                 </div>
-                <div className='text-muted' style={{ fontSize: '0.7rem' }}>
+                <div
+                  style={{
+                    fontSize: '0.7rem',
+                    color: 'var(--text-muted)',
+                  }}
+                >
                   {doc.document
                     ? doc.document.split('.').pop()?.toUpperCase() || 'FILE'
                     : 'FILE'}
@@ -238,9 +263,11 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
             className='mb-3 p-3 rounded-3'
             style={{
               background: doc.is_signed
-                ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)'
-                : 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)',
-              border: `1px solid ${doc.is_signed ? '#bbf7d0' : '#fed7aa'}`,
+                ? 'var(--success-20)'
+                : 'var(--warning-20)',
+              border: `1px solid ${
+                doc.is_signed ? 'var(--success-30)' : 'var(--warning-30)'
+              }`,
             }}
           >
             <div className='d-flex align-items-center justify-content-between'>
@@ -250,7 +277,9 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
                   <div
                     className='fw-bold'
                     style={{
-                      color: doc.is_signed ? '#16a34a' : '#d97706',
+                      color: doc.is_signed
+                        ? 'var(--success-primary)'
+                        : 'var(--warning-primary)',
                       fontSize: '0.8rem',
                     }}
                   >
@@ -259,7 +288,12 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
                       : 'Solicitor'}{' '}
                     Signature
                   </div>
-                  <div className='text-muted' style={{ fontSize: '0.7rem' }}>
+                  <div
+                    style={{
+                      fontSize: '0.7rem',
+                      color: 'var(--text-muted)',
+                    }}
+                  >
                     {doc.is_signed
                       ? 'Document has been signed'
                       : 'Signature required to proceed'}
@@ -267,7 +301,10 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
                 </div>
               </div>
               {!doc.is_signed && (
-                <FaExclamationTriangle size={16} style={{ color: '#d97706' }} />
+                <FaExclamationTriangle
+                  size={16}
+                  style={{ color: 'var(--warning-primary)' }}
+                />
               )}
             </div>
           </div>
@@ -279,9 +316,9 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
             className='btn flex-fill'
             onClick={() => downloadFile(doc.document)}
             style={{
-              backgroundColor: '#f1f5f9',
-              border: '1px solid #e2e8f0',
-              color: '#475569',
+              backgroundColor: 'var(--surface-secondary)',
+              border: '1px solid var(--border-muted)',
+              color: 'var(--text-secondary)',
               borderRadius: '12px',
               fontSize: '0.8rem',
               fontWeight: '600',
@@ -289,11 +326,11 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               transition: 'all 0.2s ease',
             }}
             onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#e2e8f0';
+              e.target.style.backgroundColor = 'var(--surface-tertiary)';
               e.target.style.transform = 'translateY(-1px)';
             }}
             onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#f1f5f9';
+              e.target.style.backgroundColor = 'var(--surface-secondary)';
               e.target.style.transform = 'translateY(0)';
             }}
           >
@@ -306,7 +343,8 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               className='btn flex-fill'
               onClick={() => onSignDocument(doc)}
               style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                background:
+                  'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))',
                 border: 'none',
                 color: 'white',
                 borderRadius: '12px',
@@ -317,12 +355,12 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
               }}
               onMouseOver={(e) => {
                 e.target.style.background =
-                  'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+                  'linear-gradient(135deg, var(--warning-dark), var(--warning-primary))';
                 e.target.style.transform = 'translateY(-1px)';
               }}
               onMouseOut={(e) => {
                 e.target.style.background =
-                  'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                  'linear-gradient(135deg, var(--warning-primary), var(--warning-dark))';
                 e.target.style.transform = 'translateY(0)';
               }}
             >

@@ -1,9 +1,8 @@
-/* ApplicationDetails.css - Updated with XL Breakpoint */
+/* ApplicationDetails.css - Minimal, Theme-Driven Version */
 
 /* =============================================================================
-   LOADING SHIMMER ANIMATION
+   LOADING SHIMMER ANIMATION (used in LoadingComponent)
    ============================================================================= */
-
 .modern-loading-container::before {
   content: '';
   position: absolute;
@@ -11,31 +10,28 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.1), transparent 50%), 
-              radial-gradient(circle at 70% 50%, rgba(139, 92, 246, 0.1), transparent 50%);
+  background:
+    radial-gradient(circle at 30% 50%, var(--primary-10), transparent 50%),
+    radial-gradient(circle at 70% 50%, var(--primary-blue-light), transparent 50%);
   animation: shimmer 8s infinite;
 }
 
 /* =============================================================================
    STATUS ICON ANIMATIONS
    ============================================================================= */
-
 .icon-rejected {
   animation: criticalPulse 2s infinite;
 }
-
 .icon-approved {
   animation: successGlow 3s infinite;
 }
-
 .icon-locked {
   animation: warningPulse 2s infinite;
 }
 
 /* =============================================================================
-   RESPONSIVE SIDEBAR STYLING - XL BREAKPOINT (1200px)
+   RESPONSIVE SIDEBAR & CONTENT AREA
    ============================================================================= */
-
 /* Desktop sidebar - only visible on XL screens (1200px+) */
 @media (min-width: 1200px) {
   .modern-stages-sidebar {
@@ -44,17 +40,10 @@
     left: 0;
     height: 100vh;
     z-index: 1040;
-    transform: translateX(0);
-    transition: none;
     min-width: 300px;
     max-width: 100%;
   }
-  
-  .main-content-area {
-    margin-left: 0;
-  }
 }
-
 /* Mobile/Tablet sidebar - hidden by default on screens below 1200px */
 @media (max-width: 1199.98px) {
   .modern-stages-sidebar {
@@ -69,175 +58,55 @@
     min-width: 280px;
     max-width: 90vw;
   }
-  
   .modern-stages-sidebar.show {
     transform: translateX(0);
   }
-  
-  .main-content-area {
-    margin-left: 0;
-  }
 }
 
 /* =============================================================================
-   STAGES TOGGLE BUTTON - XL BREAKPOINT
+   SCROLLBAR CUSTOMIZATION (for sidebar/timeline)
    ============================================================================= */
-
-.stages-toggle-btn {
-  position: fixed;
-  top: 50%;
-  left: 16px;
-  transform: translateY(-50%);
-  z-index: 1050;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.stages-toggle-btn:hover {
-  transform: translateY(-50%) scale(1.05);
-}
-
-.stages-toggle-btn:active {
-  transform: translateY(-50%) scale(0.98);
-}
-
-/* Hide toggle button on XL screens (1200px+) */
-@media (min-width: 1200px) {
-  .stages-toggle-btn {
-    display: none !important;
-  }
-}
-
-/* =============================================================================
-   OVERLAY STYLES - XL BREAKPOINT
-   ============================================================================= */
-
-.stages-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1035;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.stages-overlay.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Only show overlay on mobile/tablet (below 1200px) */
-@media (min-width: 1200px) {
-  .stages-overlay {
-    display: none !important;
-  }
-}
-
-/* =============================================================================
-   TOOLTIP ANIMATIONS - FLEXIBLE WIDTH
-   ============================================================================= */
-
-.tooltip-animation {
-  animation: tooltipFadeIn 0.4s ease-out;
-  max-width: 300px;
-  width: auto;
-}
-
-.tooltip-arrow {
-  position: absolute;
-  left: -6px;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-  width: 12px;
-  height: 12px;
-  border-right: none;
-  border-bottom: none;
-}
-
-/* =============================================================================
-   CONTENT AREA RESPONSIVE ADJUSTMENTS - XL BREAKPOINT
-   ============================================================================= */
-
-.modern-application-container {
-  min-height: 100vh;
-  background-color: #1F2049;
-  position: relative;
-  width: 100%;
-}
-
-.application-content {
-  transition: margin-left 0.3s ease;
-  width: 100%;
-}
-
-/* Desktop content positioning - XL screens */
-@media (min-width: 1200px) {
-  .application-content {
-    margin-left: 0;
-    width: 100%;
-  }
-}
-
-/* Mobile/Tablet content positioning - below XL */
-@media (max-width: 1199.98px) {
-  .application-content {
-    margin-left: 0;
-    padding-left: 8px;
-    padding-right: 8px;
-    width: 100%;
-  }
-}
-
-/* =============================================================================
-   SCROLLBAR CUSTOMIZATION
-   ============================================================================= */
-
-/* Custom scrollbar for stages sidebar */
-.stages-sidebar-content::-webkit-scrollbar {
+.stages-sidebar-content::-webkit-scrollbar,
+.stages-container::-webkit-scrollbar,
+.stages-glass-container::-webkit-scrollbar {
   width: 6px;
 }
-
-.stages-sidebar-content::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.3);
+.stages-sidebar-content::-webkit-scrollbar-track,
+.stages-container::-webkit-scrollbar-track,
+.stages-glass-container::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
   border-radius: 3px;
 }
-
-.stages-sidebar-content::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.4);
+.stages-sidebar-content::-webkit-scrollbar-thumb,
+.stages-container::-webkit-scrollbar-thumb,
+.stages-glass-container::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
-
-.stages-sidebar-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.6);
+.stages-sidebar-content::-webkit-scrollbar-thumb:hover,
+.stages-container::-webkit-scrollbar-thumb:hover,
+.stages-glass-container::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Firefox scrollbar */
-.stages-sidebar-content {
+.stages-sidebar-content,
+.stages-container,
+.stages-glass-container {
   scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.4) rgba(15, 23, 42, 0.3);
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 /* =============================================================================
-   MOBILE OPTIMIZATIONS - UPDATED FOR XL BREAKPOINT
+   MOBILE OPTIMIZATIONS
    ============================================================================= */
-
-/* Improve touch scrolling on mobile/tablet */
 @media (max-width: 1199.98px) {
-  .stages-sidebar-content {
+  .stages-sidebar-content,
+  .stages-container,
+  .stages-glass-container {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
   }
-  
-  /* Prevent body scroll when sidebar is open */
   body.sidebar-open {
     overflow: hidden;
     position: fixed;
@@ -246,134 +115,26 @@
 }
 
 /* =============================================================================
-   KEYFRAME ANIMATIONS
+   ANIMATIONS & UTILITIES
    ============================================================================= */
-
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-
 @keyframes criticalPulse {
-  0%, 100% { 
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4), 0 0 30px rgba(239, 68, 68, 0.2);
-  }
-  50% { 
-    box-shadow: 0 6px 25px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.4);
-  }
+  0%, 100% { box-shadow: 0 4px 15px var(--error-40), 0 0 30px var(--error-20);}
+  50% { box-shadow: 0 6px 25px var(--error-primary), 0 0 40px var(--error-40);}
 }
-
 @keyframes successGlow {
-  0%, 100% { 
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4), 0 0 30px rgba(16, 185, 129, 0.2);
-  }
-  50% { 
-    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.4);
-  }
+  0%, 100% { box-shadow: 0 4px 15px var(--success-40), 0 0 30px var(--success-20);}
+  50% { box-shadow: 0 6px 25px var(--success-primary), 0 0 40px var(--success-40);}
 }
-
 @keyframes warningPulse {
-  0%, 100% { 
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4), 0 0 30px rgba(245, 158, 11, 0.2);
-  }
-  50% { 
-    box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6), 0 0 40px rgba(245, 158, 11, 0.4);
-  }
+  0%, 100% { box-shadow: 0 4px 15px var(--warning-40), 0 0 30px var(--warning-20);}
+  50% { box-shadow: 0 6px 25px var(--warning-primary), 0 0 40px var(--warning-40);}
 }
 
-@keyframes tooltipFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-}
-
-@keyframes buttonPulse {
-  0%, 100% {
-    transform: translateY(-50%) scale(1.05);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.4);
-  }
-  50% {
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6);
-  }
-}
-
-/* =============================================================================
-   UTILITIES - FLEXIBLE WIDTH SUPPORT
-   ============================================================================= */
-
-.bg-primary {
-  background-color: #1F2049 !important;
-}
-
-/* Ensure proper z-index layering */
-.z-1 { z-index: 1; }
-.z-2 { z-index: 2; }
-.z-3 { z-index: 3; }
-
-/* Custom margin utilities */
-.ms-auto { margin-left: auto; }
-.me-auto { margin-right: auto; }
-
-/* Custom padding utilities for fine-tuning */
-.p-2-5 { padding: 0.625rem; }
-.p-3-5 { padding: 0.875rem; }
-.px-2-5 { padding-left: 0.625rem; padding-right: 0.625rem; }
-.py-2-5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
-
-/* =============================================================================
-   PERFORMANCE OPTIMIZATIONS
-   ============================================================================= */
-
-/* GPU acceleration for animations */
-.stages-toggle-btn,
-.modern-stages-sidebar,
-.stages-overlay {
-  will-change: transform;
-  transform: translateZ(0);
-}
-
-/* Optimize repaints */
-.stages-sidebar-content {
-  contain: layout style paint;
-}
-
-/* =============================================================================
-   FLEXIBLE WIDTH UTILITIES
-   ============================================================================= */
-
-/* Ensure components can flex */
+/* Utility classes for layout */
 .w-100 { width: 100% !important; }
-.w-auto { width: auto !important; }
-.mw-100 { max-width: 100% !important; }
 .min-w-0 { min-width: 0 !important; }
-
-/* Flexbox utilities for width management */
 .flex-1 { flex: 1 1 0% !important; }
-.flex-auto { flex: 1 1 auto !important; }
-.flex-none { flex: none !important; }
-
-/* =============================================================================
-   RESPONSIVE BREAKPOINT SUMMARY
-   ============================================================================= */
-
-/*
-  BREAKPOINT CHANGES MADE:
-  
-  OLD: lg (992px) - Desktop sidebar visible, mobile button hidden
-  NEW: xl (1200px) - Desktop sidebar visible, mobile button hidden
-  
-  This means:
-  - Mobile phones: Mobile sidebar (< 1200px)
-  - Tablets: Mobile sidebar (< 1200px) 
-  - Small laptops: Mobile sidebar (< 1200px)
-  - Large desktops: Desktop sidebar (≥ 1200px)
-  
-  All devices below 1200px will now show the mobile toggle button
-  and use the slide-out sidebar instead of the fixed sidebar.
-*/
