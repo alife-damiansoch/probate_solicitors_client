@@ -60,15 +60,6 @@ const EstateManagerModal = ({
   refreshEstates,
   currency_sign = '€',
 }) => {
-  if (!show) return null;
-
-  const token = Cookies.get('auth_token')?.access;
-
-  const grouped = ESTATE_DISPLAY_ORDER.reduce((acc, key) => {
-    acc[key] = estates?.filter((e) => e.category === key) || [];
-    return acc;
-  }, {});
-
   const [simpleValues, setSimpleValues] = useState(() => {
     const initial = {};
     SIMPLE_TYPES.forEach((type) => {
@@ -86,6 +77,13 @@ const EstateManagerModal = ({
     estateType: null,
     initialData: null,
   });
+
+  const token = Cookies.get('auth_token')?.access;
+
+  const grouped = ESTATE_DISPLAY_ORDER.reduce((acc, key) => {
+    acc[key] = estates?.filter((e) => e.category === key) || [];
+    return acc;
+  }, {});
 
   useEffect(() => {
     const newValues = {};
@@ -215,56 +213,99 @@ const EstateManagerModal = ({
     }
   };
 
+  if (!show) return null;
+
   const renderSectionHeader = (title, description, isLiability = false) => (
-    <div
-      style={{
-        padding: '12px 18px',
-        marginBottom: '18px',
-        background: isLiability
-          ? 'var(--warning-10, #fff7e6)'
-          : 'var(--primary-10, #e0e7ff)',
-        border: `1.5px solid ${
-          isLiability
-            ? 'var(--warning-primary, #f59e0b)'
-            : 'var(--primary-blue, #3b82f6)'
-        }`,
-        borderRadius: '9px',
-        borderLeft: `4px solid ${
-          isLiability
-            ? 'var(--warning-primary, #f59e0b)'
-            : 'var(--primary-blue, #3b82f6)'
-        }`,
-        boxShadow: '0 1.5px 8px var(--primary-10, rgba(59,130,246,0.09))',
-        backdropFilter: 'blur(6px)',
-      }}
-    >
-      <h3
+    <div className='mb-4'>
+      <div
         style={{
-          margin: 0,
-          fontSize: '15.7px',
-          fontWeight: '700',
-          color: isLiability
-            ? 'var(--warning-primary, #92400e)'
-            : 'var(--primary-blue, #1e40af)',
-          marginBottom: description ? '4px' : 0,
-          letterSpacing: '0.01em',
+          background: `
+            linear-gradient(135deg, 
+              ${
+                isLiability ? 'var(--warning-primary)' : 'var(--primary-blue)'
+              } 0%, 
+              ${
+                isLiability ? 'var(--warning-dark)' : 'var(--primary-blue-dark)'
+              } 80%),
+            linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
+          `,
+          backgroundBlendMode: 'overlay',
+          border: `1px solid ${
+            isLiability ? 'var(--warning-30)' : 'var(--primary-30)'
+          }`,
+          borderRadius: '16px',
+          borderLeft: `4px solid ${
+            isLiability ? 'var(--warning-primary)' : 'var(--primary-blue)'
+          }`,
+          boxShadow: `
+            0 16px 50px rgba(0, 0, 0, 0.08),
+            0 8px 32px ${
+              isLiability ? 'var(--warning-20)' : 'var(--primary-20)'
+            },
+            0 4px 16px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2)
+          `,
+          backdropFilter: 'blur(25px)',
+          WebkitBackdropFilter: 'blur(25px)',
+          position: 'relative',
+          overflow: 'hidden',
+          animation: 'sectionSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
+        className='p-3 p-md-4'
       >
-        {title}
-      </h3>
-      {description && (
-        <p
+        {/* Background pattern */}
+        <div
           style={{
-            margin: 0,
-            fontSize: '12.5px',
-            color: 'var(--text-secondary, #6b7280)',
-            lineHeight: '1.47',
-            fontWeight: 500,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+              radial-gradient(circle at 30% 30%, 
+                ${isLiability ? 'var(--warning-10)' : 'var(--primary-10)'}, 
+                transparent 60%),
+              radial-gradient(circle at 70% 70%, 
+                ${isLiability ? 'var(--warning-05)' : 'var(--primary-05)'}, 
+                transparent 60%)
+            `,
+            animation: 'float 8s ease-in-out infinite',
           }}
+        />
+
+        <h3
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            margin: 0,
+            fontWeight: '800',
+            color: '#ffffff',
+            marginBottom: description ? '8px' : 0,
+            letterSpacing: '0.5px',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+            textTransform: 'uppercase',
+          }}
+          className='fs-6 fs-md-5'
         >
-          {description}
-        </p>
-      )}
+          {title}
+        </h3>
+        {description && (
+          <p
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              margin: 0,
+              color: 'rgba(255, 255, 255, 0.9)',
+              lineHeight: '1.5',
+              fontWeight: '500',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+            }}
+            className='small'
+          >
+            {description}
+          </p>
+        )}
+      </div>
     </div>
   );
 
@@ -274,106 +315,263 @@ const EstateManagerModal = ({
     const hasExistingValue = grouped[type].length > 0;
 
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          flexWrap: 'wrap',
-        }}
-      >
-        <div
-          style={{ display: 'flex', alignItems: 'center', minWidth: '200px' }}
-        >
-          <label
-            htmlFor={`value-${type}`}
-            style={{
-              fontSize: '13.5px',
-              fontWeight: '600',
-              color: 'var(--text-primary, #374151)',
-              marginRight: '9px',
-              minWidth: '53px',
-            }}
-          >
-            {isLiability ? 'Amount:' : 'Value:'}
-          </label>
-          <input
-            id={`value-${type}`}
-            type='number'
-            value={simpleValues[type]}
-            onChange={(e) => handleSimpleChange(e, type)}
-            placeholder={isLiability ? 'Enter amount owed' : 'Enter value'}
-            disabled={isSaving}
-            style={{
-              width: '140px',
-              padding: '6.5px 12px',
-              fontSize: '13.4px',
-              border: `1.5px solid ${
-                hasPendingChanges
-                  ? 'var(--warning-primary, #f59e0b)'
-                  : 'var(--border-primary, #cbd5e1)'
-              }`,
-              borderRadius: '7px',
-              background: isSaving
-                ? 'var(--surface-disabled, #f3f4f6)'
-                : 'var(--surface-primary, #ffffff)',
-              outline: 'none',
-              transition: 'border-color 0.13s',
-              fontWeight: 500,
-              color: 'var(--text-primary, #22223b)',
-              boxShadow: hasPendingChanges
-                ? '0 0 0 1.5px var(--warning-primary, #f59e0b)'
-                : undefined,
-            }}
-          />
+      <div className='row g-3 align-items-center'>
+        <div className='col-12 col-lg-6'>
+          <div className='row g-2 align-items-center'>
+            <div className='col-auto'>
+              <label
+                htmlFor={`value-${type}`}
+                style={{
+                  fontWeight: '700',
+                  color: 'var(--text-primary)',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                  whiteSpace: 'nowrap',
+                }}
+                className='form-label mb-0 small'
+              >
+                {isLiability ? 'Amount:' : 'Value:'}
+              </label>
+            </div>
+            <div className='col'>
+              <div style={{ position: 'relative' }}>
+                <input
+                  id={`value-${type}`}
+                  type='number'
+                  value={simpleValues[type]}
+                  onChange={(e) => handleSimpleChange(e, type)}
+                  placeholder={
+                    isLiability ? 'Enter amount owed' : 'Enter value'
+                  }
+                  disabled={isSaving}
+                  style={{
+                    padding: '8px 12px',
+                    border: `2px solid ${
+                      hasPendingChanges
+                        ? 'var(--warning-primary)'
+                        : 'var(--border-secondary)'
+                    }`,
+                    borderRadius: '12px',
+                    background: isSaving
+                      ? 'var(--surface-disabled)'
+                      : `
+                        linear-gradient(135deg, var(--surface-primary) 0%, var(--gradient-surface) 100%),
+                        linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
+                      `,
+                    backgroundBlendMode: 'overlay',
+                    outline: 'none',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    fontWeight: '600',
+                    color: 'var(--text-primary)',
+                    boxShadow: hasPendingChanges
+                      ? `
+                        0 8px 24px var(--warning-20),
+                        0 0 0 3px var(--warning-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                      `
+                      : `
+                        0 4px 12px rgba(0, 0, 0, 0.05),
+                        0 2px 6px var(--primary-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                      `,
+                    backdropFilter: 'blur(15px)',
+                    WebkitBackdropFilter: 'blur(15px)',
+                  }}
+                  className='form-control'
+                  onFocus={(e) => {
+                    e.target.style.transform = 'translateY(-2px) scale(1.02)';
+                    e.target.style.boxShadow = `
+                      0 12px 32px var(--primary-30),
+                      0 0 0 3px var(--primary-10),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.3)
+                    `;
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = hasPendingChanges
+                      ? `
+                        0 8px 24px var(--warning-20),
+                        0 0 0 3px var(--warning-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                      `
+                      : `
+                        0 4px 12px rgba(0, 0, 0, 0.05),
+                        0 2px 6px var(--primary-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                      `;
+                  }}
+                />
+                {/* Shimmer effect for pending changes */}
+                {hasPendingChanges && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background:
+                        'linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent)',
+                      animation: 'shimmer 2s infinite',
+                      borderRadius: '12px',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '6px' }}>
-          {hasPendingChanges && (
-            <button
-              onClick={() => handleSimpleSave(type)}
-              disabled={isSaving}
-              style={{
-                padding: '5px 14px',
-                fontSize: '12.6px',
-                fontWeight: '700',
-                color: 'var(--white, #fff)',
-                background: isSaving
-                  ? 'var(--border-primary, #9ca3af)'
-                  : 'var(--success-primary, #10b981)',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: isSaving ? 'not-allowed' : 'pointer',
-                boxShadow: '0 1px 6px 0 var(--success-10, #d1fae5)',
-                transition: 'background 0.15s',
-                letterSpacing: '.01em',
-              }}
-            >
-              {isSaving ? 'Saving...' : 'Save'}
-            </button>
-          )}
-          {(hasExistingValue || simpleValues[type]) && (
-            <button
-              onClick={() => handleSimpleDelete(type)}
-              disabled={isSaving}
-              style={{
-                padding: '5px 14px',
-                fontSize: '12.6px',
-                fontWeight: '700',
-                color: 'var(--white, #fff)',
-                background: isSaving
-                  ? 'var(--border-primary, #9ca3af)'
-                  : 'var(--error-primary, #dc2626)',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: isSaving ? 'not-allowed' : 'pointer',
-                boxShadow: '0 1px 6px 0 var(--error-10, #fee2e2)',
-                transition: 'background 0.15s',
-                letterSpacing: '.01em',
-              }}
-            >
-              {isSaving ? 'Deleting...' : 'Delete'}
-            </button>
-          )}
+
+        <div className='col-12 col-lg-6'>
+          <div className='d-flex gap-2 flex-wrap'>
+            {hasPendingChanges && (
+              <button
+                onClick={() => handleSimpleSave(type)}
+                disabled={isSaving}
+                style={{
+                  padding: '8px 16px',
+                  fontWeight: '700',
+                  color: '#ffffff',
+                  background: isSaving
+                    ? 'var(--border-muted)'
+                    : `
+                      linear-gradient(135deg, var(--success-primary) 0%, var(--success-dark) 100%)
+                    `,
+                  border: `1px solid ${
+                    isSaving ? 'var(--border-muted)' : 'var(--success-30)'
+                  }`,
+                  borderRadius: '10px',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  boxShadow: `
+                    0 8px 24px var(--success-20),
+                    0 4px 12px var(--success-10),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                  `,
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  letterSpacing: '0.5px',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                  textTransform: 'uppercase',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+                className='btn btn-sm flex-fill flex-lg-grow-0'
+                onMouseEnter={(e) => {
+                  if (!isSaving) {
+                    e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                    e.target.style.boxShadow = `
+                      0 12px 32px var(--success-30),
+                      0 6px 16px var(--success-20),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.3)
+                    `;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSaving) {
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = `
+                      0 8px 24px var(--success-20),
+                      0 4px 12px var(--success-10),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                    `;
+                  }
+                }}
+              >
+                {/* Button shimmer effect */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: isSaving ? '-100%' : '0%',
+                    width: '100%',
+                    height: '100%',
+                    background:
+                      'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                    animation: isSaving ? 'shimmer 1.5s infinite' : 'none',
+                  }}
+                />
+                <span
+                  style={{ position: 'relative', zIndex: 1 }}
+                  className='small'
+                >
+                  {isSaving ? 'Saving...' : 'Save'}
+                </span>
+              </button>
+            )}
+
+            {(hasExistingValue || simpleValues[type]) && (
+              <button
+                onClick={() => handleSimpleDelete(type)}
+                disabled={isSaving}
+                style={{
+                  padding: '8px 16px',
+                  fontWeight: '700',
+                  color: '#ffffff',
+                  background: isSaving
+                    ? 'var(--border-muted)'
+                    : `
+                      linear-gradient(135deg, var(--error-primary) 0%, var(--error-dark) 100%)
+                    `,
+                  border: `1px solid ${
+                    isSaving ? 'var(--border-muted)' : 'var(--error-30)'
+                  }`,
+                  borderRadius: '10px',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  boxShadow: `
+                    0 8px 24px var(--error-20),
+                    0 4px 12px var(--error-10),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                  `,
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  letterSpacing: '0.5px',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+                  textTransform: 'uppercase',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+                className='btn btn-sm flex-fill flex-lg-grow-0'
+                onMouseEnter={(e) => {
+                  if (!isSaving) {
+                    e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                    e.target.style.boxShadow = `
+                      0 12px 32px var(--error-30),
+                      0 6px 16px var(--error-20),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.3)
+                    `;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSaving) {
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = `
+                      0 8px 24px var(--error-20),
+                      0 4px 12px var(--error-10),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                    `;
+                  }
+                }}
+              >
+                {/* Button shimmer effect */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: isSaving ? '-100%' : '0%',
+                    width: '100%',
+                    height: '100%',
+                    background:
+                      'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                    animation: isSaving ? 'shimmer 1.5s infinite' : 'none',
+                  }}
+                />
+                <span
+                  style={{ position: 'relative', zIndex: 1 }}
+                  className='small'
+                >
+                  {isSaving ? 'Deleting...' : 'Delete'}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -388,261 +586,470 @@ const EstateManagerModal = ({
         left: 0,
         width: '100vw',
         height: '100vh',
-        background: 'rgba(40, 46, 85, 0.60)',
-        backdropFilter: 'blur(4.5px) saturate(112%)',
+        background: 'rgba(0, 0, 0, 0.8)',
+        backdropFilter: 'blur(15px)',
+        WebkitBackdropFilter: 'blur(15px)',
         zIndex: 1050,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '26px',
-        animation: 'modalFadeIn 0.4s',
+        animation: 'fadeIn 0.4s ease-out',
       }}
+      className='d-flex justify-content-center align-items-center p-3 p-md-4'
     >
-      <style>{`
-        @keyframes modalFadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-      `}</style>
       <div
         style={{
           background: `
-            linear-gradient(135deg, var(--surface-primary, #fff) 94%, var(--primary-10, #e0e7ff) 100%),
-            radial-gradient(circle at 15% 15%, var(--primary-blue, #667eea)10 0%, transparent 54%),
-            radial-gradient(circle at 92% 85%, var(--primary-purple, #a78bfa)10 0%, transparent 55%)
+            linear-gradient(135deg, var(--gradient-surface) 0%, var(--surface-primary) 100%),
+            linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
           `,
+          backgroundBlendMode: 'overlay',
           width: '100%',
-          maxWidth: '950px',
+          maxWidth: '1000px',
           height: '90vh',
           borderRadius: '20px',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
           boxShadow: `
-            0 24px 48px -8px var(--primary-20, rgba(59,130,246,0.11)),
-            0 2px 12px 0 var(--primary-10, rgba(59,130,246,0.08))
+            0 32px 64px rgba(0, 0, 0, 0.25),
+            0 16px 40px var(--primary-20),
+            0 8px 24px rgba(0, 0, 0, 0.12),
+            inset 0 1px 0 var(--white-10)
           `,
-          border: '1.5px solid var(--border-primary, #e5e7eb)',
+          border: '1px solid var(--border-secondary)',
           position: 'relative',
+          animation: 'modalSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+          backdropFilter: 'blur(25px)',
+          WebkitBackdropFilter: 'blur(25px)',
         }}
       >
+        {/* Background decorative elements */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+              radial-gradient(circle at 15% 15%, var(--primary-blue)10 0%, transparent 50%),
+              radial-gradient(circle at 85% 85%, var(--primary-purple)10 0%, transparent 50%),
+              radial-gradient(circle at 50% 50%, var(--gradient-accent)05 0%, transparent 70%)
+            `,
+            opacity: 0.6,
+            animation: 'backgroundFloat 12s ease-in-out infinite',
+          }}
+        />
+
         {/* Header */}
         <div
           style={{
-            padding: '19px 26px',
-            borderBottom: '1.5px solid var(--border-primary, #e5e7eb)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            background: 'var(--surface-header, #f9fafb)',
-            boxShadow: '0 3px 18px var(--primary-10, rgba(59,130,246,0.04))',
+            borderBottom: '1px solid var(--border-secondary)',
+            background: `
+              linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%)
+            `,
+            boxShadow: `
+              0 8px 32px var(--primary-20),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2)
+            `,
+            position: 'relative',
+            zIndex: 1,
           }}
+          className='d-flex justify-content-between align-items-center p-3 p-md-4'
         >
           <h2
             style={{
               margin: 0,
-              fontSize: '20px',
               fontWeight: '800',
-              color: 'var(--primary-blue, #1e40af)',
-              letterSpacing: '0.01em',
+              color: '#ffffff',
+              letterSpacing: '0.5px',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              textTransform: 'uppercase',
             }}
+            className='fs-5 fs-md-4'
           >
             Estate Assets and Liabilities
           </h2>
           <button
             onClick={onClose}
             style={{
-              padding: '7px',
-              background: 'rgba(59,130,246,0.07)',
-              border: 'none',
-              borderRadius: '7px',
+              padding: '8px 12px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
               cursor: 'pointer',
-              color: 'var(--primary-blue, #64748b)',
-              fontSize: '22px',
+              color: '#ffffff',
               lineHeight: 1,
-              fontWeight: 700,
-              boxShadow: '0 1px 6px rgba(59,130,246,0.07)',
-              transition: 'background .18s',
+              fontWeight: '700',
+              boxShadow: `
+                0 4px 16px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3)
+              `,
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
             }}
-            onMouseOver={(e) => {
-              e.target.style.background = 'rgba(59,130,246,0.18)';
+            className='btn'
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.1) rotate(90deg)';
+              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.target.style.boxShadow = `
+                0 8px 24px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4)
+              `;
             }}
-            onMouseOut={(e) => {
-              e.target.style.background = 'rgba(59,130,246,0.07)';
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1) rotate(0deg)';
+              e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.target.style.boxShadow = `
+                0 4px 16px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3)
+              `;
             }}
             aria-label='Close modal'
           >
-            ✕
+            <span className='fs-5'>✕</span>
           </button>
         </div>
+
         {/* Body */}
         <div
           style={{
             flex: 1,
-            padding: '24px 24px 20px 24px',
             overflowY: 'auto',
-            background: 'var(--surface-main, #f9fafb)',
-            boxShadow:
-              'inset 0 2px 14px var(--primary-10, rgba(59,130,246,0.06))',
+            background: 'var(--gradient-surface)',
+            position: 'relative',
+            zIndex: 1,
           }}
+          className='p-3 p-md-4'
         >
           {/* Assets Section */}
           {renderSectionHeader(
-            'ESTATE ASSETS',
+            'Estate Assets',
             'Property, investments, debts owed to the deceased, and other valuable items comprising the gross estate'
           )}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '14px',
-              marginBottom: '34px',
-            }}
-          >
-            {ESTATE_ASSETS.map((type) => {
+
+          <div className='row g-3 g-md-4 mb-5'>
+            {ESTATE_ASSETS.map((type, index) => {
               const label = estateLabels[type];
               const entries = grouped[type];
               const isSimple = SIMPLE_TYPES.includes(type);
 
               return (
-                <div
-                  key={type}
-                  style={{
-                    background: 'var(--surface-card, #fff)',
-                    border: '1.5px solid var(--primary-20, #e5e7eb)',
-                    borderRadius: '9px',
-                    padding: '15px 20px',
-                    marginBottom: '2px',
-                    position: 'relative',
-                    boxShadow:
-                      '0 2.5px 9px var(--primary-10, rgba(59,130,246,0.06))',
-                    transition: 'border-color 0.13s',
-                  }}
-                >
+                <div key={type} className='col-12'>
                   <div
                     style={{
-                      fontSize: '15px',
-                      fontWeight: '700',
-                      color: 'var(--primary-blue, #3b82f6)',
-                      marginBottom: isSimple ? '7px' : '13px',
-                      letterSpacing: '.01em',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '7px',
+                      background: `
+                        var(--gradient-surface)
+                      `,
+                      border: '1px solid var(--border-muted)',
+                      borderRadius: '16px',
+                      position: 'relative',
+                      boxShadow: `
+                        0 8px 32px rgba(0, 0, 0, 0.08),
+                        0 4px 16px var(--primary-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                      `,
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      backdropFilter: 'blur(15px)',
+                      WebkitBackdropFilter: 'blur(15px)',
+                      animation: `cardSlideIn 0.6s ease-out ${
+                        index * 0.1
+                      }s both`,
+                      overflow: 'hidden',
+                    }}
+                    className='p-3 p-md-4'
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform =
+                        'translateY(-4px) scale(1.01)';
+                      e.currentTarget.style.boxShadow = `
+                        0 16px 48px rgba(0, 0, 0, 0.12),
+                        0 8px 24px var(--primary-20),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                      `;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform =
+                        'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = `
+                        0 8px 32px rgba(0, 0, 0, 0.08),
+                        0 4px 16px var(--primary-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                      `;
                     }}
                   >
-                    {label}
-                  </div>
-                  {isSimple ? (
-                    renderSimpleEstateInput(type, false)
-                  ) : (
-                    <EstateGroupManager
-                      typeKey={type}
-                      label={label}
-                      estates={entries}
-                      onAdd={openForm}
-                      onEdit={openForm}
-                      onDelete={handleDelete}
-                      currency_sign={currency_sign}
+                    {/* Card shimmer effect */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background:
+                          'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent)',
+                        animation: 'cardShimmer 3s infinite',
+                      }}
                     />
-                  )}
+
+                    <div
+                      style={{
+                        fontWeight: '800',
+                        color: 'var(--primary-blue)',
+                        letterSpacing: '0.5px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                        position: 'relative',
+                        zIndex: 1,
+                      }}
+                      className={`fs-6 fs-md-5 mb-${isSimple ? '3' : '4'}`}
+                    >
+                      {/* Icon based on type */}
+                      <div
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          background: `
+                            linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%)
+                          `,
+                          boxShadow: '0 2px 8px var(--primary-20)',
+                          animation: 'iconPulse 2s ease-in-out infinite',
+                          flexShrink: 0,
+                        }}
+                      />
+                      {label}
+                    </div>
+
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                      {isSimple ? (
+                        renderSimpleEstateInput(type, false)
+                      ) : (
+                        <EstateGroupManager
+                          typeKey={type}
+                          label={label}
+                          estates={entries}
+                          onAdd={openForm}
+                          onEdit={openForm}
+                          onDelete={handleDelete}
+                          currency_sign={currency_sign}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
               );
             })}
           </div>
+
           {/* Liabilities Section */}
           {renderSectionHeader(
-            'ESTATE LIABILITIES',
+            'Estate Liabilities',
             'Debts, funeral expenses, and other obligations payable by the estate',
             true
           )}
-          <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '13px' }}
-          >
-            {ESTATE_LIABILITIES.map((type) => {
+
+          <div className='row g-3 g-md-4'>
+            {ESTATE_LIABILITIES.map((type, index) => {
               const label = estateLabels[type];
               const entries = grouped[type];
               const isSimple = SIMPLE_TYPES.includes(type);
 
               return (
-                <div
-                  key={type}
-                  style={{
-                    background: 'var(--surface-card, #fff)',
-                    border: '1.5px solid var(--warning-primary, #f59e0b)',
-                    borderRadius: '9px',
-                    padding: '15px 20px',
-                    boxShadow:
-                      '0 2.5px 9px var(--warning-10, rgba(245,158,11,0.06))',
-                    marginBottom: '2px',
-                  }}
-                >
+                <div key={type} className='col-12'>
                   <div
                     style={{
-                      fontSize: '15px',
-                      fontWeight: '700',
-                      color: 'var(--warning-primary, #d97706)',
-                      marginBottom: isSimple ? '7px' : '13px',
-                      letterSpacing: '.01em',
+                      background: `
+                        linear-gradient(135deg, var(--surface-primary) 0%, var(--warning-10) 100%)
+                      `,
+                      border: '1px solid var(--warning-30)',
+                      borderRadius: '16px',
+                      boxShadow: `
+                        0 8px 32px var(--warning-20),
+                        0 4px 16px var(--warning-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                      `,
+                      position: 'relative',
+                      backdropFilter: 'blur(15px)',
+                      WebkitBackdropFilter: 'blur(15px)',
+                      animation: `cardSlideIn 0.6s ease-out ${
+                        (ESTATE_ASSETS.length + index) * 0.1
+                      }s both`,
+                      overflow: 'hidden',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
+                    className='p-3 p-md-4'
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform =
+                        'translateY(-4px) scale(1.01)';
+                      e.currentTarget.style.boxShadow = `
+                        0 16px 48px var(--warning-30),
+                        0 8px 24px var(--warning-20),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2)
+                      `;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform =
+                        'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = `
+                        0 8px 32px var(--warning-20),
+                        0 4px 16px var(--warning-10),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+                      `;
                     }}
                   >
-                    {label}
-                  </div>
-                  {isSimple ? (
-                    renderSimpleEstateInput(type, true)
-                  ) : (
-                    <EstateGroupManager
-                      typeKey={type}
-                      label={label}
-                      estates={entries}
-                      onAdd={openForm}
-                      onEdit={openForm}
-                      onDelete={handleDelete}
-                      currency_sign={currency_sign}
+                    {/* Card shimmer effect */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background:
+                          'linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent)',
+                        animation: 'cardShimmer 3s infinite 1s',
+                      }}
                     />
-                  )}
+
+                    <div
+                      style={{
+                        fontWeight: '800',
+                        color: 'var(--warning-primary)',
+                        letterSpacing: '0.5px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                        position: 'relative',
+                        zIndex: 1,
+                      }}
+                      className={`fs-6 fs-md-5 mb-${isSimple ? '3' : '4'}`}
+                    >
+                      {/* Warning icon */}
+                      <div
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          background: `
+                            linear-gradient(135deg, var(--warning-primary) 0%, var(--warning-dark) 100%)
+                          `,
+                          boxShadow: '0 2px 8px var(--warning-20)',
+                          animation: 'warningPulse 1.5s ease-in-out infinite',
+                          flexShrink: 0,
+                        }}
+                      />
+                      {label}
+                    </div>
+
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                      {isSimple ? (
+                        renderSimpleEstateInput(type, true)
+                      ) : (
+                        <EstateGroupManager
+                          typeKey={type}
+                          label={label}
+                          estates={entries}
+                          onAdd={openForm}
+                          onEdit={openForm}
+                          onDelete={handleDelete}
+                          currency_sign={currency_sign}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
+
         {/* Footer */}
         <div
           style={{
-            padding: '17px 26px',
-            borderTop: '1.5px solid var(--border-primary, #e5e7eb)',
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            background: 'var(--surface-header, #f9fafb)',
-            boxShadow: '0 -2px 8px var(--primary-10, rgba(59,130,246,0.07))',
+            borderTop: '1px solid var(--border-secondary)',
+            background:
+              'linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%)',
+            backgroundBlendMode: 'overlay',
+            boxShadow: `
+              0 -8px 32px rgba(0, 0, 0, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1)
+            `,
+            position: 'relative',
+            zIndex: 1,
           }}
+          className='d-flex justify-content-end align-items-center p-3 p-md-4'
         >
           <button
             onClick={onClose}
             style={{
-              padding: '9px 19px',
-              fontSize: '15.1px',
-              fontWeight: '800',
-              color: 'var(--primary-blue, #2563eb)',
-              background: 'var(--surface-card, #fff)',
-              border: '1.5px solid var(--primary-blue, #c7d2fe)',
-              borderRadius: '7px',
+              padding: '10px 20px',
+              fontWeight: '700',
+              color: 'var(--primary-blue)',
+              background: 'var(--gradient-surface)',
+              border: '2px solid var(--primary-blue)',
+              borderRadius: '12px',
               cursor: 'pointer',
-              transition: 'background .15s',
-              boxShadow: '0 1px 7px 0 var(--primary-10, rgba(59,130,246,0.05))',
-              letterSpacing: '.01em',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: `
+                0 8px 24px var(--primary-10),
+                0 4px 12px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2)
+              `,
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+              backdropFilter: 'blur(15px)',
+              WebkitBackdropFilter: 'blur(15px)',
+              position: 'relative',
+              overflow: 'hidden',
             }}
-            onMouseOver={(e) => {
-              e.target.style.background = 'var(--primary-10, #e0e7ff)';
+            className='btn'
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px) scale(1.05)';
+              e.target.style.background = `
+                linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%)
+              `;
+              e.target.style.color = '#ffffff';
+              e.target.style.boxShadow = `
+                0 12px 32px var(--primary-30),
+                0 6px 16px var(--primary-20),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3)
+              `;
             }}
-            onMouseOut={(e) => {
-              e.target.style.background = 'var(--surface-card, #fff)';
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.background = 'var(--gradient-surface)';
+              e.target.style.color = 'var(--primary-blue)';
+              e.target.style.boxShadow = `
+                0 8px 24px var(--primary-10),
+                0 4px 12px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2)
+              `;
             }}
           >
-            Close
+            {/* Button shimmer effect */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: '-100%',
+                width: '100%',
+                height: '100%',
+                background:
+                  'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent)',
+                animation: 'shimmer 2s infinite',
+              }}
+            />
+            <span
+              style={{ position: 'relative', zIndex: 1 }}
+              className='small fw-bold'
+            >
+              Close
+            </span>
           </button>
         </div>
+
         <EstateFormModal
           show={formState.show}
           onClose={closeForm}
@@ -652,10 +1059,124 @@ const EstateManagerModal = ({
           currency_sign={currency_sign}
         />
       </div>
+
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes fadeIn {
+          from { 
+            opacity: 0; 
+          }
+          to { 
+            opacity: 1; 
+          }
+        }
+
+        @keyframes modalSlideIn {
+          from { 
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes sectionSlideIn {
+          from { 
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes cardSlideIn {
+          from { 
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes inputSlideIn {
+          from { 
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes float {
+          0%, 100% { 
+            transform: translateY(0px) rotate(0deg); 
+          }
+          50% { 
+            transform: translateY(-8px) rotate(2deg); 
+          }
+        }
+
+        @keyframes backgroundFloat {
+          0%, 100% { 
+            transform: translateY(0px) scale(1); 
+          }
+          50% { 
+            transform: translateY(-10px) scale(1.02); 
+          }
+        }
+
+        @keyframes shimmer {
+          0% { 
+            left: -100%; 
+          }
+          100% { 
+            left: 100%; 
+          }
+        }
+
+        @keyframes cardShimmer {
+          0% { 
+            left: -100%; 
+          }
+          50%, 100% { 
+            left: 100%; 
+          }
+        }
+
+        @keyframes iconPulse {
+          0%, 100% {
+            transform: scale(1);
+            boxShadow: 0 2px 8px var(--primary-20);
+          }
+          50% {
+            transform: scale(1.2);
+            boxShadow: 0 4px 16px var(--primary-30);
+          }
+        }
+
+        @keyframes warningPulse {
+          0%, 100% {
+            transform: scale(1);
+            boxShadow: 0 2px 8px var(--warning-20);
+          }
+          50% {
+            transform: scale(1.2);
+            boxShadow: 0 4px 16px var(--warning-30);
+          }
+        }
+      `}</style>
     </div>
   );
 
-  // Portal: Glassmorphic overlay
+  // Portal: Advanced glassmorphic overlay
   return createPortal(modalContent, document.body);
 };
 
