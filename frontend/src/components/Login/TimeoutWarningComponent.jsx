@@ -1,5 +1,3 @@
-
-
 const TimeoutWarning = ({ remainingTime, stayLoggedIn }) => {
   return (
     <div className='timeout-warning-overlay'>
