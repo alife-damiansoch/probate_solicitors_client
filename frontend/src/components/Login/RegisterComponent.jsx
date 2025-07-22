@@ -280,7 +280,7 @@ const RegisterComponent = () => {
   if (!showForm) {
     return (
       <motion.div
-        className='py-4'
+        className='pb-4'
         style={containerStyle}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
