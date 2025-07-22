@@ -455,7 +455,6 @@ const SolicitorPart = ({
                           }}
                         />
                       )}
-
                       <div
                         className='input-group-text border-0 d-flex align-items-center justify-content-center'
                         style={{
@@ -468,6 +467,7 @@ const SolicitorPart = ({
                           style={{ color: 'var(--text-muted)' }}
                         ></i>
                       </div>
+
                       <select
                         className='form-select border-0 fw-medium'
                         style={{
@@ -478,13 +478,22 @@ const SolicitorPart = ({
                           color: !assignedSolicitor
                             ? 'var(--error-primary)'
                             : 'var(--text-primary)',
+                          // Add these properties to fix dark theme dropdown
+                          colorScheme: 'dark', // This helps with system dark mode
                         }}
                         onChange={(e) =>
                           updateSelectedSolicitor(e.target.value)
                         }
                         value={assignedSolicitor ? assignedSolicitor.id : ''}
                       >
-                        <option value='' disabled>
+                        <option
+                          value=''
+                          disabled
+                          style={{
+                            backgroundColor: 'var(--surface-primary)',
+                            color: 'var(--text-muted)',
+                          }}
+                        >
                           {assignedSolicitor
                             ? `${assignedSolicitor.title} ${assignedSolicitor.first_name} ${assignedSolicitor.last_name}`
                             : 'Select assigned solicitor'}
@@ -496,10 +505,12 @@ const SolicitorPart = ({
                             style={{
                               backgroundColor:
                                 solicitor.id === solicitor_id
-                                  ? 'var(--primary-10)'
-                                  : 'transparent',
+                                  ? 'var(--primary-20)'
+                                  : 'var(--surface-primary)',
+                              color: 'var(--text-primary)',
                               fontWeight:
                                 solicitor.id === solicitor_id ? '600' : '400',
+                              padding: '0.5rem',
                             }}
                           >
                             {solicitor.title} {solicitor.first_name}{' '}
@@ -677,6 +688,46 @@ const SolicitorPart = ({
         @keyframes selectionGlow {
           0% { opacity: 0.3; }
           100% { opacity: 0.6; }
+        }
+        
+        select option {
+          background-color: var(--surface-primary) !important;
+          color: var(--text-primary) !important;
+          padding: 0.5rem !important;
+        }
+
+        select option:hover {
+          background-color: var(--primary-20) !important;
+          color: var(--text-primary) !important;
+        }
+
+        select option:checked {
+          background-color: var(--primary-blue) !important;
+          color: white !important;
+        }
+
+        /* For webkit browsers */
+        select::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        select::-webkit-scrollbar-track {
+          background: var(--surface-secondary);
+        }
+
+        select::-webkit-scrollbar-thumb {
+          background: var(--primary-blue);
+          border-radius: 4px;
+        }
+
+        /* Dark theme specific fixes */
+        [data-theme="dark"] select {
+          color-scheme: dark;
+        }
+
+        [data-theme="dark"] select option {
+          background: var(--surface-primary) !important;
+          color: var(--text-primary) !important;
         }
       `}</style>
     </div>
