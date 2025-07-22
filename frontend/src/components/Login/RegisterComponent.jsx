@@ -46,9 +46,10 @@ const RegisterComponent = () => {
 
   const country = Cookies.get('country_solicitors');
   const postcode_placeholders = JSON.parse(
-    Cookies.get('postcode_placeholders')
+    Cookies.get('postcode_placeholders') || '["Postcode", "Format", "Example"]'
   );
-  const phone_nr_placeholder = Cookies.get('phone_nr_placeholder');
+  const phone_nr_placeholder =
+    Cookies.get('phone_nr_placeholder') || '+353 XX XXX XXXX';
   const navigate = useNavigate();
 
   const [showForm, setShowForm] = useState(true);
@@ -70,26 +71,33 @@ const RegisterComponent = () => {
         setShowForm(false);
         return response.data;
       } else {
+        console.log(response.data);
         setErrors(response.data);
       }
     } catch (error) {
+      console.error('Error registering user:', error);
       setErrors(error.response?.data || { general: ['An error occurred'] });
       throw error;
     }
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     setIsRegistering(true);
     setErrors(null);
-    e.preventDefault();
+
+    // Password confirmation validation
     if (formData.password !== formData.confirmPassword) {
       setErrors({ confirmPassword: ['Passwords do not match'] });
       setIsRegistering(false);
       return;
     }
+
     try {
-      await registerUser(formData);
+      const response = await registerUser(formData);
+      console.log('Registration successful:', response);
     } catch (error) {
+      console.error('Registration error:', error.response?.data);
       setErrors(error.response?.data || { general: ['An error occurred'] });
       window.scrollTo(0, document.body.scrollHeight);
       setIsRegistering(false);
@@ -132,16 +140,16 @@ const RegisterComponent = () => {
   };
 
   const backButtonStyle = {
-    background: 'var(--surface-primary)',
-    border: '2px solid var(--border-secondary)',
+    background: 'var(--surface-primary, #ffffff)',
+    border: '2px solid var(--border-secondary, #e2e8f0)',
     borderRadius: '16px',
-    color: 'var(--text-muted)',
+    color: 'var(--text-muted, #64748b)',
     fontWeight: '600',
     fontSize: '1rem',
     boxShadow: `
-      0 4px 20px var(--primary-10),
+      0 4px 20px var(--primary-10, rgba(59, 130, 246, 0.1)),
       0 2px 8px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 var(--white-10)
+      inset 0 1px 0 var(--white-10, rgba(255, 255, 255, 0.1))
     `,
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     backdropFilter: 'blur(20px)',
@@ -150,23 +158,24 @@ const RegisterComponent = () => {
 
   const cardStyle = {
     borderRadius: '24px',
-    background: 'var(--gradient-surface)',
+    background:
+      'var(--gradient-surface, linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)))',
     boxShadow: `
       0 20px 60px rgba(0, 0, 0, 0.15),
-      0 8px 32px var(--primary-10),
+      0 8px 32px var(--primary-10, rgba(59, 130, 246, 0.1)),
       0 4px 16px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 var(--white-10)
+      inset 0 1px 0 var(--white-10, rgba(255, 255, 255, 0.1))
     `,
     backdropFilter: 'blur(30px)',
     WebkitBackdropFilter: 'blur(30px)',
     overflow: 'hidden',
-    border: '1px solid var(--border-secondary)',
+    border: '1px solid var(--border-secondary, #e2e8f0)',
     transition: 'all 0.3s ease',
   };
 
   const headerStyle = {
     background: `
-      linear-gradient(135deg, var(--success-primary) 0%, var(--primary-blue) 80%),
+      linear-gradient(135deg, var(--success-primary, #10b981) 0%, var(--primary-blue, #3b82f6) 80%),
       linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
     `,
     backgroundBlendMode: 'overlay',
@@ -175,7 +184,7 @@ const RegisterComponent = () => {
     borderTopRightRadius: '24px',
     color: '#ffffff',
     boxShadow: `
-      0 8px 32px var(--success-20),
+      0 8px 32px var(--success-20, rgba(16, 185, 129, 0.2)),
       inset 0 1px 0 rgba(255, 255, 255, 0.2)
     `,
     position: 'relative',
@@ -201,7 +210,9 @@ const RegisterComponent = () => {
   const inputStyle = (fieldName) => ({
     borderRadius: '14px',
     border: `2px solid ${
-      focusedField === fieldName ? 'var(--primary-blue)' : 'var(--border-muted)'
+      focusedField === fieldName
+        ? 'var(--primary-blue, #3b82f6)'
+        : 'var(--border-muted, #d1d5db)'
     }`,
     fontSize: '1.05rem',
     padding: '14px 16px',
@@ -209,23 +220,23 @@ const RegisterComponent = () => {
     boxShadow:
       focusedField === fieldName
         ? `
-          0 0 0 4px var(--primary-20),
-          0 4px 20px var(--primary-10),
-          inset 0 1px 0 var(--white-10)
+          0 0 0 4px var(--primary-20, rgba(59, 130, 246, 0.2)),
+          0 4px 20px var(--primary-10, rgba(59, 130, 246, 0.1)),
+          inset 0 1px 0 var(--white-10, rgba(255, 255, 255, 0.1))
         `
         : `
           0 2px 12px rgba(0, 0, 0, 0.05),
-          inset 0 1px 0 var(--white-05)
+          inset 0 1px 0 var(--white-05, rgba(255, 255, 255, 0.05))
         `,
-    background: 'var(--surface-secondary)',
-    color: 'var(--text-primary)',
+    background: 'var(--surface-secondary, #f8fafc)',
+    color: 'var(--text-primary, #1e293b)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
   });
 
   const submitButtonStyle = {
     background: `
-      linear-gradient(135deg, var(--success-primary) 0%, var(--primary-blue) 100%),
+      linear-gradient(135deg, var(--success-primary, #10b981) 0%, var(--primary-blue, #3b82f6) 100%),
       linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
     `,
     backgroundBlendMode: 'overlay',
@@ -236,8 +247,8 @@ const RegisterComponent = () => {
     fontWeight: '600',
     padding: '16px 24px',
     boxShadow: `
-      0 8px 32px var(--success-30),
-      0 4px 16px var(--success-20),
+      0 8px 32px var(--success-30, rgba(16, 185, 129, 0.3)),
+      0 4px 16px var(--success-20, rgba(16, 185, 129, 0.2)),
       inset 0 1px 0 rgba(255, 255, 255, 0.2)
     `,
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -247,9 +258,9 @@ const RegisterComponent = () => {
   };
 
   const errorStyle = {
-    background: 'var(--error-20)',
-    color: 'var(--error-primary)',
-    border: '1px solid var(--error-30)',
+    background: 'var(--error-20, #fef2f2)',
+    color: 'var(--error-primary, #dc2626)',
+    border: '1px solid var(--error-30, #fecaca)',
     borderRadius: '12px',
     fontSize: '0.95rem',
     padding: '12px 16px',
@@ -258,17 +269,18 @@ const RegisterComponent = () => {
   };
 
   const sectionHeaderStyle = {
-    color: 'var(--text-primary)',
+    color: 'var(--text-primary, #1e293b)',
     fontSize: '1.1rem',
     marginBottom: '1rem',
     paddingBottom: '0.5rem',
-    borderBottom: '2px solid var(--border-subtle)',
+    borderBottom: '2px solid var(--border-subtle, #f1f5f9)',
   };
 
+  // Success screen
   if (!showForm) {
     return (
       <motion.div
-        className=' py-4'
+        className='py-4'
         style={containerStyle}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -279,10 +291,7 @@ const RegisterComponent = () => {
             <div className='col-12 col-md-9 col-lg-7 col-xl-6'>
               <motion.div
                 className='card border-0'
-                style={{
-                  ...cardStyle,
-                  background: 'var(--gradient-surface)',
-                }}
+                style={cardStyle}
                 initial={{ y: 50, opacity: 0, scale: 0.95 }}
                 animate={{ y: 0, opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
@@ -290,13 +299,7 @@ const RegisterComponent = () => {
                 {/* Success Header */}
                 <div
                   className='card-header border-0 py-4 text-center position-relative'
-                  style={{
-                    ...headerStyle,
-                    background: `
-                      linear-gradient(135deg, var(--success-primary) 0%, var(--primary-blue) 100%),
-                      linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
-                    `,
-                  }}
+                  style={headerStyle}
                 >
                   <motion.div
                     className='rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center'
@@ -321,7 +324,7 @@ const RegisterComponent = () => {
                   <div className='text-center mb-4'>
                     <h5
                       className='fw-bold mb-3'
-                      style={{ color: 'var(--text-primary)' }}
+                      style={{ color: 'var(--text-primary, #1e293b)' }}
                     >
                       What's Next?
                     </h5>
@@ -342,7 +345,7 @@ const RegisterComponent = () => {
                             style={{
                               width: 32,
                               height: 32,
-                              background: 'var(--primary-blue)',
+                              background: 'var(--primary-blue, #3b82f6)',
                               color: 'white',
                               fontSize: 15,
                               fontWeight: 700,
@@ -355,11 +358,17 @@ const RegisterComponent = () => {
                               <>
                                 <div
                                   className='mb-1 fw-medium'
-                                  style={{ color: 'var(--text-primary)' }}
+                                  style={{
+                                    color: 'var(--text-primary, #1e293b)',
+                                  }}
                                 >
                                   Check Your Email
                                 </div>
-                                <small style={{ color: 'var(--text-muted)' }}>
+                                <small
+                                  style={{
+                                    color: 'var(--text-muted, #64748b)',
+                                  }}
+                                >
                                   We've sent an activation link to your email
                                   address.
                                 </small>
@@ -369,11 +378,17 @@ const RegisterComponent = () => {
                               <>
                                 <div
                                   className='mb-1 fw-medium'
-                                  style={{ color: 'var(--text-primary)' }}
+                                  style={{
+                                    color: 'var(--text-primary, #1e293b)',
+                                  }}
                                 >
                                   Click the Activation Link
                                 </div>
-                                <small style={{ color: 'var(--text-muted)' }}>
+                                <small
+                                  style={{
+                                    color: 'var(--text-muted, #64748b)',
+                                  }}
+                                >
                                   Click the link in the email to activate your
                                   account.
                                 </small>
@@ -383,11 +398,17 @@ const RegisterComponent = () => {
                               <>
                                 <div
                                   className='mb-1 fw-medium'
-                                  style={{ color: 'var(--text-primary)' }}
+                                  style={{
+                                    color: 'var(--text-primary, #1e293b)',
+                                  }}
                                 >
                                   Start Using Your Account
                                 </div>
-                                <small style={{ color: 'var(--text-muted)' }}>
+                                <small
+                                  style={{
+                                    color: 'var(--text-muted, #64748b)',
+                                  }}
+                                >
                                   Once activated, you can sign in and start
                                   managing your applications.
                                 </small>
@@ -403,8 +424,8 @@ const RegisterComponent = () => {
                   <motion.div
                     className='p-3 rounded mb-4'
                     style={{
-                      background: 'var(--warning-20)',
-                      border: '1.5px solid var(--warning-30)',
+                      background: 'var(--warning-20, #fef3c7)',
+                      border: '1.5px solid var(--warning-30, #fbbf24)',
                       borderRadius: '12px',
                     }}
                     initial={{ opacity: 0, y: 20 }}
@@ -414,17 +435,19 @@ const RegisterComponent = () => {
                     <div className='d-flex align-items-center mb-2'>
                       <FaCheckCircle
                         className='me-2'
-                        style={{ color: 'var(--warning-primary)' }}
+                        style={{ color: 'var(--warning-primary, #f59e0b)' }}
                         size={16}
                       />
-                      <strong style={{ color: 'var(--warning-primary)' }}>
+                      <strong
+                        style={{ color: 'var(--warning-primary, #f59e0b)' }}
+                      >
                         Important Notice
                       </strong>
                     </div>
                     <ul
                       className='mb-0'
                       style={{
-                        color: 'var(--warning-primary)',
+                        color: 'var(--warning-primary, #f59e0b)',
                         fontSize: '0.97rem',
                       }}
                     >
@@ -473,9 +496,9 @@ const RegisterComponent = () => {
             whileHover={{
               scale: 1.02,
               boxShadow: `
-                0 6px 25px var(--primary-15),
+                0 6px 25px var(--primary-15, rgba(59, 130, 246, 0.15)),
                 0 4px 12px rgba(0, 0, 0, 0.15),
-                inset 0 1px 0 var(--white-15)
+                inset 0 1px 0 var(--white-15, rgba(255, 255, 255, 0.15))
               `,
             }}
             whileTap={{ scale: 0.98 }}
@@ -504,9 +527,9 @@ const RegisterComponent = () => {
                 y: -5,
                 boxShadow: `
                   0 25px 80px rgba(0, 0, 0, 0.2),
-                  0 12px 40px var(--success-15),
+                  0 12px 40px var(--success-15, rgba(16, 185, 129, 0.15)),
                   0 6px 20px rgba(0, 0, 0, 0.15),
-                  inset 0 1px 0 var(--white-15)
+                  inset 0 1px 0 var(--white-15, rgba(255, 255, 255, 0.15))
                 `,
               }}
             >
@@ -524,8 +547,8 @@ const RegisterComponent = () => {
                     right: 0,
                     bottom: 0,
                     background: `
-                      radial-gradient(circle at 20% 20%, var(--success-20), transparent 50%),
-                      radial-gradient(circle at 80% 80%, var(--primary-15), transparent 50%)
+                      radial-gradient(circle at 20% 20%, var(--success-20, rgba(16, 185, 129, 0.2)), transparent 50%),
+                      radial-gradient(circle at 80% 80%, var(--primary-15, rgba(59, 130, 246, 0.15)), transparent 50%)
                     `,
                     animation: 'float 6s ease-in-out infinite',
                   }}
@@ -598,7 +621,7 @@ const RegisterComponent = () => {
                       >
                         <FaBuilding
                           className='me-2'
-                          style={{ color: 'var(--success-primary)' }}
+                          style={{ color: 'var(--success-primary, #10b981)' }}
                           size={16}
                         />
                         Account & Firm Information
@@ -614,13 +637,13 @@ const RegisterComponent = () => {
                         <label
                           className='form-label fw-semibold mb-2'
                           style={{
-                            color: 'var(--text-secondary)',
+                            color: 'var(--text-secondary, #475569)',
                             fontSize: '0.95rem',
                           }}
                         >
                           <FaEnvelope
                             className='me-2'
-                            style={{ color: 'var(--success-primary)' }}
+                            style={{ color: 'var(--success-primary, #10b981)' }}
                             size={14}
                           />
                           Firm Email Address *
@@ -639,7 +662,7 @@ const RegisterComponent = () => {
                         />
                         <small
                           style={{
-                            color: 'var(--text-muted)',
+                            color: 'var(--text-muted, #64748b)',
                             fontSize: '0.85rem',
                           }}
                         >
@@ -658,13 +681,13 @@ const RegisterComponent = () => {
                         <label
                           className='form-label fw-semibold mb-2'
                           style={{
-                            color: 'var(--text-secondary)',
+                            color: 'var(--text-secondary, #475569)',
                             fontSize: '0.95rem',
                           }}
                         >
                           <FaBuilding
                             className='me-2'
-                            style={{ color: 'var(--success-primary)' }}
+                            style={{ color: 'var(--success-primary, #10b981)' }}
                             size={14}
                           />
                           Law Firm Name *
@@ -693,13 +716,13 @@ const RegisterComponent = () => {
                         <label
                           className='form-label fw-semibold mb-2'
                           style={{
-                            color: 'var(--text-secondary)',
+                            color: 'var(--text-secondary, #475569)',
                             fontSize: '0.95rem',
                           }}
                         >
                           <FaLock
                             className='me-2'
-                            style={{ color: 'var(--success-primary)' }}
+                            style={{ color: 'var(--success-primary, #10b981)' }}
                             size={14}
                           />
                           Password *
@@ -729,7 +752,7 @@ const RegisterComponent = () => {
                               transform: 'translateY(-50%)',
                               border: 'none',
                               background: 'none',
-                              color: 'var(--text-muted)',
+                              color: 'var(--text-muted, #64748b)',
                               padding: '8px',
                               borderRadius: '8px',
                               transition: 'all 0.2s ease',
@@ -738,8 +761,85 @@ const RegisterComponent = () => {
                             tabIndex={-1}
                             whileHover={{
                               scale: 1.1,
-                              color: 'var(--success-primary)',
-                              background: 'var(--success-20)',
+                              color: 'var(--success-primary, #10b981)',
+                              background:
+                                'var(--success-20, rgba(16, 185, 129, 0.2))',
+                              transform: 'translateY(-50%) scale(1.1)',
+                            }}
+                            whileTap={{
+                              scale: 0.9,
+                              transform: 'translateY(-50%) scale(0.9)',
+                            }}
+                          >
+                            {showPassword ? (
+                              <FaEyeSlash size={16} />
+                            ) : (
+                              <FaEye size={16} />
+                            )}
+                          </motion.button>
+                        </div>
+                      </motion.div>
+
+                      {/* Confirm Password */}
+                      <motion.div
+                        className='mb-3'
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.1, duration: 0.5 }}
+                      >
+                        <label
+                          className='form-label fw-semibold mb-2'
+                          style={{
+                            color: 'var(--text-secondary, #475569)',
+                            fontSize: '0.95rem',
+                          }}
+                        >
+                          <FaLock
+                            className='me-2'
+                            style={{ color: 'var(--success-primary, #10b981)' }}
+                            size={14}
+                          />
+                          Confirm Password *
+                        </label>
+                        <div className='position-relative'>
+                          <input
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            className='form-control'
+                            style={{
+                              ...inputStyle('confirmPassword'),
+                              paddingRight: '50px',
+                            }}
+                            name='confirmPassword'
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            onFocus={() => setFocusedField('confirmPassword')}
+                            onBlur={() => setFocusedField(null)}
+                            required
+                            placeholder='Confirm your password'
+                          />
+                          <motion.button
+                            type='button'
+                            className='btn position-absolute'
+                            style={{
+                              right: '12px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              border: 'none',
+                              background: 'none',
+                              color: 'var(--text-muted, #64748b)',
+                              padding: '8px',
+                              borderRadius: '8px',
+                              transition: 'all 0.2s ease',
+                            }}
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            tabIndex={-1}
+                            whileHover={{
+                              scale: 1.1,
+                              color: 'var(--success-primary, #10b981)',
+                              background:
+                                'var(--success-20, rgba(16, 185, 129, 0.2))',
                               transform: 'translateY(-50%) scale(1.1)',
                             }}
                             whileTap={{
@@ -766,13 +866,13 @@ const RegisterComponent = () => {
                         <label
                           className='form-label fw-semibold mb-2'
                           style={{
-                            color: 'var(--text-secondary)',
+                            color: 'var(--text-secondary, #475569)',
                             fontSize: '0.95rem',
                           }}
                         >
                           <FaPhone
                             className='me-2'
-                            style={{ color: 'var(--success-primary)' }}
+                            style={{ color: 'var(--success-primary, #10b981)' }}
                             size={14}
                           />
                           Phone Number *
@@ -791,7 +891,7 @@ const RegisterComponent = () => {
                         />
                         <small
                           style={{
-                            color: 'var(--text-muted)',
+                            color: 'var(--text-muted, #64748b)',
                             fontSize: '0.85rem',
                           }}
                         >
@@ -811,7 +911,7 @@ const RegisterComponent = () => {
                       >
                         <FaMapMarkerAlt
                           className='me-2'
-                          style={{ color: 'var(--primary-blue)' }}
+                          style={{ color: 'var(--primary-blue, #3b82f6)' }}
                           size={16}
                         />
                         Firm Address
@@ -827,7 +927,7 @@ const RegisterComponent = () => {
                         <label
                           className='form-label fw-semibold mb-2'
                           style={{
-                            color: 'var(--text-secondary)',
+                            color: 'var(--text-secondary, #475569)',
                             fontSize: '0.95rem',
                           }}
                         >
@@ -857,7 +957,7 @@ const RegisterComponent = () => {
                         <label
                           className='form-label fw-semibold mb-2'
                           style={{
-                            color: 'var(--text-secondary)',
+                            color: 'var(--text-secondary, #475569)',
                             fontSize: '0.95rem',
                           }}
                         >
@@ -887,7 +987,7 @@ const RegisterComponent = () => {
                             <label
                               className='form-label fw-semibold mb-2'
                               style={{
-                                color: 'var(--text-secondary)',
+                                color: 'var(--text-secondary, #475569)',
                                 fontSize: '0.95rem',
                               }}
                             >
@@ -918,7 +1018,7 @@ const RegisterComponent = () => {
                             <label
                               className='form-label fw-semibold mb-2'
                               style={{
-                                color: 'var(--text-secondary)',
+                                color: 'var(--text-secondary, #475569)',
                                 fontSize: '0.95rem',
                               }}
                             >
@@ -950,7 +1050,7 @@ const RegisterComponent = () => {
                         <label
                           className='form-label fw-semibold mb-2'
                           style={{
-                            color: 'var(--text-secondary)',
+                            color: 'var(--text-secondary, #475569)',
                             fontSize: '0.95rem',
                           }}
                         >
@@ -970,7 +1070,7 @@ const RegisterComponent = () => {
                         />
                         <small
                           style={{
-                            color: 'var(--text-muted)',
+                            color: 'var(--text-muted, #64748b)',
                             fontSize: '0.85rem',
                           }}
                         >
@@ -984,7 +1084,9 @@ const RegisterComponent = () => {
                   {/* Enhanced Submit Button */}
                   <motion.div
                     className='text-center mt-4 pt-3'
-                    style={{ borderTop: '1px solid var(--border-subtle)' }}
+                    style={{
+                      borderTop: '1px solid var(--border-subtle, #f1f5f9)',
+                    }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.3, duration: 0.5 }}
@@ -1002,10 +1104,10 @@ const RegisterComponent = () => {
                         whileHover={{
                           scale: 1.02,
                           boxShadow: `
-                            0 12px 40px var(--success-40),
-                            0 6px 20px var(--success-30),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.3)
-                          `,
+                           0 12px 40px var(--success-40, rgba(16, 185, 129, 0.4)),
+                           0 6px 20px var(--success-30, rgba(16, 185, 129, 0.3)),
+                           inset 0 1px 0 rgba(255, 255, 255, 0.3)
+                         `,
                         }}
                         whileTap={{ scale: 0.98 }}
                         transition={{
@@ -1041,32 +1143,32 @@ const RegisterComponent = () => {
 
       {/* Enhanced Animations */}
       <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(5deg); }
-        }
-        
-        @keyframes shimmer {
-          0% { left: -100%; }
-          100% { left: 100%; }
-        }
-        
-        /* Enhanced focus styles */
-        .form-control:focus {
-          outline: none;
-          border-color: var(--primary-blue) !important;
-          box-shadow: 
-            0 0 0 4px var(--primary-20),
-            0 4px 20px var(--primary-10),
-            inset 0 1px 0 var(--white-10) !important;
-        }
-        
-        /* Enhanced placeholder styles */
-        .form-control::placeholder {
-          color: var(--text-disabled);
-          opacity: 0.8;
-        }
-      `}</style>
+       @keyframes float {
+         0%, 100% { transform: translateY(0px) rotate(0deg); }
+         50% { transform: translateY(-10px) rotate(5deg); }
+       }
+       
+       @keyframes shimmer {
+         0% { left: -100%; }
+         100% { left: 100%; }
+       }
+       
+       /* Enhanced focus styles */
+       .form-control:focus {
+         outline: none;
+         border-color: var(--primary-blue, #3b82f6) !important;
+         box-shadow: 
+           0 0 0 4px var(--primary-20, rgba(59, 130, 246, 0.2)),
+           0 4px 20px var(--primary-10, rgba(59, 130, 246, 0.1)),
+           inset 0 1px 0 var(--white-10, rgba(255, 255, 255, 0.1)) !important;
+       }
+       
+       /* Enhanced placeholder styles */
+       .form-control::placeholder {
+         color: var(--text-disabled, #9ca3af);
+         opacity: 0.8;
+       }
+     `}</style>
     </motion.div>
   );
 };
