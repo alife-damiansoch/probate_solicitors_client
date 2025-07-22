@@ -1,9 +1,8 @@
-
 import { useParams } from 'react-router-dom';
 
-import { postData } from '../GenericFunctions/AxiosGenericFunctions';
+import { useEffect, useRef, useState } from 'react';
 import RedirectCountdown from '../GenericComponents/RedirectCountdown';
-import {useEffect, useRef, useState} from "react";
+import { postData } from '../GenericFunctions/AxiosGenericFunctions';
 
 const ActivationPage = () => {
   const { activation_token } = useParams(); // Extract the token from the URL
@@ -51,7 +50,10 @@ const ActivationPage = () => {
   }, [activation_token]);
 
   return (
-    <div className='container mt-5 d-flex justify-content-center'>
+    <div
+      className='container d-flex justify-content-center'
+      style={{ marginTop: '150px' }}
+    >
       <div
         className='card shadow-lg'
         style={{ maxWidth: '500px', width: '100%' }}
