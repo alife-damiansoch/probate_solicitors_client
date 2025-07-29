@@ -707,10 +707,12 @@ const RequiredDocumentsList = ({
                                 }}
                               >
                                 <div
-                                  className='rounded-circle border-2 border-white border-top-transparent'
                                   style={{
                                     width: '12px',
                                     height: '12px',
+                                    borderRadius: '50%',
+                                    border: '2px solid var(--text-primary)',
+                                    borderTop: '2px solid transparent',
                                     animation: 'spin 1s linear infinite',
                                   }}
                                 />
@@ -722,13 +724,18 @@ const RequiredDocumentsList = ({
                                 style={{
                                   animation:
                                     'textPulse 2s infinite ease-in-out',
+                                  color: 'var(--text-primary)',
+                                  fontWeight: 600,
                                 }}
                               >
                                 Generating
                               </span>
 
                               {/* Animated Dots */}
-                              <span className='ms-1'>
+                              <span
+                                className='ms-1'
+                                style={{ color: 'var(--text-primary)' }}
+                              >
                                 <span
                                   style={{ animation: 'dot1 1.5s infinite' }}
                                 >
@@ -752,8 +759,19 @@ const RequiredDocumentsList = ({
                             </>
                           ) : (
                             <>
-                              <FaDownload className='me-2' size={12} />
-                              Get Template
+                              <FaDownload
+                                className='me-2'
+                                size={12}
+                                style={{ color: 'var(--text-primary)' }}
+                              />
+                              <span
+                                style={{
+                                  color: 'var(--text-primary)',
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Get Template
+                              </span>
                             </>
                           )}
                         </div>
