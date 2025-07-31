@@ -131,14 +131,18 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
           <div className='flex-grow-1'>
             <div className='d-flex align-items-center mb-1'>
               <h6
-                className='mb-0 fw-bold me-2'
+                className='mb-0 fw-bold me-2 text-break'
                 style={{
-                  fontSize: '0.9rem',
+                  fontSize: '0.7rem',
                   color: 'var(--text-primary)',
+                  wordBreak: 'break-word',
+                  whiteSpace: 'normal',
+                  maxWidth: '50%', // optional, ensures it doesn't grow too wide
                 }}
               >
-                {getDocumentType(doc)}
+                {doc.original_name}
               </h6>
+
               <span
                 className='badge'
                 style={{
@@ -163,7 +167,7 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
                 color: 'var(--text-muted)',
               }}
             >
-              {doc.original_name}
+              {getDocumentType(doc)}
             </p>
           </div>
         </div>

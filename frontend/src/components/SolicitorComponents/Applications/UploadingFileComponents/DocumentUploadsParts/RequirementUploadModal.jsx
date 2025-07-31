@@ -42,7 +42,7 @@ const RequirementUploadModal = ({
     ],
     []
   );
-
+  console.log('REQUIREMENT UPLOAD MODAL RENDERED', requirement);
   const uploadFilesHandler = async () => {
     if (acceptedFiles.length === 0) return;
 
@@ -55,7 +55,19 @@ const RequirementUploadModal = ({
         const formData = new FormData();
         formData.append('document', file, file.name);
         formData.append('document_type_requirement', requirement.id);
-        formData.append('original_name', file.name); // Set original name
+        const extension = file.name.slice(file.name.lastIndexOf('.'));
+        let originalName;
+
+        if (
+          requirement.template_filename &&
+          requirement.template_filename.trim()
+        ) {
+          originalName = requirement.template_filename;
+        } else {
+          originalName = `${requirement.document_type.name}${extension}`;
+        }
+
+        formData.append('original_name', originalName);
 
         const response = await uploadFile(
           `${API_URL}/api/applications/solicitor_applications/document_file/${applicationId}/`,
