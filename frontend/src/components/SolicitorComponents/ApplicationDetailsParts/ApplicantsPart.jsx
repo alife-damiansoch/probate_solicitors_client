@@ -554,7 +554,7 @@ const ApplicantsPart = ({
           </div>
         </div>
         <span
-          className='px-4 py-3 rounded-pill fw-bold d-flex align-items-center gap-2'
+          className='px-2 py-1 rounded-pill fw-bold d-flex align-items-center gap-2'
           style={{
             background:
               application.applicants?.length > 0
@@ -567,6 +567,10 @@ const ApplicantsPart = ({
             transition: 'all 0.3s',
             cursor: 'default',
             color: '#fff',
+            position: 'absolute',
+            right: '5px',
+            top: '5px',
+            opacity: 0.7,
           }}
         >
           <svg width='18' height='18' fill='currentColor' viewBox='0 0 20 20'>
@@ -584,10 +588,10 @@ const ApplicantsPart = ({
               />
             )}
           </svg>
-          {application.applicants?.length > 0 ? 'Complete' : 'Required'}
+          {application.applicants?.length > 0 ? 'Completed' : 'Required'}
         </span>
       </div>
-      <div className='px-4 pb-4'>
+      <div className='px-1 pb-4'>
         {(!application.applicants || application.applicants.length === 0) && (
           <div
             className='alert border-0 text-center mb-4'
@@ -656,7 +660,7 @@ const ApplicantsPart = ({
                   className='fw-bold'
                   style={{ fontSize: '1.2rem', color: 'var(--primary-blue)' }}
                 >
-                  Basic Information
+                  Applicant
                 </h6>
               </div>
               <div className='row g-3'>

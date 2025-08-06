@@ -115,7 +115,7 @@ const BasicDetailsSection = ({
       </div>
 
       {/* Content */}
-      <div className='px-4 pb-4'>
+      <div className='px-4 py-4 '>
         <form>
           {/* Amount and Term Row */}
           <div className='row g-4 mb-4'>

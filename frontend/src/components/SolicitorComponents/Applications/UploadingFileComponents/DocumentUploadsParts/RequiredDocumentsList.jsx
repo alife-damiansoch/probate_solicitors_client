@@ -560,11 +560,14 @@ const RequiredDocumentsList = ({
                             style={{
                               fontSize: '0.8rem',
                               color: 'var(--text-primary)',
+                              wordBreak: 'break-word', // Key line
+                              whiteSpace: 'normal', // Ensures normal wrapping
                             }}
                           >
                             Uploaded:{' '}
                             {requirement.uploaded_document.original_name}
                           </div>
+                          <br />
                           <div
                             style={{
                               fontSize: '0.7rem',
@@ -777,7 +780,7 @@ const RequiredDocumentsList = ({
                         </div>
 
                         {/* Add CSS Animations */}
-                        <style jsx>{`
+                        <style>{`
                           @keyframes shimmer {
                             0% {
                               transform: translateX(-100%);
@@ -1246,7 +1249,7 @@ const RequiredDocumentsList = ({
                       />
 
                       {/* CSS Animations */}
-                      <style jsx>{`
+                      <style>{`
                         @keyframes slideUp {
                           from {
                             opacity: 0;

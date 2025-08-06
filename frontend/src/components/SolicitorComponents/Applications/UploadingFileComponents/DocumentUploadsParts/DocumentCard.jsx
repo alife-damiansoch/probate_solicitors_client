@@ -91,15 +91,15 @@ const DocumentCard = ({ doc, token, onSignDocument }) => {
       <div
         className='position-absolute'
         style={{
-          top: '16px',
-          right: '16px',
+          top: '5px',
+          right: '5px',
           zIndex: 2,
         }}
       >
         <StatusBadge doc={doc} />
       </div>
 
-      <div className='card-body p-4'>
+      <div className='card-body p-4 mt-4'>
         {/* Document Header */}
         <div className='d-flex align-items-start mb-3'>
           <div

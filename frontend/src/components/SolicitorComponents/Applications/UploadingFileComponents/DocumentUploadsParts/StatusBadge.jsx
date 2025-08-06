@@ -7,7 +7,7 @@ const StatusBadge = ({ doc }) => {
         className='badge rounded-pill px-3 py-2 d-flex align-items-center'
         style={{
           backgroundColor: '#dcfce7',
-          color: '#16a34a',
+          color: '#378dff',
           border: '1px solid #bbf7d0',
           fontSize: '0.7rem',
           fontWeight: '600',
@@ -42,7 +42,7 @@ const StatusBadge = ({ doc }) => {
       className='badge rounded-pill px-3 py-2 d-flex align-items-center'
       style={{
         backgroundColor: '#f1f5f9',
-        color: '#64748b',
+        color: '#008643',
         border: '1px solid #e2e8f0',
         fontSize: '0.7rem',
         fontWeight: '600',

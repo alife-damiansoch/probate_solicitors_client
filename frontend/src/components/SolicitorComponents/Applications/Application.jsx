@@ -247,9 +247,9 @@ const Application = ({ application }) => {
             <div
               className='position-absolute d-flex flex-wrap gap-1 gap-md-2 justify-content-end'
               style={{
-                top: '20px',
+                top: '0px',
                 right: '16px',
-                zIndex: 3,
+                zIndex: 10,
                 maxWidth: '50%',
               }}
             >
