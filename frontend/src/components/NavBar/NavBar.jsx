@@ -176,7 +176,7 @@ const NavBar = () => {
                   >
                     <motion.img
                       id='logo'
-                      src='/img/ALI logo.png'
+                      src='/img/logofull.webp'
                       alt='ALI logo'
                       className='img-fluid'
                       style={{

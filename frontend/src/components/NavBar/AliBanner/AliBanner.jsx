@@ -43,7 +43,7 @@ const AliBanner = () => {
             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', // Adding text shadow
           }}
         >
-          ALI is an expert in expediting capital release from an estate prior to
+          PFI is an expert in expediting capital release from an estate prior to
           probate being granted. {'   '}We are the only company in the market
           providing this service.
         </span>

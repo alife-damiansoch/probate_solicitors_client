@@ -101,7 +101,7 @@ const FooterComponent = () => {
                 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               >
-                ALI
+                PFI
               </motion.span>
               . All rights reserved.
             </motion.p>
