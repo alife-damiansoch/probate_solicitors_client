@@ -169,7 +169,7 @@ const NavBar = () => {
                   className='d-flex align-items-center justify-content-start'
                 >
                   <motion.div
-                    className='rounded-3 p-1 p-md-2'
+                    className='rounded-3 p-1 p-md-0'
                     style={glassmorphismLogo}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -181,7 +181,7 @@ const NavBar = () => {
                       className='img-fluid'
                       style={{
                         cursor: 'pointer',
-                        maxWidth: 'clamp(35px, 8vw, 50px)',
+                        maxWidth: 'clamp(50px, 10vw, 70px)',
                         height: 'auto',
                         filter: 'contrast(1.1) brightness(1.05)',
                       }}
